@@ -4,6 +4,7 @@ import cn.dovahkiin.model.VideoCost;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -15,5 +16,6 @@ import java.util.List;
  */
 public interface VideoCostMapper extends BaseMapper<VideoCost> {
     int insertMany(List<VideoCost> videoCostList);
-
+    List<VideoCost> selectWithCount(Map<String , Object> map);
+    List<VideoCost> countByCustomName();
 }

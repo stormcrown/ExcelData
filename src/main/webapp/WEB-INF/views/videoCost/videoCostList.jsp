@@ -45,13 +45,13 @@
                     }
                 },
                 {
-                    width: '60',
+                    width: '80',
                     title: '业务部',
                     field: 'businessDepartment',
                     sortable: true
                 },
                 {
-                    width: '60',
+                    width: '80',
                     title: '产品类型',
                     field: 'productType',
                     sortable: true
@@ -65,40 +65,52 @@
 
 
                 {
-                    width: '60',
+                    width: '80',
                     title: '当日消耗',
                     field: 'consumption',
                     sortable: true
                 },
                 {
-                    width: '60',
+                    width: '80',
                     title: '累计消耗',
                     field: 'cumulativeConsumption',
                     sortable: true
+                },
+                {
+                    width: '80',
+                    title: '程序统计累计消耗',
+                    field: 'cumulativeConsumptionByPro',
+                    sortable: false
+                },
+                {
+                    width: '80',
+                    title: '程序统计累计消耗',
+                    field: 'cumulativeConsumptionRankingByProglam',
+                    sortable: false
                 },
 
             ]],
             columns: [[
                 {
-                    width: '60',
+                    width: '80',
                     title: '行业',
                     field: 'industry',
                     sortable: true
                 },
                 {
-                    width: '60',
+                    width: '80',
                     title: '需求部门',
                     field: 'demandSector',
                     sortable: true
                 },
                 {
-                    width: '60',
+                    width: '100',
                     title: '视频类型',
                     field: 'videoType',
                     sortable: true
                 },
                 {
-                    width: '100',
+                    width: '80',
                     title: '成片日期',
                     field: 'completeDate',
                     sortable: true,
@@ -182,7 +194,7 @@
             title: '添加',
             iconCls: 'icon-add',
             width: 700,
-            height: 450,
+            height: 420,
             resizable:true,
             href: '${path}/videoCost/addPage',
             buttons: [
@@ -216,11 +228,12 @@
     function videoCostImportExcelFun() {
         parent.$.modalDialog({
             title: '导入',
-            width: 700,
-            height: 500,
+            width: 400,
+            height: 200,
             href: '${path}/videoCost/importExcelPage',
             buttons: [{
-                text: '确定',
+                text: '导入',
+                iconCls: 'icon-ok',
                 handler: function () {
                     parent.$.modalDialog.openner_dataGrid = videoCostDataGrid;//因为添加成功之后，需要刷新这个treeGrid，所以先预定义好
                     var f = parent.$.modalDialog.handler.find('#videoCostimportExcelForm');
@@ -244,10 +257,11 @@
         parent.$.modalDialog({
             title: '编辑',
             width: 700,
-            height: 600,
+            height: 420,
             href: '${path}/videoCost/editPage?id=' + id,
             buttons: [{
                 text: '确定',
+                iconCls: 'icon-ok',
                 handler: function () {
                     parent.$.modalDialog.openner_dataGrid = videoCostDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
                     var f = parent.$.modalDialog.handler.find('#videoCostAddForm');
@@ -304,16 +318,16 @@
 <div class="easyui-layout" data-options="fit:true,border:false">
     <div data-options="region:'north',border:false" style="height: 50px; overflow: hidden;background-color: #fff;">
         <form id="videoCostSearchForm">
-            <table
-            ">
+            <table style="margin: 10px" >
             <tr>
-                <th>客户名称:</th>
-                <td><input name="customerName" placeholder="客户名称"/></td>
+                <th>客户名称:</th><td><input name="customerName_like" placeholder="客户名称"/></td>
+                <th>数据日期:</th>
+                <td><input name="recoredDate" value="${videoCost.recoredDate}" type="text"  placeholder="请输入数据日期" class="easyui-datebox span2" data-options="prompt:'数据日期',required:false,invalidMessage:'日期格式：年-月-日'" /></td>
                 <td>
                     <a href="javascript:void(0);" class="easyui-linkbutton"
-                       data-options="iconCls:'glyphicon-search',plain:true" onclick="videoCostSearchFun();">查询</a>
+                       data-options="iconCls:'glyphicon-search icon-blue',plain:true" onclick="videoCostSearchFun();">查询</a>
                     <a href="javascript:void(0);" class="easyui-linkbutton"
-                       data-options="iconCls:'glyphicon-remove-circle',plain:true"
+                       data-options="iconCls:'glyphicon-remove-circle  icon-red',plain:true"
                        onclick="videoCostCleanFun();">清空</a>
                 </td>
             </tr>

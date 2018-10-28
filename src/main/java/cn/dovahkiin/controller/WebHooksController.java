@@ -24,7 +24,7 @@ public class WebHooksController extends BaseController {
     /**
      * git@osc WebHooks 设置
      * WIKI: http://git.oschina.net/oschina/git-osc/wikis/WebHook-%E4%BD%BF%E7%94%A8%E7%AE%80%E4%BB%8B
-     * @param hook json字符串
+     * @param request json字符串
      * @return jsonBean
      */
     @PostMapping("webhooks")

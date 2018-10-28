@@ -6,14 +6,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Date;
+import java.util.*;
 
 
 import cn.dovahkiin.commons.utils.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -50,14 +49,27 @@ public class VideoCostController extends BaseController {
     @PostMapping("/dataGrid")
     @ResponseBody
     @RequiresPermissions("/videoCost/dataGrid")
-    public PageInfo dataGrid(VideoCost videoCost, Integer page, Integer rows, String sort,String order) {
+    public PageInfo dataGrid(VideoCost videoCost, Integer page, Integer rows, String sort,String order ,String customerName_like) {
         PageInfo pageInfo = new PageInfo(page, rows, sort, order);
-        
         EntityWrapper<VideoCost> ew = new EntityWrapper<VideoCost>(videoCost);
-        ew.eq("delete_flag",0);
-        if(videoCost.getCustomerName()!=null) ew.like("customer_name" ,"%"+videoCost.getCustomerName().trim()+"%");
+        if(StringUtils.isNotBlank(customerName_like))
+            ew.like("customer_name",customerName_like);
+            ew.eq("delete_flag",0);
+
+
         Page<VideoCost> pages = getPage(page, rows, sort, order);
         pages = videoCostService.selectPage(pages, ew);
+
+        List<VideoCost> list = pages.getRecords();
+        List<VideoCost> counts = videoCostService.countByCustomName();
+        for(VideoCost v1 :counts  ){
+            for(VideoCost v2 :list  ){
+                if( v1!=null && v1.getCustomerName()!=null &&  v1.getCustomerName().equals( v2.getCustomerName() )){
+                    v2.setCumulativeConsumptionByPro(v1.getCumulativeConsumptionByPro());
+                    v2.setCumulativeConsumptionRankingByProglam(v1.getCumulativeConsumptionRankingByProglam());
+                }
+            }
+        }
         pageInfo.setRows(pages.getRecords());
         pageInfo.setTotal(pages.getTotal());
         return pageInfo;
@@ -113,56 +125,70 @@ public class VideoCostController extends BaseController {
     public Object importExcel(@Valid Date recoredDate, @RequestParam(name="excels") MultipartFile excels) {
         int m=0;
         try {
-            StringBuilder tips = new StringBuilder("以下行：需要补充数据");
+            StringBuilder tips = new StringBuilder("部分数据需要补充或者修改：");
             InputStream inputStream = excels.getInputStream();
             boolean needTip = false;
             Workbook workbook= WorkbookFactory.create(inputStream);
             Sheet sheet=workbook.getSheetAt(0);
             int first = sheet.getFirstRowNum();
             int last = sheet.getLastRowNum();
-            logger.info("first="+first+"\tlast="+last+"\trecoredDate="+recoredDate);
-            List<VideoCost> datas = new ArrayList();
+           // logger.info("first="+first+"\tlast="+last+"\trecoredDate="+recoredDate);
+            List<VideoCost> videoCosts = new ArrayList();
 
-            /*  可能被合并的单元格，值取上一行的值 */
-            Cell upper_0 = null;
-            Cell upper_1 = null;
+
+
             Date now = new Date();
             first = 3;//实际数据从哪一行开始
+
+            /*  被合并的单元格  */
+            Map<String ,String> mergeDatas =new HashMap<>((last-first)*2);
+            /*  被合并的单元格 */
+            List<CellRangeAddress> merges= sheet.getMergedRegions();
+            for(CellRangeAddress cell_mege:merges){
+                int f_row = cell_mege.getFirstRow();
+                int l_row = cell_mege.getLastRow();
+                int f_colum = cell_mege.getFirstColumn();
+                int l_colum = cell_mege.getLastColumn();
+                if(l_row-f_row>1 || f_colum-l_colum>1 ){
+                    for(int r=f_row ;r<l_row+1;r++){
+                        for(int col=f_colum ;col<l_colum+1;col++){
+                            mergeDatas.put(r+"_"+col,f_row+"_"+f_colum);
+                        }
+                    }
+                }
+            }
+
             行: for(int i=first;i<last+1;i++ ){
                 Row row=sheet.getRow(i);
                 if(row!=null){
                     VideoCost videoCost = new VideoCost(now,now,0,recoredDate);
                    格:for(int j=0;j<17;j++  ){
                         Cell cell = row.getCell(j);
-                       // if(j==0) logger.info("cell 位置： i="+i+"\tj="+j +"\tcell "+(cell.getCellTypeEnum().name()));
-//                        if(cell!=null){
-////                            if(j==0)upper_0=cell;else if(j==1)upper_1 = cell;
-////                        }else {
-////                            if(j==0)cell=upper_0;else if(j==1)  cell=upper_1;
-////                        }
 
                         if(cell!=null){
 
+
                             CellType cellType= cell.getCellTypeEnum();
-                            if(!CellType.BLANK.equals(cellType)){
-                                if(j==0   )upper_0=cell;else if(j==1)upper_1 = cell;
-                            }
                             Object value = null;
                             switch (cellType){
-                                case STRING:value = cell.getStringCellValue();break ;
-                                case NUMERIC:value=cell.getNumericCellValue();break;
-                                case BOOLEAN:value=cell.getBooleanCellValue();break ;
-                                case FORMULA:value=cell.getNumericCellValue();break ;
-                                case BLANK://被合并了,取上一行的值
-                                    if(j==0)value=upper_0.getStringCellValue();
-                                    else if(j==1)value=upper_1.getStringCellValue();
-                                    else continue 格;
-                                    break;
+                                case BLANK://被合并了，或者是空格,查找被合并的里有没有。
+                                    String location = mergeDatas.get(i+"_"+j);
+                                    if(StringUtils.isNotBlank(location)&& location.indexOf("_")>0  ){
+                                     String[] locations =location.split("_");
+                                     if(locations.length==2 && StringUtils.isInteger(locations[0]) && StringUtils.isInteger(locations[1])  ){
+                                         Row loac_row = sheet.getRow(Integer.parseInt(locations[0]));
+                                         Cell loac_cell = loac_row.getCell(Integer.parseInt(locations[1]));
+                                         value = getCellValue(loac_cell);
+                                     }
+                                    }
+                                    break ;
                                 case ERROR:continue 格;//错误格 ，继续下一格
+                                default:value=getCellValue(cell);
 
                             }
                             if(value!=null){
                                 String valueStr = value.toString();
+                                if("——".equals(valueStr.replaceAll(" ","")))continue 格;;
                                 switch (j){
                                     case 0:
                                         videoCost.setBusinessDepartment(valueStr);break ;
@@ -180,10 +206,11 @@ public class VideoCostController extends BaseController {
                                     case 6:videoCost.setVideoType(valueStr);break ;
                                     case 7:
                                         try{
-                                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd");
-                                            videoCost.setCompleteDate(simpleDateFormat.parse(valueStr));
-                                        }catch (ParseException e){
+                                            videoCost.setCompleteDate(dateConverter.convert(valueStr));
+                                        }catch (IllegalArgumentException e){
                                             e.printStackTrace();
+                                            needTip=true;
+                                            tips.append(i+1).append("行完成日期格式不匹配；");
                                         }
                                         break ;
                                     case 8:videoCost.setOriginality(valueStr);break;
@@ -207,13 +234,13 @@ public class VideoCostController extends BaseController {
 
                     }
                     if(StringUtils.isNotBlank(videoCost.getCustomerName() ) ){
-                        datas.add(videoCost);
+                        videoCosts.add(videoCost);
                       //  logger.info(videoCost);
                     }
                 }
 
             }
-            m= videoCostService.insertMany(datas);
+            m= videoCostService.insertMany(videoCosts);
 
             inputStream.close();
         }catch (InvalidFormatException e){
@@ -229,7 +256,17 @@ public class VideoCostController extends BaseController {
             return renderError("添加失败！");
         }
     }
-    
+    private Object getCellValue(Cell cell){
+        CellType cellType= cell.getCellTypeEnum();
+        Object value = null;
+        switch (cellType){
+            case STRING:value = cell.getStringCellValue();break ;
+            case NUMERIC:value=cell.getNumericCellValue();break;
+            case BOOLEAN:value=cell.getBooleanCellValue();break ;
+            case FORMULA:value=cell.getNumericCellValue();break ;
+        }
+        return value;
+    }
     /**
      * 删除
      * @param id

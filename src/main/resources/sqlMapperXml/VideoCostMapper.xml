@@ -2,45 +2,72 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.dovahkiin.mapper.VideoCostMapper">
 
-	<!-- 通用查询映射结果 -->
-	<resultMap id="BaseResultMap" type="cn.dovahkiin.model.VideoCost">
-		<id column="id" property="id" />
-		<result column="update_time" property="updateTime" />
-		<result column="create_time" property="createTime" />
-		<result column="delete_flag" property="deleteFlag" />
-		<result column="recored_date" property="recoredDate" />
-		<result column="business_department" property="businessDepartment" />
-		<result column="product_type" property="productType" />
-		<result column="customer_name" property="customerName" />
-		<result column="industry" property="industry" />
-		<result column="demand_sector" property="demandSector" />
-		<result column="optimizer" property="optimizer" />
-		<result column="video_type" property="videoType" />
-		<result column="complete_date" property="completeDate" />
-		<result column="originality" property="originality" />
-		<result column="photographer" property="photographer" />
-		<result column="editor" property="editor" />
-		<result column="performer1" property="performer1" />
-		<result column="performer2" property="performer2" />
-		<result column="performer3" property="performer3" />
-		<result column="consumption" property="consumption" />
-		<result column="cumulative_consumption" property="cumulativeConsumption" />
-		<result column="cumulative_consumption_ranking" property="cumulativeConsumptionRanking" />
-	</resultMap>
-	<sql id="Base_Column_List">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.dovahkiin.model.VideoCost">
+        <id column="id" property="id"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_time" property="createTime"/>
+        <result column="delete_flag" property="deleteFlag"/>
+        <result column="recored_date" property="recoredDate"/>
+        <result column="business_department" property="businessDepartment"/>
+        <result column="product_type" property="productType"/>
+        <result column="customer_name" property="customerName"/>
+        <result column="industry" property="industry"/>
+        <result column="demand_sector" property="demandSector"/>
+        <result column="optimizer" property="optimizer"/>
+        <result column="video_type" property="videoType"/>
+        <result column="complete_date" property="completeDate"/>
+        <result column="originality" property="originality"/>
+        <result column="photographer" property="photographer"/>
+        <result column="editor" property="editor"/>
+        <result column="performer1" property="performer1"/>
+        <result column="performer2" property="performer2"/>
+        <result column="performer3" property="performer3"/>
+        <result column="consumption" property="consumption"/>
+        <result column="cumulative_consumption" property="cumulativeConsumption"/>
+        <result column="cumulative_consumption_ranking" property="cumulativeConsumptionRanking"/>
+    </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMapWithCount" type="cn.dovahkiin.model.VideoCost">
+        <id column="id" property="id"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_time" property="createTime"/>
+        <result column="delete_flag" property="deleteFlag"/>
+        <result column="recored_date" property="recoredDate"/>
+        <result column="business_department" property="businessDepartment"/>
+        <result column="product_type" property="productType"/>
+        <result column="customer_name" property="customerName"/>
+        <result column="industry" property="industry"/>
+        <result column="demand_sector" property="demandSector"/>
+        <result column="optimizer" property="optimizer"/>
+        <result column="video_type" property="videoType"/>
+        <result column="complete_date" property="completeDate"/>
+        <result column="originality" property="originality"/>
+        <result column="photographer" property="photographer"/>
+        <result column="editor" property="editor"/>
+        <result column="performer1" property="performer1"/>
+        <result column="performer2" property="performer2"/>
+        <result column="performer3" property="performer3"/>
+        <result column="consumption" property="consumption"/>
+        <result column="cumulative_consumption" property="cumulativeConsumption"/>
+        <result column="cumulative_consumption_ranking" property="cumulativeConsumptionRanking"/>
+        <result column="cumulativeConsumptionByPro" property="cumulativeConsumptionByPro"/>
+        <result column="cumulativeConsumptionRankingByProglam" property="cumulativeConsumptionRankingByProglam"/>
+    </resultMap>
+    <sql id="Base_Column_List">
         id,
-        update_time as updateTime,
-        create_time as createTime,
-        delete_flag as deleteFlag,
-        recored_date as recoredDate,
-        business_department as businessDepartment,
-        product_type as productType,
-        customer_name as customerName,
+        update_time,
+        create_time ,
+        delete_flag ,
+        recored_date ,
+        business_department ,
+        product_type ,
+        customer_name ,
         industry,
-        demand_sector as demandSector,
+        demand_sector ,
         optimizer,
-        video_type as videoType,
-        complete_date as completeDate,
+        video_type ,
+        complete_date ,
         originality,
         photographer,
         editor,
@@ -48,57 +75,140 @@
         performer2,
         performer3,
         consumption,
-        cumulative_consumption as cumulativeConsumption,
-        cumulative_consumption_ranking as cumulativeConsumptionRanking
+        cumulative_consumption,
+        cumulative_consumption_ranking
     </sql>
-	<insert id ="insertMany" parameterType="java.util.List" >
-		insert into `video_cost`
-		(
-		create_time,
-		delete_flag,
-		recored_date,
-		business_department,
-		product_type,
-		customer_name,
-		industry,
-		demand_sector,
-		optimizer,
-		video_type,
-		complete_date,
-		originality,
-		photographer,
-		editor,
-		performer1,
-		performer2,
-		performer3,
-		consumption,
-		cumulative_consumption,
-		cumulative_consumption_ranking
-		)
-		values
-		<foreach collection ="list" item="videoCost" index= "index" separator =",">
-			(
-			#{videoCost.createTime},
-			#{videoCost.deleteFlag},
-			#{videoCost.recoredDate},
-			#{videoCost.businessDepartment},
-			#{videoCost.productType},
-			#{videoCost.customerName},
-			#{videoCost.industry},
-			#{videoCost.demandSector},
-			#{videoCost.optimizer},
-			#{videoCost.videoType},
-			#{videoCost.completeDate},
-			#{videoCost.originality},
-			#{videoCost.photographer},
-			#{videoCost.editor},
-			#{videoCost.performer1},
-			#{videoCost.performer2},
-			#{videoCost.performer3},
-			#{videoCost.consumption},
-			#{videoCost.cumulativeConsumption},
-			#{videoCost.cumulativeConsumptionRanking}
-			)
-		</foreach >
-	</insert >
+    <insert id="insertMany" parameterType="java.util.List">
+        insert into `video_cost`
+        (
+        create_time,
+        delete_flag,
+        recored_date,
+        business_department,
+        product_type,
+        customer_name,
+        industry,
+        demand_sector,
+        optimizer,
+        video_type,
+        complete_date,
+        originality,
+        photographer,
+        editor,
+        performer1,
+        performer2,
+        performer3,
+        consumption,
+        cumulative_consumption,
+        cumulative_consumption_ranking
+        )
+        values
+        <foreach collection="list" item="videoCost" index="index" separator=",">
+            (
+            #{videoCost.createTime},
+            #{videoCost.deleteFlag},
+            #{videoCost.recoredDate},
+            #{videoCost.businessDepartment},
+            #{videoCost.productType},
+            #{videoCost.customerName},
+            #{videoCost.industry},
+            #{videoCost.demandSector},
+            #{videoCost.optimizer},
+            #{videoCost.videoType},
+            #{videoCost.completeDate},
+            #{videoCost.originality},
+            #{videoCost.photographer},
+            #{videoCost.editor},
+            #{videoCost.performer1},
+            #{videoCost.performer2},
+            #{videoCost.performer3},
+            #{videoCost.consumption},
+            #{videoCost.cumulativeConsumption},
+            #{videoCost.cumulativeConsumptionRanking}
+            )
+        </foreach>
+    </insert>
+
+    <select id="selectWithCount" resultMap="BaseResultMapWithCount" >
+      SELECT
+        vc.id ,
+        vc.update_time,
+        vc.create_time ,
+        vc.delete_flag ,
+        vc.recored_date ,
+        vc.business_department ,
+        vc.product_type ,
+        vc.customer_name ,
+        vc.industry,
+        vc.demand_sector ,
+        vc.optimizer,
+        vc.video_type,
+        vc.complete_date ,
+        vc.originality,
+        vc.photographer,
+        vc.editor,
+        vc.performer1,
+        vc.performer2,
+        vc.performer3,
+        vc.consumption,
+        vc.cumulative_consumption ,
+        vc.cumulative_consumption_ranking ,
+        cumulativeConsumptionByPro,
+        cumulativeConsumptionRankingByProglam
+      FROM video_cost vc
+      left join (
+          SELECT
+	          customer_name,
+	          cumulativeConsumptionByPro,
+	          @rownum :=@rownum + 1 AS cumulativeConsumptionRankingByProglam
+              FROM
+	        (
+		    SELECT
+			      customer_name,
+			      SUM(consumption) AS cumulativeConsumptionByPro
+		    FROM
+			  video_cost
+		    WHERE
+			    consumption > 0
+                and delete_flag = 0
+		    GROUP BY
+			    customer_name
+		    ORDER BY
+			    cumulativeConsumptionByPro DESC
+	        ) t1,
+	      (SELECT @rownum := 0) rownum
+    ) pm on vc.customer_name = pm.customer_name
+
+        <where>
+            <if test="videoCost.customerName != null  and videoCost.customerName !='' ">
+                vc.customer_name like #{videoCost.customerName}
+            </if>
+            <if test="videoCost.recoredDate != null">
+                AND vc.recored_date = #{videoCost.recoredDate}
+            </if>
+        </where>
+        ORDER BY  pm.cumulativeConsumptionByPro desc
+	</select>
+    <select id="countByCustomName"  resultMap="BaseResultMapWithCount" >
+         SELECT
+	          customer_name,
+	          cumulativeConsumptionByPro,
+	          @rownum :=@rownum + 1 AS cumulativeConsumptionRankingByProglam
+              FROM
+	        (
+		    SELECT
+			      customer_name,
+			      SUM(consumption) AS cumulativeConsumptionByPro
+		    FROM
+			  video_cost
+		    WHERE
+			    consumption > 0
+                and delete_flag = 0
+		    GROUP BY
+			    customer_name
+		    ORDER BY
+			    cumulativeConsumptionByPro DESC
+			     ) t1,
+	      (SELECT @rownum := 0) rownum
+    </select>
 </mapper>

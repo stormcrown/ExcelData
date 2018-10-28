@@ -33,7 +33,6 @@ public class CommonsController {
      * 图标页
      */
     @GetMapping("icons.html")
-    @RequiresPermissions("icons.html")
     public String icons() {
         return "icons";
     }

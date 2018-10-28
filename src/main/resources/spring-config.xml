@@ -24,6 +24,8 @@
     <context:annotation-config/>
     <!-- 扫描service -->
     <context:component-scan base-package="cn.dovahkiin.service"/>
+    <!-- 扫描 转换器 -->
+    <context:component-scan base-package="cn.dovahkiin.commons.converter"/>
 
     <import resource="classpath:spring/spring-mybatis.xml"/>
     <import resource="classpath:spring/spring-ehcache.xml"/>

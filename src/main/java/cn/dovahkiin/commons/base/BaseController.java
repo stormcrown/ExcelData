@@ -8,6 +8,7 @@ import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletRegistration;
 import javax.servlet.http.HttpServletRequest;
 
+import cn.dovahkiin.commons.converter.DateConverter;
 import cn.dovahkiin.commons.result.PageInfo;
 import cn.dovahkiin.commons.result.Result;
 import cn.dovahkiin.commons.shiro.ShiroUser;
@@ -17,6 +18,7 @@ import cn.dovahkiin.commons.utils.URLUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.beans.propertyeditors.FileEditor;
 import org.springframework.core.io.FileSystemResource;
@@ -43,9 +45,18 @@ import cn.dovahkiin.commons.utils.URLUtils;
  * @author：zhixuan.wang
  * @date：2015/10/1 14:51
  */
+
 public abstract class BaseController {
     // 控制器本来就是单例，这样似乎更加合理
     protected Logger logger = LogManager.getLogger(getClass());
+    @Autowired
+    protected DateConverter dateConverter;
+    public void setDateConverter(DateConverter dateConverter) {
+        this.dateConverter = dateConverter;
+    }
+    public DateConverter getDateConverter() {
+        return dateConverter;
+    }
 
     @InitBinder
     public void initBinder(ServletRequestDataBinder binder) {
@@ -203,4 +214,5 @@ public abstract class BaseController {
 		headers.setContentDispositionFormData("attachment", fileName);
 		return new ResponseEntity<Resource>(resource, headers, status);
 	}
+
 }

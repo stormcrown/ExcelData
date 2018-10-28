@@ -24,4 +24,9 @@ public class VideoCostServiceImpl extends ServiceImpl<VideoCostMapper, VideoCost
     public int insertMany(List<VideoCost> videoCostList){
         return videoCostMapper.insertMany(videoCostList);
     }
+
+    @Override
+    public List<VideoCost> countByCustomName() {
+        return videoCostMapper.countByCustomName();
+    }
 }

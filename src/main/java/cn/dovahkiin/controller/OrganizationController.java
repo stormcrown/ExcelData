@@ -47,7 +47,6 @@ public class OrganizationController extends BaseController {
      */
     @PostMapping(value = "/tree")
     @ResponseBody
-    @RequiresPermissions("/organization/tree")
     public Object tree() {
         return organizationService.selectTree();
     }

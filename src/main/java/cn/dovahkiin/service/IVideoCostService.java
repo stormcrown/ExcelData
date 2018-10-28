@@ -15,4 +15,5 @@ import java.util.List;
  */
 public interface IVideoCostService extends IService<VideoCost> {
     int insertMany(List<VideoCost> videoCostList);
+    List<VideoCost> countByCustomName();
 }

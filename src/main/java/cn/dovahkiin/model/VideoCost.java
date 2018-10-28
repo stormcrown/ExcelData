@@ -6,6 +6,7 @@ import java.util.Date;
 //import com.baomidou.mybatisplus.annotations.TableField;
 //import com.baomidou.mybatisplus.activerecord.Model;
 //import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.annotations.TableField;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -125,6 +126,27 @@ public class VideoCost  implements Serializable {
      */
 //	@TableField("cumulative_consumption_ranking")
 	private Integer cumulativeConsumptionRanking;
+
+	@TableField(exist = false)
+	private Double cumulativeConsumptionByPro;
+	@TableField(exist = false)
+	private Integer cumulativeConsumptionRankingByProglam;
+
+	public Double getCumulativeConsumptionByPro() {
+		return cumulativeConsumptionByPro;
+	}
+
+	public Integer getCumulativeConsumptionRankingByProglam() {
+		return cumulativeConsumptionRankingByProglam;
+	}
+
+	public void setCumulativeConsumptionByPro(Double cumulativeConsumptionByPro) {
+		this.cumulativeConsumptionByPro = cumulativeConsumptionByPro;
+	}
+
+	public void setCumulativeConsumptionRankingByProglam(Integer cumulativeConsumptionRankingByProglam) {
+		this.cumulativeConsumptionRankingByProglam = cumulativeConsumptionRankingByProglam;
+	}
 
 	public VideoCost() {
 	}
