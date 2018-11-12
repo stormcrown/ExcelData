@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="edge" />
 <link rel="shortcut icon" href="${staticPath }/static/style/images/favicon.ico" />
 <%-- [EasyUI] --%>
-<link rel="stylesheet" type="text/css" href="${staticPath }/static/js/jquery-easyui/themes/gray/easyui.css">
+<link rel="stylesheet" type="text/css" href="${staticPath }/static/js/jquery-easyui/themes/bootstrap/easyui.css">
 <link rel="stylesheet" type="text/css" href="${staticPath }/static/js/jquery-easyui/themes/icon.css">
 <link rel="stylesheet" type="text/css" href="${staticPath }/static/js/jquery-easyui/themes/color.css">
 <link rel="stylesheet" type="text/css" href="${staticPath }/static/style/css/common.css?v=${version}">

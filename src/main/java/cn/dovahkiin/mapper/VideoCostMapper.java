@@ -16,6 +16,7 @@ import java.util.Map;
  */
 public interface VideoCostMapper extends BaseMapper<VideoCost> {
     int insertMany(List<VideoCost> videoCostList);
-    List<VideoCost> selectWithCount(Map<String , Object> map);
-    List<VideoCost> countByCustomName();
+    List<VideoCost> selectWithCount(Map<String ,Object> map);
+    double selectMaxConsumption();
+//    List<VideoCost> countByCustomName();
 }

@@ -20,12 +20,17 @@ public class DaoTest  extends BaseTest{
         //videoCost.setCustomerName("%白菜挖挖菌%");
         Map map = new HashMap(5);
         map.put("videoCost",videoCost);
-//        List<VideoCost> list= videoCostMapper.selectWithCount(map);
-        List<VideoCost> list= videoCostMapper.countByCustomName();
-        EntityWrapper<VideoCost> ew = new EntityWrapper<VideoCost>(videoCost);
-//        List<VideoCost> list= videoCostMapper.selectList(ew);
+        map.put("orderBy","");
+        map.put("asc","asc");
+        map.put("offset",1);
+        map.put("limit",100);
+        List<VideoCost> list= videoCostMapper.selectWithCount(map);
         Iterator is =list.iterator();
         while (is.hasNext()) System.out.println(is.next());
-
+    }
+    @Test
+    public void seleectMaxCou(){
+        double max = videoCostMapper.selectMaxConsumption();
+        logger.info("MaxConsumption = "+max);
     }
 }

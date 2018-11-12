@@ -1,15 +1,18 @@
 package cn.dovahkiin.model;
 
 //import com.baomidou.mybatisplus.enums.IdType;
+import java.util.ArrayList;
 import java.util.Date;
 //import com.baomidou.mybatisplus.annotations.TableId;
 //import com.baomidou.mybatisplus.annotations.TableField;
 //import com.baomidou.mybatisplus.activerecord.Model;
 //import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>
@@ -20,10 +23,13 @@ import java.io.Serializable;
  * @since 2018-10-15
  */
 //@TableName("video_cost")
-public class VideoCost  implements Serializable {
+public class VideoCost  extends Model<VideoCost> {
 
-    private static final long serialVersionUID = 1L;
-
+    private static final long serialVersionUID = 2L;
+	@Override
+	protected Serializable pkVal() {
+		return this.id;
+	}
     /**
      * 主键id
      */
@@ -32,86 +38,77 @@ public class VideoCost  implements Serializable {
     /**
      * 更新时间
      */
-//	@TableField("update_time")
+	@TableField("update_time")
 	private Date updateTime;
     /**
      * 创建时间
      */
-//	@TableField("create_time")
+	@TableField("create_time")
 	private Date createTime;
     /**
      * 是否删除
      */
-//	@TableField("delete_flag")
+	@TableField("delete_flag")
 	private Integer deleteFlag;
     /**
      * 数据日期
      */
 
-//	@TableField("recored_date")
+	@TableField("recored_date")
 	private Date recoredDate;
     /**
      * 业务部
      */
-//	@TableField("business_department")
-	private String businessDepartment;
+	private Organization businessDepartment;
     /**
      * 产品类型
      */
-//	@TableField("product_type")
-	private String productType;
+
+	private ProductType productType;
     /**
      * 客户名
      */
-//	@TableField("customer_name")
-	private String customerName;
+	private Customer customer;
     /**
      * 行业
      */
-	private String industry;
+	private Industry industry;
     /**
      * 需求部门
      */
-//	@TableField("demand_sector")
-	private String demandSector;
+	private Organization demandSector;
     /**
      * 优化师
      */
-	private String optimizer;
+	private Optimizer optimizer;
     /**
      * 视频类型
      */
-//	@TableField("video_type")
-	private String videoType;
+	private VideoType videoType;
     /**
      * 成片日期
      */
-//	@TableField("complete_date")
+	@TableField("complete_date")
 	private Date completeDate;
     /**
      * 创意
      */
-	private String originality;
+	private Originality originality;
     /**
      * 摄像
      */
-	private String photographer;
+	private Photographer photographer;
     /**
      * 剪辑
      */
-	private String editor;
+	private Editor editor;
     /**
      * 演员1
      */
-	private String performer1;
-    /**
-     * 演员2
-     */
-	private String performer2;
-    /**
-     * 演员3
-     */
-	private String performer3;
+    private Performer performer1;
+	private Performer performer2;
+	private Performer performer3;
+
     /**
      * 当日消耗
      */
@@ -198,59 +195,59 @@ public class VideoCost  implements Serializable {
 		this.recoredDate = recoredDate;
 	}
 
-	public String getBusinessDepartment() {
+	public Organization getBusinessDepartment() {
 		return businessDepartment;
 	}
 
-	public void setBusinessDepartment(String businessDepartment) {
+	public void setBusinessDepartment(Organization businessDepartment) {
 		this.businessDepartment = businessDepartment;
 	}
 
-	public String getProductType() {
+	public ProductType getProductType() {
 		return productType;
 	}
 
-	public void setProductType(String productType) {
+	public void setProductType(ProductType productType) {
 		this.productType = productType;
 	}
 
-	public String getCustomerName() {
-		return customerName;
+	public Customer getCustomer() {
+		return customer;
 	}
 
-	public void setCustomerName(String customerName) {
-		this.customerName = customerName;
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
 	}
 
-	public String getIndustry() {
+	public Industry getIndustry() {
 		return industry;
 	}
 
-	public void setIndustry(String industry) {
+	public void setIndustry(Industry industry) {
 		this.industry = industry;
 	}
 
-	public String getDemandSector() {
+	public Organization getDemandSector() {
 		return demandSector;
 	}
 
-	public void setDemandSector(String demandSector) {
+	public void setDemandSector(Organization demandSector) {
 		this.demandSector = demandSector;
 	}
 
-	public String getOptimizer() {
+	public Optimizer getOptimizer() {
 		return optimizer;
 	}
 
-	public void setOptimizer(String optimizer) {
+	public void setOptimizer(Optimizer optimizer) {
 		this.optimizer = optimizer;
 	}
 
-	public String getVideoType() {
+	public VideoType getVideoType() {
 		return videoType;
 	}
 
-	public void setVideoType(String videoType) {
+	public void setVideoType(VideoType videoType) {
 		this.videoType = videoType;
 	}
 
@@ -262,51 +259,51 @@ public class VideoCost  implements Serializable {
 		this.completeDate = completeDate;
 	}
 
-	public String getOriginality() {
+	public Originality getOriginality() {
 		return originality;
 	}
 
-	public void setOriginality(String originality) {
+	public void setOriginality(Originality originality) {
 		this.originality = originality;
 	}
 
-	public String getPhotographer() {
+	public Photographer getPhotographer() {
 		return photographer;
 	}
 
-	public void setPhotographer(String photographer) {
+	public void setPhotographer(Photographer photographer) {
 		this.photographer = photographer;
 	}
 
-	public String getEditor() {
+	public Editor getEditor() {
 		return editor;
 	}
 
-	public void setEditor(String editor) {
+	public void setEditor(Editor editor) {
 		this.editor = editor;
 	}
 
-	public String getPerformer1() {
+	public Performer getPerformer1() {
 		return performer1;
 	}
 
-	public void setPerformer1(String performer1) {
+	public void setPerformer1(Performer performer1) {
 		this.performer1 = performer1;
 	}
 
-	public String getPerformer2() {
+	public Performer getPerformer2() {
 		return performer2;
 	}
 
-	public void setPerformer2(String performer2) {
+	public void setPerformer2(Performer performer2) {
 		this.performer2 = performer2;
 	}
 
-	public String getPerformer3() {
+	public Performer getPerformer3() {
 		return performer3;
 	}
 
-	public void setPerformer3(String performer3) {
+	public void setPerformer3(Performer performer3) {
 		this.performer3 = performer3;
 	}
 
@@ -334,11 +331,6 @@ public class VideoCost  implements Serializable {
 		this.cumulativeConsumptionRanking = cumulativeConsumptionRanking;
 	}
 
-//	@Override
-//	protected Serializable pkVal() {
-//		return this.id;
-//	}
-
 	@Override
 	public String toString() {
 		return "VideoCost{" +
@@ -347,23 +339,26 @@ public class VideoCost  implements Serializable {
 				", createTime=" + createTime +
 				", deleteFlag=" + deleteFlag +
 				", recoredDate=" + recoredDate +
-				", businessDepartment='" + businessDepartment + '\'' +
-				", productType='" + productType + '\'' +
-				", customerName='" + customerName + '\'' +
-				", industry='" + industry + '\'' +
-				", demandSector='" + demandSector + '\'' +
-				", optimizer='" + optimizer + '\'' +
-				", videoType='" + videoType + '\'' +
+				", businessDepartment=" + businessDepartment +
+				", productType=" + productType +
+				", customer=" + customer +
+				", industry=" + industry +
+				", demandSector=" + demandSector +
+				", optimizer=" + optimizer +
+				", videoType=" + videoType +
 				", completeDate=" + completeDate +
-				", originality='" + originality + '\'' +
-				", photographer='" + photographer + '\'' +
-				", editor='" + editor + '\'' +
-				", performer1='" + performer1 + '\'' +
-				", performer2='" + performer2 + '\'' +
-				", performer3='" + performer3 + '\'' +
-				", consumption='" + consumption + '\'' +
-				", cumulativeConsumption='" + cumulativeConsumption + '\'' +
-				", cumulativeConsumptionRanking='" + cumulativeConsumptionRanking + '\'' +
+				", originality=" + originality +
+				", photographer=" + photographer +
+				", editor=" + editor +
+				", performer1=" + performer1 +
+				", performer2=" + performer2 +
+				", performer3=" + performer3 +
+				", consumption=" + consumption +
+				", cumulativeConsumption=" + cumulativeConsumption +
+				", cumulativeConsumptionRanking=" + cumulativeConsumptionRanking +
+				", cumulativeConsumptionByPro=" + cumulativeConsumptionByPro +
+				", cumulativeConsumptionRankingByProglam=" + cumulativeConsumptionRankingByProglam +
 				'}';
 	}
+
 }

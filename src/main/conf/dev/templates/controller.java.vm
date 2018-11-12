@@ -48,7 +48,7 @@ public class ${table.controllerName} {
     public PageInfo dataGrid(${entity} ${table.entityPath}, Integer page, Integer rows, String sort,String order) {
         PageInfo pageInfo = new PageInfo(page, rows, sort, order);
         EntityWrapper<${entity}> ew = new EntityWrapper<${entity}>(${table.entityPath});
-        Page<${entity}> pages = getPage(pageInfo);
+        Page<${entity}> pages = getPage(page, rows, sort, order);
         pages = ${table.entityPath}Service.selectPage(pages, ew);
         pageInfo.setRows(pages.getRecords());
         pageInfo.setTotal(pages.getTotal());

@@ -3,6 +3,15 @@
 <script type="text/javascript">
     var videoCostDataGrid;
     $(function () {
+        console.log(getCookie("MaxConsumption"));
+        $("#ConsumptionRange").slider({
+            max:getCookie("MaxConsumption"),
+            tipFormatter: function(value){
+                return '￥'+value;
+            }
+        });
+
+
         videoCostDataGrid = $('#videoCostDataGrid').datagrid({
             url: '${path}/videoCost/dataGrid',
             striped: true,
@@ -36,34 +45,45 @@
                 //     }
                 // },
                 {
-                    width: '80',
-                    title: '日期',
-                    field: 'recoredDate',
+                    width: '140',
+                    title: '客户名编号',
+                    field: 'customerCode',
                     sortable: true,
                     formatter: function (value, row, index) {
-                        return getCommonDate(value);
+                        if( row.customer!=null )return row.customer.code;
+                        return "";
                     }
-                },
-                {
-                    width: '80',
-                    title: '业务部',
-                    field: 'businessDepartment',
-                    sortable: true
-                },
-                {
-                    width: '80',
-                    title: '产品类型',
-                    field: 'productType',
-                    sortable: true
                 },
                 {
                     width: '140',
                     title: '客户名',
-                    field: 'customerName',
-                    sortable: true
+                    field: 'customer',
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        if(value!=null)return value.name;
+                        return "";
+                    }
                 },
-
-
+                {
+                    width: '80',
+                    title: '需求部门',
+                    field: 'demandSector',
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        if(value!=null)return value.name;
+                        return "";
+                    }
+                },
+                {
+                    width: '60',
+                    title: '优化师',
+                    field: 'optimizer',
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        if(value!=null)return value.name;
+                        return "";
+                    }
+                },
                 {
                     width: '80',
                     title: '当日消耗',
@@ -72,43 +92,37 @@
                 },
                 {
                     width: '80',
+                    title: '数据日期',
+                    field: 'recoredDate',
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        return getCommonDate(value);
+                    }
+                },
+                {
+                    width: '80',
                     title: '累计消耗',
-                    field: 'cumulativeConsumption',
+                    field: 'cumulativeConsumptionByPro',
                     sortable: true
                 },
                 {
                     width: '80',
-                    title: '程序统计累计消耗',
-                    field: 'cumulativeConsumptionByPro',
-                    sortable: false
-                },
-                {
-                    width: '80',
-                    title: '程序统计累计消耗',
+                    title: '累计消耗排名',
                     field: 'cumulativeConsumptionRankingByProglam',
-                    sortable: false
+                    sortable: true
                 },
-
+                // {
+                //     width: '80',
+                //     title: '业务部',
+                //     field: 'businessDepartment',
+                //     sortable: true,
+                //     formatter: function (value, row, index) {
+                //         if(value!=null)return value.name;
+                //         return "";
+                //     }
+                // },
             ]],
             columns: [[
-                {
-                    width: '80',
-                    title: '行业',
-                    field: 'industry',
-                    sortable: true
-                },
-                {
-                    width: '80',
-                    title: '需求部门',
-                    field: 'demandSector',
-                    sortable: true
-                },
-                {
-                    width: '100',
-                    title: '视频类型',
-                    field: 'videoType',
-                    sortable: true
-                },
                 {
                     width: '80',
                     title: '成片日期',
@@ -120,45 +134,94 @@
                 },
                 {
                     width: '60',
-                    title: '优化师',
-                    field: 'optimizer',
-                    sortable: true
-                },
-                {
-                    width: '60',
                     title: '创意',
                     field: 'originality',
-                    sortable: true
-                },
-                {
-                    width: '60',
-                    title: '摄像',
-                    field: 'photographer',
-                    sortable: true
-                },
-                {
-                    width: '60',
-                    title: '剪辑',
-                    field: 'editor',
-                    sortable: true
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        if(value!=null)return value.name;
+                        return "";
+                    }
                 },
                 {
                     width: '60',
                     title: '演员1',
                     field: 'performer1',
-                    sortable: true
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        if(value!=null)return value.name;
+                        return "";
+                    }
                 },
                 {
                     width: '60',
                     title: '演员2',
                     field: 'performer2',
-                    sortable: true
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        if(value!=null)return value.name;
+                        return "";
+                    }
                 },
                 {
                     width: '60',
                     title: '演员3',
                     field: 'performer3',
-                    sortable: true
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        if(value!=null)return value.name;
+                        return "";
+                    }
+                },
+                {
+                    width: '60',
+                    title: '摄像',
+                    field: 'photographer',
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        if(value!=null)return value.name;
+                        return "";
+                    }
+                },
+                {
+                    width: '60',
+                    title: '剪辑',
+                    field: 'editor',
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        if(value!=null)return value.name;
+                        return "";
+                    }
+                },
+                {
+                    width: '80',
+                    title: '产品类型',
+                    field: 'productType',
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        if(value!=null)return value.name;
+                        return "";
+                    }
+                },
+
+                {
+                    width: '80',
+                    title: '行业',
+                    field: 'industry',
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        if(value!=null)return value.name;
+                        return "";
+                    }
+                },
+                {
+                    width: '100',
+                    title: '视频类型',
+                    field: 'videoType',
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        if(value!=null)return value.name;
+                        return "";
+                    }
                 },
                 {
                     field: 'action',
@@ -243,7 +306,6 @@
         });
     }
 
-
     /**
      * 编辑
      */
@@ -271,7 +333,6 @@
         });
     }
 
-
     /**
      * 删除
      */
@@ -298,7 +359,6 @@
         });
     }
 
-
     /**
      * 清除
      */
@@ -316,11 +376,22 @@
 </script>
 
 <div class="easyui-layout" data-options="fit:true,border:false">
-    <div data-options="region:'north',border:false" style="height: 50px; overflow: hidden;background-color: #fff;">
+    <div data-options="region:'north',border:false" style="height: 250px; overflow: hidden;background-color: #fff;">
         <form id="videoCostSearchForm">
             <table style="margin: 10px" >
             <tr>
-                <th>客户名称:</th><td><input name="customerName_like" placeholder="客户名称"/></td>
+                <td>
+                    <input id="ConsumptionRange" name="ConsumptionRange"  class="easyui-slider" data-options="min:0,range:true,showTip:true" style="width:300px" />
+                </td>
+            </tr>
+            <tr>
+                <th>客户名称:</th><td><input name="customer.name" placeholder="客户名称"/></td>
+                <th>需求部门:</th><td><input name="demandSector.name" placeholder="需求部门"/></td>
+                <th>优化师:</th><td><input name="optimizer.name" placeholder="优化师"/></td>
+                <th>当日消耗:</th>
+                <td>
+                    <input type="text" class="easyui-numberbox" value="0" data-options="min:0,precision:2"/> ------ <input type="text" class="easyui-numberbox" value="0" data-options="min:0,precision:2"/>
+                </td>
                 <th>数据日期:</th>
                 <td><input name="recoredDate" value="${videoCost.recoredDate}" type="text"  placeholder="请输入数据日期" class="easyui-datebox span2" data-options="prompt:'数据日期',required:false,invalidMessage:'日期格式：年-月-日'" /></td>
                 <td>

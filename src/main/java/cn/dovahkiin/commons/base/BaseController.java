@@ -1,12 +1,15 @@
 package cn.dovahkiin.commons.base;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletRegistration;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import cn.dovahkiin.commons.converter.DateConverter;
 import cn.dovahkiin.commons.result.PageInfo;
@@ -15,6 +18,9 @@ import cn.dovahkiin.commons.shiro.ShiroUser;
 import cn.dovahkiin.commons.utils.Charsets;
 import cn.dovahkiin.commons.utils.StringEscapeEditor;
 import cn.dovahkiin.commons.utils.URLUtils;
+import cn.dovahkiin.model.VideoCost;
+import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.service.IService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
@@ -214,5 +220,25 @@ public abstract class BaseController {
 		headers.setContentDispositionFormData("attachment", fileName);
 		return new ResponseEntity<Resource>(resource, headers, status);
 	}
+
+    protected  <T extends Model> Object add(@Valid T model,IService<T> iService) {
+        try {
+            Method setCreateTime = model.getClass().getMethod("setCreateTime") ;
+            Method setUpdateTime = model.getClass().getMethod("setUpdateTime") ;
+            Method setDeleteFlag = model.getClass().getMethod("setDeleteFlag") ;
+            setCreateTime.invoke(new Date());
+            setUpdateTime.invoke(new Date());
+            setDeleteFlag.invoke(0);
+            boolean b = iService.insert(model);
+            if (b) return renderSuccess("添加成功！");
+        }catch (NoSuchMethodException e){
+
+        }catch (InvocationTargetException e){
+
+        }catch (IllegalAccessException e){
+
+        }
+        return renderError("添加失败！");
+    }
 
 }

@@ -1,5 +1,7 @@
 package cn.dovahkiin.test.base;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,7 @@ public abstract class BaseTest {
 	protected MockMvc mockMvc;
 	protected MockHttpServletRequest request;
 	protected MockHttpServletResponse response;
+	protected Log logger = LogFactory.getLog(this.getClass());
 
 	@Autowired protected WebApplicationContext wac;
 

@@ -44,6 +44,13 @@
                 <td><input name="name" type="text" value="${organization.name}" placeholder="请输入部门名称" class="easyui-validatebox" data-options="required:true" ></td>
             </tr>
             <tr>
+                <td>部门简称</td>
+                <td colspan="3" >
+                    <input name="simpleNames" type="text" value="${organization.simpleNames}" placeholder="请输入部门简称" class="easyui-validatebox" data-options="required:false" >
+                </td>
+            </tr>
+
+            <tr>
                 <td>排序</td>
                 <td><input name="seq"  class="easyui-numberspinner" value="${organization.seq}" style="widtd: 140px; height: 29px;" required="required" data-options="editable:false"></td>
                 <td>菜单图标</td>

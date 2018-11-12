@@ -1,5 +1,6 @@
 package cn.dovahkiin.commons.utils;
 
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -99,4 +100,19 @@ public class StringUtils extends org.springframework.util.StringUtils {
         boolean isDouble = Pattern.compile("^-?([1-9]\\d*\\.\\d*|0\\.\\d*[1-9]\\d*|0?\\.0+|0)$").matcher(str).find();
         return  isDouble;
     }
+    public static String getDateCode(){
+        StringBuffer newCode= new StringBuffer();
+        Calendar calendar =Calendar.getInstance();
+        newCode
+                .append(calendar.get(Calendar.YEAR))
+                .append(calendar.get(Calendar.MONTH)+1)
+                .append(calendar.get(Calendar.DATE))
+                .append(calendar.get(Calendar.HOUR_OF_DAY))
+                .append(calendar.get(Calendar.MINUTE))
+                .append(calendar.get(Calendar.SECOND))
+                .append(calendar.get(Calendar.DAY_OF_WEEK));
+        return newCode.toString();
+    }
+
+
 }

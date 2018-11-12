@@ -3,212 +3,364 @@
 <mapper namespace="cn.dovahkiin.mapper.VideoCostMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="cn.dovahkiin.model.VideoCost">
+    <resultMap id="BaseResultMap" type="cn.dovahkiin.model.VideoCost" >
         <id column="id" property="id"/>
         <result column="update_time" property="updateTime"/>
         <result column="create_time" property="createTime"/>
         <result column="delete_flag" property="deleteFlag"/>
         <result column="recored_date" property="recoredDate"/>
-        <result column="business_department" property="businessDepartment"/>
-        <result column="product_type" property="productType"/>
-        <result column="customer_name" property="customerName"/>
-        <result column="industry" property="industry"/>
-        <result column="demand_sector" property="demandSector"/>
-        <result column="optimizer" property="optimizer"/>
-        <result column="video_type" property="videoType"/>
         <result column="complete_date" property="completeDate"/>
-        <result column="originality" property="originality"/>
-        <result column="photographer" property="photographer"/>
-        <result column="editor" property="editor"/>
-        <result column="performer1" property="performer1"/>
-        <result column="performer2" property="performer2"/>
-        <result column="performer3" property="performer3"/>
         <result column="consumption" property="consumption"/>
         <result column="cumulative_consumption" property="cumulativeConsumption"/>
         <result column="cumulative_consumption_ranking" property="cumulativeConsumptionRanking"/>
+        <association property="productType" javaType="cn.dovahkiin.model.ProductType" columnPrefix="product_type_">
+            <id column="id" property="id"/>
+            <result column="name" property="name"/>
+            <result column="code" property="code"/>
+            <result column="update_time" property="updateTime"/>
+            <result column="create_time" property="createTime"/>
+            <result column="delete_flag" property="deleteFlag"/>
+        </association>
+        <association property="customer" javaType="cn.dovahkiin.model.Customer" columnPrefix="customer_">
+            <id column="id" property="id"/>
+            <result column="name" property="name"/>
+            <result column="code" property="code"/>
+            <result column="update_time" property="updateTime"/>
+            <result column="create_time" property="createTime"/>
+            <result column="delete_flag" property="deleteFlag"/>
+        </association>
+        <association property="industry" javaType="cn.dovahkiin.model.Industry" columnPrefix="industry_">
+            <id column="id" property="id"/>
+            <result column="name" property="name"/>
+            <result column="code" property="code"/>
+            <result column="update_time" property="updateTime"/>
+            <result column="create_time" property="createTime"/>
+            <result column="delete_flag" property="deleteFlag"/>
+        </association>
+        <association property="demandSector" javaType="cn.dovahkiin.model.Organization" columnPrefix="demand_sector_">
+            <id column="id" property="id"/>
+            <result column="name" property="name"/>
+            <result column="simple_names" property="simpleNames"/>
+            <result column="address" property="address"/>
+            <result column="code" property="code"/>
+            <result column="icon" property="icon"/>
+            <result column="pid" property="pid"/>
+            <result column="seq" property="seq"/>
+            <result column="create_time" property="createTime"/>
+        </association>
+        <association property="optimizer" javaType="cn.dovahkiin.model.Optimizer" columnPrefix="optimizer_">
+            <id column="id" property="id"/>
+            <result column="name" property="name"/>
+            <result column="code" property="code"/>
+            <result column="update_time" property="updateTime"/>
+            <result column="create_time" property="createTime"/>
+            <result column="delete_flag" property="deleteFlag"/>
+        </association>
+        <association property="videoType" javaType="cn.dovahkiin.model.VideoType" columnPrefix="video_type_">
+            <id column="id" property="id"/>
+            <result column="name" property="name"/>
+            <result column="code" property="code"/>
+            <result column="update_time" property="updateTime"/>
+            <result column="create_time" property="createTime"/>
+            <result column="delete_flag" property="deleteFlag"/>
+        </association>
+        <association property="originality" javaType="cn.dovahkiin.model.Originality" columnPrefix="originality_">
+            <id column="id" property="id"/>
+            <result column="name" property="name"/>
+            <result column="code" property="code"/>
+            <result column="update_time" property="updateTime"/>
+            <result column="create_time" property="createTime"/>
+            <result column="delete_flag" property="deleteFlag"/>
+        </association>
+        <association property="photographer" javaType="cn.dovahkiin.model.Photographer" columnPrefix="photographer_">
+            <id column="id" property="id"/>
+            <result column="name" property="name"/>
+            <result column="code" property="code"/>
+            <result column="update_time" property="updateTime"/>
+            <result column="create_time" property="createTime"/>
+            <result column="delete_flag" property="deleteFlag"/>
+        </association>
+        <association property="editor" javaType="cn.dovahkiin.model.Editor" columnPrefix="editor_">
+            <id column="id" property="id"/>
+            <result column="name" property="name"/>
+            <result column="code" property="code"/>
+            <result column="update_time" property="updateTime"/>
+            <result column="create_time" property="createTime"/>
+            <result column="delete_flag" property="deleteFlag"/>
+        </association>
+        <association property="businessDepartment" javaType="cn.dovahkiin.model.Organization"
+                     columnPrefix="business_department_">
+            <id column="id" property="id"/>
+            <result column="name" property="name"/>
+            <result column="simple_names" property="simpleNames"/>
+            <result column="address" property="address"/>
+            <result column="code" property="code"/>
+            <result column="icon" property="icon"/>
+            <result column="pid" property="pid"/>
+            <result column="seq" property="seq"/>
+            <result column="create_time" property="createTime"/>
+        </association>
+        <association property="performer1" javaType="cn.dovahkiin.model.Performer" columnPrefix="performer1_">
+            <id column="id" property="id" />
+            <result column="name" property="name" />
+            <result column="code" property="code" />
+            <result column="update_time" property="updateTime" />
+            <result column="create_time" property="createTime" />
+            <result column="delete_flag" property="deleteFlag" />
+        </association>
+        <association property="performer2" javaType="cn.dovahkiin.model.Performer" columnPrefix="performer2_">
+            <id column="id" property="id" />
+            <result column="name" property="name" />
+            <result column="code" property="code" />
+            <result column="update_time" property="updateTime" />
+            <result column="create_time" property="createTime" />
+            <result column="delete_flag" property="deleteFlag" />
+        </association>
+        <association property="performer3" javaType="cn.dovahkiin.model.Performer" columnPrefix="performer3_">
+            <id column="id" property="id" />
+            <result column="name" property="name" />
+            <result column="code" property="code" />
+            <result column="update_time" property="updateTime" />
+            <result column="create_time" property="createTime" />
+            <result column="delete_flag" property="deleteFlag" />
+        </association>
     </resultMap>
-    <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMapWithCount" type="cn.dovahkiin.model.VideoCost">
-        <id column="id" property="id"/>
-        <result column="update_time" property="updateTime"/>
-        <result column="create_time" property="createTime"/>
-        <result column="delete_flag" property="deleteFlag"/>
-        <result column="recored_date" property="recoredDate"/>
-        <result column="business_department" property="businessDepartment"/>
-        <result column="product_type" property="productType"/>
-        <result column="customer_name" property="customerName"/>
-        <result column="industry" property="industry"/>
-        <result column="demand_sector" property="demandSector"/>
-        <result column="optimizer" property="optimizer"/>
-        <result column="video_type" property="videoType"/>
-        <result column="complete_date" property="completeDate"/>
-        <result column="originality" property="originality"/>
-        <result column="photographer" property="photographer"/>
-        <result column="editor" property="editor"/>
-        <result column="performer1" property="performer1"/>
-        <result column="performer2" property="performer2"/>
-        <result column="performer3" property="performer3"/>
-        <result column="consumption" property="consumption"/>
-        <result column="cumulative_consumption" property="cumulativeConsumption"/>
-        <result column="cumulative_consumption_ranking" property="cumulativeConsumptionRanking"/>
+    <resultMap id="BaseResultMapWithCount" type="cn.dovahkiin.model.VideoCost" extends="BaseResultMap">
         <result column="cumulativeConsumptionByPro" property="cumulativeConsumptionByPro"/>
         <result column="cumulativeConsumptionRankingByProglam" property="cumulativeConsumptionRankingByProglam"/>
     </resultMap>
-    <sql id="Base_Column_List">
-        id,
-        update_time,
-        create_time ,
-        delete_flag ,
-        recored_date ,
-        business_department ,
-        product_type ,
-        customer_name ,
-        industry,
-        demand_sector ,
-        optimizer,
-        video_type ,
-        complete_date ,
-        originality,
-        photographer,
-        editor,
-        performer1,
-        performer2,
-        performer3,
-        consumption,
-        cumulative_consumption,
-        cumulative_consumption_ranking
-    </sql>
-    <insert id="insertMany" parameterType="java.util.List">
+    <insert id="insertMany" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         insert into `video_cost`
         (
-        create_time,
-        delete_flag,
-        recored_date,
-        business_department,
-        product_type,
-        customer_name,
-        industry,
-        demand_sector,
-        optimizer,
-        video_type,
-        complete_date,
-        originality,
-        photographer,
-        editor,
-        performer1,
-        performer2,
-        performer3,
-        consumption,
-        cumulative_consumption,
-        cumulative_consumption_ranking
+        create_time,delete_flag, recored_date, business_department_id, product_type_id, customer_id,
+        industry_id,demand_sector_id,optimizer_id, video_type_id,complete_date,
+        originality_id,
+        photographer_id,
+        editor_id,
+        performer1_id,
+        performer2_id,
+        performer3_id,
+        consumption
         )
         values
         <foreach collection="list" item="videoCost" index="index" separator=",">
             (
-            #{videoCost.createTime},
-            #{videoCost.deleteFlag},
-            #{videoCost.recoredDate},
-            #{videoCost.businessDepartment},
-            #{videoCost.productType},
-            #{videoCost.customerName},
-            #{videoCost.industry},
-            #{videoCost.demandSector},
-            #{videoCost.optimizer},
-            #{videoCost.videoType},
-            #{videoCost.completeDate},
-            #{videoCost.originality},
-            #{videoCost.photographer},
-            #{videoCost.editor},
-            #{videoCost.performer1},
-            #{videoCost.performer2},
-            #{videoCost.performer3},
-            #{videoCost.consumption},
-            #{videoCost.cumulativeConsumption},
-            #{videoCost.cumulativeConsumptionRanking}
+            #{videoCost.createTime}, #{videoCost.deleteFlag},#{videoCost.recoredDate},
+            #{videoCost.businessDepartment.id},#{videoCost.productType.id},
+            #{videoCost.customer.id},#{videoCost.industry.id},
+            #{videoCost.demandSector.id},#{videoCost.optimizer.id},#{videoCost.videoType.id},#{videoCost.completeDate},#{videoCost.originality.id},#{videoCost.photographer.id},#{videoCost.editor.id},
+            #{videoCost.performer1.id},
+            #{videoCost.performer2.id},
+            #{videoCost.performer3.id},
+            <choose>
+                <when test="videoCost.consumption !=null">
+                    #{videoCost.consumption}
+                </when>
+                <otherwise>
+                    0
+                </otherwise>
+            </choose>
             )
         </foreach>
     </insert>
-
-    <select id="selectWithCount" resultMap="BaseResultMapWithCount" >
-      SELECT
+    <select id="selectWithCount" resultMap="BaseResultMapWithCount">
+        SELECT
         vc.id ,
         vc.update_time,
         vc.create_time ,
         vc.delete_flag ,
         vc.recored_date ,
-        vc.business_department ,
-        vc.product_type ,
-        vc.customer_name ,
-        vc.industry,
-        vc.demand_sector ,
-        vc.optimizer,
-        vc.video_type,
+        vc.business_department_id ,
+        vc.product_type_id ,
+        vc.customer_id ,
+        vc.industry_id,
+        vc.demand_sector_id ,
+        vc.optimizer_id,
+        vc.video_type_id,
         vc.complete_date ,
-        vc.originality,
-        vc.photographer,
-        vc.editor,
-        vc.performer1,
-        vc.performer2,
-        vc.performer3,
+        vc.originality_id,
+        vc.photographer_id,
+        vc.editor_id,
+        vc.performer1_id,
+        vc.performer2_id,
+        vc.performer3_id,
         vc.consumption,
-        vc.cumulative_consumption ,
-        vc.cumulative_consumption_ranking ,
         cumulativeConsumptionByPro,
-        cumulativeConsumptionRankingByProglam
-      FROM video_cost vc
-      left join (
-          SELECT
-	          customer_name,
-	          cumulativeConsumptionByPro,
-	          @rownum :=@rownum + 1 AS cumulativeConsumptionRankingByProglam
-              FROM
-	        (
-		    SELECT
-			      customer_name,
-			      SUM(consumption) AS cumulativeConsumptionByPro
-		    FROM
-			  video_cost
-		    WHERE
-			    consumption > 0
-                and delete_flag = 0
-		    GROUP BY
-			    customer_name
-		    ORDER BY
-			    cumulativeConsumptionByPro DESC
-	        ) t1,
-	      (SELECT @rownum := 0) rownum
-    ) pm on vc.customer_name = pm.customer_name
+        cumulativeConsumptionRankingByProglam,
 
+        pty.`name` as product_type_name,
+        pty.`code` as product_type_code,
+        pty.update_time as product_type_update_time,
+        pty.create_time as product_type_create_time,
+        pty.delete_flag as product_type_delete_flag,
+
+        cus.`name` as customer_name,
+        cus.`code` as customer_code,
+        cus.update_time as customer_update_time,
+        cus.create_time as customer_create_time,
+        cus.delete_flag as customer_delete_flag,
+
+        ind.`name` as industry_name,
+        ind.`code` as industry_code,
+        ind.update_time as industry_update_time,
+        ind.create_time as industry_create_time,
+        ind.delete_flag as industry_delete_flag,
+
+        dem.`name` as demand_sector_name,
+        dem.`code` as demand_sector_code,
+        dem.simple_names as demand_sector_simple_names,
+        dem.create_time as demand_sector_create_time,
+
+        opt.`name` as optimizer_name,
+        opt.`code` as optimizer_code,
+        opt.update_time as optimizer_update_time,
+        opt.create_time as optimizer_create_time,
+        opt.delete_flag as optimizer_delete_flag,
+
+        vdt.`name` as video_type_name,
+        vdt.`code` as video_type_code,
+        vdt.update_time as video_type_update_time,
+        vdt.create_time as video_type_create_time,
+        vdt.delete_flag as video_type_delete_flag,
+
+        ori.`name` as originality_name,
+        ori.`code` as originality_code,
+        ori.update_time as originality_update_time,
+        ori.create_time as originality_create_time,
+        ori.delete_flag as originality_delete_flag,
+
+        pho.`name` as photographer_name,
+        pho.`code` as photographer_code,
+        pho.update_time as photographer_update_time,
+        pho.create_time as photographer_create_time,
+        ori.delete_flag as photographer_delete_flag,
+
+        edi.`name` as editor_name,
+        edi.`code` as editor_code,
+        edi.update_time as editor_update_time,
+        edi.create_time as editor_create_time,
+        edi.delete_flag as editor_delete_flag,
+
+        bdi.`name` as business_department_name,
+        bdi.`code` as business_department_code,
+        bdi.simple_names as business_department_simple_names,
+        bdi.create_time as business_department_create_time,
+
+        per1.`name` as performer1_name,
+        per1.`code` as performer1_code,
+        per1.update_time as performer1_update_time,
+        per1.create_time as performer1_create_time,
+        per1.delete_flag as performer1_delete_flag,
+
+        per2.`name` as performer2_name,
+        per2.`code` as performer2_code,
+        per2.update_time as performer2_update_time,
+        per2.create_time as performer2_create_time,
+        per2.delete_flag as performer3_delete_flag,
+
+        per3.`name` as performer3_name,
+        per3.`code` as performer3_code,
+        per3.update_time as performer3_update_time,
+        per3.create_time as performer3_create_time,
+        per3.delete_flag as performer3_delete_flag
+
+        FROM video_cost vc
+        left join (
+        SELECT
+        customer_id,cumulativeConsumptionByPro,@rownum :=@rownum + 1 AS cumulativeConsumptionRankingByProglam
+        FROM
+        (
+        SELECT
+        customer_id,
+        SUM(consumption) AS cumulativeConsumptionByPro
+        FROM video_cost
+        WHERE consumption > 0 and delete_flag = 0
+        GROUP BY customer_id
+        ORDER BY cumulativeConsumptionByPro DESC
+        ) t1,
+        (SELECT @rownum := 0) rownum
+        ) pm on vc.customer_id = pm.customer_id
+        left join product_type pty on pty.id = vc.product_type_id
+        left join customer cus on cus.id = vc.customer_id
+        left join industry ind on ind.id = vc.industry_id
+        left join organization dem on dem.id = vc.demand_sector_id
+        left join optimizer opt on opt.id = vc.optimizer_id
+        left join video_type vdt on vdt.id = vc.video_type_id
+        left join originality ori on ori.id = vc.originality_id
+        left join photographer pho on pho.id = vc.photographer_id
+        left join editor edi on edi.id = vc.editor_id
+        left join organization bdi on bdi.id = vc.business_department_id
+        LEFT JOIN performer per1 ON per1.id = vc.performer1_id
+        LEFT JOIN performer per2 ON per2.id = vc.performer2_id
+        LEFT JOIN performer per3 ON per3.id = vc.performer3_id
         <where>
-            <if test="videoCost.customerName != null  and videoCost.customerName !='' ">
-                vc.customer_name like #{videoCost.customerName}
+            <if test="videoCost.customer != null  and videoCost.customer !='' ">
+                vc.customer_name like #{videoCost.customer}
             </if>
             <if test="videoCost.recoredDate != null">
                 AND vc.recored_date = #{videoCost.recoredDate}
             </if>
         </where>
-        ORDER BY  pm.cumulativeConsumptionByPro desc
-	</select>
-    <select id="countByCustomName"  resultMap="BaseResultMapWithCount" >
-         SELECT
-	          customer_name,
-	          cumulativeConsumptionByPro,
-	          @rownum :=@rownum + 1 AS cumulativeConsumptionRankingByProglam
-              FROM
-	        (
-		    SELECT
-			      customer_name,
-			      SUM(consumption) AS cumulativeConsumptionByPro
-		    FROM
-			  video_cost
-		    WHERE
-			    consumption > 0
-                and delete_flag = 0
-		    GROUP BY
-			    customer_name
-		    ORDER BY
-			    cumulativeConsumptionByPro DESC
-			     ) t1,
-	      (SELECT @rownum := 0) rownum
+        <if test="orderBy !='' " >
+            ORDER BY
+            <choose>
+                <when test="sort=='recoredDate'">vc.recored_date</when>
+                <when test="sort=='businessDepartment'">bdi.`name`</when>
+                <when test="sort=='productType'">pty.`name`</when>
+                <when test="sort=='customerCode'">cus.`code`</when>
+                <when test="sort=='customer'">cus.`name`</when>
+                <when test="sort=='consumption'">vc.consumption</when>
+                <when test="sort=='cumulativeConsumptionByPro'">pm.cumulativeConsumptionByPro</when>
+                <when test="sort=='cumulativeConsumptionRankingByProglam'">pm.cumulativeConsumptionByPro</when>
+                <when test="sort=='industry'">ind.`name`</when>
+                <when test="sort=='demandSector'">dem.`name`</when>
+                <when test="sort=='videoType'">vdt.`name`</when>
+                <when test="sort=='completeDate'">vc.complete_date</when>
+                <when test="sort=='optimizer'">opt.`name`</when>
+                <when test="sort=='originality'">ori.`name`</when>
+                <when test="sort=='photographer'">pho.`name`</when>
+                <when test="sort=='editor'">edi.`name`</when>
+                <when test="sort=='performer1'">per1.`name`</when>
+                <when test="sort=='performer2'">per2.`name`</when>
+                <when test="sort=='performer3'">per3.`name`</when>
+                <otherwise>pm.cumulativeConsumptionByPro</otherwise>
+            </choose>
+            <choose>
+                <when test="order=='asc'">asc</when>
+                <otherwise>desc</otherwise>
+            </choose>
+        </if>
+        <if test="offset!=null and limit!=null">
+            LIMIT #{offset} , #{limit}
+        </if>
+
+
+
     </select>
+
+    <select id="selectMaxConsumption" resultType="double" >
+        select max(consumption) from video_cost where delete_flag =0
+    </select>
+    <!--<select id="countByCustomName"  resultMap="BaseResultMapWithCount" >-->
+    <!--SELECT-->
+    <!--customer_name,-->
+    <!--cumulativeConsumptionByPro,-->
+    <!--@rownum :=@rownum + 1 AS cumulativeConsumptionRankingByProglam-->
+    <!--FROM-->
+    <!--(-->
+    <!--SELECT-->
+    <!--customer_name,-->
+    <!--SUM(consumption) AS cumulativeConsumptionByPro-->
+    <!--FROM-->
+    <!--video_cost-->
+    <!--WHERE-->
+    <!--consumption > 0-->
+    <!--and delete_flag = 0-->
+    <!--GROUP BY-->
+    <!--customer_name-->
+    <!--ORDER BY-->
+    <!--cumulativeConsumptionByPro DESC-->
+    <!--) t1,-->
+    <!--(SELECT @rownum := 0) rownum-->
+    <!--</select>-->
 </mapper>
