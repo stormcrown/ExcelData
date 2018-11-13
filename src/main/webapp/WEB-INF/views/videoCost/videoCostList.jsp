@@ -3,13 +3,27 @@
 <script type="text/javascript">
     var videoCostDataGrid;
     $(function () {
-        console.log(getCookie("MaxConsumption"));
+        var max = getCookie("MaxConsumption");
+        // if(max!=null && max.indexOf(".")>0  )max = max.substring(0,max.indexOf("."));
         $("#ConsumptionRange").slider({
-            max:getCookie("MaxConsumption"),
+            max:max,
             tipFormatter: function(value){
                 return '￥'+value;
             }
         });
+        $('#recoredDate_end').datebox({
+            onSelect: function(date){
+                var strat = $('recoredDate').datebox('getValue');
+
+            }
+        });
+        $('#recoredDate').datebox({
+            onSelect: function(date){
+                var end = $('#recoredDate_end').datebox('getValue');
+            }
+        });
+
+        //console.log($("#ConsumptionRange").slider("getValue"));
 
 
         videoCostDataGrid = $('#videoCostDataGrid').datagrid({
@@ -88,7 +102,8 @@
                     width: '80',
                     title: '当日消耗',
                     field: 'consumption',
-                    sortable: true
+                    sortable: true,
+                    align:'right'
                 },
                 {
                     width: '80',
@@ -103,7 +118,8 @@
                     width: '80',
                     title: '累计消耗',
                     field: 'cumulativeConsumptionByPro',
-                    sortable: true
+                    sortable: true,
+                    align:'right'
                 },
                 {
                     width: '80',
@@ -380,20 +396,23 @@
         <form id="videoCostSearchForm">
             <table style="margin: 10px" >
             <tr>
-                <td>
+                <td>日消耗范围：</td>
+                <td colspan="5" >
                     <input id="ConsumptionRange" name="ConsumptionRange"  class="easyui-slider" data-options="min:0,range:true,showTip:true" style="width:300px" />
                 </td>
             </tr>
             <tr>
-                <th>客户名称:</th><td><input name="customer.name" placeholder="客户名称"/></td>
-                <th>需求部门:</th><td><input name="demandSector.name" placeholder="需求部门"/></td>
-                <th>优化师:</th><td><input name="optimizer.name" placeholder="优化师"/></td>
-                <th>当日消耗:</th>
-                <td>
-                    <input type="text" class="easyui-numberbox" value="0" data-options="min:0,precision:2"/> ------ <input type="text" class="easyui-numberbox" value="0" data-options="min:0,precision:2"/>
-                </td>
+                <th>关键字:</th><td><input name="KeyWord" placeholder="关键字"/></td>
+                <%--<th>客户名称:</th><td><input name="customerName_like" placeholder="客户名称"/></td>--%>
+                <%--<th>需求部门:</th><td><input name="demandSector_like" placeholder="需求部门"/></td>--%>
+                <%--<th>优化师:</th><td><input name="optimizer_like" placeholder="优化师"/></td>--%>
                 <th>数据日期:</th>
-                <td><input name="recoredDate" value="${videoCost.recoredDate}" type="text"  placeholder="请输入数据日期" class="easyui-datebox span2" data-options="prompt:'数据日期',required:false,invalidMessage:'日期格式：年-月-日'" /></td>
+                <td>
+                    <input id="recoredDate" name="recoredDate_first"  sharedCalendar="#sc" value="${videoCost.recoredDate}" type="text"  placeholder="起始日期" class="easyui-datebox span2" data-options="prompt:'数据日期',required:false,invalidMessage:'日期格式：年-月-日'" />
+                    ------
+                    <input id="recoredDate_end" name="recoredDate_end" sharedCalendar="#sc"  type="text"  placeholder="结束日期" class="easyui-datebox span2" data-options="prompt:'数据日期',required:false,invalidMessage:'日期格式：年-月-日'" />
+                    <div id="sc" class="easyui-calendar"></div>
+                </td>
                 <td>
                     <a href="javascript:void(0);" class="easyui-linkbutton"
                        data-options="iconCls:'glyphicon-search icon-blue',plain:true" onclick="videoCostSearchFun();">查询</a>

@@ -386,7 +386,6 @@ public class VideoCostServiceImpl extends ServiceImpl<VideoCostMapper, VideoCost
         pages.setTotal(10000);
         return pages;
     }
-
     @Override
     public double selectMaxConsumption() {
         return videoCostMapper.selectMaxConsumption();

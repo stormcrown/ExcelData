@@ -48,21 +48,26 @@ public class VideoCostController extends BaseController {
     @RequiresPermissions("/videoCost/manager")
     public String manager(HttpServletResponse response) {
         double max = videoCostService.selectMaxConsumption();
-        Cookie cookie = new Cookie("MaxConsumption", (max*1.2+2000)+"");
+        if(max==0)max = 100;
+//        if((max+"") .indexOf(".")>0 )max++;
+        Cookie cookie = new Cookie("MaxConsumption", max+"");
         cookie.setPath("/");
-        response.addCookie(cookie);
+        addCookie(response,cookie);
         return "videoCost/videoCostList";
     }
     
     @PostMapping("/dataGrid")
     @ResponseBody
     @RequiresPermissions("/videoCost/dataGrid")
-    public PageInfo dataGrid(VideoCost videoCost, Integer page, Integer rows, String sort,String order ,String customerName_like) {
+    public PageInfo dataGrid(VideoCost videoCost, Integer page, Integer rows, String sort,String order ,
+                             String customerName_like,String  ConsumptionRange,String KeyWord
+    ) {
         PageInfo pageInfo = new PageInfo(page, rows, sort, order);
         Map map = new HashMap(5);
         map.put("videoCost",videoCost);
         map.put("order",order );
         map.put("sort",sort);
+        if(StringUtils.isNotBlank(KeyWord)) map.put("KeyWord",KeyWord );
 
         Page<VideoCost> pages = getPage(page, rows, sort, order);
 //        Page<VideoCost>

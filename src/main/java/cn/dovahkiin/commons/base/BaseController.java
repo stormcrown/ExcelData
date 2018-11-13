@@ -8,7 +8,9 @@ import java.util.Date;
 
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletRegistration;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import cn.dovahkiin.commons.converter.DateConverter;
@@ -220,15 +222,20 @@ public abstract class BaseController {
 		headers.setContentDispositionFormData("attachment", fileName);
 		return new ResponseEntity<Resource>(resource, headers, status);
 	}
-
+    /**
+     * 默认新增方法
+     * @param model 待新增对象
+     * @param  iService 对应类的服务组件
+     * @description 对象需要有 setCreateTime,setUpdateTime,setDeleteFlag 方法
+     * */
     protected  <T extends Model> Object add(@Valid T model,IService<T> iService) {
         try {
             Method setCreateTime = model.getClass().getMethod("setCreateTime") ;
             Method setUpdateTime = model.getClass().getMethod("setUpdateTime") ;
             Method setDeleteFlag = model.getClass().getMethod("setDeleteFlag") ;
-            setCreateTime.invoke(new Date());
-            setUpdateTime.invoke(new Date());
-            setDeleteFlag.invoke(0);
+            setCreateTime.invoke(model,new Date());
+            setUpdateTime.invoke(model,new Date());
+            setDeleteFlag.invoke(model,0);
             boolean b = iService.insert(model);
             if (b) return renderSuccess("添加成功！");
         }catch (NoSuchMethodException e){
@@ -239,6 +246,12 @@ public abstract class BaseController {
 
         }
         return renderError("添加失败！");
+    }
+    protected void addCookie(HttpServletResponse response,Cookie cookie){
+        response.addCookie(cookie);
+    }
+    protected void addCookies(HttpServletResponse response,Cookie[] cookies){
+        for(Cookie cook :cookies)addCookie(response,cook);
     }
 
 }
