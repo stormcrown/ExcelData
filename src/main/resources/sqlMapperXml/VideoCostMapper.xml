@@ -293,14 +293,43 @@
         LEFT JOIN performer per1 ON per1.id = vc.performer1_id
         LEFT JOIN performer per2 ON per2.id = vc.performer2_id
         LEFT JOIN performer per3 ON per3.id = vc.performer3_id
-        <where>
-            <if test="videoCost.customer != null  and videoCost.customer !='' ">
-                vc.customer_name like #{videoCost.customer}
+        where 1=1
+            <if test="KeyWord !=null" >
+                and
+                <foreach collection="KeyWord" item="keyW" separator="and" >
+                    (
+                    vc.consumption like #{keyW}
+                    or pty.`name` like #{keyW}
+                    or cus.`name` like #{keyW}
+                    or cus.`code` like #{keyW}
+                    or ind.`name` like #{keyW}
+                    or dem.`name` like #{keyW}
+                    or opt.`name` like #{keyW}
+                    or vdt.`name` like #{keyW}
+                    or ori.`name` like #{keyW}
+                    or ori.`name` like #{keyW}
+                    or pho.`name` like #{keyW}
+                    or edi.`name` like #{keyW}
+                    or bdi.`name` like #{keyW}
+                    or per1.`name` like #{keyW}
+                    or per2.`name` like #{keyW}
+                    or per3.`name` like #{keyW}
+                    )
+                </foreach>
             </if>
-            <if test="videoCost.recoredDate != null">
-                AND vc.recored_date = #{videoCost.recoredDate}
+            <if test="recoredDate_start!=null and recoredDate_end!=null">
+                and ( vc.recored_date between #{recoredDate_start} and #{recoredDate_end} )
             </if>
-        </where>
+            <if test="completeDate_start!=null and completeDate_end">
+                and ( vc.complete_date between #{completeDate_start} and #{completeDate_end} )
+            </if>
+            <if test="consumption_min!=null">
+                and vc.consumption &gt;=#{consumption_min}
+            </if>
+            <if test="consumption_max!=null">
+                and vc.consumption &lt;=#{consumption_max}
+            </if>
+
         <if test="orderBy !='' " >
             ORDER BY
             <choose>
@@ -336,6 +365,75 @@
 
 
 
+    </select>
+    <select id="selectCount" resultType="integer">
+        SELECT
+        count(vc.id)
+        FROM video_cost vc
+        left join (
+        SELECT
+        customer_id,cumulativeConsumptionByPro,@rownum :=@rownum + 1 AS cumulativeConsumptionRankingByProglam
+        FROM
+        (
+        SELECT
+        customer_id,
+        SUM(consumption) AS cumulativeConsumptionByPro
+        FROM video_cost
+        WHERE consumption > 0 and delete_flag = 0
+        GROUP BY customer_id
+        ORDER BY cumulativeConsumptionByPro DESC
+        ) t1,
+        (SELECT @rownum := 0) rownum
+        ) pm on vc.customer_id = pm.customer_id
+        left join product_type pty on pty.id = vc.product_type_id
+        left join customer cus on cus.id = vc.customer_id
+        left join industry ind on ind.id = vc.industry_id
+        left join organization dem on dem.id = vc.demand_sector_id
+        left join optimizer opt on opt.id = vc.optimizer_id
+        left join video_type vdt on vdt.id = vc.video_type_id
+        left join originality ori on ori.id = vc.originality_id
+        left join photographer pho on pho.id = vc.photographer_id
+        left join editor edi on edi.id = vc.editor_id
+        left join organization bdi on bdi.id = vc.business_department_id
+        LEFT JOIN performer per1 ON per1.id = vc.performer1_id
+        LEFT JOIN performer per2 ON per2.id = vc.performer2_id
+        LEFT JOIN performer per3 ON per3.id = vc.performer3_id
+        <where>
+            <if test="KeyWord !=null" >
+                <foreach collection="KeyWord" item="keyW" separator="and">
+                     (
+                    vc.consumption like #{keyW}
+                    or pty.`name` like #{keyW}
+                    or cus.`name` like #{keyW}
+                    or cus.`code` like #{keyW}
+                    or ind.`name` like #{keyW}
+                    or dem.`name` like #{keyW}
+                    or opt.`name` like #{keyW}
+                    or vdt.`name` like #{keyW}
+                    or ori.`name` like #{keyW}
+                    or ori.`name` like #{keyW}
+                    or pho.`name` like #{keyW}
+                    or edi.`name` like #{keyW}
+                    or bdi.`name` like #{keyW}
+                    or per1.`name` like #{keyW}
+                    or per2.`name` like #{keyW}
+                    or per3.`name` like #{keyW}
+                    )
+                </foreach>
+            </if>
+            <if test="recoredDate_start!=null and recoredDate_end!=null">
+                and ( vc.recored_date between #{recoredDate_start} and #{recoredDate_end} )
+            </if>
+            <if test="completeDate_start!=null and completeDate_end">
+                and ( vc.complete_date between #{completeDate_start} and #{completeDate_end} )
+            </if>
+            <if test="consumption_min!=null">
+                and vc.consumption &gt;=#{consumption_min}
+            </if>
+            <if test="consumption_max!=null">
+                and vc.consumption &lt;=#{consumption_max}
+            </if>
+        </where>
     </select>
 
     <select id="selectMaxConsumption" resultType="double" >

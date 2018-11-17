@@ -378,12 +378,10 @@ public class VideoCostServiceImpl extends ServiceImpl<VideoCostMapper, VideoCost
 
     @Override
     public Page<VideoCost> selectWithCount(Page<VideoCost> pages ,Map<String, Object> map) {
-
-        map.put("offset",pages.getOffset());
-        map.put("limit",pages.getLimit());
         List<VideoCost> videoCosts = videoCostMapper.selectWithCount(map);
+       // int total = videoCostMapper.selectCount(map);
         pages.setRecords(videoCosts);
-        pages.setTotal(10000);
+      //  pages.setTotal(total);
         return pages;
     }
     @Override

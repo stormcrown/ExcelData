@@ -4,6 +4,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,19 +60,50 @@ public class VideoCostController extends BaseController {
     @PostMapping("/dataGrid")
     @ResponseBody
     @RequiresPermissions("/videoCost/dataGrid")
-    public PageInfo dataGrid(VideoCost videoCost, Integer page, Integer rows, String sort,String order ,
-                             String customerName_like,String  ConsumptionRange,String KeyWord
+    public PageInfo dataGrid(VideoCost videoCost,@NotNull Integer page,@NotNull Integer rows,@NotNull String sort,@NotNull String order ,
+                             String  ConsumptionRange, String KeyWord, String recoredDateRange, String completeDateRange
     ) {
+        Map map = new HashMap(10);
         PageInfo pageInfo = new PageInfo(page, rows, sort, order);
-        Map map = new HashMap(5);
-        map.put("videoCost",videoCost);
+        if(ConsumptionRange!=null && ConsumptionRange.indexOf(",")>0){
+            String [] cuns = ConsumptionRange.split(",");
+         //   map.put("consumption_min",Double.parseDouble(cuns[0]));
+        //    map.put("consumption_max",Double.parseDouble(cuns[1]));
+        }
+//        map.put("videoCost",videoCost);
         map.put("order",order );
         map.put("sort",sort);
-        if(StringUtils.isNotBlank(KeyWord)) map.put("KeyWord",KeyWord );
+        if(recoredDateRange!=null && recoredDateRange.indexOf("~")>0){
+            String[] da = recoredDateRange.split("~");
+            if(da!=null && da.length==2 && da[0]!=null && da[1] !=null ){
+                Date date1 = dateConverter.convert(da[0].replaceAll(" ",""));
+                Date date2 = dateConverter.convert(da[1].replaceAll(" ",""));
+                map.put("recoredDate_start",date1);
+                map.put("recoredDate_end",date2);
+            }
+        }
+        if(completeDateRange!=null && completeDateRange.indexOf("~")>0){
+            String[] da = completeDateRange.split("~");
+            if(da!=null && da.length==2 && da[0]!=null && da[1] !=null ){
+                Date date1 = dateConverter.convert(da[0].replaceAll(" ",""));
+                Date date2 = dateConverter.convert(da[1].replaceAll(" ",""));
+                map.put("completeDate_start",date1);
+                map.put("completeDate_end",date2);
+            }
+        }
+        if( KeyWord!=null &&  StringUtils.hasText(KeyWord)){
+            String[] words = KeyWord.trim().split(",");
+            for(int i=0;i<words.length;i++){
+                if(StringUtils.isNotBlank(words[i]))words[i] = "%"+words[i].replaceAll(" ","")+"%";
+            }
+            if(words!=null && words.length>0)map.put("KeyWord",words );
+        }
 
         Page<VideoCost> pages = getPage(page, rows, sort, order);
-//        Page<VideoCost>
-                pages= videoCostService.selectWithCount(pages,map);
+        map.put("offset",pages.getOffset());
+        map.put("limit",pages.getLimit());
+
+        pages= videoCostService.selectWithCount(pages,map);
 
 //        pages = videoCostService.selectPage(pages, ew);
 //        List<VideoCost> list = pages.getRecords();

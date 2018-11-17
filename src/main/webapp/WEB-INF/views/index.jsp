@@ -9,6 +9,7 @@
     <script type="text/javascript" src="${staticPath }/static/js/main.js?v=${version}"></script>
     <script type="text/javascript" src="${staticPath }/static/common/tools.js?v=${version}"></script>
     <script type="text/javascript" src="${staticPath }/static/common/default_method.js?v=${version}"></script>
+
 </head>
 <body>
     <div id="loading" style="position: fixed;top: -50%;left: -50%;width: 200%;height: 200%;background: #fff;z-index: 100;overflow: hidden;">

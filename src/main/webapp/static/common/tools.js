@@ -10,6 +10,12 @@ function getCommonDate(value){
         return "";
     }
 }
+function redFont(str) {
+    if( str!=undefined && str!=null && str.trim()!=''){
+        return "<span style='color:red;'>"+str+"</span> "
+    }
+    else return'';
+}
 function getCookie(c_name)
 {
     if (document.cookie.length>0)

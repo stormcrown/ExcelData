@@ -67,6 +67,7 @@ public class MysqlGenerator {
 		// 数据源配置
 		DataSourceConfig dsc = new DataSourceConfig();
 		dsc.setDbType(DbType.MYSQL);
+//		dsc.setDbType(DbType.POSTGRE_SQL);
 		dsc.setTypeConvert(new MySqlTypeConvert());
 		dsc.setDriverName("com.mysql.jdbc.Driver");
 		dsc.setUsername(props.getProperty("db.master.user"));
