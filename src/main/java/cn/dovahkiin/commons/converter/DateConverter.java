@@ -16,6 +16,7 @@ public class DateConverter implements Converter<String, Date>  {
     static{
         formarts.add("yyyy-MM");
         formarts.add("yyyy-MM-dd");
+        formarts.add("yyyy年MM月dd日");
         formarts.add("yyyy-MM-dd hh:mm");
         formarts.add("yyyy-MM-dd hh:mm:ss");
         formarts.add("yyyy.MM.dd");
@@ -29,12 +30,14 @@ public class DateConverter implements Converter<String, Date>  {
             return parseDate(source, formarts.get(0));
         }else if(source.matches("^\\d{4}-\\d{1,2}-\\d{1,2}$")){
             return parseDate(source, formarts.get(1));
-        }else if(source.matches("^\\d{4}-\\d{1,2}-\\d{1,2} {1}\\d{1,2}:\\d{1,2}$")){
+        }else if(source.matches("^\\d{4}年\\d{1,2}月\\d{1,2}日$")){
             return parseDate(source, formarts.get(2));
-        }else if(source.matches("^\\d{4}-\\d{1,2}-\\d{1,2} {1}\\d{1,2}:\\d{1,2}:\\d{1,2}$")){
+        }else if(source.matches("^\\d{4}-\\d{1,2}-\\d{1,2} {1}\\d{1,2}:\\d{1,2}$")){
             return parseDate(source, formarts.get(3));
-        }else if(source.matches("^\\d{4}\\.\\d{1,2}\\.\\d{1,2}$")){
+        }else if(source.matches("^\\d{4}-\\d{1,2}-\\d{1,2} {1}\\d{1,2}:\\d{1,2}:\\d{1,2}$")){
             return parseDate(source, formarts.get(4));
+        }else if(source.matches("^\\d{4}\\.\\d{1,2}\\.\\d{1,2}$")){
+            return parseDate(source, formarts.get(5));
         }else {
             throw new IllegalArgumentException("Invalid date value '" + source + "'");
         }

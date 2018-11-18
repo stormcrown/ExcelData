@@ -19,7 +19,7 @@ public interface VideoCostMapper extends BaseMapper<VideoCost> {
     int deleteMany(String[] ids);
     List<VideoCost> selectWithCount(Map<String ,Object> map);
     int selectCount(Map<String ,Object> map);
-    double selectMaxConsumption();
+    Double selectMaxConsumption();
 
 //    List<VideoCost> countByCustomName();
 }

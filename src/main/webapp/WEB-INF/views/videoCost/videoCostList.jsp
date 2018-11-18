@@ -388,6 +388,31 @@
             }]
         });
     }
+    /**
+     * 导出Excel框
+     * @param url
+     */
+    function videoCostExportExcelFun() {
+        //创建form表单
+        // var temp_form = document.createElement("form");
+        var temp_form = document.getElementById("videoCostSearchForm");
+        temp_form.action = "../videoCost/exportExcel";
+        //如需打开新窗口，form的target属性要设置为'_blank'
+        // temp_form.target = "_self";
+        temp_form.target = "_blank";
+        temp_form.method = "post";
+       // temp_form.style.display = "none";
+        //添加参数
+        // var opt = document.createElement("textarea");
+        //     opt.name = PARAMTERS[item].name;
+        //     opt.value = PARAMTERS[item].value;
+        // temp_form.appendChild(opt);
+        //
+        // document.body.appendChild(temp_form);
+
+        //提交数据
+        temp_form.submit();
+    }
 
     /**
      * 编辑
@@ -526,6 +551,10 @@
     <shiro:hasPermission name="/videoCost/importExcel">
         <a onclick="videoCostImportExcelFun()" href="javascript:void(0);" class="easyui-linkbutton"
            data-options="plain:true,iconCls:'glyphicon-open-file icon-green'">导入Excel</a>
+    </shiro:hasPermission>
+    <shiro:hasPermission name="/videoCost/importExcel">
+        <a onclick="videoCostExportExcelFun()" href="javascript:void(0);" class="easyui-linkbutton"
+           data-options="plain:true,iconCls:'glyphicon-cloud-download icon-purple'">导出Excel</a>
     </shiro:hasPermission>
     <shiro:hasPermission name="/videoCost/delete">
         <a onclick="videoCostDeleteFun()" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-remove  icon-red'">删除</a>

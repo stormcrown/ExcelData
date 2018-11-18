@@ -6,8 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -20,6 +19,7 @@ import cn.dovahkiin.service.impl.IndustryServiceImpl;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
@@ -44,19 +44,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 @RequestMapping("/videoCost")
 public class VideoCostController extends BaseController {
-
     @Autowired private IVideoCostService videoCostService;
-    @Autowired private ICustomerService customerService;
-    @Autowired private IEditorService editorService;
-    @Autowired private IIndustryService industryService;
-    @Autowired private IOptimizerService optimizerService;
-    @Autowired private IOriginalityService originalityService;
-    @Autowired private IOrganizationService organizationService;
-    @Autowired private IPerformerService performerService;
-    @Autowired private IPhotographerService photographerService;
-    @Autowired private IProductTypeService productTypeService;
-    @Autowired private IVideoTypeService iVideoTypeService;
-
     @GetMapping("/manager")
     @RequiresPermissions("/videoCost/manager")
     public String manager(HttpServletResponse response) {
@@ -68,21 +56,15 @@ public class VideoCostController extends BaseController {
         addCookie(response,cookie);
         return "videoCost/videoCostList";
     }
-    
-    @PostMapping("/dataGrid")
-    @ResponseBody
-    @RequiresPermissions("/videoCost/dataGrid")
-    public PageInfo dataGrid(VideoCost videoCost,@NotNull Integer page,@NotNull Integer rows,@NotNull String sort,@NotNull String order ,
-                             String  ConsumptionRange, String KeyWord, String recoredDateRange, String completeDateRange
-    ) {
+
+    private Map handle(VideoCost videoCost,Integer page,Integer rows,String sort,String order ,
+                       String  ConsumptionRange, String KeyWord, String recoredDateRange, String completeDateRange){
         Map map = new HashMap(10);
-        PageInfo pageInfo = new PageInfo(page, rows, sort, order);
         if(ConsumptionRange!=null && ConsumptionRange.indexOf(",")>0){
             String [] cuns = ConsumptionRange.split(",");
             if(Double.parseDouble(cuns[0])!=0.0) map.put("consumption_min",Double.parseDouble(cuns[0]));
             map.put("consumption_max",Double.parseDouble(cuns[1]));
         }
-//        map.put("videoCost",videoCost);
         map.put("order",order );
         map.put("sort",sort);
         if(recoredDateRange!=null && recoredDateRange.indexOf("~")>0){
@@ -111,6 +93,16 @@ public class VideoCostController extends BaseController {
             if(words!=null && words.length>0)map.put("KeyWord",words );
         }
 
+        return map;
+    }
+    @PostMapping("/dataGrid")
+    @ResponseBody
+    @RequiresPermissions("/videoCost/dataGrid")
+    public PageInfo dataGrid(VideoCost videoCost,@NotNull Integer page,@NotNull Integer rows,@NotNull String sort,@NotNull String order ,
+                             String  ConsumptionRange, String KeyWord, String recoredDateRange, String completeDateRange
+    ) {
+        Map map = handle(videoCost,page,rows,sort,order ,ConsumptionRange,KeyWord,recoredDateRange,completeDateRange);
+        PageInfo pageInfo = new PageInfo(page, rows, sort, order);
         Page<VideoCost> pages = getPage(page, rows, sort, order);
         map.put("offset",pages.getOffset());
         map.put("limit",pages.getLimit());
@@ -209,7 +201,8 @@ public class VideoCostController extends BaseController {
             InputStream inputStream = excels.getInputStream();
             Workbook workbook= WorkbookFactory.create(inputStream);
             Sheet sheet=workbook.getSheetAt(0);
-            b = videoCostService.saveExcel(sheet,recoredDate,dateConverter);
+            m = videoCostService.saveExcel(sheet,recoredDate,dateConverter);
+            b = m>0;
             inputStream.close();
         }catch (InvalidFormatException e){
             e.printStackTrace();
@@ -221,6 +214,35 @@ public class VideoCostController extends BaseController {
         } else {
             return renderError("添加失败！");
         }
+    }
+    /**
+     * 添加
+     * @param
+     * @return
+     */
+    @PostMapping("/exportExcel")
+    @ResponseBody
+    @RequiresPermissions("/videoCost/exportExcel")
+    public Object exportExcel(VideoCost videoCost,@NotNull Integer page,@NotNull Integer rows,@NotNull String sort,@NotNull String order ,
+                              String  ConsumptionRange, String KeyWord, String recoredDateRange, String completeDateRange,HttpServletResponse response) {
+        Map map = handle(videoCost,page,rows,sort,order ,ConsumptionRange,KeyWord,recoredDateRange,completeDateRange);
+        map.put("offset",0);
+        map.put("limit",100000);
+        try {
+            response.setContentType("application/x-msdownload;");
+            response.setHeader("Content-disposition", "attachment; filename=" + new String(("市场部视频数据统计表"+StringUtils.getDateCode()+".xlsx").getBytes("utf-8"), "ISO8859-1"));
+//            response.setHeader("Content-Length", String.valueOf(10000));
+            OutputStream outputStream = response.getOutputStream();
+            Workbook workbook= new XSSFWorkbook();
+            Sheet sheet=workbook.createSheet();
+            videoCostService.exportData(map,sheet);
+            workbook.write(outputStream);
+            outputStream.flush();
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return renderSuccess();
     }
     /**
      * 删除

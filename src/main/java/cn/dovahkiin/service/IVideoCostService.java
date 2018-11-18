@@ -23,7 +23,8 @@ public interface IVideoCostService  {
     int insertMany(List<VideoCost> videoCostList);
     int updateByPrimaryKey(VideoCost videoCost);
     int deleteMany(String[] ids);
-    boolean saveExcel(Sheet sheet,Date recoredDate,DateConverter dateConverter);
+    int saveExcel(Sheet sheet,Date recoredDate,DateConverter dateConverter);
+    Sheet exportData(Map map,Sheet sheet);
     VideoCost selectByPrimaryKey(Long  id);
     Page<VideoCost> selectWithCount(Page<VideoCost> pages,Map<String , Object> map);
     int selectCount(Date recoredDate);
