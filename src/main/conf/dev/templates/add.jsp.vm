@@ -33,7 +33,9 @@
             <table class="grid">
                 <tr>
                     <td>商家名称</td>
-                    <td><input name="name" type="text" placeholder="请输入名称" class="easyui-validatebox span2" data-options="required:true" value=""></td>
+                    <td>
+                        <input name="name" type="text"  class="easyui-validatebox span2" data-options="required:true" value="">
+                    </td>
                 </tr> 
             </table>
         </form>

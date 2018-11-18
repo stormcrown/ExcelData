@@ -44,10 +44,20 @@ public class ExceptionTranslator {
 	@ExceptionHandler(BindException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
-	public Result processException(BindException ex) {
+	public Result processBindException(BindException ex) {
 		log.error(ex.getMessage(), ex);
 		FieldError error = ex.getFieldError();
 		return getFieldErrorResult(error);
+	}
+	@ExceptionHandler
+	@ResponseBody
+	public Result processException(Exception ex) {
+		log.error(ex.getMessage(), ex);
+		ex.printStackTrace();
+		Result result = new Result();
+		result.setSuccess(true);
+		result.setMsg(ex.getMessage());
+		return result;
 	}
 	
 	/**

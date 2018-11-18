@@ -7,6 +7,7 @@ import java.util.Date;
 //import com.baomidou.mybatisplus.annotations.TableField;
 //import com.baomidou.mybatisplus.activerecord.Model;
 //import com.baomidou.mybatisplus.annotations.TableName;
+import cn.dovahkiin.commons.utils.JsonUtils;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -330,35 +331,38 @@ public class VideoCost  extends Model<VideoCost> {
 	public void setCumulativeConsumptionRanking(Integer cumulativeConsumptionRanking) {
 		this.cumulativeConsumptionRanking = cumulativeConsumptionRanking;
 	}
-
 	@Override
 	public String toString() {
-		return "VideoCost{" +
-				"id=" + id +
-				", updateTime=" + updateTime +
-				", createTime=" + createTime +
-				", deleteFlag=" + deleteFlag +
-				", recoredDate=" + recoredDate +
-				", businessDepartment=" + businessDepartment +
-				", productType=" + productType +
-				", customer=" + customer +
-				", industry=" + industry +
-				", demandSector=" + demandSector +
-				", optimizer=" + optimizer +
-				", videoType=" + videoType +
-				", completeDate=" + completeDate +
-				", originality=" + originality +
-				", photographer=" + photographer +
-				", editor=" + editor +
-				", performer1=" + performer1 +
-				", performer2=" + performer2 +
-				", performer3=" + performer3 +
-				", consumption=" + consumption +
-				", cumulativeConsumption=" + cumulativeConsumption +
-				", cumulativeConsumptionRanking=" + cumulativeConsumptionRanking +
-				", cumulativeConsumptionByPro=" + cumulativeConsumptionByPro +
-				", cumulativeConsumptionRankingByProglam=" + cumulativeConsumptionRankingByProglam +
-				'}';
+		return JsonUtils.toJson(this);
 	}
+//	@Override
+//	public String toString() {
+//		return "VideoCost{" +
+//				"id=" + id +
+//				", updateTime=" + updateTime +
+//				", createTime=" + createTime +
+//				", deleteFlag=" + deleteFlag +
+//				", recoredDate=" + recoredDate +
+//				", businessDepartment=" + businessDepartment +
+//				", productType=" + productType +
+//				", customer=" + customer +
+//				", industry=" + industry +
+//				", demandSector=" + demandSector +
+//				", optimizer=" + optimizer +
+//				", videoType=" + videoType +
+//				", completeDate=" + completeDate +
+//				", originality=" + originality +
+//				", photographer=" + photographer +
+//				", editor=" + editor +
+//				", performer1=" + performer1 +
+//				", performer2=" + performer2 +
+//				", performer3=" + performer3 +
+//				", consumption=" + consumption +
+//				", cumulativeConsumption=" + cumulativeConsumption +
+//				", cumulativeConsumptionRanking=" + cumulativeConsumptionRanking +
+//				", cumulativeConsumptionByPro=" + cumulativeConsumptionByPro +
+//				", cumulativeConsumptionRankingByProglam=" + cumulativeConsumptionRankingByProglam +
+//				'}';
+//	}
 
 }

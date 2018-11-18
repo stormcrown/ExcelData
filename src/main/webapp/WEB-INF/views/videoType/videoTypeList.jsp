@@ -8,35 +8,45 @@
         striped : true,
         rownumbers : true,
         pagination : true,
-        singleSelect : true,
+        singleSelect : false,
         idField : 'id',
-        sortName : 'id',
-        sortOrder : 'asc',
+        sortName : 'createTime',
+        sortOrder : 'desc',
         pageSize : 20,
+        queryParams :{
+            deleteFlag:0
+        },
+        onBeforeLoad:function(param){
+            $('#videoTypeDataGrid').datagrid('clearChecked').datagrid('clearSelections');
+        },
+        onLoadSuccess:function(data){
+            $('#videoTypeDataGrid').datagrid('clearChecked').datagrid('clearSelections');
+        },
         pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500],
         frozenColumns : [ [ {
             width : '60',
             title : '编号',
             field : 'id',
-            sortable : true
-        }, {
-            width : '60',
-            title : '状态',
-            field : 'status',
+            sortable : true,
+            checkbox:true
+        },
+           {
+            width : '200',
+            title : '名称',
+            field : 'name',
             sortable : true,
             formatter : function(value, row, index) {
-                switch (value) {
-                case 0:
-                    return '正常';
-                case 1:
-                    return '停用';
-                }
+                return value;
             }
-        }, {
+        },
+         {
             width : '140',
             title : '创建时间',
             field : 'createTime',
-            sortable : true
+            sortable : true,
+            formatter: function (value, row, index) {
+                return getCommonDate(value);
+            }
         }, {
             field : 'action',
             title : '操作',
@@ -44,11 +54,11 @@
             formatter : function(value, row, index) {
                 var str = '';
                 <shiro:hasPermission name="/videoType/edit">
-                    str += $.formatString('<a href="javascript:void(0)" class="videoType-easyui-linkbutton-edit" data-options="plain:true,iconCls:\'fi-pencil icon-blue\'" onclick="videoTypeEditFun(\'{0}\');" >编辑</a>', row.id);
+                    str += $.formatString('<a href="javascript:void(0)" class="videoType-easyui-linkbutton-edit" data-options="plain:true,iconCls:\'glyphicon-pencil icon-blue\'" onclick="videoTypeEditFun(\'{0}\');" >编辑</a>', row.id);
                 </shiro:hasPermission>
                 <shiro:hasPermission name="/videoType/delete">
                     str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
-                    str += $.formatString('<a href="javascript:void(0)" class="videoType-easyui-linkbutton-del" data-options="plain:true,iconCls:\'fi-x icon-red\'" onclick="videoTypeDeleteFun(\'{0}\');" >删除</a>', row.id);
+                    str += $.formatString('<a href="javascript:void(0)" class="videoType-easyui-linkbutton-del" data-options="plain:true,iconCls:\'glyphicon-trash icon-red\'" onclick="videoTypeDeleteFun(\'{0}\');" >删除</a>', row.id);
                 </shiro:hasPermission>
                 return str;
             }
@@ -66,16 +76,23 @@
  * @param url
  */
 function videoTypeAddFun() {
+        var id = "";
+        var checks = $('#videoTypeDataGrid').datagrid('getChecked');
+        if( checks != null && checks.length==1){
+            id = checks[0].id;
+        }else{
+            $('#videoCostDataGrid').datagrid('clearChecked').datagrid('clearSelections');
+        }
     parent.$.modalDialog({
         title : '添加',
-        width : 700,
-        height : 600,
-        href : '${path}/videoType/addPage',
+        width : 300,
+        height : 220,
+        href : '${path}/videoType/addPage?id='+id,
         buttons : [ {
             text : '确定',
             handler : function() {
                 parent.$.modalDialog.openner_dataGrid = videoTypeDataGrid;//因为添加成功之后，需要刷新这个treeGrid，所以先预定义好
-                var f = parent.$.modalDialog.handler.find('#videoTypeAddForm');
+                var f = parent.$.modalDialog.handler.find('#videoTypeEditForm');
                 f.submit();
             }
         } ]
@@ -87,26 +104,33 @@ function videoTypeAddFun() {
  * 编辑
  */
 function videoTypeEditFun(id) {
-    if (id == undefined) {
-        var rows = videoTypeDataGrid.datagrid('getSelections');
-        id = rows[0].id;
-    } else {
-        videoTypeDataGrid.datagrid('unselectAll').datagrid('uncheckAll');
-    }
-    parent.$.modalDialog({
-        title : '编辑',
-        width : 700,
-        height : 600,
-        href :  '${path}/videoType/editPage?id=' + id,
-        buttons : [ {
-            text : '确定',
-            handler : function() {
-                parent.$.modalDialog.openner_dataGrid = videoTypeDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
-                var f = parent.$.modalDialog.handler.find('#videoTypeEditForm');
-                f.submit();
+     if (id == undefined) {
+            var rows = videoTypeDataGrid.datagrid('getSelections');
+            if(rows!=null && rows.length==1) id = rows[0].id;
+            else {
+                $('#videoTypeDataGrid').datagrid('clearChecked').datagrid('clearSelections');
+                layer.msg('选择一个待修改的行', {
+                    time: 20000, //20s后自动关闭
+                    btn: ['哦']
+                });
             }
-        } ]
-    });
+     }
+     if(id!=null && id!=''){
+        parent.$.modalDialog({
+            title : '编辑',
+            width : 300,
+            height : 220,
+            href :  '${path}/videoType/editPage?id=' + id,
+            buttons : [ {
+                text : '确定',
+                handler : function() {
+                    parent.$.modalDialog.openner_dataGrid = videoTypeDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                    var f = parent.$.modalDialog.handler.find('#videoTypeEditForm');
+                    f.submit();
+                }
+            } ]
+        });
+     }
 }
 
 
@@ -114,28 +138,64 @@ function videoTypeEditFun(id) {
  * 删除
  */
  function videoTypeDeleteFun(id) {
-     if (id == undefined) {//点击右键菜单才会触发这个
-         var rows = videoTypeDataGrid.datagrid('getSelections');
-         id = rows[0].id;
-     } else {//点击操作里面的删除图标会触发这个
-         videoTypeDataGrid.datagrid('unselectAll').datagrid('uncheckAll');
+     var tip="";
+        if (id == undefined) {
+            id="";
+            var rows = videoTypeDataGrid.datagrid('getSelections');
+            for(var i=0;i<rows.length;i++){
+                id+=(rows[i].id+",");
+                tip+=( "<br/>名称："+ redFont(rows[i].name) +" 编码："+ redFont(rows[i].code)+" ；");
+            }
+        }
+     if(id!=undefined && id!=null && id!='' ){
+        parent.$.messager.confirm('询问', '您是否要删除当前角色？'+tip, function(b) {
+            if (b) {
+                progressLoad();
+                $.post('${path}/videoType/delete', {
+                    ids : id
+                }, function(result) {
+                    if (result.success) {
+                        parent.$.messager.alert('提示', result.msg, 'info');
+                        videoTypeDataGrid.datagrid('reload');
+                    }
+                    progressClose();
+                }, 'JSON');
+            }
+        });
      }
-     parent.$.messager.confirm('询问', '您是否要删除当前角色？', function(b) {
-         if (b) {
-             progressLoad();
-             $.post('${path}/videoType/delete', {
-                 id : id
-             }, function(result) {
-                 if (result.success) {
-                     parent.$.messager.alert('提示', result.msg, 'info');
-                     videoTypeDataGrid.datagrid('reload');
-                 }
-                 progressClose();
-             }, 'JSON');
-         }
-     });
-}
 
+}
+/**
+ * 恢复
+ */
+ function videoTypeRollbackFun(id) {
+     var tip="";
+        if (id == undefined) {
+            id="";
+            var rows = videoTypeDataGrid.datagrid('getSelections');
+            for(var i=0;i<rows.length;i++){
+                id+=(rows[i].id+",");
+                tip+=( "<br/>名称："+ redFont(rows[i].name) +" 编码："+ redFont(rows[i].code)+" ；");
+            }
+        }
+     if(id!=undefined && id!=null && id!='' ){
+        parent.$.messager.confirm('询问', '您是否要恢复当前数据？'+tip, function(b) {
+            if (b) {
+                progressLoad();
+                $.post('${path}/videoType/rollback', {
+                    ids : id
+                }, function(result) {
+                    if (result.success) {
+                        parent.$.messager.alert('提示', result.msg, 'info');
+                        videoTypeDataGrid.datagrid('reload');
+                    }
+                    progressClose();
+                }, 'JSON');
+            }
+        });
+     }
+
+}
 
 /**
  * 清除
@@ -153,16 +213,27 @@ function videoTypeSearchFun() {
 </script>
 
 <div class="easyui-layout" data-options="fit:true,border:false">
-    <div data-options="region:'north',border:false" style="height: 30px; overflow: hidden;background-color: #fff">
+    <div data-options="region:'north',border:false" style="margin: 5px; overflow: hidden;background-color: #fff">
         <form id="videoTypeSearchForm">
             <table>
                 <tr>
-                    <th>名称:</th>
-                    <td><input name="name" placeholder="搜索条件"/></td>
+                    <th>编码:&nbsp;</th>
+                    <td><input id="code" name="code" type="text" class="layui-input" /></td>
+                    <th>名称:&nbsp;</th>
+                    <td><input id="name" name="name" type="text" class="layui-input" /></td>
+                    <th>是否删除:&nbsp;</th>
                     <td>
-                        <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'fi-magnifying-glass',plain:true" onclick="videoTypeSearchFun();">查询</a>
-                        <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'fi-x-circle',plain:true" onclick="videoTypeCleanFun();">清空</a>
+                        <select id="deleteFlag" name="deleteFlag" class="layui-input" style="width: 100px;" >
+                            <option value="0" selected class="layui-input" style="color: green">通常</option>
+                            <option value="1" class="layui-input" style="color: red;">已删除</option>
+                            <option value="" class="layui-input" >全部</option>
+                        </select>
                     </td>
+                    <td width="50px;" ></td>
+                    <td>
+                        <button type="button" class="layui-btn layui-btn-radius layui-btn-normal" onclick="videoTypeSearchFun();">查询</button>
+                        <button type="button" class="layui-btn layui-btn-radius layui-btn-danger" onclick="videoTypeCleanFun();" >清空</button>
+                     </td>
                 </tr>
             </table>
         </form>
@@ -174,6 +245,15 @@ function videoTypeSearchFun() {
 </div>
 <div id="videoTypeToolbar" style="display: none;">
     <shiro:hasPermission name="/videoType/add">
-        <a onclick="videoTypeAddFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'fi-page-add'">添加</a>
+        <a onclick="videoTypeAddFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-plus  icon-green'">添加</a>
+    </shiro:hasPermission>
+    <shiro:hasPermission name="/videoType/edit">
+        <a onclick="videoTypeEditFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-edit  icon-blue'">修改</a>
+    </shiro:hasPermission>
+    <shiro:hasPermission name="/videoType/delete">
+        <a onclick="videoTypeDeleteFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-remove  icon-red'">删除</a>
+    </shiro:hasPermission>
+    <shiro:hasPermission name="/videoType/add">
+        <a onclick="videoTypeRollbackFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-share-alt icon-green'">恢复</a>
     </shiro:hasPermission>
 </div>

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ include file="/commons/global.jsp" %>
 <script type="text/javascript">
+    var videoCostDataGrid;
     $(function () {
         var max = getCookie("MaxConsumption");
         // if(max!=null && max.indexOf(".")>0  )max = max.substring(0,max.indexOf("."));
@@ -34,24 +35,33 @@
 
         //console.log($("#ConsumptionRange").slider("getValue"));
 
-        $('#videoCostDataGrid').datagrid({
+        videoCostDataGrid=$('#videoCostDataGrid').datagrid({
             url: '${path}/videoCost/dataGrid',
             striped: true,
             rownumbers: true,
             pagination: true,
-            singleSelect: true,
+            singleSelect: false,
             idField: 'id',
-            sortName: 'id',
-            sortOrder: 'asc',
+            sortName: 'recoredDate',
+            sortOrder: 'desc',
             pageSize: 10,
             pageList: [10, 20, 30, 40, 50, 100, 200, 300, 400, 500],
+            onBeforeLoad:function(param){
+                $('#videoCostDataGrid').datagrid('clearChecked').datagrid('clearSelections');
+               // $('#videoCostDataGrid').datagrid('uncheckAll');
+              //  return true;
+            },
+            onLoadSuccess:function(data){
+                $('#videoCostDataGrid').datagrid('clearChecked').datagrid('clearSelections');
+            },
             frozenColumns: [[
-                // {
-                //     width: '60',
-                //     title: '编号',
-                //     field: 'id',
-                //     sortable: true
-                // },
+                {
+                    width: '60',
+                    title: '',
+                    field: 'id',
+                    sortable: false,
+                    checkbox:true,
+                },
                 // {
                 //     width: '60',
                 //     title: '状态',
@@ -115,7 +125,10 @@
                     field: 'consumption',
                     sortable: true,
                     align:'right',
-                    formatter:commonForm
+                    formatter: function (value, row, index) {
+                            if(value!=null) return commonForm(value.toFixed(2));
+                            return "";
+                        }
                 },
                 {
                     width: '80',
@@ -131,7 +144,11 @@
                     title: '累计消耗',
                     field: 'cumulativeConsumptionByPro',
                     sortable: true,
-                    align:'right'
+                    align:'right',
+                    formatter: function (value, row, index) {
+                        if(value!=null) return value.toFixed(2);
+                        return "";
+                    }
                 },
                 {
                     width: '80',
@@ -275,19 +292,22 @@
             toolbar: '#videoCostToolbar'
         });
 
-        //一般直接写在一个js文件中
-        layui.use(['laydate','slider'], function(){
-            var laydate = layui.laydate,slider = layui.slider;
-            laydate.render({
-                elem: '#recoredDateRange'
-                ,range: '~' //或 range: '~' 来自定义分割字符
-            });
-            laydate.render({
-                elem: '#completeDateRange'
-                ,range: '~' //或 range: '~' 来自定义分割字符
-            });
+
+    });
+
+    //一般直接写在一个js文件中
+    layui.use(['laydate','slider','layer'], function(){
+        var laydate = layui.laydate,slider = layui.slider;
+        laydate.render({
+            elem: '#recoredDateRange'
+            ,range: '~' //或 range: '~' 来自定义分割字符
+        });
+        laydate.render({
+            elem: '#completeDateRange'
+            ,range: '~' //或 range: '~' 来自定义分割字符
         });
     });
+
     function commonForm(value) {
         if(value==undefined || value == null || value ==null)return"";
         var str = new String(value);
@@ -309,13 +329,20 @@
      * @param url
      */
     function videoCostAddFun() {
+        var id = "";
+        var checks = $('#videoCostDataGrid').datagrid('getChecked');
+        if( checks != null && checks.length==1){
+            id = checks[0].id;
+        }else{
+            $('#videoCostDataGrid').datagrid('clearChecked').datagrid('clearSelections');
+        }
         parent.$.modalDialog({
             title: '添加',
             iconCls: 'icon-add',
             width: 700,
-            height: 420,
+            height: 520,
             resizable:true,
-            href: '${path}/videoCost/addPage',
+            href: '${path}/videoCost/addPage?id='+id,
             buttons: [
                 {
                     text: '清空',
@@ -368,51 +395,63 @@
     function videoCostEditFun(id) {
         if (id == undefined) {
             var rows = videoCostDataGrid.datagrid('getSelections');
-            id = rows[0].id;
-        } else {
-            videoCostDataGrid.datagrid('unselectAll').datagrid('uncheckAll');
+            if(rows!=null && rows.length==1) id = rows[0].id;
+            else {
+                $('#videoCostDataGrid').datagrid('clearChecked').datagrid('clearSelections');
+                layer.msg('选择一个待修改的行', {
+                    time: 20000, //20s后自动关闭
+                    btn: ['哦']
+                });
+            }
         }
-        parent.$.modalDialog({
-            title: '编辑',
-            width: 700,
-            height: 420,
-            href: '${path}/videoCost/editPage?id=' + id,
-            buttons: [{
-                text: '确定',
-                iconCls: 'icon-ok',
-                handler: function () {
-                    parent.$.modalDialog.openner_dataGrid = videoCostDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
-                    var f = parent.$.modalDialog.handler.find('#videoCostAddForm');
-                    f.submit();
-                }
-            }]
-        });
+        if(id!=null && id!=''){
+            parent.$.modalDialog({
+                title: '编辑',
+                width: 700,
+                height: 520,
+                href: '${path}/videoCost/editPage?id=' + id,
+                buttons: [{
+                    text: '确定',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        parent.$.modalDialog.openner_dataGrid = videoCostDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                        var f = parent.$.modalDialog.handler.find('#videoCostAddForm');
+                        f.submit();
+                    }
+                }]
+            });
+        }
     }
 
     /**
      * 删除
      */
     function videoCostDeleteFun(id) {
-        if (id == undefined) {//点击右键菜单才会触发这个
+        var tip="";
+        if (id == undefined) {
+            id="";
             var rows = videoCostDataGrid.datagrid('getSelections');
-            id = rows[0].id;
-        } else {//点击操作里面的删除图标会触发这个
-            videoCostDataGrid.datagrid('unselectAll').datagrid('uncheckAll');
-        }
-        parent.$.messager.confirm('询问', '您是否要删除当前数据？', function (b) {
-            if (b) {
-                progressLoad();
-                $.post('${path}/videoCost/delete', {
-                    id: id
-                }, function (result) {
-                    if (result.success) {
-                        parent.$.messager.alert('提示', result.msg, 'info');
-                        videoCostDataGrid.datagrid('reload');
-                    }
-                    progressClose();
-                }, 'JSON');
+            for(var i=0;i<rows.length;i++){
+                id+=(rows[i].id+",");
+                tip+=( "<br/>客户："+ redFont(rows[i].customer.name) +" 数据日期："+ redFont(getCommonDate(rows[i].recoredDate))+" ；");
             }
-        });
+        }
+        if(id!=undefined && id!=null && id!='' ){
+            parent.$.messager.confirm('询问', '您是否要删除当前数据？'+tip, function (b) {
+                if (b) {
+                    progressLoad();
+                    $.post('${path}/videoCost/delete', {
+                        ids: id
+                    }, function (result) {
+                        if (result.success) {
+                            parent.$.messager.alert('提示', result.msg, 'info');
+                            videoCostDataGrid.datagrid('reload');
+                        }
+                        progressClose();
+                    }, 'JSON');
+                }
+            });
+        }
     }
 
     /**
@@ -420,6 +459,7 @@
      */
     function videoCostCleanFun() {
         $('#videoCostSearchForm input').val('');
+        $("#ConsumptionRange").slider('reset');
         videoCostDataGrid.datagrid('load', {});
     }
 
@@ -449,14 +489,12 @@
                 <td  style="margin: 10px;height: 50px;" >
                 <input id="ConsumptionRange" name="ConsumptionRange"  class="easyui-slider" data-options="min:0,range:true,showTip:true" style="width:200px" />
                 </td>
-                <td>
+                <td width="50px">
                     &nbsp;&nbsp;&nbsp;&nbsp;
                 </td>
                 <td>
-
-                    <button class="layui-btn layui-btn-radius" onclick="videoCostSearchFun();">
-                        查询</button>
-                    <button class="layui-btn  layui-btn-danger" onclick="videoCostCleanFun();" >清空</button>
+                    <button type="button" class="layui-btn layui-btn-radius layui-btn-normal" onclick="videoCostSearchFun();">查询</button>
+                    <button type="button" class="layui-btn layui-btn-radius layui-btn-danger" onclick="videoCostCleanFun();" >清空</button>
                     <%--<a href="javascript:void(0);" class="easyui-linkbutton"--%>
                        <%--data-options="iconCls:'glyphicon-search icon-blue',plain:true" onclick="videoCostSearchFun();">查询</a>--%>
                     <%--<a href="javascript:void(0);" class="easyui-linkbutton"--%>
@@ -482,8 +520,15 @@
         <a onclick="videoCostAddFun();" href="javascript:void(0);" class="easyui-linkbutton"
            data-options="plain:true,iconCls:'glyphicon-plus  icon-green'">添加</a>
     </shiro:hasPermission>
-    <shiro:hasPermission name="/videoCost/importExcel">
-        <a onclick="videoCostImportExcelFun();" href="javascript:void(0);" class="easyui-linkbutton"
-           data-options="plain:true,iconCls:'glyphicon-open-file icon-blue'">导入Excel</a>
+    <shiro:hasPermission name="/videoCost/edit">
+        <a onclick="videoCostEditFun()" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-edit  icon-blue'">修改</a>
     </shiro:hasPermission>
+    <shiro:hasPermission name="/videoCost/importExcel">
+        <a onclick="videoCostImportExcelFun()" href="javascript:void(0);" class="easyui-linkbutton"
+           data-options="plain:true,iconCls:'glyphicon-open-file icon-green'">导入Excel</a>
+    </shiro:hasPermission>
+    <shiro:hasPermission name="/videoCost/delete">
+        <a onclick="videoCostDeleteFun()" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-remove  icon-red'">删除</a>
+    </shiro:hasPermission>
+
 </div>

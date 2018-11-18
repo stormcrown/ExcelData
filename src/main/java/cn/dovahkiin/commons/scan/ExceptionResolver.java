@@ -36,6 +36,7 @@ public class ExceptionResolver implements HandlerExceptionResolver {
 		 HttpServletResponse response, Object handler, Exception e) {
 		// log记录异常
 		LOGGER.error(e.getMessage(), e);
+		e.printStackTrace();
 		// 非控制器请求照成的异常
 		if (!(handler instanceof HandlerMethod)) {
 			return new ModelAndView("error/500");

@@ -34,7 +34,7 @@ public class Organization extends Model<Organization>  {
 		return this.id;
 	}
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 
 	/** 主键id */
 	private Long id;
@@ -151,4 +151,5 @@ public class Organization extends Model<Organization>  {
 	public String toString() {
 		return JsonUtils.toJson(this);
 	}
+
 }

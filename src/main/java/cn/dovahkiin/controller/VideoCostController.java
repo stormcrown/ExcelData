@@ -16,6 +16,7 @@ import java.util.*;
 import cn.dovahkiin.commons.utils.StringUtils;
 import cn.dovahkiin.model.Customer;
 import cn.dovahkiin.service.*;
+import cn.dovahkiin.service.impl.IndustryServiceImpl;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -45,6 +46,17 @@ import org.springframework.web.multipart.MultipartFile;
 public class VideoCostController extends BaseController {
 
     @Autowired private IVideoCostService videoCostService;
+    @Autowired private ICustomerService customerService;
+    @Autowired private IEditorService editorService;
+    @Autowired private IIndustryService industryService;
+    @Autowired private IOptimizerService optimizerService;
+    @Autowired private IOriginalityService originalityService;
+    @Autowired private IOrganizationService organizationService;
+    @Autowired private IPerformerService performerService;
+    @Autowired private IPhotographerService photographerService;
+    @Autowired private IProductTypeService productTypeService;
+    @Autowired private IVideoTypeService iVideoTypeService;
+
     @GetMapping("/manager")
     @RequiresPermissions("/videoCost/manager")
     public String manager(HttpServletResponse response) {
@@ -67,8 +79,8 @@ public class VideoCostController extends BaseController {
         PageInfo pageInfo = new PageInfo(page, rows, sort, order);
         if(ConsumptionRange!=null && ConsumptionRange.indexOf(",")>0){
             String [] cuns = ConsumptionRange.split(",");
-         //   map.put("consumption_min",Double.parseDouble(cuns[0]));
-        //    map.put("consumption_max",Double.parseDouble(cuns[1]));
+            if(Double.parseDouble(cuns[0])!=0.0) map.put("consumption_min",Double.parseDouble(cuns[0]));
+            map.put("consumption_max",Double.parseDouble(cuns[1]));
         }
 //        map.put("videoCost",videoCost);
         map.put("order",order );
@@ -119,8 +131,29 @@ public class VideoCostController extends BaseController {
      */
     @GetMapping("/addPage")
     @RequiresPermissions("/videoCost/add")
-    public String addPage(Model model) {
+    public String addPage(Model model,Long id ) {
+        if(id!=null){
+            VideoCost videoCost = videoCostService.selectByPrimaryKey(id);
+            if(videoCost!=null)videoCost.setId(null);
+            model.addAttribute("videoCost", videoCost);
+        }
         model.addAttribute("method", "add");
+        videoCostService.modelForEdit(model);
+        return "videoCost/videoCost";
+    }
+    /**
+     * 编辑
+     * @param model
+     * @param id
+     * @return
+     */
+    @GetMapping("/editPage")
+    @RequiresPermissions("/videoCost/edit")
+    public String editPage(Model model, Long id) {
+        VideoCost videoCost = videoCostService.selectByPrimaryKey(id);
+        model.addAttribute("videoCost", videoCost);
+        model.addAttribute("method", "edit");
+        videoCostService.modelForEdit(model);
         return "videoCost/videoCost";
     }
     /**
@@ -141,16 +174,24 @@ public class VideoCostController extends BaseController {
     @ResponseBody
     @RequiresPermissions("/videoCost/add")
     public Object add(@Valid VideoCost videoCost) {
-        return super.add(videoCost,videoCostService);
-//        videoCost.setCreateTime(new Date());
-//        videoCost.setUpdateTime(new Date());
-//        videoCost.setDeleteFlag(0);
-//        boolean b = videoCostService.insert(videoCost);
-//        if (b) {
-//            return renderSuccess("添加成功！");
-//        } else {
-//            return renderError("添加失败！");
-//        }
+        videoCost.setCreateTime(new Date());
+        videoCost.setUpdateTime(new Date());
+        videoCost.setDeleteFlag(0);
+        List<VideoCost> videoCosts = new ArrayList<>();
+        videoCosts.add(videoCost);
+        int b = videoCostService.insertMany(videoCosts);
+        if (b==1) {
+            return renderSuccess("添加成功！");
+        } else {
+            return renderError("添加失败！");
+        }
+    }
+    @GetMapping("/countByDay")
+    @ResponseBody
+    @RequiresPermissions("/videoCost/add")
+    public Object countByDay(Date recoredDate) {
+        if(recoredDate!=null) return videoCostService.selectCount(recoredDate);
+        return 0;
     }
     /**
      * 添加
@@ -183,40 +224,27 @@ public class VideoCostController extends BaseController {
     }
     /**
      * 删除
-     * @param id
+     * @param ids
      * @return
      */
     @PostMapping("/delete")
     @ResponseBody
     @RequiresPermissions("/videoCost/delete")
-    public Object delete(Long id) {
-        VideoCost videoCost = new VideoCost();
-        videoCost.setId(id);
-        videoCost.setUpdateTime(new Date());
-        videoCost.setDeleteFlag(1);
-        boolean b = videoCostService.updateById(videoCost);
-//        videoCostService.deleteById(id);
-        if (b) {
-            return renderSuccess("删除成功！");
-        } else {
-            return renderError("删除失败！");
+    public Object delete(String ids) {
+        if(ids!=null){
+            String[] strings = ids.split(",");
+            List<String> idss = new ArrayList<>();
+            for(String str:strings){
+                if(StringUtils.hasText(str) &&StringUtils.isInteger(str) )idss.add(str);
+            }
+           int suc= videoCostService.deleteMany(idss.toArray(new String[idss.size()]));
+           if(suc>0)return renderSuccess("删除成功！");
         }
+         return renderError("删除失败！");
+
     }
     
-    /**
-     * 编辑
-     * @param model
-     * @param id
-     * @return
-     */
-    @GetMapping("/editPage")
-    @RequiresPermissions("/videoCost/edit")
-    public String editPage(Model model, Long id) {
-        VideoCost videoCost = videoCostService.selectById(id);
-        model.addAttribute("videoCost", videoCost);
-        model.addAttribute("method", "edit");
-        return "videoCost/videoCost";
-    }
+
     
     /**
      * 编辑
@@ -228,8 +256,8 @@ public class VideoCostController extends BaseController {
     @RequiresPermissions("/videoCost/edit")
     public Object edit(@Valid VideoCost videoCost) {
         videoCost.setUpdateTime(new Date());
-        boolean b = videoCostService.updateById(videoCost);
-        if (b) {
+        int b = videoCostService.updateByPrimaryKey(videoCost);
+        if (b==1) {
             return renderSuccess("编辑成功！");
         } else {
             return renderError("编辑失败！");

@@ -1,9 +1,11 @@
 package cn.dovahkiin.controller;
 
 import javax.validation.Valid;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
+import cn.dovahkiin.commons.utils.StringUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,7 +26,7 @@ import cn.dovahkiin.commons.base.BaseController;
  * </p>
  *
  * @author lzt
- * @since 2018-11-03
+ * @since 2018-11-18
  */
 @Controller
 @RequestMapping("/photographer")
@@ -33,15 +35,20 @@ public class PhotographerController extends BaseController {
     @Autowired private IPhotographerService photographerService;
     
     @GetMapping("/manager")
+    @RequiresPermissions("/photographer/manager")
     public String manager() {
-        return "admin/photographer/photographerList";
+        return "photographer/photographerList";
     }
     
     @PostMapping("/dataGrid")
+    @RequiresPermissions("/photographer/dataGrid")
     @ResponseBody
     public PageInfo dataGrid(Photographer photographer, Integer page, Integer rows, String sort,String order) {
         PageInfo pageInfo = new PageInfo(page, rows, sort, order);
-        EntityWrapper<Photographer> ew = new EntityWrapper<Photographer>(photographer);
+        EntityWrapper<Photographer> ew = new EntityWrapper<Photographer>();
+        if(photographer!=null && StringUtils.hasText(photographer.getCode()))ew.like("code","%"+photographer.getCode().trim()+"%");
+        if(photographer!=null && StringUtils.hasText(photographer.getName()) )ew.like("name","%"+photographer.getName().trim()+"%");
+        if(photographer!=null && photographer.getDeleteFlag()!=null  ) ew.eq("delete_flag", photographer.getDeleteFlag() );
         Page<Photographer> pages = getPage(page, rows, sort, order);
         pages = photographerService.selectPage(pages, ew);
         pageInfo.setRows(pages.getRecords());
@@ -54,8 +61,19 @@ public class PhotographerController extends BaseController {
      * @return
      */
     @GetMapping("/addPage")
-    public String addPage() {
-        return "admin/photographer/photographerAdd";
+    @RequiresPermissions("/photographer/add")
+    public String addPage(Model model,Long id) {
+        model.addAttribute("method", "add");
+        if(id!=null){
+            Photographer photographer = photographerService.selectById(id);
+            if(photographer!=null){
+                photographer.setId(null);
+                photographer.setCode(null);
+                model.addAttribute("photographer", photographer);
+            }
+
+        }
+        return "photographer/photographerEdit";
     }
     
     /**
@@ -64,39 +82,69 @@ public class PhotographerController extends BaseController {
      * @return
      */
     @PostMapping("/add")
+    @RequiresPermissions("/photographer/add")
     @ResponseBody
     public Object add(@Valid Photographer photographer) {
-        photographer.setCreateTime(new Date());
-        photographer.setUpdateTime(new Date());
-        photographer.setDeleteFlag(0);
-        boolean b = photographerService.insert(photographer);
-        if (b) {
-            return renderSuccess("添加成功！");
-        } else {
-            return renderError("添加失败！");
-        }
+        return super.add(photographer,photographerService);
+
     }
     
     /**
      * 删除
-     * @param id
+     * @param ids
      * @return
      */
     @PostMapping("/delete")
+    @RequiresPermissions("/photographer/delete")
     @ResponseBody
-    public Object delete(Long id) {
-        Photographer photographer = new Photographer();
-        photographer.setId(id);
-        photographer.setUpdateTime(new Date());
-        photographer.setDeleteFlag(1);
-        boolean b = photographerService.updateById(photographer);
-        if (b) {
-            return renderSuccess("删除成功！");
-        } else {
-            return renderError("删除失败！");
+    public Object delete(String ids) {
+        if(ids!=null){
+            String[] idss = ids.split(",");
+            List<Photographer> list = new ArrayList<Photographer>();
+            for(String str:idss){
+                if(StringUtils.hasText(str) && StringUtils.isInteger(str) ){
+                    Photographer photographer = new Photographer();
+                    photographer.setId(Long.valueOf(str));
+                    photographer.setDeleteFlag(1);
+                    list.add(photographer);
+                }
+            }
+            if(list.size()>0){
+                boolean suc = photographerService.updateBatchById(list);
+                if(suc)return renderSuccess("删除成功！");
+            }
         }
+
+        return renderError("删除失败！");
+
     }
-    
+/**
+ * 恢复
+ * @param ids
+ * @return
+ */
+@PostMapping("/rollback")
+@RequiresPermissions("/photographer/add")
+@ResponseBody
+public Object rollback(String ids) {
+        if(ids!=null){
+            String[] idss = ids.split(",");
+            List<Photographer> list = new ArrayList<Photographer>();
+            for(String str:idss){
+                if(StringUtils.hasText(str) && StringUtils.isInteger(str) ){
+                    Photographer photographer = new Photographer();
+                    photographer.setId(Long.valueOf(str));
+                    photographer.setDeleteFlag(0);
+                    list.add(photographer);
+                }
+            }
+            if(list.size()>0){
+                boolean suc = photographerService.updateBatchById(list);
+                if(suc)return renderSuccess("恢复成功！");
+            }
+        }
+            return renderError("恢复失败！");
+        }
     /**
      * 编辑
      * @param model
@@ -104,10 +152,12 @@ public class PhotographerController extends BaseController {
      * @return
      */
     @GetMapping("/editPage")
+    @RequiresPermissions("/photographer/edit")
     public String editPage(Model model, Long id) {
         Photographer photographer = photographerService.selectById(id);
         model.addAttribute("photographer", photographer);
-        return "admin/photographer/photographerEdit";
+        model.addAttribute("method", "edit");
+        return "photographer/photographerEdit";
     }
     
     /**
@@ -116,6 +166,7 @@ public class PhotographerController extends BaseController {
      * @return
      */
     @PostMapping("/edit")
+    @RequiresPermissions("/photographer/edit")
     @ResponseBody
     public Object edit(@Valid Photographer photographer) {
         photographer.setUpdateTime(new Date());

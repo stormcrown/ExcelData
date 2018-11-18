@@ -1,9 +1,11 @@
 package cn.dovahkiin.controller;
 
 import javax.validation.Valid;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
+import cn.dovahkiin.commons.utils.StringUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,7 +26,7 @@ import cn.dovahkiin.commons.base.BaseController;
  * </p>
  *
  * @author lzt
- * @since 2018-11-03
+ * @since 2018-11-18
  */
 @Controller
 @RequestMapping("/performer")
@@ -33,15 +35,20 @@ public class PerformerController extends BaseController {
     @Autowired private IPerformerService performerService;
     
     @GetMapping("/manager")
+    @RequiresPermissions("/performer/manager")
     public String manager() {
-        return "admin/performer/performerList";
+        return "performer/performerList";
     }
     
     @PostMapping("/dataGrid")
+    @RequiresPermissions("/performer/dataGrid")
     @ResponseBody
     public PageInfo dataGrid(Performer performer, Integer page, Integer rows, String sort,String order) {
         PageInfo pageInfo = new PageInfo(page, rows, sort, order);
-        EntityWrapper<Performer> ew = new EntityWrapper<Performer>(performer);
+        EntityWrapper<Performer> ew = new EntityWrapper<Performer>();
+        if(performer!=null && StringUtils.hasText(performer.getCode()))ew.like("code","%"+performer.getCode().trim()+"%");
+        if(performer!=null && StringUtils.hasText(performer.getName()) )ew.like("name","%"+performer.getName().trim()+"%");
+        if(performer!=null && performer.getDeleteFlag()!=null  ) ew.eq("delete_flag", performer.getDeleteFlag() );
         Page<Performer> pages = getPage(page, rows, sort, order);
         pages = performerService.selectPage(pages, ew);
         pageInfo.setRows(pages.getRecords());
@@ -54,8 +61,19 @@ public class PerformerController extends BaseController {
      * @return
      */
     @GetMapping("/addPage")
-    public String addPage() {
-        return "admin/performer/performerAdd";
+    @RequiresPermissions("/performer/add")
+    public String addPage(Model model,Long id) {
+        model.addAttribute("method", "add");
+        if(id!=null){
+            Performer performer = performerService.selectById(id);
+            if(performer!=null){
+                performer.setId(null);
+                performer.setCode(null);
+                model.addAttribute("performer", performer);
+            }
+
+        }
+        return "performer/performerEdit";
     }
     
     /**
@@ -64,39 +82,69 @@ public class PerformerController extends BaseController {
      * @return
      */
     @PostMapping("/add")
+    @RequiresPermissions("/performer/add")
     @ResponseBody
     public Object add(@Valid Performer performer) {
-        performer.setCreateTime(new Date());
-        performer.setUpdateTime(new Date());
-        performer.setDeleteFlag(0);
-        boolean b = performerService.insert(performer);
-        if (b) {
-            return renderSuccess("添加成功！");
-        } else {
-            return renderError("添加失败！");
-        }
+        return super.add(performer,performerService);
+
     }
     
     /**
      * 删除
-     * @param id
+     * @param ids
      * @return
      */
     @PostMapping("/delete")
+    @RequiresPermissions("/performer/delete")
     @ResponseBody
-    public Object delete(Long id) {
-        Performer performer = new Performer();
-        performer.setId(id);
-        performer.setUpdateTime(new Date());
-        performer.setDeleteFlag(1);
-        boolean b = performerService.updateById(performer);
-        if (b) {
-            return renderSuccess("删除成功！");
-        } else {
-            return renderError("删除失败！");
+    public Object delete(String ids) {
+        if(ids!=null){
+            String[] idss = ids.split(",");
+            List<Performer> list = new ArrayList<Performer>();
+            for(String str:idss){
+                if(StringUtils.hasText(str) && StringUtils.isInteger(str) ){
+                    Performer performer = new Performer();
+                    performer.setId(Long.valueOf(str));
+                    performer.setDeleteFlag(1);
+                    list.add(performer);
+                }
+            }
+            if(list.size()>0){
+                boolean suc = performerService.updateBatchById(list);
+                if(suc)return renderSuccess("删除成功！");
+            }
         }
+
+        return renderError("删除失败！");
+
     }
-    
+/**
+ * 恢复
+ * @param ids
+ * @return
+ */
+@PostMapping("/rollback")
+@RequiresPermissions("/performer/add")
+@ResponseBody
+public Object rollback(String ids) {
+        if(ids!=null){
+            String[] idss = ids.split(",");
+            List<Performer> list = new ArrayList<Performer>();
+            for(String str:idss){
+                if(StringUtils.hasText(str) && StringUtils.isInteger(str) ){
+                    Performer performer = new Performer();
+                    performer.setId(Long.valueOf(str));
+                    performer.setDeleteFlag(0);
+                    list.add(performer);
+                }
+            }
+            if(list.size()>0){
+                boolean suc = performerService.updateBatchById(list);
+                if(suc)return renderSuccess("恢复成功！");
+            }
+        }
+            return renderError("恢复失败！");
+        }
     /**
      * 编辑
      * @param model
@@ -104,10 +152,12 @@ public class PerformerController extends BaseController {
      * @return
      */
     @GetMapping("/editPage")
+    @RequiresPermissions("/performer/edit")
     public String editPage(Model model, Long id) {
         Performer performer = performerService.selectById(id);
         model.addAttribute("performer", performer);
-        return "admin/performer/performerEdit";
+        model.addAttribute("method", "edit");
+        return "performer/performerEdit";
     }
     
     /**
@@ -116,6 +166,7 @@ public class PerformerController extends BaseController {
      * @return
      */
     @PostMapping("/edit")
+    @RequiresPermissions("/performer/edit")
     @ResponseBody
     public Object edit(@Valid Performer performer) {
         performer.setUpdateTime(new Date());

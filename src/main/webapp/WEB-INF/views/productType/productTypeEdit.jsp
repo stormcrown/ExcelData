@@ -3,7 +3,7 @@
 <script type="text/javascript">
     $(function() {
         $('#productTypeEditForm').form({
-            url : '${path}/productType/edit',
+            url : '${path}/productType/${method}',
             onSubmit : function() {
                 progressLoad();
                 var isValid = $(this).form('validate');
@@ -24,28 +24,20 @@
                 }
             }
         });
-        
-        $("#editStatus").val('${productType.status}'); 
-        
     });
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
     <div data-options="region:'center',border:false" title="" style="overflow: hidden;padding: 3px;">
         <form id="productTypeEditForm" method="post">
+            <input name="id" type="hidden"  value="${productType.id}">
             <table class="grid">
                 <tr>
-                    <td>商家名称</td>
-                    <td><input name="id" type="hidden"  value="${productType.id}">
-                    <input name="name" type="text" placeholder="请输入名称" class="easyui-validatebox" data-options="required:true" value="${productType.name}"></td>
+                    <th>编码:</th>
+                    <td><input id="code" name="code" value="${productType.code}" type="text" class="layui-input" /></td>
                 </tr>
                 <tr>
-                    <td>状态</td>
-                    <td >
-                        <select id="editStatus" name="status" class="easyui-combobox" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
-                            <option value="0">正常</option>
-                            <option value="1">停用</option>
-                        </select>
-                    </td>
+                    <th>名称:</th>
+                    <td><input id="name" name="name" value="${productType.name}" type="text" class="layui-input" /></td>
                 </tr>
             </table>
         </form>

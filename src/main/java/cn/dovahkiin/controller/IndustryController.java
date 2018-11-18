@@ -1,9 +1,11 @@
 package cn.dovahkiin.controller;
 
 import javax.validation.Valid;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
+import cn.dovahkiin.commons.utils.StringUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,7 +26,7 @@ import cn.dovahkiin.commons.base.BaseController;
  * </p>
  *
  * @author lzt
- * @since 2018-11-04
+ * @since 2018-11-18
  */
 @Controller
 @RequestMapping("/industry")
@@ -33,15 +35,20 @@ public class IndustryController extends BaseController {
     @Autowired private IIndustryService industryService;
     
     @GetMapping("/manager")
+    @RequiresPermissions("/industry/manager")
     public String manager() {
-        return "admin/industry/industryList";
+        return "industry/industryList";
     }
     
     @PostMapping("/dataGrid")
+    @RequiresPermissions("/industry/dataGrid")
     @ResponseBody
     public PageInfo dataGrid(Industry industry, Integer page, Integer rows, String sort,String order) {
         PageInfo pageInfo = new PageInfo(page, rows, sort, order);
-        EntityWrapper<Industry> ew = new EntityWrapper<Industry>(industry);
+        EntityWrapper<Industry> ew = new EntityWrapper<Industry>();
+        if(industry!=null && StringUtils.hasText(industry.getCode()))ew.like("code","%"+industry.getCode().trim()+"%");
+        if(industry!=null && StringUtils.hasText(industry.getName()) )ew.like("name","%"+industry.getName().trim()+"%");
+        if(industry!=null && industry.getDeleteFlag()!=null  ) ew.eq("delete_flag", industry.getDeleteFlag() );
         Page<Industry> pages = getPage(page, rows, sort, order);
         pages = industryService.selectPage(pages, ew);
         pageInfo.setRows(pages.getRecords());
@@ -54,8 +61,19 @@ public class IndustryController extends BaseController {
      * @return
      */
     @GetMapping("/addPage")
-    public String addPage() {
-        return "admin/industry/industryAdd";
+    @RequiresPermissions("/industry/add")
+    public String addPage(Model model,Long id) {
+        model.addAttribute("method", "add");
+        if(id!=null){
+            Industry industry = industryService.selectById(id);
+            if(industry!=null){
+                industry.setId(null);
+                industry.setCode(null);
+                model.addAttribute("industry", industry);
+            }
+
+        }
+        return "industry/industryEdit";
     }
     
     /**
@@ -64,39 +82,69 @@ public class IndustryController extends BaseController {
      * @return
      */
     @PostMapping("/add")
+    @RequiresPermissions("/industry/add")
     @ResponseBody
     public Object add(@Valid Industry industry) {
-        industry.setCreateTime(new Date());
-        industry.setUpdateTime(new Date());
-        industry.setDeleteFlag(0);
-        boolean b = industryService.insert(industry);
-        if (b) {
-            return renderSuccess("添加成功！");
-        } else {
-            return renderError("添加失败！");
-        }
+        return super.add(industry,industryService);
+
     }
     
     /**
      * 删除
-     * @param id
+     * @param ids
      * @return
      */
     @PostMapping("/delete")
+    @RequiresPermissions("/industry/delete")
     @ResponseBody
-    public Object delete(Long id) {
-        Industry industry = new Industry();
-        industry.setId(id);
-        industry.setUpdateTime(new Date());
-        industry.setDeleteFlag(1);
-        boolean b = industryService.updateById(industry);
-        if (b) {
-            return renderSuccess("删除成功！");
-        } else {
-            return renderError("删除失败！");
+    public Object delete(String ids) {
+        if(ids!=null){
+            String[] idss = ids.split(",");
+            List<Industry> list = new ArrayList<Industry>();
+            for(String str:idss){
+                if(StringUtils.hasText(str) && StringUtils.isInteger(str) ){
+                    Industry industry = new Industry();
+                    industry.setId(Long.valueOf(str));
+                    industry.setDeleteFlag(1);
+                    list.add(industry);
+                }
+            }
+            if(list.size()>0){
+                boolean suc = industryService.updateBatchById(list);
+                if(suc)return renderSuccess("删除成功！");
+            }
         }
+
+        return renderError("删除失败！");
+
     }
-    
+/**
+ * 恢复
+ * @param ids
+ * @return
+ */
+@PostMapping("/rollback")
+@RequiresPermissions("/industry/add")
+@ResponseBody
+public Object rollback(String ids) {
+        if(ids!=null){
+            String[] idss = ids.split(",");
+            List<Industry> list = new ArrayList<Industry>();
+            for(String str:idss){
+                if(StringUtils.hasText(str) && StringUtils.isInteger(str) ){
+                    Industry industry = new Industry();
+                    industry.setId(Long.valueOf(str));
+                    industry.setDeleteFlag(0);
+                    list.add(industry);
+                }
+            }
+            if(list.size()>0){
+                boolean suc = industryService.updateBatchById(list);
+                if(suc)return renderSuccess("恢复成功！");
+            }
+        }
+            return renderError("恢复失败！");
+        }
     /**
      * 编辑
      * @param model
@@ -104,10 +152,12 @@ public class IndustryController extends BaseController {
      * @return
      */
     @GetMapping("/editPage")
+    @RequiresPermissions("/industry/edit")
     public String editPage(Model model, Long id) {
         Industry industry = industryService.selectById(id);
         model.addAttribute("industry", industry);
-        return "admin/industry/industryEdit";
+        model.addAttribute("method", "edit");
+        return "industry/industryEdit";
     }
     
     /**
@@ -116,6 +166,7 @@ public class IndustryController extends BaseController {
      * @return
      */
     @PostMapping("/edit")
+    @RequiresPermissions("/industry/edit")
     @ResponseBody
     public Object edit(@Valid Industry industry) {
         industry.setUpdateTime(new Date());

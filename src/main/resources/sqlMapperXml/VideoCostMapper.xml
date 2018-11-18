@@ -163,6 +163,50 @@
             )
         </foreach>
     </insert>
+    <update id="deleteMany"  >
+        update `video_cost`
+        set delete_flag= 1
+        where id in (
+        <foreach collection="array" item="id"  separator=",">
+            #{id}
+        </foreach>
+        )
+    </update>
+    <update id="updateByPrimaryKey" parameterType="cn.dovahkiin.model.VideoCost" >
+        update `video_cost`
+        set
+
+        recored_date = #{recoredDate} ,
+        business_department_id = #{businessDepartment.id},
+        product_type_id = #{productType.id},
+        customer_id = #{customer.id},
+        industry_id=#{industry.id},
+        demand_sector_id=#{demandSector.id},
+        optimizer_id=#{optimizer.id},
+        video_type_id=#{videoType.id},
+        complete_date=#{completeDate},
+        originality_id=#{originality.id},
+        photographer_id=#{photographer.id},
+        editor_id=#{editor.id},
+        performer1_id=#{performer1.id},
+        performer2_id=#{performer2.id},
+        performer3_id=#{performer3.id},
+        consumption =
+        <choose>
+            <when test="consumption !=null">
+                #{consumption}
+            </when>
+            <otherwise>
+                0
+            </otherwise>
+        </choose>
+            where id =  #{id}
+
+
+
+
+
+    </update>
     <select id="selectWithCount" resultMap="BaseResultMapWithCount">
         SELECT
         vc.id ,
@@ -293,11 +337,13 @@
         LEFT JOIN performer per1 ON per1.id = vc.performer1_id
         LEFT JOIN performer per2 ON per2.id = vc.performer2_id
         LEFT JOIN performer per3 ON per3.id = vc.performer3_id
-        where 1=1
+        <where> vc.delete_flag = 0
+            <if test="videoCostId !=null and videoCostId !=''" >
+                and vc.id = ${videoCostId}
+            </if>
             <if test="KeyWord !=null" >
-                and
-                <foreach collection="KeyWord" item="keyW" separator="and" >
-                    (
+                <foreach collection="KeyWord" item="keyW" >
+                  and  (
                     vc.consumption like #{keyW}
                     or pty.`name` like #{keyW}
                     or cus.`name` like #{keyW}
@@ -320,7 +366,7 @@
             <if test="recoredDate_start!=null and recoredDate_end!=null">
                 and ( vc.recored_date between #{recoredDate_start} and #{recoredDate_end} )
             </if>
-            <if test="completeDate_start!=null and completeDate_end">
+            <if test="completeDate_start!=null and completeDate_end!=null ">
                 and ( vc.complete_date between #{completeDate_start} and #{completeDate_end} )
             </if>
             <if test="consumption_min!=null">
@@ -329,7 +375,7 @@
             <if test="consumption_max!=null">
                 and vc.consumption &lt;=#{consumption_max}
             </if>
-
+        </where>
         <if test="orderBy !='' " >
             ORDER BY
             <choose>
@@ -399,9 +445,13 @@
         LEFT JOIN performer per2 ON per2.id = vc.performer2_id
         LEFT JOIN performer per3 ON per3.id = vc.performer3_id
         <where>
+            vc.delete_flag = 0
+            <if test="videoCostId !=null and videoCostId !=''" >
+                and vc.id = ${videoCostId}
+            </if>
             <if test="KeyWord !=null" >
-                <foreach collection="KeyWord" item="keyW" separator="and">
-                     (
+                <foreach collection="KeyWord" item="keyW" >
+                     and (
                     vc.consumption like #{keyW}
                     or pty.`name` like #{keyW}
                     or cus.`name` like #{keyW}
@@ -424,7 +474,7 @@
             <if test="recoredDate_start!=null and recoredDate_end!=null">
                 and ( vc.recored_date between #{recoredDate_start} and #{recoredDate_end} )
             </if>
-            <if test="completeDate_start!=null and completeDate_end">
+            <if test="completeDate_start!=null and completeDate_end!=null">
                 and ( vc.complete_date between #{completeDate_start} and #{completeDate_end} )
             </if>
             <if test="consumption_min!=null">

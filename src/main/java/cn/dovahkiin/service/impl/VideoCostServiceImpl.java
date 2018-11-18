@@ -1,14 +1,19 @@
 package cn.dovahkiin.service.impl;
 
 import cn.dovahkiin.commons.converter.DateConverter;
-import cn.dovahkiin.mapper.VideoCostPerformerMapper;
+import cn.dovahkiin.commons.utils.JsonUtils;
 import cn.dovahkiin.model.*;
 import cn.dovahkiin.mapper.VideoCostMapper;
 import cn.dovahkiin.service.*;
+import com.alibaba.druid.support.json.JSONParser;
+import com.alibaba.druid.support.json.JSONUtils;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,10 +41,9 @@ import java.util.*;
  * @since 2018-10-15
  */
 @Service
-public class VideoCostServiceImpl extends ServiceImpl<VideoCostMapper, VideoCost> implements IVideoCostService {
+public class VideoCostServiceImpl  implements IVideoCostService {
     //  调用Dao失败回滚
     @Autowired private VideoCostMapper videoCostMapper;
-    @Autowired private VideoCostPerformerMapper videoCostPerformerMapper;
     // 调用服务，即使失败数据也不会回滚
     @Autowired private ICustomerService customerService;
     @Autowired private IEditorService editorService;
@@ -57,15 +61,44 @@ public class VideoCostServiceImpl extends ServiceImpl<VideoCostMapper, VideoCost
 
     @Transactional
     public int insertMany(List<VideoCost> videoCostList){
-//        return videoCostMapper.insertMany(videoCostList);
+        return videoCostMapper.insertMany(videoCostList);
+    }
+
+    @Override
+    public int updateByPrimaryKey(VideoCost videoCost) {
+        if(videoCost!=null && videoCost.getId()!=null)return videoCostMapper.updateByPrimaryKey(videoCost);
         return 0;
     }
 
     @Override
-    @Transactional
-    public List<VideoCost> countByCustomName() {
-//        return videoCostMapper.countByCustomName();
-        return null;
+    public int deleteMany(String[] ids) {
+        return videoCostMapper.deleteMany(ids);
+    }
+    @Override
+    public org.springframework.ui.Model modelForEdit(org.springframework.ui.Model model) {
+        EntityWrapper un_delete = new EntityWrapper();
+        List<Organization> organizations = iOrganizationService.selectList(un_delete);
+            model.addAttribute("organizations", organizations);
+        un_delete.eq("delete_flag",0);
+        List<Customer> customers = customerService.selectList(un_delete);
+            model.addAttribute("customers",customers);
+        List<Editor> editors = editorService.selectList(un_delete);
+            model.addAttribute("editors",JsonUtils.toJson(editors));
+        List<Industry> industries = iIndustryService.selectList(un_delete);
+            model.addAttribute("industries",JsonUtils.toJson(industries));
+        List<Optimizer> optimizers = iOptimizerService.selectList(un_delete);
+            model.addAttribute("optimizers",JsonUtils.toJson(optimizers));
+        List<Originality> originalities = iOriginalityService.selectList(un_delete);
+            model.addAttribute("originalities",JsonUtils.toJson(originalities));
+        List<Performer> performers = performerService.selectList(un_delete);
+            model.addAttribute("performers",JsonUtils.toJson(performers));
+        List<Photographer> photographers = iPhotographerService.selectList(un_delete);
+            model.addAttribute("photographers",JsonUtils.toJson(photographers));
+        List<ProductType> productTypes = iProductTypeService.selectList(un_delete);
+            model.addAttribute("productTypes",JsonUtils.toJson(productTypes));
+        List<VideoType> videoTypes = videoTypeService.selectList(un_delete);
+            model.addAttribute("videoTypes",JsonUtils.toJson(videoTypes));
+        return model;
     }
 
     @Override
@@ -73,17 +106,16 @@ public class VideoCostServiceImpl extends ServiceImpl<VideoCostMapper, VideoCost
     public boolean saveExcel(Sheet sheet,Date recoredDate,DateConverter dateConverter) {
         EntityWrapper un_delete = new EntityWrapper();
         List<Organization> organizations = iOrganizationService.selectList(un_delete);
-
         un_delete.eq("delete_flag",0);
-        List<Customer> customers = customerService.selectList(un_delete);logger.info("customers="+customers.size());
-        List<Editor> editors = editorService.selectList(un_delete);logger.info("editors="+editors.size());
-        List<Industry> industries = iIndustryService.selectList(un_delete);logger.info("industries="+industries.size());
-        List<Optimizer> optimizers = iOptimizerService.selectList(un_delete);logger.info("optimizers="+optimizers.size());
-        List<Originality> originalities = iOriginalityService.selectList(un_delete);logger.info("originalities="+originalities.size());
-        List<Performer> performers = performerService.selectList(un_delete);logger.info("performers="+performers.size());
-        List<Photographer> photographers = iPhotographerService.selectList(un_delete);logger.info("photographers = "+photographers.size());
-        List<ProductType> productTypes = iProductTypeService.selectList(un_delete);logger.info("productTypes = "+productTypes.size());
-        List<VideoType> videoTypes = videoTypeService.selectList(un_delete);logger.info("videoTypes = "+videoTypes.size());
+        List<Customer> customers = customerService.selectList(un_delete);
+        List<Editor> editors = editorService.selectList(un_delete);
+        List<Industry> industries = iIndustryService.selectList(un_delete);
+        List<Optimizer> optimizers = iOptimizerService.selectList(un_delete);
+        List<Originality> originalities = iOriginalityService.selectList(un_delete);
+        List<Performer> performers = performerService.selectList(un_delete);
+        List<Photographer> photographers = iPhotographerService.selectList(un_delete);
+        List<ProductType> productTypes = iProductTypeService.selectList(un_delete);
+        List<VideoType> videoTypes = videoTypeService.selectList(un_delete);
 
         int first = sheet.getFirstRowNum();
         int last = sheet.getLastRowNum();
@@ -379,11 +411,28 @@ public class VideoCostServiceImpl extends ServiceImpl<VideoCostMapper, VideoCost
     @Override
     public Page<VideoCost> selectWithCount(Page<VideoCost> pages ,Map<String, Object> map) {
         List<VideoCost> videoCosts = videoCostMapper.selectWithCount(map);
-       // int total = videoCostMapper.selectCount(map);
+        int total = videoCostMapper.selectCount(map);
         pages.setRecords(videoCosts);
-      //  pages.setTotal(total);
+        pages.setTotal(total);
         return pages;
     }
+    @Override
+    public int selectCount(Date recoredDate) {
+        Map map =new HashMap();
+        map.put("recoredDate_start",recoredDate);
+        map.put("recoredDate_end",recoredDate);
+        return  videoCostMapper.selectCount(map);
+    }
+
+    @Override
+    public VideoCost selectByPrimaryKey(Long  id) {
+        Map map = new HashMap();
+        map.put("videoCostId",id);
+        List<VideoCost> videoCosts = videoCostMapper.selectWithCount(map);
+        if(videoCosts!=null&&videoCosts.size()==1)return videoCosts.get(0);
+        return null;
+    }
+
     @Override
     public double selectMaxConsumption() {
         return videoCostMapper.selectMaxConsumption();

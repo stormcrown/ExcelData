@@ -1,9 +1,11 @@
 package cn.dovahkiin.controller;
 
 import javax.validation.Valid;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
+import cn.dovahkiin.commons.utils.StringUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,7 +26,7 @@ import cn.dovahkiin.commons.base.BaseController;
  * </p>
  *
  * @author lzt
- * @since 2018-11-03
+ * @since 2018-11-18
  */
 @Controller
 @RequestMapping("/optimizer")
@@ -33,15 +35,20 @@ public class OptimizerController extends BaseController {
     @Autowired private IOptimizerService optimizerService;
     
     @GetMapping("/manager")
+    @RequiresPermissions("/optimizer/manager")
     public String manager() {
-        return "admin/optimizer/optimizerList";
+        return "optimizer/optimizerList";
     }
     
     @PostMapping("/dataGrid")
+    @RequiresPermissions("/optimizer/dataGrid")
     @ResponseBody
     public PageInfo dataGrid(Optimizer optimizer, Integer page, Integer rows, String sort,String order) {
         PageInfo pageInfo = new PageInfo(page, rows, sort, order);
-        EntityWrapper<Optimizer> ew = new EntityWrapper<Optimizer>(optimizer);
+        EntityWrapper<Optimizer> ew = new EntityWrapper<Optimizer>();
+        if(optimizer!=null && StringUtils.hasText(optimizer.getCode()))ew.like("code","%"+optimizer.getCode().trim()+"%");
+        if(optimizer!=null && StringUtils.hasText(optimizer.getName()) )ew.like("name","%"+optimizer.getName().trim()+"%");
+        if(optimizer!=null && optimizer.getDeleteFlag()!=null  ) ew.eq("delete_flag", optimizer.getDeleteFlag() );
         Page<Optimizer> pages = getPage(page, rows, sort, order);
         pages = optimizerService.selectPage(pages, ew);
         pageInfo.setRows(pages.getRecords());
@@ -54,8 +61,19 @@ public class OptimizerController extends BaseController {
      * @return
      */
     @GetMapping("/addPage")
-    public String addPage() {
-        return "admin/optimizer/optimizerAdd";
+    @RequiresPermissions("/optimizer/add")
+    public String addPage(Model model,Long id) {
+        model.addAttribute("method", "add");
+        if(id!=null){
+            Optimizer optimizer = optimizerService.selectById(id);
+            if(optimizer!=null){
+                optimizer.setId(null);
+                optimizer.setCode(null);
+                model.addAttribute("optimizer", optimizer);
+            }
+
+        }
+        return "optimizer/optimizerEdit";
     }
     
     /**
@@ -64,39 +82,69 @@ public class OptimizerController extends BaseController {
      * @return
      */
     @PostMapping("/add")
+    @RequiresPermissions("/optimizer/add")
     @ResponseBody
     public Object add(@Valid Optimizer optimizer) {
-        optimizer.setCreateTime(new Date());
-        optimizer.setUpdateTime(new Date());
-        optimizer.setDeleteFlag(0);
-        boolean b = optimizerService.insert(optimizer);
-        if (b) {
-            return renderSuccess("添加成功！");
-        } else {
-            return renderError("添加失败！");
-        }
+        return super.add(optimizer,optimizerService);
+
     }
     
     /**
      * 删除
-     * @param id
+     * @param ids
      * @return
      */
     @PostMapping("/delete")
+    @RequiresPermissions("/optimizer/delete")
     @ResponseBody
-    public Object delete(Long id) {
-        Optimizer optimizer = new Optimizer();
-        optimizer.setId(id);
-        optimizer.setUpdateTime(new Date());
-        optimizer.setDeleteFlag(1);
-        boolean b = optimizerService.updateById(optimizer);
-        if (b) {
-            return renderSuccess("删除成功！");
-        } else {
-            return renderError("删除失败！");
+    public Object delete(String ids) {
+        if(ids!=null){
+            String[] idss = ids.split(",");
+            List<Optimizer> list = new ArrayList<Optimizer>();
+            for(String str:idss){
+                if(StringUtils.hasText(str) && StringUtils.isInteger(str) ){
+                    Optimizer optimizer = new Optimizer();
+                    optimizer.setId(Long.valueOf(str));
+                    optimizer.setDeleteFlag(1);
+                    list.add(optimizer);
+                }
+            }
+            if(list.size()>0){
+                boolean suc = optimizerService.updateBatchById(list);
+                if(suc)return renderSuccess("删除成功！");
+            }
         }
+
+        return renderError("删除失败！");
+
     }
-    
+/**
+ * 恢复
+ * @param ids
+ * @return
+ */
+@PostMapping("/rollback")
+@RequiresPermissions("/optimizer/add")
+@ResponseBody
+public Object rollback(String ids) {
+        if(ids!=null){
+            String[] idss = ids.split(",");
+            List<Optimizer> list = new ArrayList<Optimizer>();
+            for(String str:idss){
+                if(StringUtils.hasText(str) && StringUtils.isInteger(str) ){
+                    Optimizer optimizer = new Optimizer();
+                    optimizer.setId(Long.valueOf(str));
+                    optimizer.setDeleteFlag(0);
+                    list.add(optimizer);
+                }
+            }
+            if(list.size()>0){
+                boolean suc = optimizerService.updateBatchById(list);
+                if(suc)return renderSuccess("恢复成功！");
+            }
+        }
+            return renderError("恢复失败！");
+        }
     /**
      * 编辑
      * @param model
@@ -104,10 +152,12 @@ public class OptimizerController extends BaseController {
      * @return
      */
     @GetMapping("/editPage")
+    @RequiresPermissions("/optimizer/edit")
     public String editPage(Model model, Long id) {
         Optimizer optimizer = optimizerService.selectById(id);
         model.addAttribute("optimizer", optimizer);
-        return "admin/optimizer/optimizerEdit";
+        model.addAttribute("method", "edit");
+        return "optimizer/optimizerEdit";
     }
     
     /**
@@ -116,6 +166,7 @@ public class OptimizerController extends BaseController {
      * @return
      */
     @PostMapping("/edit")
+    @RequiresPermissions("/optimizer/edit")
     @ResponseBody
     public Object edit(@Valid Optimizer optimizer) {
         optimizer.setUpdateTime(new Date());

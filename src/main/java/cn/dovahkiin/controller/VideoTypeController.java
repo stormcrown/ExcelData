@@ -1,9 +1,11 @@
 package cn.dovahkiin.controller;
 
 import javax.validation.Valid;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
+import cn.dovahkiin.commons.utils.StringUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,7 +26,7 @@ import cn.dovahkiin.commons.base.BaseController;
  * </p>
  *
  * @author lzt
- * @since 2018-11-04
+ * @since 2018-11-18
  */
 @Controller
 @RequestMapping("/videoType")
@@ -33,15 +35,20 @@ public class VideoTypeController extends BaseController {
     @Autowired private IVideoTypeService videoTypeService;
     
     @GetMapping("/manager")
+    @RequiresPermissions("/videoType/manager")
     public String manager() {
-        return "admin/videoType/videoTypeList";
+        return "videoType/videoTypeList";
     }
     
     @PostMapping("/dataGrid")
+    @RequiresPermissions("/videoType/dataGrid")
     @ResponseBody
     public PageInfo dataGrid(VideoType videoType, Integer page, Integer rows, String sort,String order) {
         PageInfo pageInfo = new PageInfo(page, rows, sort, order);
-        EntityWrapper<VideoType> ew = new EntityWrapper<VideoType>(videoType);
+        EntityWrapper<VideoType> ew = new EntityWrapper<VideoType>();
+        if(videoType!=null && StringUtils.hasText(videoType.getCode()))ew.like("code","%"+videoType.getCode().trim()+"%");
+        if(videoType!=null && StringUtils.hasText(videoType.getName()) )ew.like("name","%"+videoType.getName().trim()+"%");
+        if(videoType!=null && videoType.getDeleteFlag()!=null  ) ew.eq("delete_flag", videoType.getDeleteFlag() );
         Page<VideoType> pages = getPage(page, rows, sort, order);
         pages = videoTypeService.selectPage(pages, ew);
         pageInfo.setRows(pages.getRecords());
@@ -54,8 +61,19 @@ public class VideoTypeController extends BaseController {
      * @return
      */
     @GetMapping("/addPage")
-    public String addPage() {
-        return "admin/videoType/videoTypeAdd";
+    @RequiresPermissions("/videoType/add")
+    public String addPage(Model model,Long id) {
+        model.addAttribute("method", "add");
+        if(id!=null){
+            VideoType videoType = videoTypeService.selectById(id);
+            if(videoType!=null){
+                videoType.setId(null);
+                videoType.setCode(null);
+                model.addAttribute("videoType", videoType);
+            }
+
+        }
+        return "videoType/videoTypeEdit";
     }
     
     /**
@@ -64,39 +82,69 @@ public class VideoTypeController extends BaseController {
      * @return
      */
     @PostMapping("/add")
+    @RequiresPermissions("/videoType/add")
     @ResponseBody
     public Object add(@Valid VideoType videoType) {
-        videoType.setCreateTime(new Date());
-        videoType.setUpdateTime(new Date());
-        videoType.setDeleteFlag(0);
-        boolean b = videoTypeService.insert(videoType);
-        if (b) {
-            return renderSuccess("添加成功！");
-        } else {
-            return renderError("添加失败！");
-        }
+        return super.add(videoType,videoTypeService);
+
     }
     
     /**
      * 删除
-     * @param id
+     * @param ids
      * @return
      */
     @PostMapping("/delete")
+    @RequiresPermissions("/videoType/delete")
     @ResponseBody
-    public Object delete(Long id) {
-        VideoType videoType = new VideoType();
-        videoType.setId(id);
-        videoType.setUpdateTime(new Date());
-        videoType.setDeleteFlag(1);
-        boolean b = videoTypeService.updateById(videoType);
-        if (b) {
-            return renderSuccess("删除成功！");
-        } else {
-            return renderError("删除失败！");
+    public Object delete(String ids) {
+        if(ids!=null){
+            String[] idss = ids.split(",");
+            List<VideoType> list = new ArrayList<VideoType>();
+            for(String str:idss){
+                if(StringUtils.hasText(str) && StringUtils.isInteger(str) ){
+                    VideoType videoType = new VideoType();
+                    videoType.setId(Long.valueOf(str));
+                    videoType.setDeleteFlag(1);
+                    list.add(videoType);
+                }
+            }
+            if(list.size()>0){
+                boolean suc = videoTypeService.updateBatchById(list);
+                if(suc)return renderSuccess("删除成功！");
+            }
         }
+
+        return renderError("删除失败！");
+
     }
-    
+/**
+ * 恢复
+ * @param ids
+ * @return
+ */
+@PostMapping("/rollback")
+@RequiresPermissions("/videoType/add")
+@ResponseBody
+public Object rollback(String ids) {
+        if(ids!=null){
+            String[] idss = ids.split(",");
+            List<VideoType> list = new ArrayList<VideoType>();
+            for(String str:idss){
+                if(StringUtils.hasText(str) && StringUtils.isInteger(str) ){
+                    VideoType videoType = new VideoType();
+                    videoType.setId(Long.valueOf(str));
+                    videoType.setDeleteFlag(0);
+                    list.add(videoType);
+                }
+            }
+            if(list.size()>0){
+                boolean suc = videoTypeService.updateBatchById(list);
+                if(suc)return renderSuccess("恢复成功！");
+            }
+        }
+            return renderError("恢复失败！");
+        }
     /**
      * 编辑
      * @param model
@@ -104,10 +152,12 @@ public class VideoTypeController extends BaseController {
      * @return
      */
     @GetMapping("/editPage")
+    @RequiresPermissions("/videoType/edit")
     public String editPage(Model model, Long id) {
         VideoType videoType = videoTypeService.selectById(id);
         model.addAttribute("videoType", videoType);
-        return "admin/videoType/videoTypeEdit";
+        model.addAttribute("method", "edit");
+        return "videoType/videoTypeEdit";
     }
     
     /**
@@ -116,6 +166,7 @@ public class VideoTypeController extends BaseController {
      * @return
      */
     @PostMapping("/edit")
+    @RequiresPermissions("/videoType/edit")
     @ResponseBody
     public Object edit(@Valid VideoType videoType) {
         videoType.setUpdateTime(new Date());

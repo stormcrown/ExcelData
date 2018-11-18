@@ -1,9 +1,11 @@
 package cn.dovahkiin.controller;
 
 import javax.validation.Valid;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
+import cn.dovahkiin.commons.utils.StringUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,7 +26,7 @@ import cn.dovahkiin.commons.base.BaseController;
  * </p>
  *
  * @author lzt
- * @since 2018-11-03
+ * @since 2018-11-18
  */
 @Controller
 @RequestMapping("/customer")
@@ -33,15 +35,20 @@ public class CustomerController extends BaseController {
     @Autowired private ICustomerService customerService;
     
     @GetMapping("/manager")
+    @RequiresPermissions("/customer/manager")
     public String manager() {
-        return "admin/customer/customerList";
+        return "customer/customerList";
     }
     
     @PostMapping("/dataGrid")
+    @RequiresPermissions("/customer/dataGrid")
     @ResponseBody
     public PageInfo dataGrid(Customer customer, Integer page, Integer rows, String sort,String order) {
         PageInfo pageInfo = new PageInfo(page, rows, sort, order);
-        EntityWrapper<Customer> ew = new EntityWrapper<Customer>(customer);
+        EntityWrapper<Customer> ew = new EntityWrapper<Customer>();
+        if(customer!=null && StringUtils.hasText(customer.getCode()))ew.like("code","%"+customer.getCode().trim()+"%");
+        if(customer!=null && StringUtils.hasText(customer.getName()) )ew.like("name","%"+customer.getName().trim()+"%");
+        if(customer!=null && customer.getDeleteFlag()!=null  ) ew.eq("delete_flag", customer.getDeleteFlag() );
         Page<Customer> pages = getPage(page, rows, sort, order);
         pages = customerService.selectPage(pages, ew);
         pageInfo.setRows(pages.getRecords());
@@ -54,8 +61,19 @@ public class CustomerController extends BaseController {
      * @return
      */
     @GetMapping("/addPage")
-    public String addPage() {
-        return "admin/customer/customerAdd";
+    @RequiresPermissions("/customer/add")
+    public String addPage(Model model,Long id) {
+        model.addAttribute("method", "add");
+        if(id!=null){
+            Customer customer = customerService.selectById(id);
+            if(customer!=null){
+                customer.setId(null);
+                customer.setCode(null);
+                model.addAttribute("customer", customer);
+            }
+
+        }
+        return "customer/customerEdit";
     }
     
     /**
@@ -64,39 +82,69 @@ public class CustomerController extends BaseController {
      * @return
      */
     @PostMapping("/add")
+    @RequiresPermissions("/customer/add")
     @ResponseBody
     public Object add(@Valid Customer customer) {
-        customer.setCreateTime(new Date());
-        customer.setUpdateTime(new Date());
-        customer.setDeleteFlag(0);
-        boolean b = customerService.insert(customer);
-        if (b) {
-            return renderSuccess("添加成功！");
-        } else {
-            return renderError("添加失败！");
-        }
+        return super.add(customer,customerService);
+
     }
     
     /**
      * 删除
-     * @param id
+     * @param ids
      * @return
      */
     @PostMapping("/delete")
+    @RequiresPermissions("/customer/delete")
     @ResponseBody
-    public Object delete(Long id) {
-        Customer customer = new Customer();
-        customer.setId(id);
-        customer.setUpdateTime(new Date());
-        customer.setDeleteFlag(1);
-        boolean b = customerService.updateById(customer);
-        if (b) {
-            return renderSuccess("删除成功！");
-        } else {
-            return renderError("删除失败！");
+    public Object delete(String ids) {
+        if(ids!=null){
+            String[] idss = ids.split(",");
+            List<Customer> list = new ArrayList<Customer>();
+            for(String str:idss){
+                if(StringUtils.hasText(str) && StringUtils.isInteger(str) ){
+                    Customer customer = new Customer();
+                    customer.setId(Long.valueOf(str));
+                    customer.setDeleteFlag(1);
+                    list.add(customer);
+                }
+            }
+            if(list.size()>0){
+                boolean suc = customerService.updateBatchById(list);
+                if(suc)return renderSuccess("删除成功！");
+            }
         }
+
+        return renderError("删除失败！");
+
     }
-    
+/**
+ * 恢复
+ * @param ids
+ * @return
+ */
+@PostMapping("/rollback")
+@RequiresPermissions("/customer/add")
+@ResponseBody
+public Object rollback(String ids) {
+        if(ids!=null){
+            String[] idss = ids.split(",");
+            List<Customer> list = new ArrayList<Customer>();
+            for(String str:idss){
+                if(StringUtils.hasText(str) && StringUtils.isInteger(str) ){
+                    Customer customer = new Customer();
+                    customer.setId(Long.valueOf(str));
+                    customer.setDeleteFlag(0);
+                    list.add(customer);
+                }
+            }
+            if(list.size()>0){
+                boolean suc = customerService.updateBatchById(list);
+                if(suc)return renderSuccess("恢复成功！");
+            }
+        }
+            return renderError("恢复失败！");
+        }
     /**
      * 编辑
      * @param model
@@ -104,10 +152,12 @@ public class CustomerController extends BaseController {
      * @return
      */
     @GetMapping("/editPage")
+    @RequiresPermissions("/customer/edit")
     public String editPage(Model model, Long id) {
         Customer customer = customerService.selectById(id);
         model.addAttribute("customer", customer);
-        return "admin/customer/customerEdit";
+        model.addAttribute("method", "edit");
+        return "customer/customerEdit";
     }
     
     /**
@@ -116,6 +166,7 @@ public class CustomerController extends BaseController {
      * @return
      */
     @PostMapping("/edit")
+    @RequiresPermissions("/customer/edit")
     @ResponseBody
     public Object edit(@Valid Customer customer) {
         customer.setUpdateTime(new Date());

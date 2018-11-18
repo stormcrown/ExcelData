@@ -1,5 +1,6 @@
 package cn.dovahkiin.model;
 
+import cn.dovahkiin.commons.utils.JsonUtils;
 import cn.dovahkiin.commons.utils.StringUtils;
 import com.baomidou.mybatisplus.enums.IdType;
 import java.util.Date;
@@ -18,7 +19,7 @@ import java.io.Serializable;
  */
 public class Industry extends Model<Industry> {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 	private static final String codePrex="IND";
 	public   String CreateCode(){
 		StringBuffer newCode= new StringBuffer()
@@ -120,5 +121,8 @@ public class Industry extends Model<Industry> {
 	protected Serializable pkVal() {
 		return this.id;
 	}
-
+	@Override
+	public String toString() {
+		return JsonUtils.toJson(this);
+	}
 }

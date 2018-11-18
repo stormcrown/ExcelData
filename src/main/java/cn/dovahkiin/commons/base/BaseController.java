@@ -230,23 +230,24 @@ public abstract class BaseController {
      * */
     protected  <T extends Model> Object add(@Valid T model,IService<T> iService) {
         try {
-            Method setCreateTime = model.getClass().getMethod("setCreateTime") ;
-            Method setUpdateTime = model.getClass().getMethod("setUpdateTime") ;
-            Method setDeleteFlag = model.getClass().getMethod("setDeleteFlag") ;
+            Method setCreateTime = model.getClass().getMethod("setCreateTime",Date.class) ;
+            Method setUpdateTime = model.getClass().getMethod("setUpdateTime",Date.class) ;
+            Method setDeleteFlag = model.getClass().getMethod("setDeleteFlag",Integer.class) ;
             setCreateTime.invoke(model,new Date());
             setUpdateTime.invoke(model,new Date());
             setDeleteFlag.invoke(model,0);
             boolean b = iService.insert(model);
             if (b) return renderSuccess("添加成功！");
         }catch (NoSuchMethodException e){
-
+            e.printStackTrace();
         }catch (InvocationTargetException e){
-
+            e.printStackTrace();
         }catch (IllegalAccessException e){
-
+            e.printStackTrace();
         }
         return renderError("添加失败！");
     }
+
     protected void addCookie(HttpServletResponse response,Cookie cookie){
         response.addCookie(cookie);
     }

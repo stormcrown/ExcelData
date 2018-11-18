@@ -15,7 +15,7 @@ import java.util.Date;
  */
 public class Resource implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 
 	/** 主键 */
 	private Long id;
@@ -155,4 +155,5 @@ public class Resource implements Serializable {
 	public String toString() {
 		return JsonUtils.toJson(this);
 	}
+
 }
