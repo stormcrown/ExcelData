@@ -24,11 +24,7 @@ public class ServiceTest extends BaseTest{
     @Autowired private IVideoCostService iVideoCostService;
     @Test
     public void seleectAll(){
-//        Customer customer0 = new Customer();
-//        customer0.setDeleteFlag(0);
-        EntityWrapper un_delete = new EntityWrapper();
-        un_delete.eq("delete_flag",0);
-        List<Customer> customerList = customerService.selectList(un_delete);
+        List<Customer> customerList = customerService.selectUnDeleted();
         for(Customer customer: customerList)logger.info("Customer = " +customer.toString());
 
     }

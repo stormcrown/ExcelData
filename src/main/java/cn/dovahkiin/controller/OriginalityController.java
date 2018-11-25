@@ -26,7 +26,7 @@ import cn.dovahkiin.commons.base.BaseController;
  * </p>
  *
  * @author lzt
- * @since 2018-11-18
+ * @since 2018-11-19
  */
 @Controller
 @RequestMapping("/originality")
@@ -68,7 +68,6 @@ public class OriginalityController extends BaseController {
             Originality originality = originalityService.selectById(id);
             if(originality!=null){
                 originality.setId(null);
-                originality.setCode(null);
                 model.addAttribute("originality", originality);
             }
 

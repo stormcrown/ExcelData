@@ -26,7 +26,7 @@ import cn.dovahkiin.commons.base.BaseController;
  * </p>
  *
  * @author lzt
- * @since 2018-11-18
+ * @since 2018-11-19
  */
 @Controller
 @RequestMapping("/performer")
@@ -68,7 +68,6 @@ public class PerformerController extends BaseController {
             Performer performer = performerService.selectById(id);
             if(performer!=null){
                 performer.setId(null);
-                performer.setCode(null);
                 model.addAttribute("performer", performer);
             }
 

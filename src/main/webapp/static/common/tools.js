@@ -31,3 +31,22 @@ function getCookie(c_name)
     }
     return ""
 }
+function commonForm(value,keyStrs) {
+    if(value==undefined || value == null || value ==null)return"";
+    var str = new String(value);
+    var keys="";
+    if(keyStrs==undefined || keyStrs==null )
+        keys = new String($("#KeyWord").val()).trim().split(",");
+    else keys = new String(keyStrs.trim().split(","));
+    //console.log(keys);
+    var arr = new Array();
+    var speci = "&*$%#@!&*";
+    for(var i=0;i<keys.length;i++){
+        arr.push(keys[i]);
+        str=str.replace(keys[i],speci+i);
+    }
+    for(var j=0;j<arr.length;j++){
+        str=str.replace(speci+j,redFont(arr[j]));
+    }
+    return str;
+}

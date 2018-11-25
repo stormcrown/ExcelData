@@ -26,7 +26,7 @@ import cn.dovahkiin.commons.base.BaseController;
  * </p>
  *
  * @author lzt
- * @since 2018-11-18
+ * @since 2018-11-19
  */
 @Controller
 @RequestMapping("/photographer")
@@ -68,7 +68,6 @@ public class PhotographerController extends BaseController {
             Photographer photographer = photographerService.selectById(id);
             if(photographer!=null){
                 photographer.setId(null);
-                photographer.setCode(null);
                 model.addAttribute("photographer", photographer);
             }
 

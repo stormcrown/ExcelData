@@ -1,10 +1,10 @@
 package cn.dovahkiin.controller;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Date;
+import java.util.*;
+
 import cn.dovahkiin.commons.utils.StringUtils;
+import cn.dovahkiin.model.VideoCost;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,7 +26,7 @@ import cn.dovahkiin.commons.base.BaseController;
  * </p>
  *
  * @author lzt
- * @since 2018-11-18
+ * @since 2018-11-19
  */
 @Controller
 @RequestMapping("/customer")
@@ -39,23 +39,56 @@ public class CustomerController extends BaseController {
     public String manager() {
         return "customer/customerList";
     }
-    
+
+    private Map handle(Customer customer, Integer page, Integer rows, String sort, String order ,
+                        String KeyWord, String completeDateRange){
+        Map map = new HashMap(10);
+//        if(ConsumptionRange!=null && ConsumptionRange.indexOf(",")>0){
+//            String [] cuns = ConsumptionRange.split(",");
+//            if(Double.parseDouble(cuns[0])!=0.0) map.put("consumption_min",Double.parseDouble(cuns[0]));
+//            map.put("consumption_max",Double.parseDouble(cuns[1]));
+//        }
+        map.put("customer",customer);
+        map.put("order",order );
+        map.put("sort",sort);
+
+        if(completeDateRange!=null && completeDateRange.indexOf("~")>0){
+            String[] da = completeDateRange.split("~");
+            if(da!=null && da.length==2 && da[0]!=null && da[1] !=null ){
+                Date date1 = dateConverter.convert(da[0].replaceAll(" ",""));
+                Date date2 = dateConverter.convert(da[1].replaceAll(" ",""));
+                map.put("completeDate_start",date1);
+                map.put("completeDate_end",date2);
+            }
+        }
+        if( KeyWord!=null &&  StringUtils.hasText(KeyWord)){
+            String[] words = KeyWord.trim().split(",");
+            for(int i=0;i<words.length;i++){
+                if(StringUtils.isNotBlank(words[i]))words[i] = "%"+words[i].replaceAll(" ","")+"%";
+            }
+            if(words!=null && words.length>0)map.put("KeyWord",words );
+        }
+        return map;
+    }
     @PostMapping("/dataGrid")
     @RequiresPermissions("/customer/dataGrid")
     @ResponseBody
-    public PageInfo dataGrid(Customer customer, Integer page, Integer rows, String sort,String order) {
+    public PageInfo dataGrid(Customer customer, Integer page, Integer rows, String sort,String order, String KeyWord, String completeDateRange) {
         PageInfo pageInfo = new PageInfo(page, rows, sort, order);
         EntityWrapper<Customer> ew = new EntityWrapper<Customer>();
         if(customer!=null && StringUtils.hasText(customer.getCode()))ew.like("code","%"+customer.getCode().trim()+"%");
         if(customer!=null && StringUtils.hasText(customer.getName()) )ew.like("name","%"+customer.getName().trim()+"%");
         if(customer!=null && customer.getDeleteFlag()!=null  ) ew.eq("delete_flag", customer.getDeleteFlag() );
         Page<Customer> pages = getPage(page, rows, sort, order);
-        pages = customerService.selectPage(pages, ew);
+        Map map = handle(customer,page,rows,sort,order,KeyWord,completeDateRange);
+        map.put("offset",pages.getOffset());
+        map.put("limit",pages.getLimit());
+
+        pages = customerService.selectPage(pages, map);
         pageInfo.setRows(pages.getRecords());
         pageInfo.setTotal(pages.getTotal());
         return pageInfo;
     }
-    
     /**
      * 添加页面
      * @return
@@ -64,11 +97,11 @@ public class CustomerController extends BaseController {
     @RequiresPermissions("/customer/add")
     public String addPage(Model model,Long id) {
         model.addAttribute("method", "add");
+        customerService.modelForEdit(model);
         if(id!=null){
-            Customer customer = customerService.selectById(id);
+            Customer customer = customerService.selectByPrimaryKey(id);
             if(customer!=null){
                 customer.setId(null);
-                customer.setCode(null);
                 model.addAttribute("customer", customer);
             }
 
@@ -85,7 +118,12 @@ public class CustomerController extends BaseController {
     @RequiresPermissions("/customer/add")
     @ResponseBody
     public Object add(@Valid Customer customer) {
-        return super.add(customer,customerService);
+        customer.setDeleteFlag(0);
+        customer.setCreateTime(new Date());
+        customer.setUpdateTime(new Date());
+        int suc = customerService.insert(customer);
+        if(suc==1)return renderSuccess();
+        return renderError("新增失败");
 
     }
     
@@ -100,23 +138,18 @@ public class CustomerController extends BaseController {
     public Object delete(String ids) {
         if(ids!=null){
             String[] idss = ids.split(",");
-            List<Customer> list = new ArrayList<Customer>();
+            List<String> list = new ArrayList();
             for(String str:idss){
                 if(StringUtils.hasText(str) && StringUtils.isInteger(str) ){
-                    Customer customer = new Customer();
-                    customer.setId(Long.valueOf(str));
-                    customer.setDeleteFlag(1);
-                    list.add(customer);
+                   list.add(str);
                 }
             }
             if(list.size()>0){
-                boolean suc = customerService.updateBatchById(list);
-                if(suc)return renderSuccess("删除成功！");
+                int suc = customerService.deleteMany(list);
+                if(suc>0)return renderSuccess("删除成功！");
             }
         }
-
         return renderError("删除失败！");
-
     }
 /**
  * 恢复
@@ -129,18 +162,15 @@ public class CustomerController extends BaseController {
 public Object rollback(String ids) {
         if(ids!=null){
             String[] idss = ids.split(",");
-            List<Customer> list = new ArrayList<Customer>();
+            List<String> list = new ArrayList<>();
             for(String str:idss){
                 if(StringUtils.hasText(str) && StringUtils.isInteger(str) ){
-                    Customer customer = new Customer();
-                    customer.setId(Long.valueOf(str));
-                    customer.setDeleteFlag(0);
-                    list.add(customer);
+                    list.add(str);
                 }
             }
             if(list.size()>0){
-                boolean suc = customerService.updateBatchById(list);
-                if(suc)return renderSuccess("恢复成功！");
+                int suc = customerService.rollBack(list);
+                if(suc>0)return renderSuccess("恢复成功！");
             }
         }
             return renderError("恢复失败！");
@@ -154,9 +184,10 @@ public Object rollback(String ids) {
     @GetMapping("/editPage")
     @RequiresPermissions("/customer/edit")
     public String editPage(Model model, Long id) {
-        Customer customer = customerService.selectById(id);
+        Customer customer = customerService.selectByPrimaryKey(id);
         model.addAttribute("customer", customer);
         model.addAttribute("method", "edit");
+        customerService.modelForEdit(model);
         return "customer/customerEdit";
     }
     
@@ -170,8 +201,8 @@ public Object rollback(String ids) {
     @ResponseBody
     public Object edit(@Valid Customer customer) {
         customer.setUpdateTime(new Date());
-        boolean b = customerService.updateById(customer);
-        if (b) {
+        int b = customerService.updateByPrimaryKey(customer);
+        if (b>0) {
             return renderSuccess("编辑成功！");
         } else {
             return renderError("编辑失败！");

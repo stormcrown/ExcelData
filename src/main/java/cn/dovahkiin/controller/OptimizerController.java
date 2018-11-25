@@ -26,7 +26,7 @@ import cn.dovahkiin.commons.base.BaseController;
  * </p>
  *
  * @author lzt
- * @since 2018-11-18
+ * @since 2018-11-19
  */
 @Controller
 @RequestMapping("/optimizer")
@@ -68,7 +68,6 @@ public class OptimizerController extends BaseController {
             Optimizer optimizer = optimizerService.selectById(id);
             if(optimizer!=null){
                 optimizer.setId(null);
-                optimizer.setCode(null);
                 model.addAttribute("optimizer", optimizer);
             }
 

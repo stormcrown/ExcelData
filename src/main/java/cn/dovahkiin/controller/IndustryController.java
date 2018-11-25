@@ -26,7 +26,7 @@ import cn.dovahkiin.commons.base.BaseController;
  * </p>
  *
  * @author lzt
- * @since 2018-11-18
+ * @since 2018-11-19
  */
 @Controller
 @RequestMapping("/industry")
@@ -68,7 +68,6 @@ public class IndustryController extends BaseController {
             Industry industry = industryService.selectById(id);
             if(industry!=null){
                 industry.setId(null);
-                industry.setCode(null);
                 model.addAttribute("industry", industry);
             }
 

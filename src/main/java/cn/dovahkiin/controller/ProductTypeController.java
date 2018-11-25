@@ -26,7 +26,7 @@ import cn.dovahkiin.commons.base.BaseController;
  * </p>
  *
  * @author lzt
- * @since 2018-11-18
+ * @since 2018-11-19
  */
 @Controller
 @RequestMapping("/productType")
@@ -68,7 +68,6 @@ public class ProductTypeController extends BaseController {
             ProductType productType = productTypeService.selectById(id);
             if(productType!=null){
                 productType.setId(null);
-                productType.setCode(null);
                 model.addAttribute("productType", productType);
             }
 

@@ -61,7 +61,7 @@
         <load-on-startup>1</load-on-startup>
         <async-supported>true</async-supported>
         <multipart-config>
-            <location>D:/temp</location><!--临时文件夹-->
+            <location>/temp</location><!--临时文件夹-->
             <max-file-size>5242880</max-file-size><!--5MB-->
             <max-request-size>20971520</max-request-size><!--20MB-->
             <file-size-threshold>0</file-size-threshold><!--文件是否写入磁盘-->

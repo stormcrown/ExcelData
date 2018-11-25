@@ -10,6 +10,502 @@
 		<result column="update_time" property="updateTime" />
 		<result column="create_time" property="createTime" />
 		<result column="delete_flag" property="deleteFlag" />
+		<result column="complete_date"  property="completeDate" />
+		<association  property="editor" javaType="cn.dovahkiin.model.Editor" columnPrefix="editor_" >
+			<id column="id" property="id" />
+			<result column="name" property="name" />
+			<result column="code" property="code" />
+			<result column="update_time" property="updateTime" />
+			<result column="create_time" property="createTime" />
+			<result column="delete_flag" property="deleteFlag" />
+		</association>
+		<association property="industry" javaType="cn.dovahkiin.model.Industry" columnPrefix="industry_" >
+			<id column="id" property="id" />
+			<result column="name" property="name" />
+			<result column="code" property="code" />
+			<result column="update_time" property="updateTime" />
+			<result column="create_time" property="createTime" />
+			<result column="delete_flag" property="deleteFlag" />
+		</association>
+		<association property="productType" javaType="cn.dovahkiin.model.ProductType" columnPrefix="product_type_">
+			<id column="id" property="id"/>
+			<result column="name" property="name"/>
+			<result column="code" property="code"/>
+			<result column="update_time" property="updateTime"/>
+			<result column="create_time" property="createTime"/>
+			<result column="delete_flag" property="deleteFlag"/>
+		</association>
+		<association property="originality" javaType="cn.dovahkiin.model.Originality" columnPrefix="originality_">
+			<id column="id" property="id"/>
+			<result column="name" property="name"/>
+			<result column="code" property="code"/>
+			<result column="update_time" property="updateTime"/>
+			<result column="create_time" property="createTime"/>
+			<result column="delete_flag" property="deleteFlag"/>
+		</association>
+		<association property="videoType" javaType="cn.dovahkiin.model.VideoType" columnPrefix="video_type_">
+			<id column="id" property="id"/>
+			<result column="name" property="name"/>
+			<result column="code" property="code"/>
+			<result column="update_time" property="updateTime"/>
+			<result column="create_time" property="createTime"/>
+			<result column="delete_flag" property="deleteFlag"/>
+		</association>
+		<association property="photographer" javaType="cn.dovahkiin.model.Photographer" columnPrefix="photographer_">
+			<id column="id" property="id"/>
+			<result column="name" property="name"/>
+			<result column="code" property="code"/>
+			<result column="update_time" property="updateTime"/>
+			<result column="create_time" property="createTime"/>
+			<result column="delete_flag" property="deleteFlag"/>
+		</association>
+		<association property="performer1" javaType="cn.dovahkiin.model.Performer" columnPrefix="performer1_">
+			<id column="id" property="id" />
+			<result column="name" property="name" />
+			<result column="code" property="code" />
+			<result column="update_time" property="updateTime" />
+			<result column="create_time" property="createTime" />
+			<result column="delete_flag" property="deleteFlag" />
+		</association>
+		<association property="performer2" javaType="cn.dovahkiin.model.Performer" columnPrefix="performer2_">
+			<id column="id" property="id" />
+			<result column="name" property="name" />
+			<result column="code" property="code" />
+			<result column="update_time" property="updateTime" />
+			<result column="create_time" property="createTime" />
+			<result column="delete_flag" property="deleteFlag" />
+		</association>
+		<association property="performer3" javaType="cn.dovahkiin.model.Performer" columnPrefix="performer3_">
+			<id column="id" property="id" />
+			<result column="name" property="name" />
+			<result column="code" property="code" />
+			<result column="update_time" property="updateTime" />
+			<result column="create_time" property="createTime" />
+			<result column="delete_flag" property="deleteFlag" />
+		</association>
 	</resultMap>
+	<resultMap id="BaseResultMapWithCount" type="cn.dovahkiin.model.Customer" extends="BaseResultMap">
+		<result column="cumulativeConsumptionByPro" property="cumulativeConsumptionByPro"/>
+		<result column="cumulativeConsumptionRankingByProglam" property="cumulativeConsumptionRankingByProglam"/>
+	</resultMap>
+	<sql id="Base_Column_List">
+    	id, name,
+    	complete_date,
+    	performer3_id,
+    	performer2_id,
+    	performer1_id,
+    	editor_id,
+    	photographer_id,
+    	originality_id,
+    	video_type_id,
+    	product_type_id,
+    	industry_id,
+    	code,
+    	update_time,
+    	create_time,
+    	delete_flag
+  	</sql>
+	<select id="selectList" resultMap="BaseResultMapWithCount">
+		 SELECT
+        cus.id ,
+        cus.update_time,
+        cus.create_time ,
+        cus.delete_flag ,
+		cus.name,
+		cus.code,
+        cus.product_type_id ,
+        cus.industry_id,
+        cus.originality_id,
+        cus.video_type_id,
+        cus.complete_date ,
+        cus.photographer_id,
+        cus.editor_id,
+        cus.performer1_id,
+        cus.performer2_id,
+        cus.performer3_id,
+        pty.`name` as product_type_name,
+        pty.`code` as product_type_code,
+        pty.update_time as product_type_update_time,
+        pty.create_time as product_type_create_time,
+        pty.delete_flag as product_type_delete_flag,
+        ind.`name` as industry_name,
+        ind.`code` as industry_code,
+        ind.update_time as industry_update_time,
+        ind.create_time as industry_create_time,
+        ind.delete_flag as industry_delete_flag,
+        ori.`name` as originality_name,
+		ori.`code` as originality_code,
+		ori.update_time as originality_update_time,
+		ori.create_time as originality_create_time,
+		ori.delete_flag as originality_delete_flag,
+        vdt.`name` as video_type_name,
+        vdt.`code` as video_type_code,
+        vdt.update_time as video_type_update_time,
+        vdt.create_time as video_type_create_time,
+        vdt.delete_flag as video_type_delete_flag,
+        pho.`name` as photographer_name,
+        pho.`code` as photographer_code,
+        pho.update_time as photographer_update_time,
+        pho.create_time as photographer_create_time,
+
+        edi.`name` as editor_name,
+        edi.`code` as editor_code,
+        edi.update_time as editor_update_time,
+        edi.create_time as editor_create_time,
+        edi.delete_flag as editor_delete_flag,
+        per1.`name` as performer1_name,
+        per1.`code` as performer1_code,
+        per1.update_time as performer1_update_time,
+        per1.create_time as performer1_create_time,
+        per1.delete_flag as performer1_delete_flag,
+        per2.`name` as performer2_name,
+        per2.`code` as performer2_code,
+        per2.update_time as performer2_update_time,
+        per2.create_time as performer2_create_time,
+        per2.delete_flag as performer3_delete_flag,
+        per3.`name` as performer3_name,
+        per3.`code` as performer3_code,
+        per3.update_time as performer3_update_time,
+        per3.create_time as performer3_create_time,
+        per3.delete_flag as performer3_delete_flag,
+		pm.cumulativeConsumptionByPro,
+		pm.cumulativeConsumptionRankingByProglam
+		from customer cus
+		left join product_type pty on pty.id = cus.product_type_id
+        left join industry ind on ind.id = cus.industry_id
+		left join originality ori on ori.id = cus.originality_id
+        left join video_type vdt on vdt.id = cus.video_type_id
+        left join photographer pho on pho.id = cus.photographer_id
+        left join editor edi on edi.id = cus.editor_id
+        LEFT JOIN performer per1 ON per1.id = cus.performer1_id
+        LEFT JOIN performer per2 ON per2.id = cus.performer2_id
+        LEFT JOIN performer per3 ON per3.id = cus.performer3_id
+		left join (
+		SELECT
+		customer_id,cumulativeConsumptionByPro,@rownum :=@rownum + 1 AS cumulativeConsumptionRankingByProglam
+		FROM
+		(
+		SELECT
+		customer_id,
+		SUM(consumption) AS cumulativeConsumptionByPro
+		FROM video_cost
+		WHERE consumption > 0 and delete_flag = 0
+		GROUP BY customer_id
+		ORDER BY cumulativeConsumptionByPro DESC
+		) t1,
+		(SELECT @rownum := 0) rownum
+		) pm on cus.id = pm.customer_id
+		<where>
+			<if test="customer.deleteFlag!=null" >
+				cus.delete_flag = #{ customer.deleteFlag }
+			</if>
+			<if test="customer.id!=null" >
+				and cus.id = #{customer.id }
+			</if>
+			<if test="KeyWord !=null" >
+				<foreach collection="KeyWord" item="keyW" >
+					and  (
+					 pty.`name` like #{keyW}
+					or cus.`name` like #{keyW}
+					or cus.`code` like #{keyW}
+					or ind.`name` like #{keyW}
+					or ori.`name` like #{keyW}
+					or vdt.`name` like #{keyW}
+					or pho.`name` like #{keyW}
+					or edi.`name` like #{keyW}
+					or per1.`name` like #{keyW}
+					or per2.`name` like #{keyW}
+					or per3.`name` like #{keyW}
+					)
+				</foreach>
+			</if>
+			<if test="completeDate_start!=null and completeDate_end!=null ">
+				and ( cus.complete_date between #{completeDate_start} and #{completeDate_end} )
+			</if>
+		</where>
+		<if test="sort !=null and sort !='' and order!=null and order!='' " >
+			ORDER BY
+			<choose>
+				<when test="sort=='productType'">pty.`name`</when>
+				<when test="sort=='code'">cus.`code`</when>
+				<when test="sort=='name'">cus.`name`</when>
+				<when test="sort=='cumulativeConsumptionByPro'">pm.cumulativeConsumptionByPro</when>
+				<when test="sort=='cumulativeConsumptionRankingByProglam'">pm.cumulativeConsumptionByPro</when>
+				<when test="sort=='industry'">ind.`name`</when>
+
+				<when test="sort=='videoType'">vdt.`name`</when>
+				<when test="sort=='completeDate'">cus.complete_date</when>
+
+				<when test="sort=='originality'">ori.`name`</when>
+				<when test="sort=='photographer'">pho.`name`</when>
+				<when test="sort=='editor'">edi.`name`</when>
+				<when test="sort=='performer1'">per1.`name`</when>
+				<when test="sort=='performer2'">per2.`name`</when>
+				<when test="sort=='performer3'">per3.`name`</when>
+				<otherwise>pm.cumulativeConsumptionByPro</otherwise>
+			</choose>
+			<choose>
+				<when test="order=='asc'">asc</when>
+				<otherwise>desc</otherwise>
+			</choose>
+		</if>
+		<if test="offset!=null and limit!=null">
+			LIMIT #{offset} , #{limit}
+		</if>
+	</select>
+
+	<select id="selectTotal" resultType="java.lang.Integer" >
+		SELECT
+		count(cus.id)
+		from customer cus
+		left join product_type pty on pty.id = cus.product_type_id
+		left join industry ind on ind.id = cus.industry_id
+		left join originality ori on ori.id = cus.originality_id
+		left join video_type vdt on vdt.id = cus.video_type_id
+		left join photographer pho on pho.id = cus.photographer_id
+		left join editor edi on edi.id = cus.editor_id
+		LEFT JOIN performer per1 ON per1.id = cus.performer1_id
+		LEFT JOIN performer per2 ON per2.id = cus.performer2_id
+		LEFT JOIN performer per3 ON per3.id = cus.performer3_id
+
+		<where>
+			<if test="customer.deleteFlag!=null" >
+				cus.delete_flag = #{ customer.deleteFlag }
+			</if>
+			<if test="customer.id!=null">
+				and cus.id = #{customer.id,jdbcType=BIGINT}
+			</if>
+			<if test="KeyWord !=null" >
+				<foreach collection="KeyWord" item="keyW" >
+					and  (
+					pty.`name` like #{keyW}
+					or cus.`name` like #{keyW}
+					or cus.`code` like #{keyW}
+					or ind.`name` like #{keyW}
+					or ori.`name` like #{keyW}
+					or vdt.`name` like #{keyW}
+					or pho.`name` like #{keyW}
+					or edi.`name` like #{keyW}
+					or per1.`name` like #{keyW}
+					or per2.`name` like #{keyW}
+					or per3.`name` like #{keyW}
+					)
+				</foreach>
+			</if>
+			<if test="completeDate_start!=null and completeDate_end!=null ">
+				and ( cus.complete_date between #{completeDate_start} and #{completeDate_end} )
+			</if>
+		</where>
+
+
+
+	</select>
+
+
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    	delete from customer where id = #{id,jdbcType=BIGINT}
+  	</delete>
+	<insert id="insert" parameterType="cn.dovahkiin.model.Customer" useGeneratedKeys="true" keyProperty="id" keyColumn="id" >
+    	insert into customer (id, name, complete_date,
+      		performer3_id, performer2_id, performer1_id,
+      		editor_id, photographer_id, originality_id,
+      		video_type_id, product_type_id, industry_id,
+      		code, update_time, create_time,
+      		delete_flag)
+    	values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{completeDate,jdbcType=DATE},
+     	 #{performer3.id,jdbcType=BIGINT}, #{performer2.id,jdbcType=BIGINT}, #{performer1.id,jdbcType=BIGINT},
+      	  #{editor.id,jdbcType=BIGINT}, #{photographer.id,jdbcType=BIGINT}, #{originality.id,jdbcType=BIGINT},
+      	  #{videoType.id,jdbcType=BIGINT}, #{productType.id,jdbcType=BIGINT}, #{industry.id,jdbcType=BIGINT},
+      	 #{code,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP},
+      	#{deleteFlag,jdbcType=INTEGER})
+  	</insert>
+	<insert id="insertSelective" parameterType="cn.dovahkiin.model.Customer" useGeneratedKeys="true" keyProperty="id" keyColumn="id" >
+		insert into customer
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="name != null">
+				name,
+			</if>
+			<if test="completeDate != null">
+				complete_date,
+			</if>
+			<if test="performer3!=null and  performer3.id != null">
+				performer3_id,
+			</if>
+			<if test="performer2!=null and  performer2.id != null">
+				performer2_id,
+			</if>
+			<if test="performer1!=null and  performer1.id != null">
+				performer1_id,
+			</if>
+			<if test="editor!=null and editor.id != null">
+				editor_id,
+			</if>
+			<if test="photographer!=null and photographer.id != null">
+				photographer_id,
+			</if>
+			<if test="originality!=null and originality.id != null">
+				originality_id,
+			</if>
+			<if test="videoType!=null and videoType.id != null">
+				video_type_id,
+			</if>
+			<if test="productType!=null and productType.id != null">
+				product_type_id,
+			</if>
+			<if test="industry!=null and industry.id != null">
+				industry_id,
+			</if>
+			<if test="code != null">
+				code,
+			</if>
+			<if test="updateTime != null">
+				update_time,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="deleteFlag != null">
+				delete_flag,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=BIGINT},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="completeDate != null">
+				#{completeDate,jdbcType=DATE},
+			</if>
+			<if test="performer3.id != null">
+				#{performer3.id,jdbcType=BIGINT},
+			</if>
+			<if test="performer2!=null and  performer2.id != null">
+				#{performer2.id,jdbcType=BIGINT},
+			</if>
+			<if test="performer1!=null and  performer1.id != null">
+				#{performer1.id,jdbcType=BIGINT},
+			</if>
+			<if test="editor!=null and editor.id != null">
+				#{editor.id,jdbcType=BIGINT},
+			</if>
+			<if test="photographer!=null and photographer.id != null">
+				#{photographer.id,jdbcType=BIGINT},
+			</if>
+			<if test="originality!=null and originality.id != null">
+				#{originality.id,jdbcType=BIGINT},
+			</if>
+			<if test="videoType!=null and videoType.id != null">
+				#{videoType.id,jdbcType=BIGINT},
+			</if>
+			<if test="productType!=null and productType.id != null">
+				#{productType.id,jdbcType=BIGINT},
+			</if>
+			<if test="industry!=null and industry.id != null">
+				#{industry.id,jdbcType=BIGINT},
+			</if>
+			<if test="code != null">
+				#{code,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="deleteFlag != null">
+				#{deleteFlag,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+
+	<update id="updateByPrimaryKeySelective" parameterType="cn.dovahkiin.model.Customer">
+		update customer
+		<set>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="completeDate != null">
+				complete_date = #{completeDate,jdbcType=DATE},
+			</if>
+			<if test="performer3!=null and performer3.id != null">
+				performer3_id = #{performer3.id,jdbcType=BIGINT},
+			</if>
+			<if test="performer2 !=null and performer2.id != null">
+				performer2_id = #{performer2.id,jdbcType=BIGINT},
+			</if>
+			<if test="performer1!=null and performer1.id != null">
+				performer1_id = #{performer1.id,jdbcType=BIGINT},
+			</if>
+			<if test="editor!=null and editor.id != null">
+				editor_id = #{editor.id,jdbcType=BIGINT},
+			</if>
+			<if test="photographer!=null and  photographer.id != null">
+				photographer_id = #{photographer.id,jdbcType=BIGINT},
+			</if>
+			<if test="originality !=null and  originality.id != null">
+				originality_id = #{originality.id,jdbcType=BIGINT},
+			</if>
+			<if test="videoType!=null and  videoType.id != null">
+				video_type_id = #{videoType.id,jdbcType=BIGINT},
+			</if>
+			<if test="productType!=null and  productType.id != null">
+				product_type_id = #{productType.id,jdbcType=BIGINT},
+			</if>
+			<if test="industry!=null and industry.id != null">
+				industry_id = #{industry.id,jdbcType=BIGINT},
+			</if>
+			<if test="code != null">
+				code = #{code,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP}
+			</if>
+
+
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="cn.dovahkiin.model.Customer">
+    update customer
+    set
+    	name = #{name,jdbcType=VARCHAR},
+      complete_date = #{completeDate,jdbcType=DATE},
+      performer3_id = #{performer3.id,jdbcType=BIGINT},
+      performer2_id = #{performer2.id,jdbcType=BIGINT},
+      performer1_id = #{performer1.id,jdbcType=BIGINT},
+      editor_id = #{editor.id,jdbcType=BIGINT},
+      photographer_id = #{photographer.id,jdbcType=BIGINT},
+      originality_id = #{originality.id,jdbcType=BIGINT},
+      video_type_id = #{videoType.id,jdbcType=BIGINT},
+      product_type_id = #{productType.id,jdbcType=BIGINT},
+      industry_id = #{industry.id,jdbcType=BIGINT},
+      code = #{code,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+	<update id="deleteMany"  >
+		update `customer`
+		set delete_flag= 1
+		where id in (
+		<foreach collection="array" item="id"  separator=",">
+			#{id}
+		</foreach>
+		)
+	</update>
+	<update id="rollBack"  >
+		update `customer`
+		set delete_flag= 0
+		where id in (
+		<foreach collection="array" item="id"  separator=",">
+			#{id}
+		</foreach>
+		)
+	</update>
 
 </mapper>

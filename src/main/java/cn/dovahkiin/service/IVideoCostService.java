@@ -5,6 +5,7 @@ import cn.dovahkiin.model.VideoCost;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.ui.Model;
 
 import java.util.Date;
@@ -24,10 +25,10 @@ public interface IVideoCostService  {
     int updateByPrimaryKey(VideoCost videoCost);
     int deleteMany(String[] ids);
     int saveExcel(Sheet sheet,Date recoredDate,DateConverter dateConverter);
-    Sheet exportData(Map map,Sheet sheet);
+    Workbook exportData(Map map,Workbook workbook);
     VideoCost selectByPrimaryKey(Long  id);
     Page<VideoCost> selectWithCount(Page<VideoCost> pages,Map<String , Object> map);
-    int selectCount(Date recoredDate);
+    int selectCount(Date recoredDate,Long customId);
     double selectMaxConsumption();
     Model modelForEdit(Model model);
 

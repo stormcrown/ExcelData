@@ -308,22 +308,7 @@
         });
     });
 
-    function commonForm(value) {
-        if(value==undefined || value == null || value ==null)return"";
-        var str = new String(value);
-        var keys = new String($("#KeyWord").val()).trim().split(",");
-       //console.log(keys);
-        var arr = new Array();
-        var speci = "&*$%#@!&*";
-        for(var i=0;i<keys.length;i++){
-            arr.push(keys[i]);
-            str=str.replace(keys[i],speci+i);
-        }
-        for(var j=0;j<arr.length;j++){
-            str=str.replace(speci+j,redFont(arr[j]));
-        }
-        return str;
-    }
+
     /**
      * 添加框
      * @param url
@@ -351,6 +336,7 @@
                         parent.$.modalDialog.openner_dataGrid = videoCostDataGrid;//因为添加成功之后，需要刷新这个treeGrid，所以先预定义好
                         var f = parent.$.modalDialog.handler.find('#videoCostAddForm');
                         f.form('clear');
+                        $('#tips_videoCost').html("");
                     }
                 },
                 {
@@ -396,22 +382,34 @@
         //创建form表单
         // var temp_form = document.createElement("form");
         var temp_form = document.getElementById("videoCostSearchForm");
-        temp_form.action = "../videoCost/exportExcel";
+        temp_form.action = "${path}/videoCost/exportExcel";
         //如需打开新窗口，form的target属性要设置为'_blank'
         // temp_form.target = "_self";
         temp_form.target = "_blank";
         temp_form.method = "post";
+        var options = $('#videoCostDataGrid').datagrid('options');
        // temp_form.style.display = "none";
         //添加参数
-        // var opt = document.createElement("textarea");
-        //     opt.name = PARAMTERS[item].name;
-        //     opt.value = PARAMTERS[item].value;
-        // temp_form.appendChild(opt);
-        //
-        // document.body.appendChild(temp_form);
+        var sortOrder = document.createElement("input");
+        sortOrder.type = "hidden";
+        sortOrder.name = "order";
+        sortOrder.value = options.sortOrder;
+        temp_form.appendChild(sortOrder);
+
+
+        var sortName = document.createElement("input");
+        sortName.type = "hidden";
+        sortName.name = "sort";
+        sortName.value = options.sortName;
+        temp_form.appendChild(sortName);
+
 
         //提交数据
         temp_form.submit();
+
+        temp_form.removeChild(sortOrder);
+        temp_form.removeChild(sortName);
+
     }
 
     /**
@@ -506,7 +504,7 @@
                 <td>
                    <input id = 'recoredDateRange' name="recoredDateRange" type="text" class="layui-input" >
                 </td>
-                <th>完成日期:</th>
+                <th>成片日期:</th>
                 <td>
                     <input id="completeDateRange" name="completeDateRange" type="text" class="layui-input"    />
                 </td>

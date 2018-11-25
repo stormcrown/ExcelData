@@ -28,7 +28,10 @@
             title : '编号',
             field : 'id',
             sortable : true,
-            checkbox:true
+            checkbox:true,
+            formatter : function(value, row, index) {
+                return commonForm(value,$("#KeyWord_customList").val().trim());
+            }
         },
            {
             width : '200',
@@ -36,39 +39,177 @@
             field : 'name',
             sortable : true,
             formatter : function(value, row, index) {
-                return value;
+                return commonForm(value,$("#KeyWord_customList").val().trim());
             }
         },
          {
-            width : '140',
-            title : '创建时间',
-            field : 'createTime',
+            width : '200',
+            title : '编码',
+            field : 'code',
             sortable : true,
-            formatter: function (value, row, index) {
-                return getCommonDate(value);
-            }
-        }, {
-            field : 'action',
-            title : '操作',
-            width : 200,
-            formatter : function(value, row, index) {
-                var str = '';
-                <shiro:hasPermission name="/customer/edit">
-                    str += $.formatString('<a href="javascript:void(0)" class="customer-easyui-linkbutton-edit" data-options="plain:true,iconCls:\'glyphicon-pencil icon-blue\'" onclick="customerEditFun(\'{0}\');" >编辑</a>', row.id);
-                </shiro:hasPermission>
-                <shiro:hasPermission name="/customer/delete">
-                    str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
-                    str += $.formatString('<a href="javascript:void(0)" class="customer-easyui-linkbutton-del" data-options="plain:true,iconCls:\'glyphicon-trash icon-red\'" onclick="customerDeleteFun(\'{0}\');" >删除</a>', row.id);
-                </shiro:hasPermission>
-                return str;
-            }
-        } ] ],
+             formatter : function(value, row, index) {
+                 return commonForm(value,$("#KeyWord_customList").val().trim());
+             }
+        },
+            {
+                width: '80',
+                title: '累计消耗',
+                field: 'cumulativeConsumptionByPro',
+                sortable: true,
+                align:'right',
+                formatter: function (value, row, index) {
+                    if(value!=null) return value.toFixed(2);
+                    return "";
+                }
+            },
+            {
+                width: '80',
+                title: '累计消耗排名',
+                field: 'cumulativeConsumptionRankingByProglam',
+                sortable: true
+            },
+          ] ],
+            columns: [[
+                {
+                    width: '80',
+                    title: '成片日期',
+                    field: 'completeDate',
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        return getCommonDate(value);
+                    }
+                },
+                {
+                    width: '60',
+                    title: '创意',
+                    field: 'originality',
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        if(value!=null)return commonForm(value.name,$("#KeyWord_customList").val().trim());
+                        return "";
+                    }
+                },
+                {
+                    width: '60',
+                    title: '演员1',
+                    field: 'performer1',
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        if(value!=null)return commonForm(value.name,$("#KeyWord_customList").val().trim());
+                        return "";
+                    }
+                },
+                {
+                    width: '60',
+                    title: '演员2',
+                    field: 'performer2',
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        if(value!=null)return commonForm(value.name,$("#KeyWord_customList").val().trim());
+                        return "";
+                    }
+                },
+                {
+                    width: '60',
+                    title: '演员3',
+                    field: 'performer3',
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        if(value!=null)return commonForm(value.name,$("#KeyWord_customList").val().trim());
+                        return "";
+                    }
+                },
+                {
+                    width: '60',
+                    title: '摄像',
+                    field: 'photographer',
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        if(value!=null)return commonForm(value.name,$("#KeyWord_customList").val().trim());
+                        return "";
+                    }
+                },
+                {
+                    width: '60',
+                    title: '剪辑',
+                    field: 'editor',
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        if(value!=null)return commonForm(value.name,$("#KeyWord_customList").val().trim());
+                        return "";
+                    }
+                },
+                {
+                    width: '80',
+                    title: '产品类型',
+                    field: 'productType',
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        if(value!=null)return commonForm(value.name,$("#KeyWord_customList").val().trim());
+                        return "";
+                    }
+                },
+                {
+                    width: '80',
+                    title: '行业',
+                    field: 'industry',
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        if(value!=null)return commonForm(value.name,$("#KeyWord_customList").val().trim());
+                        return "";
+                    }
+                },
+                {
+                    width: '100',
+                    title: '视频类型',
+                    field: 'videoType',
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        if(value!=null)return commonForm(value.name,$("#KeyWord_customList").val().trim());
+                        return "";
+                    }
+                },
+                {
+                    width : '140',
+                    title : '创建时间',
+                    field : 'createTime',
+                    sortable : true,
+                    formatter: function (value, row, index) {
+                        return getCommonDate(value,$("#KeyWord_customList").val().trim());
+                    }
+                }, {
+                    field : 'action',
+                    title : '操作',
+                    width : 200,
+                    formatter : function(value, row, index) {
+                        var str = '';
+                        <shiro:hasPermission name="/customer/edit">
+                        str += $.formatString('<a href="javascript:void(0)" class="customer-easyui-linkbutton-edit" data-options="plain:true,iconCls:\'glyphicon-pencil icon-blue\'" onclick="customerEditFun(\'{0}\');" >编辑</a>', row.id);
+                        </shiro:hasPermission>
+                        <shiro:hasPermission name="/customer/delete">
+                        str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
+                        str += $.formatString('<a href="javascript:void(0)" class="customer-easyui-linkbutton-del" data-options="plain:true,iconCls:\'glyphicon-trash icon-red\'" onclick="customerDeleteFun(\'{0}\');" >删除</a>', row.id);
+                        </shiro:hasPermission>
+                        return str;
+                    }
+                }
+            ]],
         onLoadSuccess:function(data){
             $('.customer-easyui-linkbutton-edit').linkbutton({text:'编辑'});
             $('.customer-easyui-linkbutton-del').linkbutton({text:'删除'});
         },
         toolbar : '#customerToolbar'
     });
+
+        //一般直接写在一个js文件中
+        layui.use(['laydate','slider','layer'], function(){
+            var laydate = layui.laydate,slider = layui.slider;
+            laydate.render({
+                elem: '#completeDateRange_custom'
+                ,range: '~' //或 range: '~' 来自定义分割字符
+            });
+        });
+
 });
 
 /**
@@ -85,8 +226,8 @@ function customerAddFun() {
         }
     parent.$.modalDialog({
         title : '添加',
-        width : 300,
-        height : 220,
+        width : 700,
+        height : 420,
         href : '${path}/customer/addPage?id='+id,
         buttons : [ {
             text : '确定',
@@ -118,8 +259,8 @@ function customerEditFun(id) {
      if(id!=null && id!=''){
         parent.$.modalDialog({
             title : '编辑',
-            width : 300,
-            height : 220,
+            width : 700,
+            height : 420,
             href :  '${path}/customer/editPage?id=' + id,
             buttons : [ {
                 text : '确定',
@@ -217,10 +358,15 @@ function customerSearchFun() {
         <form id="customerSearchForm">
             <table>
                 <tr>
-                    <th>编码:&nbsp;</th>
-                    <td><input id="code" name="code" type="text" class="layui-input" /></td>
-                    <th>名称:&nbsp;</th>
-                    <td><input id="name" name="name" type="text" class="layui-input" /></td>
+                    <th>关键字:</th>
+                        <td title="英文逗号“,”分隔多个关键字，检测除日期，累计消耗及排名以外的列。" class="easyui-tooltip" >
+                            <input id="KeyWord_customList" name="KeyWord" placeholder="关键字" type="text"  class="layui-input" />
+                        </td>
+                    <th>数据日期:</th>
+                    <th>完成日期:</th>
+                    <td>
+                        <input id="completeDateRange_custom" name="completeDateRange" type="text" class="layui-input"    />
+                    </td>
                     <th>是否删除:&nbsp;</th>
                     <td>
                         <select id="deleteFlag" name="deleteFlag" class="layui-input" style="width: 100px;" >

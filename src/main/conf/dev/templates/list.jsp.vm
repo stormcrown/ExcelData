@@ -40,6 +40,15 @@
             }
         },
          {
+            width : '200',
+            title : '编码',
+            field : 'code',
+            sortable : true,
+            formatter : function(value, row, index) {
+                return value;
+            }
+        },
+         {
             width : '140',
             title : '创建时间',
             field : 'createTime',

@@ -26,7 +26,7 @@ import cn.dovahkiin.commons.base.BaseController;
  * </p>
  *
  * @author lzt
- * @since 2018-11-18
+ * @since 2018-11-19
  */
 @Controller
 @RequestMapping("/videoType")
@@ -55,7 +55,6 @@ public class VideoTypeController extends BaseController {
         pageInfo.setTotal(pages.getTotal());
         return pageInfo;
     }
-    
     /**
      * 添加页面
      * @return
@@ -68,7 +67,6 @@ public class VideoTypeController extends BaseController {
             VideoType videoType = videoTypeService.selectById(id);
             if(videoType!=null){
                 videoType.setId(null);
-                videoType.setCode(null);
                 model.addAttribute("videoType", videoType);
             }
 

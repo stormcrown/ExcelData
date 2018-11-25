@@ -74,7 +74,6 @@ public class ${table.controllerName} {
             ${entity} ${table.entityPath} = ${table.entityPath}Service.selectById(id);
             if(${table.entityPath}!=null){
                 ${table.entityPath}.setId(null);
-                ${table.entityPath}.setCode(null);
                 model.addAttribute("${table.entityPath}", ${table.entityPath});
             }
 

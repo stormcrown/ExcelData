@@ -31,9 +31,9 @@
         $("#recoredDate").datebox({
             onChange:function(newValue, oldValue){
                 $.ajax({
-                    url:'/videoCost/countByDay',
+                    url:'${path}/videoCost/countByDay',
                     method:'get',
-                    data:{ recoredDate:newValue },
+                    data:{ recoredDate:newValue  },
                     dataType:'text',
                     beforeSend:function(){
                         $('#tips').html("");

@@ -181,9 +181,8 @@ public class VideoCostController extends BaseController {
     @GetMapping("/countByDay")
     @ResponseBody
     @RequiresPermissions("/videoCost/add")
-    public Object countByDay(Date recoredDate) {
-        if(recoredDate!=null) return videoCostService.selectCount(recoredDate);
-        return 0;
+    public Object countByDay(Date recoredDate,Long customerId) {
+        return videoCostService.selectCount(recoredDate,customerId);
     }
     /**
      * 添加
@@ -234,8 +233,7 @@ public class VideoCostController extends BaseController {
 //            response.setHeader("Content-Length", String.valueOf(10000));
             OutputStream outputStream = response.getOutputStream();
             Workbook workbook= new XSSFWorkbook();
-            Sheet sheet=workbook.createSheet();
-            videoCostService.exportData(map,sheet);
+            videoCostService.exportData(map,workbook);
             workbook.write(outputStream);
             outputStream.flush();
             outputStream.close();
