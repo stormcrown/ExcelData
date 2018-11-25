@@ -11,7 +11,7 @@
  Target Server Version : 50719
  File Encoding         : 65001
 
- Date: 18/11/2018 23:30:31
+ Date: 25/11/2018 17:30:58
 */
 
 SET NAMES utf8mb4;
@@ -24,13 +24,23 @@ DROP TABLE IF EXISTS `customer`;
 CREATE TABLE `customer`  (
   `id` bigint(19) NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '客户名',
+  `originality_id` bigint(20) NULL DEFAULT NULL,
+  `complete_date` date NULL DEFAULT NULL,
+  `performer3_id` bigint(20) NULL DEFAULT NULL,
+  `performer2_id` bigint(20) NULL DEFAULT NULL,
+  `performer1_id` bigint(20) NULL DEFAULT NULL,
+  `editor_id` bigint(20) NULL DEFAULT NULL,
+  `photographer_id` bigint(20) NULL DEFAULT NULL,
+  `video_type_id` bigint(20) NULL DEFAULT NULL,
+  `product_type_id` bigint(20) NULL DEFAULT NULL,
+  `industry_id` bigint(20) NULL DEFAULT NULL,
   `code` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '客户编码',
   `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
   `create_time` datetime(0) NOT NULL COMMENT '创建时间',
   `delete_flag` int(1) NULL DEFAULT 0 COMMENT '是否删除',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `code`(`code`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 17338 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '客户信息' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 26742 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '客户信息' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for editor
@@ -45,7 +55,7 @@ CREATE TABLE `editor`  (
   `delete_flag` int(1) NULL DEFAULT 0 COMMENT '是否删除',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `code`(`code`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2840 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '剪辑师信息' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3071 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '剪辑师信息' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for industry
@@ -60,7 +70,7 @@ CREATE TABLE `industry`  (
   `delete_flag` int(1) NULL DEFAULT 0 COMMENT '是否删除',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `code`(`code`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3442 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '行业信息' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7102 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '行业信息' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for optimizer
@@ -75,7 +85,7 @@ CREATE TABLE `optimizer`  (
   `delete_flag` int(1) NULL DEFAULT 0 COMMENT '是否删除',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `code`(`code`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4084 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '优化师信息' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4618 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '优化师信息' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for organization
@@ -92,7 +102,7 @@ CREATE TABLE `organization`  (
   `seq` tinyint(2) NOT NULL DEFAULT 0 COMMENT '排序',
   `create_time` datetime(0) NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4451 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '组织机构' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 37 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '组织机构' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of organization
@@ -112,6 +122,25 @@ INSERT INTO `organization` VALUES (14, '凯美二部', NULL, NULL, 'ORG201811111
 INSERT INTO `organization` VALUES (15, '国际事业部', NULL, NULL, 'ORG201811111416191957357652', NULL, 6, 0, '2018-11-11 14:16:19');
 INSERT INTO `organization` VALUES (16, 'KA事业部', NULL, NULL, 'ORG201811111416191404563437', NULL, 6, 0, '2018-11-11 14:16:19');
 INSERT INTO `organization` VALUES (17, '趣头条事业部', '趣头条', NULL, 'ORG2018111114162011865101232', NULL, 6, 0, '2018-11-11 14:16:20');
+INSERT INTO `organization` VALUES (18, '淘宝客', NULL, NULL, 'ORG201811222042245130831228', NULL, NULL, 0, '2018-11-22 20:42:25');
+INSERT INTO `organization` VALUES (19, 'APP', NULL, NULL, 'ORG2018112220422751679565121', NULL, NULL, 0, '2018-11-22 20:42:27');
+INSERT INTO `organization` VALUES (20, '教育', NULL, NULL, 'ORG2018112220424051062192723', NULL, NULL, 0, '2018-11-22 20:42:40');
+INSERT INTO `organization` VALUES (21, '产品', NULL, NULL, 'ORG201811222042525962355581', NULL, NULL, 0, '2018-11-22 20:42:53');
+INSERT INTO `organization` VALUES (22, '健身服务', NULL, NULL, 'ORG201811222042535868506781', NULL, NULL, 0, '2018-11-22 20:42:53');
+INSERT INTO `organization` VALUES (23, '企业服务', NULL, NULL, 'ORG2018112220425351901696673', NULL, NULL, 0, '2018-11-22 20:42:53');
+INSERT INTO `organization` VALUES (24, '咨询', NULL, NULL, 'ORG2018112220425351934634175', NULL, NULL, 0, '2018-11-22 20:42:53');
+INSERT INTO `organization` VALUES (25, '资讯', NULL, NULL, 'ORG2018112220425352112572391', NULL, NULL, 0, '2018-11-22 20:42:53');
+INSERT INTO `organization` VALUES (26, '地产', NULL, NULL, 'ORG201811222043951886594175', NULL, NULL, 0, '2018-11-22 20:43:09');
+INSERT INTO `organization` VALUES (27, '线下店铺', NULL, NULL, 'ORG20181122204395845946212', NULL, NULL, 0, '2018-11-22 20:43:09');
+INSERT INTO `organization` VALUES (28, '线下活动', NULL, NULL, 'ORG201811222043951035196987', NULL, NULL, 0, '2018-11-22 20:43:09');
+INSERT INTO `organization` VALUES (29, '电影宣传', NULL, NULL, 'ORG201811222043951938426000', NULL, NULL, 0, '2018-11-22 20:43:09');
+INSERT INTO `organization` VALUES (30, '公众号', NULL, NULL, 'ORG20181122204395775395833', NULL, NULL, 0, '2018-11-22 20:43:09');
+INSERT INTO `organization` VALUES (31, '产品宣传', NULL, NULL, 'ORG201811222043952066911552', NULL, NULL, 0, '2018-11-22 20:43:09');
+INSERT INTO `organization` VALUES (32, '英语培训', NULL, NULL, 'ORG2018112220431151681335500', NULL, NULL, 0, '2018-11-22 20:43:11');
+INSERT INTO `organization` VALUES (33, '婚纱摄影', NULL, NULL, 'ORG201811222043145284962185', NULL, NULL, 0, '2018-11-22 20:43:15');
+INSERT INTO `organization` VALUES (34, '广告', NULL, NULL, 'ORG2018112220432151936000193', NULL, NULL, 0, '2018-11-22 20:43:22');
+INSERT INTO `organization` VALUES (35, '宣传', NULL, NULL, 'ORG201811222043215619379185', NULL, NULL, 0, '2018-11-22 20:43:22');
+INSERT INTO `organization` VALUES (36, '加盟', NULL, NULL, 'ORG2018112220432451423629282', NULL, NULL, 0, '2018-11-22 20:43:24');
 
 -- ----------------------------
 -- Table structure for originality
@@ -126,7 +155,7 @@ CREATE TABLE `originality`  (
   `delete_flag` int(1) NULL DEFAULT 0 COMMENT '是否删除',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `code`(`code`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3999 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '创意师信息' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4941 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '创意师信息' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for performer
@@ -141,7 +170,7 @@ CREATE TABLE `performer`  (
   `delete_flag` int(1) NULL DEFAULT 0 COMMENT '是否删除',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `code`(`code`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1826 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '演员信息' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2006 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '演员信息' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for photographer
@@ -156,7 +185,7 @@ CREATE TABLE `photographer`  (
   `delete_flag` int(1) NULL DEFAULT 0 COMMENT '是否删除',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `code`(`code`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3171 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '摄像师信息' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3657 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '摄像师信息' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for product_type
@@ -171,7 +200,7 @@ CREATE TABLE `product_type`  (
   `delete_flag` int(1) NULL DEFAULT 0 COMMENT '是否删除',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `code`(`code`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2091 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '产品类型信息' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2263 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '产品类型信息' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for resource
@@ -235,8 +264,8 @@ INSERT INTO `resource` VALUES (241, '数据字典', '', NULL, NULL, 'glyphicon-b
 INSERT INTO `resource` VALUES (242, '客户', '/customer/manager', 'ajax', NULL, 'glyphicon-user icon-green', 241, 0, 0, 1, 0, '2018-11-18 00:36:17');
 INSERT INTO `resource` VALUES (243, '列表', '/customer/dataGrid', 'ajax', NULL, 'glyphicon-list icon-green', 242, 0, 0, 1, 1, '2018-11-18 00:49:20');
 INSERT INTO `resource` VALUES (244, '添加', '/customer/add', 'ajax', NULL, 'glyphicon-plus icon-green', 242, 1, 0, 1, 1, '2018-11-18 00:50:02');
-INSERT INTO `resource` VALUES (245, '编辑', '/videoCost/edit', 'ajax', NULL, 'glyphicon-pencil icon-green', 242, 2, 0, 1, 1, '2018-11-18 00:50:41');
-INSERT INTO `resource` VALUES (246, '删除', '/videoCost/delete', 'ajax', NULL, 'glyphicon-trash icon-red', 242, 3, 0, 1, 1, '2018-11-18 00:51:40');
+INSERT INTO `resource` VALUES (245, '编辑', '/customer/edit', 'ajax', NULL, 'glyphicon-pencil icon-green', 242, 2, 0, 1, 1, '2018-11-18 00:50:41');
+INSERT INTO `resource` VALUES (246, '删除', '/customer/delete', 'ajax', NULL, 'glyphicon-trash icon-red', 242, 3, 0, 1, 1, '2018-11-18 00:51:40');
 INSERT INTO `resource` VALUES (247, '剪辑', '/editor/manager', '', NULL, 'glyphicon-scissors icon-yellow', 241, 1, 0, 1, 0, '2018-11-18 09:24:20');
 INSERT INTO `resource` VALUES (248, '列表', '/editor/dataGrid', 'ajax', NULL, 'glyphicon-list icon-green', 247, 0, 0, 1, 1, '2018-11-18 09:25:34');
 INSERT INTO `resource` VALUES (249, '添加', '/editor/add', 'ajax', NULL, 'glyphicon-plus icon-green', 247, 1, 0, 1, 1, '2018-11-18 09:26:49');
@@ -251,7 +280,7 @@ INSERT INTO `resource` VALUES (257, '优化', '/optimizer/manager', '', NULL, 'g
 INSERT INTO `resource` VALUES (258, '列表', '/optimizer/dataGrid', 'ajax', NULL, 'glyphicon-list icon-purple', 257, 0, 0, 1, 1, '2018-11-18 09:38:35');
 INSERT INTO `resource` VALUES (259, '添加', '/optimizer/add', 'ajax', NULL, 'glyphicon-plus icon-green', 257, 1, 0, 1, 1, '2018-11-18 09:39:31');
 INSERT INTO `resource` VALUES (260, '编辑', '/optimizer/edit', 'ajax', NULL, 'glyphicon-pencil icon-blue', 257, 2, 0, 1, 1, '2018-11-18 09:40:06');
-INSERT INTO `resource` VALUES (261, '删除', '/optimizer/add', 'ajax', NULL, 'glyphicon-trash icon-red', 257, 3, 0, 1, 1, '2018-11-18 09:40:41');
+INSERT INTO `resource` VALUES (261, '删除', '/optimizer/delete', 'ajax', NULL, 'glyphicon-trash icon-red', 257, 3, 0, 1, 1, '2018-11-18 09:40:41');
 INSERT INTO `resource` VALUES (262, '创意', '/originality/manager', '', NULL, 'glyphicon-star icon-yellow', 241, 4, 0, 1, 0, '2018-11-18 09:47:16');
 INSERT INTO `resource` VALUES (263, '列表', '/originality/dataGrid', 'ajax', NULL, 'glyphicon-list icon-purple', 262, 0, 0, 1, 1, '2018-11-18 09:48:23');
 INSERT INTO `resource` VALUES (264, '添加', '/originality/add', 'ajax', NULL, 'glyphicon-plus icon-green', 262, 1, 0, 1, 1, '2018-11-18 09:59:58');
@@ -494,7 +523,7 @@ CREATE TABLE `sys_log`  (
   `client_ip` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '客户端ip',
   `create_time` datetime(0) NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1237 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '系统日志' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1367 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '系统日志' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_log
@@ -1345,6 +1374,136 @@ INSERT INTO `sys_log` VALUES (1233, 'admin', 'admin', '[类名]:cn.dovahkiin.con
 INSERT INTO `sys_log` VALUES (1234, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=2045&_=1542550869399&', '0:0:0:0:0:0:0:1', '2018-11-18 22:30:41');
 INSERT INTO `sys_log` VALUES (1235, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=2045&_=1542550869400&', '0:0:0:0:0:0:0:1', '2018-11-18 22:31:15');
 INSERT INTO `sys_log` VALUES (1236, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:editPage,[参数]:id=1447&_=1542550869401&', '0:0:0:0:0:0:0:1', '2018-11-18 22:31:20');
+INSERT INTO `sys_log` VALUES (1237, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.RoleController,[方法]:grantPage,[参数]:id=3&_=1542609191530&', '0:0:0:0:0:0:0:1', '2018-11-19 14:33:52');
+INSERT INTO `sys_log` VALUES (1238, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.UserController,[方法]:delete,[参数]:id=16&', '0:0:0:0:0:0:0:1', '2018-11-19 14:34:10');
+INSERT INTO `sys_log` VALUES (1239, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.UserController,[方法]:addPage,[参数]:', NULL, '2018-11-19 14:34:12');
+INSERT INTO `sys_log` VALUES (1240, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.UserController,[方法]:add,[参数]:loginName=CQCQ&name=编辑&password=test&sex=0&age=&userType=1&organizationId=1&roleIds=3&phone=&status=0&', '0:0:0:0:0:0:0:1', '2018-11-19 14:34:55');
+INSERT INTO `sys_log` VALUES (1241, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.LoginController,[方法]:logout,[参数]:', NULL, '2018-11-19 14:34:59');
+INSERT INTO `sys_log` VALUES (1242, 'CQCQ', 'CQCQ', '[类名]:cn.dovahkiin.controller.RoleController,[方法]:grantPage,[参数]:id=3&_=1542609306296&', '0:0:0:0:0:0:0:1', '2018-11-19 14:35:22');
+INSERT INTO `sys_log` VALUES (1243, 'CQCQ', 'CQCQ', '[类名]:cn.dovahkiin.controller.UserController,[方法]:editPage,[参数]:id=17&_=1542609306298&', '0:0:0:0:0:0:0:1', '2018-11-19 14:35:48');
+INSERT INTO `sys_log` VALUES (1244, 'CQCQ', 'CQCQ', '[类名]:cn.dovahkiin.controller.UserController,[方法]:editPage,[参数]:id=17&_=1542609306300&', '0:0:0:0:0:0:0:1', '2018-11-19 14:36:09');
+INSERT INTO `sys_log` VALUES (1245, 'CQCQ', 'CQCQ', '[类名]:cn.dovahkiin.controller.LoginController,[方法]:logout,[参数]:', NULL, '2018-11-19 14:36:17');
+INSERT INTO `sys_log` VALUES (1246, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.ResourceController,[方法]:editPage,[参数]:id=245&_=1542609384525&', '0:0:0:0:0:0:0:1', '2018-11-19 14:37:52');
+INSERT INTO `sys_log` VALUES (1247, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.ResourceController,[方法]:editPage,[参数]:id=245&_=1542609384526&', '0:0:0:0:0:0:0:1', '2018-11-19 14:38:12');
+INSERT INTO `sys_log` VALUES (1248, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.ResourceController,[方法]:edit,[参数]:id=245&name=编辑&resourceType=1&url=/customer/edit&openMode=ajax&icon=glyphicon-pencil icon-green&seq=2&status=0&opened=1&pid=242&', '0:0:0:0:0:0:0:1', '2018-11-19 14:38:35');
+INSERT INTO `sys_log` VALUES (1249, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.ResourceController,[方法]:editPage,[参数]:id=246&_=1542609384527&', '0:0:0:0:0:0:0:1', '2018-11-19 14:38:39');
+INSERT INTO `sys_log` VALUES (1250, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.ResourceController,[方法]:edit,[参数]:id=246&name=删除&resourceType=1&url=/customer/delete&openMode=ajax&icon=glyphicon-trash icon-red&seq=3&status=0&opened=1&pid=242&', '0:0:0:0:0:0:0:1', '2018-11-19 14:38:53');
+INSERT INTO `sys_log` VALUES (1251, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.ResourceController,[方法]:editPage,[参数]:id=261&_=1542609384528&', '0:0:0:0:0:0:0:1', '2018-11-19 14:39:06');
+INSERT INTO `sys_log` VALUES (1252, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.ResourceController,[方法]:edit,[参数]:id=261&name=删除&resourceType=1&url=/optimizer/delete&openMode=ajax&icon=glyphicon-trash icon-red&seq=3&status=0&opened=1&pid=257&', '0:0:0:0:0:0:0:1', '2018-11-19 14:39:14');
+INSERT INTO `sys_log` VALUES (1253, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=&_=1542611062638&', '0:0:0:0:0:0:0:1', '2018-11-19 15:04:58');
+INSERT INTO `sys_log` VALUES (1254, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:addPage,[参数]:id=&_=1542611062639&', '0:0:0:0:0:0:0:1', '2018-11-19 15:05:13');
+INSERT INTO `sys_log` VALUES (1255, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:addPage,[参数]:id=18501&_=1542611062640&', '0:0:0:0:0:0:0:1', '2018-11-19 15:05:23');
+INSERT INTO `sys_log` VALUES (1256, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:addPage,[参数]:id=18511&_=1542611062641&', '0:0:0:0:0:0:0:1', '2018-11-19 15:05:29');
+INSERT INTO `sys_log` VALUES (1257, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:addPage,[参数]:id=&_=1542611062642&', '0:0:0:0:0:0:0:1', '2018-11-19 15:05:33');
+INSERT INTO `sys_log` VALUES (1258, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:addPage,[参数]:id=18500&_=1542612273143&', '0:0:0:0:0:0:0:1', '2018-11-19 15:24:39');
+INSERT INTO `sys_log` VALUES (1259, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:addPage,[参数]:id=18511&_=1542612609075&', '0:0:0:0:0:0:0:1', '2018-11-19 15:30:14');
+INSERT INTO `sys_log` VALUES (1260, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=&_=1542631570001&', '0:0:0:0:0:0:0:1', '2018-11-19 20:52:22');
+INSERT INTO `sys_log` VALUES (1261, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=&_=1542631570002&', '0:0:0:0:0:0:0:1', '2018-11-19 20:56:57');
+INSERT INTO `sys_log` VALUES (1262, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=&_=1542689429219&', '0:0:0:0:0:0:0:1', '2018-11-20 12:50:38');
+INSERT INTO `sys_log` VALUES (1263, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=&_=1542898388102&', '0:0:0:0:0:0:0:1', '2018-11-22 22:55:12');
+INSERT INTO `sys_log` VALUES (1264, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.OptimizerController,[方法]:addPage,[参数]:id=&_=1542979390249&', '0:0:0:0:0:0:0:1', '2018-11-23 21:26:28');
+INSERT INTO `sys_log` VALUES (1265, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:addPage,[参数]:id=&_=1542979390252&', '0:0:0:0:0:0:0:1', '2018-11-23 21:36:08');
+INSERT INTO `sys_log` VALUES (1266, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:addPage,[参数]:id=&_=1542979390254&', '0:0:0:0:0:0:0:1', '2018-11-23 21:37:16');
+INSERT INTO `sys_log` VALUES (1267, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:addPage,[参数]:id=&_=1542979390255&', '0:0:0:0:0:0:0:1', '2018-11-23 21:37:41');
+INSERT INTO `sys_log` VALUES (1268, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=&_=1542979390256&', '0:0:0:0:0:0:0:1', '2018-11-23 21:37:45');
+INSERT INTO `sys_log` VALUES (1269, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=15324&_=1542979390257&', '0:0:0:0:0:0:0:1', '2018-11-23 21:38:20');
+INSERT INTO `sys_log` VALUES (1270, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=15324&_=1542979390258&', '0:0:0:0:0:0:0:1', '2018-11-23 21:41:14');
+INSERT INTO `sys_log` VALUES (1271, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:addPage,[参数]:id=&_=1542979390259&', '0:0:0:0:0:0:0:1', '2018-11-23 22:17:45');
+INSERT INTO `sys_log` VALUES (1272, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:addPage,[参数]:id=&_=1542979390260&', '0:0:0:0:0:0:0:1', '2018-11-23 22:18:09');
+INSERT INTO `sys_log` VALUES (1273, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=&_=1542979390261&', '0:0:0:0:0:0:0:1', '2018-11-23 22:18:42');
+INSERT INTO `sys_log` VALUES (1274, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:addPage,[参数]:id=&_=1542979390262&', '0:0:0:0:0:0:0:1', '2018-11-23 22:18:50');
+INSERT INTO `sys_log` VALUES (1275, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=&_=1542979390263&', '0:0:0:0:0:0:0:1', '2018-11-23 22:18:53');
+INSERT INTO `sys_log` VALUES (1276, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:addPage,[参数]:id=&_=1542989695082&', '0:0:0:0:0:0:0:1', '2018-11-24 00:15:01');
+INSERT INTO `sys_log` VALUES (1277, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:addPage,[参数]:id=&_=1542989695083&', '0:0:0:0:0:0:0:1', '2018-11-24 00:17:52');
+INSERT INTO `sys_log` VALUES (1278, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:addPage,[参数]:id=&_=1542989695084&', '0:0:0:0:0:0:0:1', '2018-11-24 00:19:07');
+INSERT INTO `sys_log` VALUES (1279, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:addPage,[参数]:id=&_=1542989695086&', '0:0:0:0:0:0:0:1', '2018-11-24 00:20:12');
+INSERT INTO `sys_log` VALUES (1280, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:add,[参数]:id=&code=CUSTOM20&name=大疆&productType.id=2246&industry.id=7084&videoType.id=3845&completeDate=2018-11-24&originality.id=4879&photographer.id=3618&editor.id=3057&performer1.id=1992&performer2.id=1992&performer3.id=1993&', '0:0:0:0:0:0:0:1', '2018-11-24 00:21:04');
+INSERT INTO `sys_log` VALUES (1281, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:addPage,[参数]:id=&_=1543024569333&', '0:0:0:0:0:0:0:1', '2018-11-24 10:03:47');
+INSERT INTO `sys_log` VALUES (1282, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:editPage,[参数]:id=26740&_=1543024569334&', '0:0:0:0:0:0:0:1', '2018-11-24 10:04:25');
+INSERT INTO `sys_log` VALUES (1283, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:addPage,[参数]:id=25739&_=1543027299103&', '0:0:0:0:0:0:0:1', '2018-11-24 10:41:47');
+INSERT INTO `sys_log` VALUES (1284, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:editPage,[参数]:id=25739&_=1543027299104&', '0:0:0:0:0:0:0:1', '2018-11-24 10:41:52');
+INSERT INTO `sys_log` VALUES (1285, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:editPage,[参数]:id=25714&_=1543027299105&', '0:0:0:0:0:0:0:1', '2018-11-24 10:41:58');
+INSERT INTO `sys_log` VALUES (1286, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:editPage,[参数]:id=25739&_=1543027299106&', '0:0:0:0:0:0:0:1', '2018-11-24 10:43:40');
+INSERT INTO `sys_log` VALUES (1287, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:editPage,[参数]:id=25739&_=1543027299107&', '0:0:0:0:0:0:0:1', '2018-11-24 10:43:54');
+INSERT INTO `sys_log` VALUES (1288, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:edit,[参数]:id=25739&code=CUS201811222334545116123997&name=趣头条-吃东西对比横版&productType.id=2249&industry.id=7084&videoType.id=3847&completeDate=2018-11-24&originality.id=4900&photographer.id=3624&editor.id=3064&performer1.id=1992&performer2.id=1996&performer3.id=1992&', '0:0:0:0:0:0:0:1', '2018-11-24 10:43:58');
+INSERT INTO `sys_log` VALUES (1289, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:editPage,[参数]:id=25739&_=1543027299108&', '0:0:0:0:0:0:0:1', '2018-11-24 10:44:02');
+INSERT INTO `sys_log` VALUES (1290, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:editPage,[参数]:id=26280&_=1543027299109&', '0:0:0:0:0:0:0:1', '2018-11-24 10:44:14');
+INSERT INTO `sys_log` VALUES (1291, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:editPage,[参数]:id=26280&_=1543027299110&', '0:0:0:0:0:0:0:1', '2018-11-24 10:44:44');
+INSERT INTO `sys_log` VALUES (1292, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:edit,[参数]:id=26280&code=CUS20181122233525108038598&name=趣头条-三人采访横版&productType.id=&industry.id=7084&videoType.id=3847&completeDate=2018-11-24&originality.id=4898&photographer.id=3625&editor.id=3064&performer1.id=2001&performer2.id=1992&performer3.id=1991&', '0:0:0:0:0:0:0:1', '2018-11-24 10:44:47');
+INSERT INTO `sys_log` VALUES (1293, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:editPage,[参数]:id=25723&_=1543027709683&', '0:0:0:0:0:0:0:1', '2018-11-24 10:48:48');
+INSERT INTO `sys_log` VALUES (1294, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:editPage,[参数]:id=26280&_=1543027709684&', '0:0:0:0:0:0:0:1', '2018-11-24 10:48:56');
+INSERT INTO `sys_log` VALUES (1295, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:edit,[参数]:id=26280&code=CUS20181122233525108038598&name=趣头条-三人采访横版&productType.id=&industry.id=7084&videoType.id=3847&completeDate=2018-11-24&originality.id=4898&photographer.id=3625&editor.id=3064&performer1.id=2001&performer2.id=1992&performer3.id=1991&', '0:0:0:0:0:0:0:1', '2018-11-24 10:49:04');
+INSERT INTO `sys_log` VALUES (1296, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:editPage,[参数]:id=26280&_=1543027709685&', '0:0:0:0:0:0:0:1', '2018-11-24 10:49:47');
+INSERT INTO `sys_log` VALUES (1297, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:edit,[参数]:id=26280&code=CUS20181122233525108038598&name=趣头条-三人采访横版&productType.id=2246&industry.id=7084&videoType.id=3847&completeDate=2018-11-24&originality.id=4898&photographer.id=3625&editor.id=3064&performer1.id=2001&performer2.id=1992&performer3.id=1991&', '0:0:0:0:0:0:0:1', '2018-11-24 10:50:32');
+INSERT INTO `sys_log` VALUES (1298, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:editPage,[参数]:id=26280&_=1543027709686&', '0:0:0:0:0:0:0:1', '2018-11-24 10:50:54');
+INSERT INTO `sys_log` VALUES (1299, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:edit,[参数]:id=26280&code=CUS20181122233525108038598&name=趣头条-三人采访横版&productType.id=&industry.id=7084&videoType.id=3847&completeDate=2018-11-24&originality.id=4898&photographer.id=3625&editor.id=3064&performer1.id=2001&performer2.id=1992&performer3.id=1997&', '0:0:0:0:0:0:0:1', '2018-11-24 10:51:00');
+INSERT INTO `sys_log` VALUES (1300, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:addPage,[参数]:id=26329&_=1543030437443&', '0:0:0:0:0:0:0:1', '2018-11-24 11:34:06');
+INSERT INTO `sys_log` VALUES (1301, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:addPage,[参数]:id=26639&_=1543030437444&', '0:0:0:0:0:0:0:1', '2018-11-24 11:34:14');
+INSERT INTO `sys_log` VALUES (1302, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:editPage,[参数]:id=26740&_=1543030437445&', '0:0:0:0:0:0:0:1', '2018-11-24 11:34:21');
+INSERT INTO `sys_log` VALUES (1303, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:edit,[参数]:id=26740&code=CUSTOM20&name=大疆&productType.id=2246&industry.id=7084&videoType.id=3845&completeDate=2018-11-24&originality.id=4879&photographer.id=3618&editor.id=3057&performer1.id=1992&performer2.id=1992&performer3.id=1992&', '0:0:0:0:0:0:0:1', '2018-11-24 11:34:29');
+INSERT INTO `sys_log` VALUES (1304, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:editPage,[参数]:id=26740&_=1543030437446&', '0:0:0:0:0:0:0:1', '2018-11-24 11:34:39');
+INSERT INTO `sys_log` VALUES (1305, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:edit,[参数]:id=26740&code=CUSTOM20&name=大疆&productType.id=2246&industry.id=7084&videoType.id=3845&completeDate=2018-11-24&originality.id=4879&photographer.id=3618&editor.id=3057&performer1.id=1992&performer2.id=1992&performer3.id=1991&', '0:0:0:0:0:0:0:1', '2018-11-24 11:34:45');
+INSERT INTO `sys_log` VALUES (1306, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:editPage,[参数]:id=26740&_=1543030437447&', '0:0:0:0:0:0:0:1', '2018-11-24 11:34:55');
+INSERT INTO `sys_log` VALUES (1307, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:edit,[参数]:id=26740&code=CUSTOM20&name=大疆&productType.id=2246&industry.id=7084&videoType.id=3845&completeDate=2018-11-24&originality.id=4879&photographer.id=3618&editor.id=3057&performer1.id=1992&performer2.id=1992&performer3.id=1991&', '0:0:0:0:0:0:0:1', '2018-11-24 11:35:06');
+INSERT INTO `sys_log` VALUES (1308, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:editPage,[参数]:id=26740&_=1543030437448&', '0:0:0:0:0:0:0:1', '2018-11-24 11:35:11');
+INSERT INTO `sys_log` VALUES (1309, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:addPage,[参数]:id=&_=1543030437449&', '0:0:0:0:0:0:0:1', '2018-11-24 11:35:52');
+INSERT INTO `sys_log` VALUES (1310, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:add,[参数]:id=&code=CUSTOM203&name=删除&productType.id=2246&industry.id=7087&videoType.id=3846&completeDate=2018-11-24&originality.id=4879&photographer.id=3617&editor.id=3058&performer1.id=1992&performer2.id=2000&performer3.id=1991&', '0:0:0:0:0:0:0:1', '2018-11-24 11:36:24');
+INSERT INTO `sys_log` VALUES (1311, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:editPage,[参数]:id=26741&_=1543030437450&', '0:0:0:0:0:0:0:1', '2018-11-24 11:36:31');
+INSERT INTO `sys_log` VALUES (1312, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:edit,[参数]:id=26741&code=CUSTOM203&name=删除&productType.id=2246&industry.id=7087&videoType.id=3846&completeDate=2018-11-24&originality.id=4879&photographer.id=3617&editor.id=3058&performer1.id=1992&performer2.id=2000&performer3.id=2001&', '0:0:0:0:0:0:0:1', '2018-11-24 11:36:39');
+INSERT INTO `sys_log` VALUES (1313, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:editPage,[参数]:id=26741&_=1543030437451&', '0:0:0:0:0:0:0:1', '2018-11-24 11:38:32');
+INSERT INTO `sys_log` VALUES (1314, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:edit,[参数]:id=26741&code=CUSTOM203A&name=删除A&productType.id=2246&industry.id=7087&videoType.id=3846&completeDate=2018-11-24&originality.id=4879&photographer.id=3617&editor.id=3058&performer1.id=1992&performer2.id=2000&performer3.id=1991&', '0:0:0:0:0:0:0:1', '2018-11-24 11:38:37');
+INSERT INTO `sys_log` VALUES (1315, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:editPage,[参数]:id=26741&_=1543030437452&', '0:0:0:0:0:0:0:1', '2018-11-24 11:40:05');
+INSERT INTO `sys_log` VALUES (1316, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:edit,[参数]:id=26741&code=CUSTOM203&name=删除a&productType.id=2246&industry.id=7087&videoType.id=3846&completeDate=2018-11-24&originality.id=4879&photographer.id=3617&editor.id=3058&performer1.id=1992&performer2.id=2000&performer3.id=1991&', '0:0:0:0:0:0:0:1', '2018-11-24 11:40:09');
+INSERT INTO `sys_log` VALUES (1317, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:editPage,[参数]:id=26741&_=1543030894000&', '0:0:0:0:0:0:0:1', '2018-11-24 11:41:46');
+INSERT INTO `sys_log` VALUES (1318, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:edit,[参数]:id=26741&code=CUSTOM203&name=删除A&productType.id=2246&industry.id=7087&videoType.id=3846&completeDate=2018-11-24&originality.id=4879&photographer.id=3617&editor.id=3058&performer1.id=1992&performer2.id=2000&performer3.id=1991&', '0:0:0:0:0:0:0:1', '2018-11-24 11:41:52');
+INSERT INTO `sys_log` VALUES (1319, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:editPage,[参数]:id=26741&_=1543030894001&', '0:0:0:0:0:0:0:1', '2018-11-24 11:42:59');
+INSERT INTO `sys_log` VALUES (1320, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:edit,[参数]:id=26741&code=CUSTOM203A&name=删除&productType.id=2246&industry.id=7087&videoType.id=3846&completeDate=2018-11-24&originality.id=4879&photographer.id=3617&editor.id=3058&performer1.id=1992&performer2.id=2000&performer3.id=1991&', '0:0:0:0:0:0:0:1', '2018-11-24 11:43:04');
+INSERT INTO `sys_log` VALUES (1321, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:editPage,[参数]:id=26741&_=1543030894002&', '0:0:0:0:0:0:0:1', '2018-11-24 11:43:46');
+INSERT INTO `sys_log` VALUES (1322, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:edit,[参数]:id=26741&code=CUSTOM203啊&name=删除啊&productType.id=2246&industry.id=7087&videoType.id=3846&completeDate=2018-11-24&originality.id=4879&photographer.id=3617&editor.id=3058&performer1.id=1992&performer2.id=2000&performer3.id=1991&', '0:0:0:0:0:0:0:1', '2018-11-24 11:43:52');
+INSERT INTO `sys_log` VALUES (1323, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:editPage,[参数]:id=26741&_=1543032054771&', '0:0:0:0:0:0:0:1', '2018-11-24 12:01:08');
+INSERT INTO `sys_log` VALUES (1324, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:edit,[参数]:id=26741&code=CUSTOM203A&name=删除A&productType.id=2246&industry.id=7087&videoType.id=3846&completeDate=2018-11-24&originality.id=4879&photographer.id=3617&editor.id=3058&performer1.id=1992&performer2.id=2000&performer3.id=1991&', '0:0:0:0:0:0:0:1', '2018-11-24 12:01:16');
+INSERT INTO `sys_log` VALUES (1325, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:editPage,[参数]:id=26741&_=1543032054772&', '0:0:0:0:0:0:0:1', '2018-11-24 12:01:21');
+INSERT INTO `sys_log` VALUES (1326, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:edit,[参数]:id=26741&code=CUSTOM203A&name=删除A&productType.id=2248&industry.id=7084&videoType.id=3845&completeDate=2018-11-23&originality.id=4877&photographer.id=3617&editor.id=3056&performer1.id=2004&performer2.id=2003&performer3.id=1996&', '0:0:0:0:0:0:0:1', '2018-11-24 12:01:51');
+INSERT INTO `sys_log` VALUES (1327, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:delete,[参数]:ids=26741,26740,26281,26280,26639,26638,26217,26296,26375,26454,26004,26083,26466,26545,26624,26703,26221,26300,26379,25929,&', '0:0:0:0:0:0:0:1', '2018-11-24 12:02:08');
+INSERT INTO `sys_log` VALUES (1328, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:delete,[参数]:ids=26741,26281,26740,26280,26638,26639,26217,26296,26454,26379,26624,26083,26375,26545,26703,26004,26221,26300,26466,25929,&', '0:0:0:0:0:0:0:1', '2018-11-24 12:02:19');
+INSERT INTO `sys_log` VALUES (1329, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:delete,[参数]:ids=26741,&', '0:0:0:0:0:0:0:1', '2018-11-24 12:02:38');
+INSERT INTO `sys_log` VALUES (1330, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=15319&_=1543032054774&', '0:0:0:0:0:0:0:1', '2018-11-24 12:04:57');
+INSERT INTO `sys_log` VALUES (1331, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=15319&_=1543032054775&', '0:0:0:0:0:0:0:1', '2018-11-24 12:27:18');
+INSERT INTO `sys_log` VALUES (1332, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=15319&_=1543032054776&', '0:0:0:0:0:0:0:1', '2018-11-24 12:33:28');
+INSERT INTO `sys_log` VALUES (1333, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:editPage,[参数]:id=25739&_=1543032054779&', '0:0:0:0:0:0:0:1', '2018-11-24 12:34:19');
+INSERT INTO `sys_log` VALUES (1334, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=&_=1543032054780&', '0:0:0:0:0:0:0:1', '2018-11-24 12:34:58');
+INSERT INTO `sys_log` VALUES (1335, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=15327&_=1543032054782&', '0:0:0:0:0:0:0:1', '2018-11-24 12:35:12');
+INSERT INTO `sys_log` VALUES (1336, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=15327&_=1543032054783&', '0:0:0:0:0:0:0:1', '2018-11-24 12:47:58');
+INSERT INTO `sys_log` VALUES (1337, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=15327&_=1543032054784&', '0:0:0:0:0:0:0:1', '2018-11-24 12:58:44');
+INSERT INTO `sys_log` VALUES (1338, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=15327&_=1543032054785&', '0:0:0:0:0:0:0:1', '2018-11-24 13:01:38');
+INSERT INTO `sys_log` VALUES (1339, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=15327&_=1543032054786&', '0:0:0:0:0:0:0:1', '2018-11-24 13:02:48');
+INSERT INTO `sys_log` VALUES (1340, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=15327&_=1543032054787&', '0:0:0:0:0:0:0:1', '2018-11-24 13:10:58');
+INSERT INTO `sys_log` VALUES (1341, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=15327&_=1543032054788&', '0:0:0:0:0:0:0:1', '2018-11-24 13:11:36');
+INSERT INTO `sys_log` VALUES (1342, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:editPage,[参数]:id=15327&_=1543032054789&', '0:0:0:0:0:0:0:1', '2018-11-24 13:26:04');
+INSERT INTO `sys_log` VALUES (1343, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:editPage,[参数]:id=26741&_=1543032054791&', '0:0:0:0:0:0:0:1', '2018-11-24 13:27:54');
+INSERT INTO `sys_log` VALUES (1344, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:edit,[参数]:id=26741&code=CUSTOM203A&name=删除A&productType.id=2248&industry.id=7084&videoType.id=3845&completeDate=&originality.id=4877&photographer.id=3617&editor.id=3056&performer1.id=2004&performer2.id=2003&performer3.id=1996&', '0:0:0:0:0:0:0:1', '2018-11-24 13:27:59');
+INSERT INTO `sys_log` VALUES (1345, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=15327&_=1543032054792&', '0:0:0:0:0:0:0:1', '2018-11-24 13:28:05');
+INSERT INTO `sys_log` VALUES (1346, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=&_=1543037301726&', '0:0:0:0:0:0:0:1', '2018-11-24 13:28:25');
+INSERT INTO `sys_log` VALUES (1347, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=&_=1543037301728&', '0:0:0:0:0:0:0:1', '2018-11-24 13:28:48');
+INSERT INTO `sys_log` VALUES (1348, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=&_=1543037301729&', '0:0:0:0:0:0:0:1', '2018-11-24 13:31:14');
+INSERT INTO `sys_log` VALUES (1349, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=&_=1543037301730&', '0:0:0:0:0:0:0:1', '2018-11-24 13:31:46');
+INSERT INTO `sys_log` VALUES (1350, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=&_=1543037301731&', '0:0:0:0:0:0:0:1', '2018-11-24 13:32:11');
+INSERT INTO `sys_log` VALUES (1351, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=&_=1543037301732&', '0:0:0:0:0:0:0:1', '2018-11-24 13:32:28');
+INSERT INTO `sys_log` VALUES (1352, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:addPage,[参数]:id=25739&_=1543039610290&', '0:0:0:0:0:0:0:1', '2018-11-24 14:07:04');
+INSERT INTO `sys_log` VALUES (1353, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=15319&_=1543039610292&', '0:0:0:0:0:0:0:1', '2018-11-24 14:07:13');
+INSERT INTO `sys_log` VALUES (1354, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=15319&_=1543039610293&', '0:0:0:0:0:0:0:1', '2018-11-24 14:10:38');
+INSERT INTO `sys_log` VALUES (1355, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=&_=1543039610294&', '0:0:0:0:0:0:0:1', '2018-11-24 14:11:18');
+INSERT INTO `sys_log` VALUES (1356, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=&_=1543039610295&', '0:0:0:0:0:0:0:1', '2018-11-24 14:12:25');
+INSERT INTO `sys_log` VALUES (1357, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=&_=1543039610296&', '0:0:0:0:0:0:0:1', '2018-11-24 14:14:48');
+INSERT INTO `sys_log` VALUES (1358, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=&_=1543040322765&', '0:0:0:0:0:0:0:1', '2018-11-24 14:18:56');
+INSERT INTO `sys_log` VALUES (1359, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=&_=1543040322766&', '0:0:0:0:0:0:0:1', '2018-11-24 14:21:40');
+INSERT INTO `sys_log` VALUES (1360, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=&_=1543040322768&', '0:0:0:0:0:0:0:1', '2018-11-24 14:22:12');
+INSERT INTO `sys_log` VALUES (1361, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:editPage,[参数]:id=15319&_=1543040322769&', '0:0:0:0:0:0:0:1', '2018-11-24 14:22:31');
+INSERT INTO `sys_log` VALUES (1362, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:addPage,[参数]:id=&_=1543040322771&', '0:0:0:0:0:0:0:1', '2018-11-24 14:23:04');
+INSERT INTO `sys_log` VALUES (1363, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=15319&_=1543040322773&', '0:0:0:0:0:0:0:1', '2018-11-24 14:23:11');
+INSERT INTO `sys_log` VALUES (1364, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=15321&_=1543040322774&', '0:0:0:0:0:0:0:1', '2018-11-24 14:23:49');
+INSERT INTO `sys_log` VALUES (1365, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.VideoCostController,[方法]:addPage,[参数]:id=&_=1543050368998&', '0:0:0:0:0:0:0:1', '2018-11-24 17:07:06');
+INSERT INTO `sys_log` VALUES (1366, 'admin', 'admin', '[类名]:cn.dovahkiin.controller.CustomerController,[方法]:addPage,[参数]:id=&_=1543050369000&', '0:0:0:0:0:0:0:1', '2018-11-24 17:07:28');
 
 -- ----------------------------
 -- Table structure for user
@@ -1365,14 +1524,14 @@ CREATE TABLE `user`  (
   `create_time` datetime(0) NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `IDx_user_login_name`(`login_name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 18 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
 INSERT INTO `user` VALUES (1, 'admin', 'admin', '05a671c66aefea124cc08b76ea6d30bb', 'test', 0, 25, '18707173376', 0, 0, 1, '2015-12-06 13:14:05');
 INSERT INTO `user` VALUES (15, 'test', 'test', '05a671c66aefea124cc08b76ea6d30bb', 'test', 0, 25, '18707173376', 1, 0, 6, '2015-12-06 13:13:03');
-INSERT INTO `user` VALUES (16, 'LZT1', '骆长涛', '3863541e3d67c84891489d010f57a24d', 'e568a694-6c8e-40b7-803c-c0168e6da4a6', 0, 30, '', 0, 0, 4446, '2018-11-18 13:10:00');
+INSERT INTO `user` VALUES (17, 'CQCQ', '编辑', 'efca8087f2d6d15ceddc156c428521a1', '7354c43b-4a7e-4150-99f1-63a7e1a7e074', 0, 0, '', 1, 0, 1, '2018-11-19 14:34:55');
 
 -- ----------------------------
 -- Table structure for user_role
@@ -1384,7 +1543,7 @@ CREATE TABLE `user_role`  (
   `role_id` bigint(19) NOT NULL COMMENT '角色id',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_user_role_ids`(`user_id`, `role_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 74 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户角色' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 75 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户角色' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user_role
@@ -1392,8 +1551,7 @@ CREATE TABLE `user_role`  (
 INSERT INTO `user_role` VALUES (70, 1, 1);
 INSERT INTO `user_role` VALUES (71, 1, 3);
 INSERT INTO `user_role` VALUES (68, 15, 2);
-INSERT INTO `user_role` VALUES (72, 16, 1);
-INSERT INTO `user_role` VALUES (73, 16, 3);
+INSERT INTO `user_role` VALUES (74, 17, 3);
 
 -- ----------------------------
 -- Table structure for video_cost
@@ -1443,7 +1601,7 @@ CREATE TABLE `video_cost`  (
   CONSTRAINT `video_cost_photographer_FK` FOREIGN KEY (`photographer_id`) REFERENCES `photographer` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `video_cost_product_type_FK` FOREIGN KEY (`product_type_id`) REFERENCES `product_type` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `video_cost_video_type_FK` FOREIGN KEY (`video_type_id`) REFERENCES `video_type` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 8842 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '视频成片消耗' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 16580 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '视频成片消耗' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for video_type
@@ -1458,6 +1616,6 @@ CREATE TABLE `video_type`  (
   `delete_flag` int(1) NULL DEFAULT 0 COMMENT '是否删除',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `code`(`code`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3516 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '产品类型信息' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3864 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '产品类型信息' ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
