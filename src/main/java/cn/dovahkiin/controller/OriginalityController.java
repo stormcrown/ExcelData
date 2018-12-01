@@ -7,6 +7,7 @@ import java.util.Date;
 import cn.dovahkiin.commons.utils.StringUtils;
 import cn.dovahkiin.model.TrueCustomer;
 import com.alibaba.fastjson.JSON;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -59,7 +60,7 @@ public class OriginalityController extends BaseController {
     }
     @PostMapping("/combobox")
     @ResponseBody
-    @RequiresPermissions("/videoCost/dataGrid")
+    @RequiresPermissions(value = {"/videoCost/dataGrid","/customer/dataGrid" },logical = Logical.OR)
     public Object dataGrid() {
         EntityWrapper ew = new EntityWrapper();
         ew.eq("delete_flag", 0 );

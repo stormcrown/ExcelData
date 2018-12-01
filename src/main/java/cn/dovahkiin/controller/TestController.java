@@ -27,19 +27,19 @@ public class TestController extends BaseController {
      * 
      * @return
      */
-    @RequiresRoles("test")
-    @GetMapping("/dataGrid")
-    public String dataGrid() {
-        return "admin/test";
-    }
+//    @RequiresRoles("test")
+//    @GetMapping("/dataGrid")
+//    public String dataGrid() {
+//        return "admin/test";
+//    }
 
     /**
      * 下载测试
      * @return
      */
-    @GetMapping("/down")
-    public ResponseEntity<Resource> down() {
-        File file = new File("/Users/lcm/Downloads/归档.zip");
-        return download(file);
-    }
+//    @GetMapping("/down")
+//    public ResponseEntity<Resource> down() {
+//        File file = new File("/Users/lcm/Downloads/归档.zip");
+//        return download(file);
+//    }
 }

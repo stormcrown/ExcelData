@@ -320,46 +320,46 @@
         LEFT JOIN true_customer tcus ON tcus.id = cus.true_customer_id
         <where> vc.delete_flag = 0
             <if test="videoCostId !=null and videoCostId !=''" >
-                and vc.id = ${videoCostId}
+                and vc.id = #{videoCostId}
             </if>
             <if test="videoCost!=null" >
                 <if test="videoCost.optimizer!=null and videoCost.optimizer.id!=null  " >
-                    and vc.optimizer_id = ${videoCost.optimizer.id }
+                    and vc.optimizer_id = #{videoCost.optimizer.id }
                 </if>
                 <if test="videoCost.demandSector!=null and videoCost.demandSector.id!=null ">
-                    and vc.demand_sector_id =${ videoCost.demandSector.id }
+                    and vc.demand_sector_id =#{ videoCost.demandSector.id }
                 </if>
                 <if test="videoCost.customer!=null" >
                     <if test="videoCost.customer.id!=null" >
-                        and vc.customer_id = ${videoCost.customer.id}
+                        and vc.customer_id = #{videoCost.customer.id}
                     </if>
                     <if test="videoCost.customer.trueCustomer != null and videoCost.customer.trueCustomer.id != null  ">
-                        and cus.true_customer_id = ${videoCost.customer.trueCustomer.id }
+                        and cus.true_customer_id = #{videoCost.customer.trueCustomer.id }
                     </if>
                     <if test="videoCost.customer.originality !=null and videoCost.customer.originality.id !=null ">
-                        and cus.originality_id = ${ videoCost.customer.originality.id }
+                        and cus.originality_id = #{ videoCost.customer.originality.id }
                     </if>
                     <if test="videoCost.customer.performer1!=null and videoCost.customer.performer1.id != null " >
                         and (
-                        cus.performer1_id = ${ videoCost.customer.performer1.id }
-                        or cus.performer2_id = ${ videoCost.customer.performer1.id }
-                        or cus.performer3_id = ${ videoCost.customer.performer1.id }
+                        cus.performer1_id = #{ videoCost.customer.performer1.id }
+                        or cus.performer2_id = #{ videoCost.customer.performer1.id }
+                        or cus.performer3_id = #{ videoCost.customer.performer1.id }
                         )
                     </if>
                     <if test="videoCost.customer.photographer !=null and videoCost.customer.photographer.id !=null  ">
-                          and cus.photographer_id = ${ videoCost.customer.photographer.id }
+                          and cus.photographer_id = #{ videoCost.customer.photographer.id }
                     </if>
                     <if test="videoCost.customer.editor !=null and videoCost.customer.editor.id != null  " >
-                        and cus.editor_id = ${ videoCost.customer.editor.id }
+                        and cus.editor_id = #{ videoCost.customer.editor.id }
                     </if>
                     <if test="videoCost.customer.industry !=null and videoCost.customer.industry.id != null  ">
-                        and cus.industry_id = ${ videoCost.customer.industry.id }
+                        and cus.industry_id = #{ videoCost.customer.industry.id }
                     </if>
                     <if test="videoCost.customer.productType !=null and videoCost.customer.productType.id != null  ">
-                        and cus.product_type_id = ${ videoCost.customer.productType.id }
+                        and cus.product_type_id = #{ videoCost.customer.productType.id }
                     </if>
                     <if test="videoCost.customer.videoType !=null and videoCost.customer.videoType.id != null  ">
-                        and cus.video_type_id = ${ videoCost.customer.videoType.id }
+                        and cus.video_type_id = #{ videoCost.customer.videoType.id }
                     </if>
                 </if>
             </if>
@@ -470,50 +470,50 @@
         <where>
             vc.delete_flag = 0
             <if test="videoCostId !=null and videoCostId !=''" >
-                and vc.id = ${videoCostId}
+                and vc.id = #{videoCostId}
             </if>
             <if test="customerId !=null and customerId !=''" >
-                and cus.id = ${customerId}
+                and cus.id = #{customerId}
             </if>
             <if test="videoCost!=null" >
                 <if test="videoCost.optimizer!=null and videoCost.optimizer.id!=null  " >
-                    and vc.optimizer_id = ${videoCost.optimizer.id }
+                    and vc.optimizer_id = #{videoCost.optimizer.id }
                 </if>
                 <if test="videoCost.demandSector!=null and videoCost.demandSector.id!=null ">
-                    and vc.demand_sector_id =${ videoCost.demandSector.id }
+                    and vc.demand_sector_id =#{ videoCost.demandSector.id }
                 </if>
                 <if test="videoCost.customer!=null" >
                     <if test="videoCost.customer.id!=null" >
-                        and vc.customer_id = ${videoCost.customer.id}
+                        and vc.customer_id = #{videoCost.customer.id}
                     </if>
                     <if test="videoCost.customer.trueCustomer != null and videoCost.customer.trueCustomer.id != null  ">
-                        and cus.true_customer_id = ${videoCost.customer.trueCustomer.id }
+                        and cus.true_customer_id = #{videoCost.customer.trueCustomer.id }
                     </if>
                     <if test="videoCost.customer.originality !=null and videoCost.customer.originality.id !=null ">
-                        and cus.originality_id = ${ videoCost.customer.originality.id }
+                        and cus.originality_id = #{ videoCost.customer.originality.id }
                     </if>
                     <if test="videoCost.customer.performer1!=null and videoCost.customer.performer1.id != null " >
                         and (
-                        cus.performer1_id = ${ videoCost.customer.performer1.id }
-                        or cus.performer2_id = ${ videoCost.customer.performer1.id }
-                        or cus.performer3_id = ${ videoCost.customer.performer1.id }
+                        cus.performer1_id = #{ videoCost.customer.performer1.id }
+                        or cus.performer2_id = #{ videoCost.customer.performer1.id }
+                        or cus.performer3_id = #{ videoCost.customer.performer1.id }
                         )
                     </if>
                     <if test="videoCost.customer.photographer !=null and videoCost.customer.photographer.id !=null  ">
-                        and cus.photographer_id = ${ videoCost.customer.photographer.id }
+                        and cus.photographer_id = #{ videoCost.customer.photographer.id }
                     </if>
                     <if test="videoCost.customer.editor !=null and videoCost.customer.editor.id != null  " >
-                        and cus.editor_id = ${ videoCost.customer.editor.id }
+                        and cus.editor_id = #{ videoCost.customer.editor.id }
                     </if>
 
                     <if test="videoCost.customer.industry !=null and videoCost.customer.industry.id != null  ">
-                        and cus.industry_id = ${ videoCost.customer.industry.id }
+                        and cus.industry_id = #{ videoCost.customer.industry.id }
                     </if>
                     <if test="videoCost.customer.productType !=null and videoCost.customer.productType.id != null  ">
-                        and cus.product_type_id = ${ videoCost.customer.productType.id }
+                        and cus.product_type_id = #{ videoCost.customer.productType.id }
                     </if>
                     <if test="videoCost.customer.videoType !=null and videoCost.customer.videoType.id != null  ">
-                        and cus.video_type_id = ${ videoCost.customer.videoType.id }
+                        and cus.video_type_id = #{ videoCost.customer.videoType.id }
                     </if>
                 </if>
             </if>
@@ -589,47 +589,47 @@
         LEFT JOIN performer per3 ON per3.id = cus.performer3_id
         <where> vc.delete_flag = 0
             <if test="videoCostId !=null and videoCostId !=''" >
-                and vc.id = ${videoCostId}
+                and vc.id = #{videoCostId}
             </if>
 
             <if test="videoCost!=null" >
                 <if test="videoCost.optimizer!=null and videoCost.optimizer.id!=null  " >
-                    and vc.optimizer_id = ${videoCost.optimizer.id }
+                    and vc.optimizer_id = #{videoCost.optimizer.id }
                 </if>
                 <if test="videoCost.demandSector!=null and videoCost.demandSector.id!=null ">
-                    and vc.demand_sector_id =${ videoCost.demandSector.id }
+                    and vc.demand_sector_id =#{ videoCost.demandSector.id }
                 </if>
                 <if test="videoCost.customer!=null" >
                     <if test="videoCost.customer.id!=null" >
-                        and vc.customer_id = ${videoCost.customer.id}
+                        and vc.customer_id = #{videoCost.customer.id}
                     </if>
                     <if test="videoCost.customer.trueCustomer != null and videoCost.customer.trueCustomer.id != null  ">
-                        and cus.true_customer_id = ${videoCost.customer.trueCustomer.id }
+                        and cus.true_customer_id = #{videoCost.customer.trueCustomer.id }
                     </if>
                     <if test="videoCost.customer.originality !=null and videoCost.customer.originality.id !=null ">
-                        and cus.originality_id = ${ videoCost.customer.originality.id }
+                        and cus.originality_id = #{ videoCost.customer.originality.id }
                     </if>
                     <if test="videoCost.customer.performer1!=null and videoCost.customer.performer1.id != null " >
                         and (
-                        cus.performer1_id = ${ videoCost.customer.performer1.id }
-                        or cus.performer2_id = ${ videoCost.customer.performer1.id }
-                        or cus.performer3_id = ${ videoCost.customer.performer1.id }
+                        cus.performer1_id = #{ videoCost.customer.performer1.id }
+                        or cus.performer2_id = #{ videoCost.customer.performer1.id }
+                        or cus.performer3_id = #{ videoCost.customer.performer1.id }
                         )
                     </if>
                     <if test="videoCost.customer.photographer !=null and videoCost.customer.photographer.id !=null  ">
-                        and cus.photographer_id = ${ videoCost.customer.photographer.id }
+                        and cus.photographer_id = #{ videoCost.customer.photographer.id }
                     </if>
                     <if test="videoCost.customer.editor !=null and videoCost.customer.editor.id != null  " >
-                        and cus.editor_id = ${ videoCost.customer.editor.id }
+                        and cus.editor_id = #{ videoCost.customer.editor.id }
                     </if>
                     <if test="videoCost.customer.industry !=null and videoCost.customer.industry.id != null  ">
-                        and cus.industry_id = ${ videoCost.customer.industry.id }
+                        and cus.industry_id = #{ videoCost.customer.industry.id }
                     </if>
                     <if test="videoCost.customer.productType !=null and videoCost.customer.productType.id != null  ">
-                        and cus.product_type_id = ${ videoCost.customer.productType.id }
+                        and cus.product_type_id = #{ videoCost.customer.productType.id }
                     </if>
                     <if test="videoCost.customer.videoType !=null and videoCost.customer.videoType.id != null  ">
-                        and cus.video_type_id = ${ videoCost.customer.videoType.id }
+                        and cus.video_type_id = #{ videoCost.customer.videoType.id }
                     </if>
                 </if>
             </if>
@@ -704,48 +704,48 @@
         LEFT JOIN true_customer tcus ON tcus.id = cus.true_customer_id
         <where> vc.delete_flag = 0
             <if test="videoCostId !=null and videoCostId !=''" >
-                and vc.id = ${videoCostId}
+                and vc.id = #{videoCostId}
             </if>
 
             <if test="videoCost!=null" >
                 <if test="videoCost.optimizer!=null and videoCost.optimizer.id!=null  " >
-                    and vc.optimizer_id = ${videoCost.optimizer.id }
+                    and vc.optimizer_id = #{videoCost.optimizer.id }
                 </if>
                 <if test="videoCost.demandSector!=null and videoCost.demandSector.id!=null ">
-                    and vc.demand_sector_id =${ videoCost.demandSector.id }
+                    and vc.demand_sector_id =#{ videoCost.demandSector.id }
                 </if>
                 <if test="videoCost.customer!=null" >
                     <if test="videoCost.customer.id!=null" >
-                        and vc.customer_id = ${videoCost.customer.id}
+                        and vc.customer_id = #{videoCost.customer.id}
                     </if>
                     <if test="videoCost.customer.trueCustomer != null and videoCost.customer.trueCustomer.id != null  ">
-                        and cus.true_customer_id = ${videoCost.customer.trueCustomer.id }
+                        and cus.true_customer_id = #{videoCost.customer.trueCustomer.id }
                     </if>
                     <if test="videoCost.customer.originality !=null and videoCost.customer.originality.id !=null ">
-                        and cus.originality_id = ${ videoCost.customer.originality.id }
+                        and cus.originality_id = #{ videoCost.customer.originality.id }
                     </if>
                     <if test="videoCost.customer.performer1!=null and videoCost.customer.performer1.id != null " >
                         and (
-                        cus.performer1_id = ${ videoCost.customer.performer1.id }
-                        or cus.performer2_id = ${ videoCost.customer.performer1.id }
-                        or cus.performer3_id = ${ videoCost.customer.performer1.id }
+                        cus.performer1_id = #{ videoCost.customer.performer1.id }
+                        or cus.performer2_id = #{ videoCost.customer.performer1.id }
+                        or cus.performer3_id = #{ videoCost.customer.performer1.id }
                         )
                     </if>
                     <if test="videoCost.customer.photographer !=null and videoCost.customer.photographer.id !=null  ">
-                        and cus.photographer_id = ${ videoCost.customer.photographer.id }
+                        and cus.photographer_id = #{ videoCost.customer.photographer.id }
                     </if>
                     <if test="videoCost.customer.editor !=null and videoCost.customer.editor.id != null  " >
-                        and cus.editor_id = ${ videoCost.customer.editor.id }
+                        and cus.editor_id = #{ videoCost.customer.editor.id }
                     </if>
 
                     <if test="videoCost.customer.industry !=null and videoCost.customer.industry.id != null  ">
-                        and cus.industry_id = ${ videoCost.customer.industry.id }
+                        and cus.industry_id = #{ videoCost.customer.industry.id }
                     </if>
                     <if test="videoCost.customer.productType !=null and videoCost.customer.productType.id != null  ">
-                        and cus.product_type_id = ${ videoCost.customer.productType.id }
+                        and cus.product_type_id = #{ videoCost.customer.productType.id }
                     </if>
                     <if test="videoCost.customer.videoType !=null and videoCost.customer.videoType.id != null  ">
-                        and cus.video_type_id = ${ videoCost.customer.videoType.id }
+                        and cus.video_type_id = #{ videoCost.customer.videoType.id }
                     </if>
                 </if>
             </if>

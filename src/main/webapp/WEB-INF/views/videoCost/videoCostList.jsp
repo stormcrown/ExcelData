@@ -517,7 +517,7 @@
                 <input id="ConsumptionRange" name="ConsumptionRange"  class="easyui-slider" data-options="min:0,range:true,showTip:true,step:10000" style="width:200px" />
                 </td>
                 <td width="50px">
-                    8视频类型
+                    视频类型
                 </td>
                 <td>
 

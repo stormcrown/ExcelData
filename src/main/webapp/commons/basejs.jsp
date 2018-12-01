@@ -1,7 +1,7 @@
 <%--标签 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ include file="/commons/global.jsp" %>
-<c:set var="version" value="201807091111" />
+<c:set var="version" value="201807091118" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="edge" />
 <link rel="shortcut icon" href="${staticPath }/static/style/images/favicon.ico" />
@@ -16,6 +16,10 @@
 <script type="text/javascript" src="${staticPath }/static/js/jquery-easyui/jquery.min.js"></script>
 <script type="text/javascript" src="${staticPath }/static/js/jquery-easyui/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="${staticPath }/static/js/jquery-easyui/locale/easyui-lang-zh_CN.js"></script>
+<%-- [echatrs] --%>
+<script type="text/javascript" src="${staticPath }/static/echarts/echarts.js"></script>
+<script type="text/javascript" src="${staticPath }/static/echarts/macarons.js"></script>
+
 <%-- [扩展JS] --%>
 <script type="text/javascript" src="${staticPath }/static/js/arrayToTree.js"></script>
 <script type="text/javascript" src="${staticPath }/static/js/extJs.js?v=${version}"></script>

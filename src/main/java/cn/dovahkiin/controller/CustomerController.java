@@ -7,6 +7,7 @@ import cn.dovahkiin.commons.utils.StringUtils;
 import cn.dovahkiin.model.VideoCost;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -73,7 +74,7 @@ public class CustomerController extends BaseController {
         return map;
     }
     @PostMapping("/dataGrid")
-    @RequiresPermissions("/customer/dataGrid" )
+    @RequiresPermissions(value = {"/customer/dataGrid" },logical = Logical.OR)
     @ResponseBody
     public PageInfo dataGrid(Customer customer, Integer page, Integer rows, String sort,String order, String KeyWord, String completeDateRange) {
         PageInfo pageInfo = new PageInfo(page, rows, sort, order);
@@ -93,7 +94,7 @@ public class CustomerController extends BaseController {
     }
     @PostMapping("/combobox")
     @ResponseBody
-    @RequiresPermissions("/videoCost/dataGrid")
+    @RequiresPermissions(value = {"/videoCost/dataGrid","/customer/dataGrid" },logical = Logical.OR)
     public Object dataGrid() {
         return JSON.toJSON(customerService.selectForCombobox());
     }
