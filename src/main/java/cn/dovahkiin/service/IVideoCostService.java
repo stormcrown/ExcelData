@@ -28,8 +28,10 @@ public interface IVideoCostService  {
     Workbook exportData(Map map,Workbook workbook);
     VideoCost selectByPrimaryKey(Long  id);
     Page<VideoCost> selectWithCount(Page<VideoCost> pages,Map<String , Object> map);
+    double sumConsumption(Map<String , Object> map);
     int selectCount(Date recoredDate,Long customId);
     double selectMaxConsumption();
     Model modelForEdit(Model model);
+    Map selectDataForListPage(Map<String , Object> map);
 
 }

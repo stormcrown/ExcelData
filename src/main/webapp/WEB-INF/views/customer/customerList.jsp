@@ -25,7 +25,7 @@
         pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500],
         frozenColumns : [ [ {
             width : '60',
-            title : '编号',
+            title : 'ID',
             field : 'id',
             sortable : true,
             checkbox:true,
@@ -42,6 +42,16 @@
                 return commonForm(value,$("#KeyWord_customList").val().trim());
             }
         },
+            {
+                width : '200',
+                title : '客户',
+                field : 'trueCustomer',
+                sortable : true,
+                formatter : function(value, row, index) {
+                    if(value!=null)return commonForm(value.name,$("#KeyWord_customList").val().trim());
+                    return '';
+                }
+            },
          {
             width : '200',
             title : '编码',
@@ -210,6 +220,13 @@
             });
         });
 
+        $('#organizationAddPid_cus').combotree({
+            url : '${path }/organization/tree',
+            parentField : 'pid',
+            panelHeight : 300,editable:true,
+            width:200
+        });
+
 });
 
 /**
@@ -362,8 +379,7 @@ function customerSearchFun() {
                         <td title="英文逗号“,”分隔多个关键字，检测除日期，累计消耗及排名以外的列。" class="easyui-tooltip" >
                             <input id="KeyWord_customList" name="KeyWord" placeholder="关键字" type="text"  class="layui-input" />
                         </td>
-                    <th>数据日期:</th>
-                    <th>完成日期:</th>
+                    <th>成片日期:</th>
                     <td>
                         <input id="completeDateRange_custom" name="completeDateRange" type="text" class="layui-input"    />
                     </td>
@@ -380,6 +396,43 @@ function customerSearchFun() {
                         <button type="button" class="layui-btn layui-btn-radius layui-btn-normal" onclick="customerSearchFun();">查询</button>
                         <button type="button" class="layui-btn layui-btn-radius layui-btn-danger" onclick="customerCleanFun();" >清空</button>
                      </td>
+                </tr>
+                <tr  >
+                    <th>客户</th>
+                    <td>
+                        <input name="trueCustomer.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'/trueCustomer/combobox'" />
+                    </td>
+                    <th>演员</th>
+                    <td  >
+                        <input name="performer1.id"  class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'/performer/combobox'" />
+                    </td>
+                    <th>摄像</th>
+                    <td>
+                        <input name="photographer.id"  class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'/photographer/combobox'" />
+                    </td>
+                    <th>剪辑</th>
+                    <td>
+                        <input name="editor.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'/editor/combobox'" />
+                    </td>
+                </tr>
+                <tr  >
+                    <td >创意</td>
+                    <td>
+                        <input name="originality.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'/originality/combobox'" />
+                    </td>
+                    <td >行业</td>
+                    <td>
+                        <input name="industry.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'/industry/combobox'" />
+                    </td>
+                    <td >产品类型</td>
+                    <td>
+                        <input name="productType.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'/productType/combobox'" />
+                    </td>
+                    <td >视频类型</td>
+                    <td>
+                        <input name="videoType.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'/videoType/combobox'" />
+                    </td>
+
                 </tr>
             </table>
         </form>

@@ -3,6 +3,7 @@ package cn.dovahkiin.commons.result;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -16,7 +17,8 @@ public class PageInfo {
     private final static int PAGESIZE = 10; //默认显示的记录数 
 
     private int total; // 总记录 
-    private List rows; //显示的记录  
+    private List rows; //显示的记录
+    private JSONObject otherMsg;
 
     @JsonIgnore
     private int from;
@@ -134,5 +136,13 @@ public class PageInfo {
 
     public void setOrder(String order) {
         this.order = order;
+    }
+
+    public JSONObject getOtherMsg() {
+        return otherMsg;
+    }
+
+    public void setOtherMsg(JSONObject otherMsg) {
+        this.otherMsg = otherMsg;
     }
 }

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.dovahkiin.mapper.VideoCostMapper">
-
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="cn.dovahkiin.model.VideoCost" >
         <id column="id" property="id"/>
@@ -9,18 +8,9 @@
         <result column="create_time" property="createTime"/>
         <result column="delete_flag" property="deleteFlag"/>
         <result column="recored_date" property="recoredDate"/>
-        <result column="complete_date" property="completeDate"/>
         <result column="consumption" property="consumption"/>
         <result column="cumulative_consumption" property="cumulativeConsumption"/>
         <result column="cumulative_consumption_ranking" property="cumulativeConsumptionRanking"/>
-        <association property="productType" javaType="cn.dovahkiin.model.ProductType" columnPrefix="product_type_">
-            <id column="id" property="id"/>
-            <result column="name" property="name"/>
-            <result column="code" property="code"/>
-            <result column="update_time" property="updateTime"/>
-            <result column="create_time" property="createTime"/>
-            <result column="delete_flag" property="deleteFlag"/>
-        </association>
         <association property="customer" javaType="cn.dovahkiin.model.Customer" columnPrefix="customer_">
             <id column="id" property="id"/>
             <result column="name" property="name"/>
@@ -28,14 +18,87 @@
             <result column="update_time" property="updateTime"/>
             <result column="create_time" property="createTime"/>
             <result column="delete_flag" property="deleteFlag"/>
-        </association>
-        <association property="industry" javaType="cn.dovahkiin.model.Industry" columnPrefix="industry_">
-            <id column="id" property="id"/>
-            <result column="name" property="name"/>
-            <result column="code" property="code"/>
-            <result column="update_time" property="updateTime"/>
-            <result column="create_time" property="createTime"/>
-            <result column="delete_flag" property="deleteFlag"/>
+            <result column="complete_date"  property="completeDate" />
+            <association  property="editor" javaType="cn.dovahkiin.model.Editor" columnPrefix="editor_" >
+                <id column="id" property="id" />
+                <result column="name" property="name" />
+                <result column="code" property="code" />
+                <result column="update_time" property="updateTime" />
+                <result column="create_time" property="createTime" />
+                <result column="delete_flag" property="deleteFlag" />
+            </association>
+            <association property="industry" javaType="cn.dovahkiin.model.Industry" columnPrefix="industry_" >
+                <id column="id" property="id" />
+                <result column="name" property="name" />
+                <result column="code" property="code" />
+                <result column="update_time" property="updateTime" />
+                <result column="create_time" property="createTime" />
+                <result column="delete_flag" property="deleteFlag" />
+            </association>
+            <association property="productType" javaType="cn.dovahkiin.model.ProductType" columnPrefix="product_type_">
+                <id column="id" property="id"/>
+                <result column="name" property="name"/>
+                <result column="code" property="code"/>
+                <result column="update_time" property="updateTime"/>
+                <result column="create_time" property="createTime"/>
+                <result column="delete_flag" property="deleteFlag"/>
+            </association>
+            <association property="originality" javaType="cn.dovahkiin.model.Originality" columnPrefix="originality_">
+                <id column="id" property="id"/>
+                <result column="name" property="name"/>
+                <result column="code" property="code"/>
+                <result column="update_time" property="updateTime"/>
+                <result column="create_time" property="createTime"/>
+                <result column="delete_flag" property="deleteFlag"/>
+            </association>
+            <association property="videoType" javaType="cn.dovahkiin.model.VideoType" columnPrefix="video_type_">
+                <id column="id" property="id"/>
+                <result column="name" property="name"/>
+                <result column="code" property="code"/>
+                <result column="update_time" property="updateTime"/>
+                <result column="create_time" property="createTime"/>
+                <result column="delete_flag" property="deleteFlag"/>
+            </association>
+            <association property="photographer" javaType="cn.dovahkiin.model.Photographer" columnPrefix="photographer_">
+                <id column="id" property="id"/>
+                <result column="name" property="name"/>
+                <result column="code" property="code"/>
+                <result column="update_time" property="updateTime"/>
+                <result column="create_time" property="createTime"/>
+                <result column="delete_flag" property="deleteFlag"/>
+            </association>
+            <association property="performer1" javaType="cn.dovahkiin.model.Performer" columnPrefix="performer1_">
+                <id column="id" property="id" />
+                <result column="name" property="name" />
+                <result column="code" property="code" />
+                <result column="update_time" property="updateTime" />
+                <result column="create_time" property="createTime" />
+                <result column="delete_flag" property="deleteFlag" />
+            </association>
+            <association property="performer2" javaType="cn.dovahkiin.model.Performer" columnPrefix="performer2_">
+                <id column="id" property="id" />
+                <result column="name" property="name" />
+                <result column="code" property="code" />
+                <result column="update_time" property="updateTime" />
+                <result column="create_time" property="createTime" />
+                <result column="delete_flag" property="deleteFlag" />
+            </association>
+            <association property="performer3" javaType="cn.dovahkiin.model.Performer" columnPrefix="performer3_">
+                <id column="id" property="id" />
+                <result column="name" property="name" />
+                <result column="code" property="code" />
+                <result column="update_time" property="updateTime" />
+                <result column="create_time" property="createTime" />
+                <result column="delete_flag" property="deleteFlag" />
+            </association>
+            <association property="trueCustomer" javaType="cn.dovahkiin.model.TrueCustomer" columnPrefix="true_customer_">
+                <id column="id" property="id" />
+                <result column="name" property="name" />
+                <result column="code" property="code" />
+                <result column="update_time" property="updateTime" />
+                <result column="create_time" property="createTime" />
+                <result column="delete_flag" property="deleteFlag" />
+            </association>
         </association>
         <association property="demandSector" javaType="cn.dovahkiin.model.Organization" columnPrefix="demand_sector_">
             <id column="id" property="id"/>
@@ -56,40 +119,7 @@
             <result column="create_time" property="createTime"/>
             <result column="delete_flag" property="deleteFlag"/>
         </association>
-        <association property="videoType" javaType="cn.dovahkiin.model.VideoType" columnPrefix="video_type_">
-            <id column="id" property="id"/>
-            <result column="name" property="name"/>
-            <result column="code" property="code"/>
-            <result column="update_time" property="updateTime"/>
-            <result column="create_time" property="createTime"/>
-            <result column="delete_flag" property="deleteFlag"/>
-        </association>
-        <association property="originality" javaType="cn.dovahkiin.model.Originality" columnPrefix="originality_">
-            <id column="id" property="id"/>
-            <result column="name" property="name"/>
-            <result column="code" property="code"/>
-            <result column="update_time" property="updateTime"/>
-            <result column="create_time" property="createTime"/>
-            <result column="delete_flag" property="deleteFlag"/>
-        </association>
-        <association property="photographer" javaType="cn.dovahkiin.model.Photographer" columnPrefix="photographer_">
-            <id column="id" property="id"/>
-            <result column="name" property="name"/>
-            <result column="code" property="code"/>
-            <result column="update_time" property="updateTime"/>
-            <result column="create_time" property="createTime"/>
-            <result column="delete_flag" property="deleteFlag"/>
-        </association>
-        <association property="editor" javaType="cn.dovahkiin.model.Editor" columnPrefix="editor_">
-            <id column="id" property="id"/>
-            <result column="name" property="name"/>
-            <result column="code" property="code"/>
-            <result column="update_time" property="updateTime"/>
-            <result column="create_time" property="createTime"/>
-            <result column="delete_flag" property="deleteFlag"/>
-        </association>
-        <association property="businessDepartment" javaType="cn.dovahkiin.model.Organization"
-                     columnPrefix="business_department_">
+        <association property="businessDepartment" javaType="cn.dovahkiin.model.Organization" columnPrefix="business_department_">
             <id column="id" property="id"/>
             <result column="name" property="name"/>
             <result column="simple_names" property="simpleNames"/>
@@ -100,30 +130,6 @@
             <result column="seq" property="seq"/>
             <result column="create_time" property="createTime"/>
         </association>
-        <association property="performer1" javaType="cn.dovahkiin.model.Performer" columnPrefix="performer1_">
-        <id column="id" property="id" />
-        <result column="name" property="name" />
-        <result column="code" property="code" />
-        <result column="update_time" property="updateTime" />
-        <result column="create_time" property="createTime" />
-        <result column="delete_flag" property="deleteFlag" />
-    </association>
-        <association property="performer2" javaType="cn.dovahkiin.model.Performer" columnPrefix="performer2_">
-            <id column="id" property="id" />
-            <result column="name" property="name" />
-            <result column="code" property="code" />
-            <result column="update_time" property="updateTime" />
-            <result column="create_time" property="createTime" />
-            <result column="delete_flag" property="deleteFlag" />
-        </association>
-        <association property="performer3" javaType="cn.dovahkiin.model.Performer" columnPrefix="performer3_">
-            <id column="id" property="id" />
-            <result column="name" property="name" />
-            <result column="code" property="code" />
-            <result column="update_time" property="updateTime" />
-            <result column="create_time" property="createTime" />
-            <result column="delete_flag" property="deleteFlag" />
-        </association>
     </resultMap>
     <resultMap id="BaseResultMapWithCount" type="cn.dovahkiin.model.VideoCost" extends="BaseResultMap">
         <result column="cumulativeConsumptionByPro" property="cumulativeConsumptionByPro"/>
@@ -132,26 +138,18 @@
     <insert id="insertMany" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         insert into `video_cost`
         (
-        create_time,delete_flag, recored_date, business_department_id, product_type_id, customer_id,
-        industry_id,demand_sector_id,optimizer_id, video_type_id,complete_date,
-        originality_id,
-        photographer_id,
-        editor_id,
-        performer1_id,
-        performer2_id,
-        performer3_id,
+        create_time,delete_flag, recored_date, business_department_id,  customer_id,
+        demand_sector_id,optimizer_id,
         consumption
         )
         values
         <foreach collection="list" item="videoCost" index="index" separator=",">
             (
             #{videoCost.createTime}, #{videoCost.deleteFlag},#{videoCost.recoredDate},
-            #{videoCost.businessDepartment.id},#{videoCost.productType.id},
-            #{videoCost.customer.id},#{videoCost.industry.id},
-            #{videoCost.demandSector.id},#{videoCost.optimizer.id},#{videoCost.videoType.id},#{videoCost.completeDate},#{videoCost.originality.id},#{videoCost.photographer.id},#{videoCost.editor.id},
-            #{videoCost.performer1.id},
-            #{videoCost.performer2.id},
-            #{videoCost.performer3.id},
+            #{videoCost.businessDepartment.id},
+            #{videoCost.customer.id},
+            #{videoCost.demandSector.id},
+            #{videoCost.optimizer.id},
             <choose>
                 <when test="videoCost.consumption !=null">
                     #{videoCost.consumption}
@@ -175,22 +173,11 @@
     <update id="updateByPrimaryKey" parameterType="cn.dovahkiin.model.VideoCost" >
         update `video_cost`
         set
-
         recored_date = #{recoredDate} ,
         business_department_id = #{businessDepartment.id},
-        product_type_id = #{productType.id},
         customer_id = #{customer.id},
-        industry_id=#{industry.id},
         demand_sector_id=#{demandSector.id},
         optimizer_id=#{optimizer.id},
-        video_type_id=#{videoType.id},
-        complete_date=#{completeDate},
-        originality_id=#{originality.id},
-        photographer_id=#{photographer.id},
-        editor_id=#{editor.id},
-        performer1_id=#{performer1.id},
-        performer2_id=#{performer2.id},
-        performer3_id=#{performer3.id},
         consumption =
         <choose>
             <when test="consumption !=null">
@@ -201,11 +188,6 @@
             </otherwise>
         </choose>
             where id =  #{id}
-
-
-
-
-
     </update>
     <select id="selectWithCount" resultMap="BaseResultMapWithCount">
         SELECT
@@ -215,40 +197,31 @@
         vc.delete_flag ,
         vc.recored_date ,
         vc.business_department_id ,
-        vc.product_type_id ,
         vc.customer_id ,
-        vc.industry_id,
         vc.demand_sector_id ,
         vc.optimizer_id,
-        vc.video_type_id,
-        vc.complete_date ,
-        vc.originality_id,
-        vc.photographer_id,
-        vc.editor_id,
-        vc.performer1_id,
-        vc.performer2_id,
-        vc.performer3_id,
         vc.consumption,
         cumulativeConsumptionByPro,
         cumulativeConsumptionRankingByProglam,
 
-        pty.`name` as product_type_name,
-        pty.`code` as product_type_code,
-        pty.update_time as product_type_update_time,
-        pty.create_time as product_type_create_time,
-        pty.delete_flag as product_type_delete_flag,
+        pty.`name` as customer_product_type_name,
+        pty.`code` as customer_product_type_code,
+        pty.update_time as customer_product_type_update_time,
+        pty.create_time as customer_product_type_create_time,
+        pty.delete_flag as customer_product_type_delete_flag,
 
+        cus.`complete_date` as customer_complete_date,
         cus.`name` as customer_name,
         cus.`code` as customer_code,
         cus.update_time as customer_update_time,
         cus.create_time as customer_create_time,
         cus.delete_flag as customer_delete_flag,
 
-        ind.`name` as industry_name,
-        ind.`code` as industry_code,
-        ind.update_time as industry_update_time,
-        ind.create_time as industry_create_time,
-        ind.delete_flag as industry_delete_flag,
+        ind.`name` as customer_industry_name,
+        ind.`code` as customer_industry_code,
+        ind.update_time as customer_industry_update_time,
+        ind.create_time as customer_industry_create_time,
+        ind.delete_flag as customer_industry_delete_flag,
 
         dem.`name` as demand_sector_name,
         dem.`code` as demand_sector_code,
@@ -261,52 +234,59 @@
         opt.create_time as optimizer_create_time,
         opt.delete_flag as optimizer_delete_flag,
 
-        vdt.`name` as video_type_name,
-        vdt.`code` as video_type_code,
-        vdt.update_time as video_type_update_time,
-        vdt.create_time as video_type_create_time,
-        vdt.delete_flag as video_type_delete_flag,
+        vdt.`name` as customer_video_type_name,
+        vdt.`code` as customer_video_type_code,
+        vdt.update_time as customer_video_type_update_time,
+        vdt.create_time as customer_video_type_create_time,
+        vdt.delete_flag as customer_video_type_delete_flag,
 
-        ori.`name` as originality_name,
-        ori.`code` as originality_code,
-        ori.update_time as originality_update_time,
-        ori.create_time as originality_create_time,
-        ori.delete_flag as originality_delete_flag,
+        ori.`name` as customer_originality_name,
+        ori.`code` as customer_originality_code,
+        ori.update_time as customer_originality_update_time,
+        ori.create_time as customer_originality_create_time,
+        ori.delete_flag as customer_originality_delete_flag,
 
-        pho.`name` as photographer_name,
-        pho.`code` as photographer_code,
-        pho.update_time as photographer_update_time,
-        pho.create_time as photographer_create_time,
-        ori.delete_flag as photographer_delete_flag,
+        pho.`name` as customer_photographer_name,
+        pho.`code` as customer_photographer_code,
+        pho.update_time as customer_photographer_update_time,
+        pho.create_time as customer_photographer_create_time,
+        ori.delete_flag as customer_photographer_delete_flag,
 
-        edi.`name` as editor_name,
-        edi.`code` as editor_code,
-        edi.update_time as editor_update_time,
-        edi.create_time as editor_create_time,
-        edi.delete_flag as editor_delete_flag,
+        edi.`name` as customer_editor_name,
+        edi.`code` as customer_editor_code,
+        edi.update_time as customer_editor_update_time,
+        edi.create_time as customer_editor_create_time,
+        edi.delete_flag as customer_editor_delete_flag,
 
         bdi.`name` as business_department_name,
         bdi.`code` as business_department_code,
         bdi.simple_names as business_department_simple_names,
         bdi.create_time as business_department_create_time,
 
-        per1.`name` as performer1_name,
-        per1.`code` as performer1_code,
-        per1.update_time as performer1_update_time,
-        per1.create_time as performer1_create_time,
-        per1.delete_flag as performer1_delete_flag,
+        per1.`name` as customer_performer1_name,
+        per1.`code` as customer_performer1_code,
+        per1.update_time as customer_performer1_update_time,
+        per1.create_time as customer_performer1_create_time,
+        per1.delete_flag as customer_performer1_delete_flag,
 
-        per2.`name` as performer2_name,
-        per2.`code` as performer2_code,
-        per2.update_time as performer2_update_time,
-        per2.create_time as performer2_create_time,
-        per2.delete_flag as performer3_delete_flag,
+        per2.`name` as customer_performer2_name,
+        per2.`code` as customer_performer2_code,
+        per2.update_time as customer_performer2_update_time,
+        per2.create_time as customer_performer2_create_time,
+        per2.delete_flag as customer_performer2_delete_flag,
 
-        per3.`name` as performer3_name,
-        per3.`code` as performer3_code,
-        per3.update_time as performer3_update_time,
-        per3.create_time as performer3_create_time,
-        per3.delete_flag as performer3_delete_flag
+        per3.`name` as customer_performer3_name,
+        per3.`code` as customer_performer3_code,
+        per3.update_time as customer_performer3_update_time,
+        per3.create_time as customer_performer3_create_time,
+        per3.delete_flag as customer_performer3_delete_flag,
+
+        tcus.`id` as customer_true_customer_id,
+        tcus.`name` as customer_true_customer_name,
+        tcus.`code` as customer_true_customer_code,
+        tcus.update_time as customer_true_customer_update_time,
+        tcus.create_time as customer_true_customer_create_time,
+        tcus.delete_flag as customer_true_customer_delete_flag
 
         FROM video_cost vc
         left join (
@@ -324,22 +304,64 @@
         ) t1,
         (SELECT @rownum := 0) rownum
         ) pm on vc.customer_id = pm.customer_id
-        left join product_type pty on pty.id = vc.product_type_id
-        left join customer cus on cus.id = vc.customer_id
-        left join industry ind on ind.id = vc.industry_id
         left join organization dem on dem.id = vc.demand_sector_id
         left join optimizer opt on opt.id = vc.optimizer_id
-        left join video_type vdt on vdt.id = vc.video_type_id
-        left join originality ori on ori.id = vc.originality_id
-        left join photographer pho on pho.id = vc.photographer_id
-        left join editor edi on edi.id = vc.editor_id
+        left join customer cus on cus.id = vc.customer_id
         left join organization bdi on bdi.id = vc.business_department_id
-        LEFT JOIN performer per1 ON per1.id = vc.performer1_id
-        LEFT JOIN performer per2 ON per2.id = vc.performer2_id
-        LEFT JOIN performer per3 ON per3.id = vc.performer3_id
+        left join industry ind on ind.id = cus.industry_id
+        left join product_type pty on pty.id = cus.product_type_id
+        left join video_type vdt on vdt.id = cus.video_type_id
+        left join originality ori on ori.id = cus.originality_id
+        left join photographer pho on pho.id = cus.photographer_id
+        left join editor edi on edi.id = cus.editor_id
+        LEFT JOIN performer per1 ON per1.id = cus.performer1_id
+        LEFT JOIN performer per2 ON per2.id = cus.performer2_id
+        LEFT JOIN performer per3 ON per3.id = cus.performer3_id
+        LEFT JOIN true_customer tcus ON tcus.id = cus.true_customer_id
         <where> vc.delete_flag = 0
             <if test="videoCostId !=null and videoCostId !=''" >
                 and vc.id = ${videoCostId}
+            </if>
+            <if test="videoCost!=null" >
+                <if test="videoCost.optimizer!=null and videoCost.optimizer.id!=null  " >
+                    and vc.optimizer_id = ${videoCost.optimizer.id }
+                </if>
+                <if test="videoCost.demandSector!=null and videoCost.demandSector.id!=null ">
+                    and vc.demand_sector_id =${ videoCost.demandSector.id }
+                </if>
+                <if test="videoCost.customer!=null" >
+                    <if test="videoCost.customer.id!=null" >
+                        and vc.customer_id = ${videoCost.customer.id}
+                    </if>
+                    <if test="videoCost.customer.trueCustomer != null and videoCost.customer.trueCustomer.id != null  ">
+                        and cus.true_customer_id = ${videoCost.customer.trueCustomer.id }
+                    </if>
+                    <if test="videoCost.customer.originality !=null and videoCost.customer.originality.id !=null ">
+                        and cus.originality_id = ${ videoCost.customer.originality.id }
+                    </if>
+                    <if test="videoCost.customer.performer1!=null and videoCost.customer.performer1.id != null " >
+                        and (
+                        cus.performer1_id = ${ videoCost.customer.performer1.id }
+                        or cus.performer2_id = ${ videoCost.customer.performer1.id }
+                        or cus.performer3_id = ${ videoCost.customer.performer1.id }
+                        )
+                    </if>
+                    <if test="videoCost.customer.photographer !=null and videoCost.customer.photographer.id !=null  ">
+                          and cus.photographer_id = ${ videoCost.customer.photographer.id }
+                    </if>
+                    <if test="videoCost.customer.editor !=null and videoCost.customer.editor.id != null  " >
+                        and cus.editor_id = ${ videoCost.customer.editor.id }
+                    </if>
+                    <if test="videoCost.customer.industry !=null and videoCost.customer.industry.id != null  ">
+                        and cus.industry_id = ${ videoCost.customer.industry.id }
+                    </if>
+                    <if test="videoCost.customer.productType !=null and videoCost.customer.productType.id != null  ">
+                        and cus.product_type_id = ${ videoCost.customer.productType.id }
+                    </if>
+                    <if test="videoCost.customer.videoType !=null and videoCost.customer.videoType.id != null  ">
+                        and cus.video_type_id = ${ videoCost.customer.videoType.id }
+                    </if>
+                </if>
             </if>
             <if test="KeyWord !=null" >
                 <foreach collection="KeyWord" item="keyW" >
@@ -353,13 +375,13 @@
                     or opt.`name` like #{keyW}
                     or vdt.`name` like #{keyW}
                     or ori.`name` like #{keyW}
-
                     or pho.`name` like #{keyW}
                     or edi.`name` like #{keyW}
                     or bdi.`name` like #{keyW}
                     or per1.`name` like #{keyW}
                     or per2.`name` like #{keyW}
                     or per3.`name` like #{keyW}
+                    or tcus.`name` like #{keyW}
                     )
                 </foreach>
             </if>
@@ -367,7 +389,7 @@
                 and ( vc.recored_date between #{recoredDate_start} and #{recoredDate_end} )
             </if>
             <if test="completeDate_start!=null and completeDate_end!=null ">
-                and ( vc.complete_date between #{completeDate_start} and #{completeDate_end} )
+                and ( cus.complete_date between #{completeDate_start} and #{completeDate_end} )
             </if>
             <if test="consumption_min!=null">
                 and vc.consumption &gt;=#{consumption_min}
@@ -390,7 +412,7 @@
                 <when test="sort=='industry'">ind.`name`</when>
                 <when test="sort=='demandSector'">dem.`name`</when>
                 <when test="sort=='videoType'">vdt.`name`</when>
-                <when test="sort=='completeDate'">vc.complete_date</when>
+                <when test="sort=='completeDate'">cus.complete_date</when>
                 <when test="sort=='optimizer'">opt.`name`</when>
                 <when test="sort=='originality'">ori.`name`</when>
                 <when test="sort=='photographer'">pho.`name`</when>
@@ -398,6 +420,7 @@
                 <when test="sort=='performer1'">per1.`name`</when>
                 <when test="sort=='performer2'">per2.`name`</when>
                 <when test="sort=='performer3'">per3.`name`</when>
+                <when test="sort=='trueCustomer'">tcus.`name`</when>
                 <otherwise>pm.cumulativeConsumptionByPro</otherwise>
             </choose>
             <choose>
@@ -431,19 +454,19 @@
         ) t1,
         (SELECT @rownum := 0) rownum
         ) pm on vc.customer_id = pm.customer_id
-        left join product_type pty on pty.id = vc.product_type_id
         left join customer cus on cus.id = vc.customer_id
-        left join industry ind on ind.id = vc.industry_id
-        left join organization dem on dem.id = vc.demand_sector_id
         left join optimizer opt on opt.id = vc.optimizer_id
-        left join video_type vdt on vdt.id = vc.video_type_id
-        left join originality ori on ori.id = vc.originality_id
-        left join photographer pho on pho.id = vc.photographer_id
-        left join editor edi on edi.id = vc.editor_id
-        left join organization bdi on bdi.id = vc.business_department_id
-        LEFT JOIN performer per1 ON per1.id = vc.performer1_id
-        LEFT JOIN performer per2 ON per2.id = vc.performer2_id
-        LEFT JOIN performer per3 ON per3.id = vc.performer3_id
+        left join organization dem on dem.id = vc.demand_sector_id
+        left join product_type pty on pty.id = cus.product_type_id
+        left join industry ind on ind.id = cus.industry_id
+        left join video_type vdt on vdt.id = cus.video_type_id
+        left join originality ori on ori.id = cus.originality_id
+        left join photographer pho on pho.id = cus.photographer_id
+        left join editor edi on edi.id = cus.editor_id
+        LEFT JOIN performer per1 ON per1.id = cus.performer1_id
+        LEFT JOIN performer per2 ON per2.id = cus.performer2_id
+        LEFT JOIN performer per3 ON per3.id = cus.performer3_id
+        LEFT JOIN true_customer tcus ON tcus.id = cus.true_customer_id
         <where>
             vc.delete_flag = 0
             <if test="videoCostId !=null and videoCostId !=''" >
@@ -451,6 +474,48 @@
             </if>
             <if test="customerId !=null and customerId !=''" >
                 and cus.id = ${customerId}
+            </if>
+            <if test="videoCost!=null" >
+                <if test="videoCost.optimizer!=null and videoCost.optimizer.id!=null  " >
+                    and vc.optimizer_id = ${videoCost.optimizer.id }
+                </if>
+                <if test="videoCost.demandSector!=null and videoCost.demandSector.id!=null ">
+                    and vc.demand_sector_id =${ videoCost.demandSector.id }
+                </if>
+                <if test="videoCost.customer!=null" >
+                    <if test="videoCost.customer.id!=null" >
+                        and vc.customer_id = ${videoCost.customer.id}
+                    </if>
+                    <if test="videoCost.customer.trueCustomer != null and videoCost.customer.trueCustomer.id != null  ">
+                        and cus.true_customer_id = ${videoCost.customer.trueCustomer.id }
+                    </if>
+                    <if test="videoCost.customer.originality !=null and videoCost.customer.originality.id !=null ">
+                        and cus.originality_id = ${ videoCost.customer.originality.id }
+                    </if>
+                    <if test="videoCost.customer.performer1!=null and videoCost.customer.performer1.id != null " >
+                        and (
+                        cus.performer1_id = ${ videoCost.customer.performer1.id }
+                        or cus.performer2_id = ${ videoCost.customer.performer1.id }
+                        or cus.performer3_id = ${ videoCost.customer.performer1.id }
+                        )
+                    </if>
+                    <if test="videoCost.customer.photographer !=null and videoCost.customer.photographer.id !=null  ">
+                        and cus.photographer_id = ${ videoCost.customer.photographer.id }
+                    </if>
+                    <if test="videoCost.customer.editor !=null and videoCost.customer.editor.id != null  " >
+                        and cus.editor_id = ${ videoCost.customer.editor.id }
+                    </if>
+
+                    <if test="videoCost.customer.industry !=null and videoCost.customer.industry.id != null  ">
+                        and cus.industry_id = ${ videoCost.customer.industry.id }
+                    </if>
+                    <if test="videoCost.customer.productType !=null and videoCost.customer.productType.id != null  ">
+                        and cus.product_type_id = ${ videoCost.customer.productType.id }
+                    </if>
+                    <if test="videoCost.customer.videoType !=null and videoCost.customer.videoType.id != null  ">
+                        and cus.video_type_id = ${ videoCost.customer.videoType.id }
+                    </if>
+                </if>
             </if>
             <if test="KeyWord !=null" >
                 <foreach collection="KeyWord" item="keyW" >
@@ -471,6 +536,7 @@
                     or per1.`name` like #{keyW}
                     or per2.`name` like #{keyW}
                     or per3.`name` like #{keyW}
+                    or tcus.`name` like #{keyW}
                     )
                 </foreach>
             </if>
@@ -478,7 +544,7 @@
                 and ( vc.recored_date between #{recoredDate_start} and #{recoredDate_end} )
             </if>
             <if test="completeDate_start!=null and completeDate_end!=null">
-                and ( vc.complete_date between #{completeDate_start} and #{completeDate_end} )
+                and ( cus.complete_date between #{completeDate_start} and #{completeDate_end} )
             </if>
             <if test="consumption_min!=null">
                 and vc.consumption &gt;=#{consumption_min}
@@ -489,29 +555,239 @@
         </where>
     </select>
 
+    <select id="sumConsumption" resultType="java.lang.Double" >
+        SELECT
+          sum(vc.consumption)
+        FROM video_cost vc
+        left join (
+        SELECT
+        customer_id,cumulativeConsumptionByPro,@rownum :=@rownum + 1 AS cumulativeConsumptionRankingByProglam
+        FROM
+        (
+        SELECT
+        customer_id,
+        SUM(consumption) AS cumulativeConsumptionByPro
+        FROM video_cost
+        WHERE consumption > 0 and delete_flag = 0
+        GROUP BY customer_id
+        ORDER BY cumulativeConsumptionByPro DESC
+        ) t1,
+        (SELECT @rownum := 0) rownum
+        ) pm on vc.customer_id = pm.customer_id
+
+        left join optimizer opt on opt.id = vc.optimizer_id
+        left join organization dem on dem.id = vc.demand_sector_id
+        left join customer cus on cus.id = vc.customer_id
+        left join product_type pty on pty.id = cus.product_type_id
+        left join industry ind on ind.id = cus.industry_id
+        left join video_type vdt on vdt.id = cus.video_type_id
+        left join originality ori on ori.id = cus.originality_id
+        left join photographer pho on pho.id = cus.photographer_id
+        left join editor edi on edi.id = cus.editor_id
+        LEFT JOIN performer per1 ON per1.id = cus.performer1_id
+        LEFT JOIN performer per2 ON per2.id = cus.performer2_id
+        LEFT JOIN performer per3 ON per3.id = cus.performer3_id
+        <where> vc.delete_flag = 0
+            <if test="videoCostId !=null and videoCostId !=''" >
+                and vc.id = ${videoCostId}
+            </if>
+
+            <if test="videoCost!=null" >
+                <if test="videoCost.optimizer!=null and videoCost.optimizer.id!=null  " >
+                    and vc.optimizer_id = ${videoCost.optimizer.id }
+                </if>
+                <if test="videoCost.demandSector!=null and videoCost.demandSector.id!=null ">
+                    and vc.demand_sector_id =${ videoCost.demandSector.id }
+                </if>
+                <if test="videoCost.customer!=null" >
+                    <if test="videoCost.customer.id!=null" >
+                        and vc.customer_id = ${videoCost.customer.id}
+                    </if>
+                    <if test="videoCost.customer.trueCustomer != null and videoCost.customer.trueCustomer.id != null  ">
+                        and cus.true_customer_id = ${videoCost.customer.trueCustomer.id }
+                    </if>
+                    <if test="videoCost.customer.originality !=null and videoCost.customer.originality.id !=null ">
+                        and cus.originality_id = ${ videoCost.customer.originality.id }
+                    </if>
+                    <if test="videoCost.customer.performer1!=null and videoCost.customer.performer1.id != null " >
+                        and (
+                        cus.performer1_id = ${ videoCost.customer.performer1.id }
+                        or cus.performer2_id = ${ videoCost.customer.performer1.id }
+                        or cus.performer3_id = ${ videoCost.customer.performer1.id }
+                        )
+                    </if>
+                    <if test="videoCost.customer.photographer !=null and videoCost.customer.photographer.id !=null  ">
+                        and cus.photographer_id = ${ videoCost.customer.photographer.id }
+                    </if>
+                    <if test="videoCost.customer.editor !=null and videoCost.customer.editor.id != null  " >
+                        and cus.editor_id = ${ videoCost.customer.editor.id }
+                    </if>
+                    <if test="videoCost.customer.industry !=null and videoCost.customer.industry.id != null  ">
+                        and cus.industry_id = ${ videoCost.customer.industry.id }
+                    </if>
+                    <if test="videoCost.customer.productType !=null and videoCost.customer.productType.id != null  ">
+                        and cus.product_type_id = ${ videoCost.customer.productType.id }
+                    </if>
+                    <if test="videoCost.customer.videoType !=null and videoCost.customer.videoType.id != null  ">
+                        and cus.video_type_id = ${ videoCost.customer.videoType.id }
+                    </if>
+                </if>
+            </if>
+            <if test="KeyWord !=null" >
+                <foreach collection="KeyWord" item="keyW" >
+                    and  (
+                    vc.consumption like #{keyW}
+                    or pty.`name` like #{keyW}
+                    or cus.`name` like #{keyW}
+                    or cus.`code` like #{keyW}
+                    or ind.`name` like #{keyW}
+                    or dem.`name` like #{keyW}
+                    or opt.`name` like #{keyW}
+                    or vdt.`name` like #{keyW}
+                    or ori.`name` like #{keyW}
+                    or pho.`name` like #{keyW}
+                    or edi.`name` like #{keyW}
+                    or bdi.`name` like #{keyW}
+                    or per1.`name` like #{keyW}
+                    or per2.`name` like #{keyW}
+                    or per3.`name` like #{keyW}
+                    )
+                </foreach>
+            </if>
+            <if test="recoredDate_start!=null and recoredDate_end!=null">
+                and ( vc.recored_date between #{recoredDate_start} and #{recoredDate_end} )
+            </if>
+            <if test="completeDate_start!=null and completeDate_end!=null ">
+                and ( cus.complete_date between #{completeDate_start} and #{completeDate_end} )
+            </if>
+            <if test="consumption_min!=null">
+                and vc.consumption &gt;=#{consumption_min}
+            </if>
+            <if test="consumption_max!=null">
+                and vc.consumption &lt;=#{consumption_max}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectDataForListPage" resultType="map" >
+        SELECT
+        sum(vc.consumption) `sum`,count(vc.id) `total`,COUNT(DISTINCT cus.name) `name` ,COUNT(DISTINCT cus.code) `code`
+        FROM video_cost vc
+        left join (
+        SELECT
+        customer_id,cumulativeConsumptionByPro,@rownum :=@rownum + 1 AS cumulativeConsumptionRankingByProglam
+        FROM
+        (
+        SELECT
+        customer_id,
+        SUM(consumption) AS cumulativeConsumptionByPro
+        FROM video_cost
+        WHERE consumption > 0 and delete_flag = 0
+        GROUP BY customer_id
+        ORDER BY cumulativeConsumptionByPro DESC
+        ) t1,
+        (SELECT @rownum := 0) rownum
+        ) pm on vc.customer_id = pm.customer_id
+
+        left join optimizer opt on opt.id = vc.optimizer_id
+        left join organization dem on dem.id = vc.demand_sector_id
+        left join customer cus on cus.id = vc.customer_id
+        left join product_type pty on pty.id = cus.product_type_id
+        left join industry ind on ind.id = cus.industry_id
+        left join video_type vdt on vdt.id = cus.video_type_id
+        left join originality ori on ori.id = cus.originality_id
+        left join photographer pho on pho.id = cus.photographer_id
+        left join editor edi on edi.id = cus.editor_id
+        LEFT JOIN performer per1 ON per1.id = cus.performer1_id
+        LEFT JOIN performer per2 ON per2.id = cus.performer2_id
+        LEFT JOIN performer per3 ON per3.id = cus.performer3_id
+        LEFT JOIN true_customer tcus ON tcus.id = cus.true_customer_id
+        <where> vc.delete_flag = 0
+            <if test="videoCostId !=null and videoCostId !=''" >
+                and vc.id = ${videoCostId}
+            </if>
+
+            <if test="videoCost!=null" >
+                <if test="videoCost.optimizer!=null and videoCost.optimizer.id!=null  " >
+                    and vc.optimizer_id = ${videoCost.optimizer.id }
+                </if>
+                <if test="videoCost.demandSector!=null and videoCost.demandSector.id!=null ">
+                    and vc.demand_sector_id =${ videoCost.demandSector.id }
+                </if>
+                <if test="videoCost.customer!=null" >
+                    <if test="videoCost.customer.id!=null" >
+                        and vc.customer_id = ${videoCost.customer.id}
+                    </if>
+                    <if test="videoCost.customer.trueCustomer != null and videoCost.customer.trueCustomer.id != null  ">
+                        and cus.true_customer_id = ${videoCost.customer.trueCustomer.id }
+                    </if>
+                    <if test="videoCost.customer.originality !=null and videoCost.customer.originality.id !=null ">
+                        and cus.originality_id = ${ videoCost.customer.originality.id }
+                    </if>
+                    <if test="videoCost.customer.performer1!=null and videoCost.customer.performer1.id != null " >
+                        and (
+                        cus.performer1_id = ${ videoCost.customer.performer1.id }
+                        or cus.performer2_id = ${ videoCost.customer.performer1.id }
+                        or cus.performer3_id = ${ videoCost.customer.performer1.id }
+                        )
+                    </if>
+                    <if test="videoCost.customer.photographer !=null and videoCost.customer.photographer.id !=null  ">
+                        and cus.photographer_id = ${ videoCost.customer.photographer.id }
+                    </if>
+                    <if test="videoCost.customer.editor !=null and videoCost.customer.editor.id != null  " >
+                        and cus.editor_id = ${ videoCost.customer.editor.id }
+                    </if>
+
+                    <if test="videoCost.customer.industry !=null and videoCost.customer.industry.id != null  ">
+                        and cus.industry_id = ${ videoCost.customer.industry.id }
+                    </if>
+                    <if test="videoCost.customer.productType !=null and videoCost.customer.productType.id != null  ">
+                        and cus.product_type_id = ${ videoCost.customer.productType.id }
+                    </if>
+                    <if test="videoCost.customer.videoType !=null and videoCost.customer.videoType.id != null  ">
+                        and cus.video_type_id = ${ videoCost.customer.videoType.id }
+                    </if>
+                </if>
+            </if>
+            <if test="KeyWord !=null" >
+                <foreach collection="KeyWord" item="keyW" >
+                    and  (
+                    vc.consumption like #{keyW}
+                    or pty.`name` like #{keyW}
+                    or cus.`name` like #{keyW}
+                    or cus.`code` like #{keyW}
+                    or ind.`name` like #{keyW}
+                    or dem.`name` like #{keyW}
+                    or opt.`name` like #{keyW}
+                    or vdt.`name` like #{keyW}
+                    or ori.`name` like #{keyW}
+                    or pho.`name` like #{keyW}
+                    or edi.`name` like #{keyW}
+                    or bdi.`name` like #{keyW}
+                    or per1.`name` like #{keyW}
+                    or per2.`name` like #{keyW}
+                    or per3.`name` like #{keyW}
+                    or tcus.`name` like #{keyW}
+                    )
+                </foreach>
+            </if>
+            <if test="recoredDate_start!=null and recoredDate_end!=null">
+                and ( vc.recored_date between #{recoredDate_start} and #{recoredDate_end} )
+            </if>
+            <if test="completeDate_start!=null and completeDate_end!=null ">
+                and ( cus.complete_date between #{completeDate_start} and #{completeDate_end} )
+            </if>
+            <if test="consumption_min!=null">
+                and vc.consumption &gt;=#{consumption_min}
+            </if>
+            <if test="consumption_max!=null">
+                and vc.consumption &lt;=#{consumption_max}
+            </if>
+        </where>
+    </select>
+
+
     <select id="selectMaxConsumption" resultType="double" >
         select max(consumption) from video_cost where delete_flag =0
     </select>
-    <!--<select id="countByCustomName"  resultMap="BaseResultMapWithCount" >-->
-    <!--SELECT-->
-    <!--customer_name,-->
-    <!--cumulativeConsumptionByPro,-->
-    <!--@rownum :=@rownum + 1 AS cumulativeConsumptionRankingByProglam-->
-    <!--FROM-->
-    <!--(-->
-    <!--SELECT-->
-    <!--customer_name,-->
-    <!--SUM(consumption) AS cumulativeConsumptionByPro-->
-    <!--FROM-->
-    <!--video_cost-->
-    <!--WHERE-->
-    <!--consumption > 0-->
-    <!--and delete_flag = 0-->
-    <!--GROUP BY-->
-    <!--customer_name-->
-    <!--ORDER BY-->
-    <!--cumulativeConsumptionByPro DESC-->
-    <!--) t1,-->
-    <!--(SELECT @rownum := 0) rownum-->
-    <!--</select>-->
 </mapper>

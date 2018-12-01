@@ -5,7 +5,7 @@
         $('#organizationAddPid').combotree({
             url : '${path }/organization/tree',
             parentField : 'pid',
-            panelHeight : 'auto'
+            panelHeight : 300
         });
         
         $('#organizationAddForm').form({

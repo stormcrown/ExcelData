@@ -20,6 +20,7 @@ public interface VideoCostMapper extends BaseMapper<VideoCost> {
     List<VideoCost> selectWithCount(Map<String ,Object> map);
     Integer selectCount(Map<String ,Object> map);
     Double selectMaxConsumption();
-
+    Double sumConsumption(Map<String , Object> map);
+    Map selectDataForListPage(Map<String , Object> map);
 //    List<VideoCost> countByCustomName();
 }

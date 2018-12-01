@@ -38,6 +38,7 @@ public class CustomerServiceImpl implements ICustomerService {
     @Autowired private IPhotographerService iPhotographerService;
     @Autowired private IProductTypeService iProductTypeService;
     @Autowired private IVideoTypeService videoTypeService;
+    @Autowired private ITrueCustomerService trueCustomerService;
 
     @Override
     public int deleteByPrimaryKey(Long id) {
@@ -51,6 +52,14 @@ public class CustomerServiceImpl implements ICustomerService {
         customer.setDeleteFlag(0);
         map.put("customer",customer);
         return customerMapper.selectList(map);
+    }
+    @Override
+    public List<Customer> selectForCombobox() {
+        Customer customer = new Customer();
+        customer.setDeleteFlag(0);
+        Map map = new HashMap();
+        map.put("customer",customer);
+        return customerMapper.selectSimpleList(map);
     }
 
     @Override
@@ -134,6 +143,8 @@ public class CustomerServiceImpl implements ICustomerService {
         model.addAttribute("productTypes",JsonUtils.toJson(productTypes));
         List<VideoType> videoTypes = videoTypeService.selectList(un_delete);
         model.addAttribute("videoTypes",JsonUtils.toJson(videoTypes));
+        List<TrueCustomer> trueCustomers = trueCustomerService.selectList(un_delete);
+        model.addAttribute("trueCustomers",JsonUtils.toJson(trueCustomers));
         return model;
     }
 }

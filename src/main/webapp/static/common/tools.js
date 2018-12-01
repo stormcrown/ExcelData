@@ -36,17 +36,16 @@ function commonForm(value,keyStrs) {
     var str = new String(value);
     var keys="";
     if(keyStrs==undefined || keyStrs==null )
-        keys = new String($("#KeyWord").val()).trim().split(",");
-    else keys = new String(keyStrs.trim().split(","));
-    //console.log(keys);
+        keys = (new String($("#KeyWord").val())).trim().split(",");
+    else keys = (new String(keyStrs)).trim().split(",");
     var arr = new Array();
-    var speci = "&*$%#@!&*";
+    var speci = "&*$%^#~%@!&*";
     for(var i=0;i<keys.length;i++){
         arr.push(keys[i]);
-        str=str.replace(keys[i],speci+i);
+        str=str.replace(keys[i],speci+i+"_-_");
     }
     for(var j=0;j<arr.length;j++){
-        str=str.replace(speci+j,redFont(arr[j]));
+        str=str.replace(speci+j+"_-_",redFont(arr[j]));
     }
     return str;
 }

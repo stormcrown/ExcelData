@@ -23,6 +23,7 @@ public interface ICustomerService {
     int insertSelective(Customer record);
     Customer selectByPrimaryKey(Long id);
     List<Customer> selectUnDeleted();
+    List<Customer> selectForCombobox();
     List<Customer> selectList(Map map);
     Page<Customer> selectPage(Page<Customer> pages, Map<String , Object> map);
     int updateByPrimaryKeySelective(Customer record);

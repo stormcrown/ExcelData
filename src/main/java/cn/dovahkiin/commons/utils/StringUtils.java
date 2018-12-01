@@ -1,7 +1,10 @@
 package cn.dovahkiin.commons.utils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -113,6 +116,42 @@ public class StringUtils extends org.springframework.util.StringUtils {
                 .append(calendar.get(Calendar.DAY_OF_WEEK));
         return newCode.toString();
     }
-
+    /**
+     * yyyy-MM-dd HH:mm:ss
+     * @author 骆长涛
+     * @Date 2018/11/26 22:39
+     * @param
+     * @return
+     */
+    public static String dateToStr(Date d) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String str=sdf.format(d);
+        return str;
+    }
+    /**
+     * yyyy-MM-dd
+     * @author 骆长涛
+     * @Date 2018/11/26 22:39
+     * @param
+     * @return
+     */
+    public static String dateToStr2(Date d) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String str=sdf.format(d);
+        return str;
+    }
+    /**yyyy-MM-dd HH:mm:ss
+     *
+     */
+    public static Date str2Date(String str) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date d = null;
+        try {
+            d = sdf.parse(str);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return d;
+    }
 
 }

@@ -36,6 +36,7 @@
             var photographers = ${photographers};
             var productTypes = ${productTypes};
             var videoTypes = ${videoTypes};
+            var trueCustomers = ${trueCustomers};
             var opt = {
                 valueField:'id',
                 textField:'name',
@@ -43,6 +44,9 @@
                 width:200,
             };
 
+
+            opt.data = trueCustomers;
+            $('#trueCustomer_cus').combobox(opt);
             opt.data = productTypes;
             $('#productType_cus').combobox(opt);
             opt.data = industries;
@@ -78,10 +82,17 @@
             <input name="id" type="hidden"  value="${customer.id}">
             <table class="grid" >
                 <tr>
-                    <th>客户编码:</th>
+                    <th>素材编码:</th>
                     <td><input id="code" name="code" value="${customer.code}" type="text" class="layui-input" /></td>
-                    <th>客户名称:</th>
+                    <th>素材名称:</th>
                     <td><input id="name" name="name" value="${customer.name}" type="text" class="layui-input" /></td>
+                </tr>
+                <tr>
+                    <td>客户</td>
+                    <td colspan="3" >
+                        <select id="trueCustomer_cus" name="trueCustomer.id" class="easyui-combobox" data-options="value:'${customer.trueCustomer.id}'" >
+                        </select>
+                    </td>
                 </tr>
                 <tr>
                     <td>产品类型</td>
@@ -95,7 +106,6 @@
                         </selec>
                     </td>
                 </tr>
-
                 <tr>
                     <td>视频类型</td>
                     <td>
@@ -104,7 +114,7 @@
                     </td>
                     <td>成片日期</td>
                     <td>
-                        <input  id="completeDate_cus" name="completeDate" value="${customer.completeDate}" type="text"  class="easyui-datebox" >
+                        <input  id="completeDate_cus" name="completeDate" value="${customer.completeDateStr}" type="text"  class="easyui-datebox" >
                     </td>
                 </tr>
                 <tr>

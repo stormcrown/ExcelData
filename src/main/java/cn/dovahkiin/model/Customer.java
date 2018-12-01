@@ -11,7 +11,7 @@ import java.io.Serializable;
 
 /**
  * <p>
- * 客户信息
+ * 素材信息
  * </p>
  *
  * @author lzt
@@ -35,9 +35,11 @@ public class Customer extends Model<Customer> {
 	@TableId(value="id", type= IdType.AUTO)
 	private Long id;
     /**
-     * 客户名
+     * 素材名
      */
 	private String name;
+
+	private TrueCustomer trueCustomer;
     /**
      * 客户编码
      */
@@ -65,6 +67,8 @@ public class Customer extends Model<Customer> {
 	private VideoType videoType;
 
 	private Date completeDate;
+	private String completeDateStr;
+
 	private Originality originality;
 	private Photographer photographer;
 
@@ -106,6 +110,14 @@ public class Customer extends Model<Customer> {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public TrueCustomer getTrueCustomer() {
+		return trueCustomer;
+	}
+
+	public void setTrueCustomer(TrueCustomer trueCustomer) {
+		this.trueCustomer = trueCustomer;
 	}
 
 	public String getCode() {
@@ -246,4 +258,14 @@ public class Customer extends Model<Customer> {
 		return JsonUtils.toJson(this);
 	}
 
+	public String getCompleteDateStr() {
+		if(completeDate!=null){
+			return StringUtils.dateToStr2(completeDate);
+		}
+		return completeDateStr;
+	}
+
+	public void setCompleteDateStr(String completeDateStr) {
+		this.completeDateStr = completeDateStr;
+	}
 }

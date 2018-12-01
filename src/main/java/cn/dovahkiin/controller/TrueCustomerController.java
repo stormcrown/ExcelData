@@ -17,41 +17,41 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import cn.dovahkiin.commons.result.PageInfo;
-import cn.dovahkiin.model.Photographer;
-import cn.dovahkiin.service.IPhotographerService;
+import cn.dovahkiin.model.TrueCustomer;
+import cn.dovahkiin.service.ITrueCustomerService;
 import cn.dovahkiin.commons.base.BaseController;
 
 /**
  * <p>
- * 摄像师信息 前端控制器
+ * 客户信息 前端控制器
  * </p>
  *
  * @author lzt
- * @since 2018-11-19
+ * @since 2018-11-29
  */
 @Controller
-@RequestMapping("/photographer")
-public class PhotographerController extends BaseController {
+@RequestMapping("/trueCustomer")
+public class TrueCustomerController extends BaseController {
 
-    @Autowired private IPhotographerService photographerService;
+    @Autowired private ITrueCustomerService trueCustomerService;
     
     @GetMapping("/manager")
-    @RequiresPermissions("/photographer/manager")
+    @RequiresPermissions("/trueCustomer/manager")
     public String manager() {
-        return "photographer/photographerList";
+        return "trueCustomer/trueCustomerList";
     }
     
     @PostMapping("/dataGrid")
-    @RequiresPermissions("/photographer/dataGrid")
+    @RequiresPermissions("/trueCustomer/dataGrid")
     @ResponseBody
-    public PageInfo dataGrid(Photographer photographer, Integer page, Integer rows, String sort,String order) {
+    public PageInfo dataGrid(TrueCustomer trueCustomer, Integer page, Integer rows, String sort,String order) {
         PageInfo pageInfo = new PageInfo(page, rows, sort, order);
-        EntityWrapper<Photographer> ew = new EntityWrapper<Photographer>();
-        if(photographer!=null && StringUtils.hasText(photographer.getCode()))ew.like("code","%"+photographer.getCode().trim()+"%");
-        if(photographer!=null && StringUtils.hasText(photographer.getName()) )ew.like("name","%"+photographer.getName().trim()+"%");
-        if(photographer!=null && photographer.getDeleteFlag()!=null  ) ew.eq("delete_flag", photographer.getDeleteFlag() );
-        Page<Photographer> pages = getPage(page, rows, sort, order);
-        pages = photographerService.selectPage(pages, ew);
+        EntityWrapper<TrueCustomer> ew = new EntityWrapper<TrueCustomer>();
+        if(trueCustomer!=null && StringUtils.hasText(trueCustomer.getCode()))ew.like("code","%"+trueCustomer.getCode().trim()+"%");
+        if(trueCustomer!=null && StringUtils.hasText(trueCustomer.getName()) )ew.like("name","%"+trueCustomer.getName().trim()+"%");
+        if(trueCustomer!=null && trueCustomer.getDeleteFlag()!=null  ) ew.eq("delete_flag", trueCustomer.getDeleteFlag() );
+        Page<TrueCustomer> pages = getPage(page, rows, sort, order);
+        pages = trueCustomerService.selectPage(pages, ew);
         pageInfo.setRows(pages.getRecords());
         pageInfo.setTotal(pages.getTotal());
         return pageInfo;
@@ -60,27 +60,27 @@ public class PhotographerController extends BaseController {
     @ResponseBody
     @RequiresPermissions("/videoCost/dataGrid")
     public Object dataGrid() {
-        EntityWrapper ew = new EntityWrapper();
+        EntityWrapper<TrueCustomer> ew = new EntityWrapper<TrueCustomer>();
         ew.eq("delete_flag", 0 );
-        return JSON.toJSON(photographerService.selectList(ew));
+        return JSON.toJSON(trueCustomerService.selectList(ew));
     }
     /**
      * 添加页面
      * @return
      */
     @GetMapping("/addPage")
-    @RequiresPermissions("/photographer/add")
+    @RequiresPermissions("/trueCustomer/add")
     public String addPage(Model model,Long id) {
         model.addAttribute("method", "add");
         if(id!=null){
-            Photographer photographer = photographerService.selectById(id);
-            if(photographer!=null){
-                photographer.setId(null);
-                model.addAttribute("photographer", photographer);
+            TrueCustomer trueCustomer = trueCustomerService.selectById(id);
+            if(trueCustomer!=null){
+                trueCustomer.setId(null);
+                model.addAttribute("trueCustomer", trueCustomer);
             }
 
         }
-        return "photographer/photographerEdit";
+        return "trueCustomer/trueCustomer";
     }
     
     /**
@@ -89,10 +89,10 @@ public class PhotographerController extends BaseController {
      * @return
      */
     @PostMapping("/add")
-    @RequiresPermissions("/photographer/add")
+    @RequiresPermissions("/trueCustomer/add")
     @ResponseBody
-    public Object add(@Valid Photographer photographer) {
-        return super.add(photographer,photographerService);
+    public Object add(@Valid TrueCustomer trueCustomer) {
+        return super.add(trueCustomer,trueCustomerService);
 
     }
     
@@ -102,22 +102,22 @@ public class PhotographerController extends BaseController {
      * @return
      */
     @PostMapping("/delete")
-    @RequiresPermissions("/photographer/delete")
+    @RequiresPermissions("/trueCustomer/delete")
     @ResponseBody
     public Object delete(String ids) {
         if(ids!=null){
             String[] idss = ids.split(",");
-            List<Photographer> list = new ArrayList<Photographer>();
+            List<TrueCustomer> list = new ArrayList<TrueCustomer>();
             for(String str:idss){
                 if(StringUtils.hasText(str) && StringUtils.isInteger(str) ){
-                    Photographer photographer = new Photographer();
-                    photographer.setId(Long.valueOf(str));
-                    photographer.setDeleteFlag(1);
-                    list.add(photographer);
+                    TrueCustomer trueCustomer = new TrueCustomer();
+                    trueCustomer.setId(Long.valueOf(str));
+                    trueCustomer.setDeleteFlag(1);
+                    list.add(trueCustomer);
                 }
             }
             if(list.size()>0){
-                boolean suc = photographerService.updateBatchById(list);
+                boolean suc = trueCustomerService.updateBatchById(list);
                 if(suc)return renderSuccess("删除成功！");
             }
         }
@@ -131,22 +131,22 @@ public class PhotographerController extends BaseController {
  * @return
  */
 @PostMapping("/rollback")
-@RequiresPermissions("/photographer/add")
+@RequiresPermissions("/trueCustomer/add")
 @ResponseBody
 public Object rollback(String ids) {
         if(ids!=null){
             String[] idss = ids.split(",");
-            List<Photographer> list = new ArrayList<Photographer>();
+            List<TrueCustomer> list = new ArrayList<TrueCustomer>();
             for(String str:idss){
                 if(StringUtils.hasText(str) && StringUtils.isInteger(str) ){
-                    Photographer photographer = new Photographer();
-                    photographer.setId(Long.valueOf(str));
-                    photographer.setDeleteFlag(0);
-                    list.add(photographer);
+                    TrueCustomer trueCustomer = new TrueCustomer();
+                    trueCustomer.setId(Long.valueOf(str));
+                    trueCustomer.setDeleteFlag(0);
+                    list.add(trueCustomer);
                 }
             }
             if(list.size()>0){
-                boolean suc = photographerService.updateBatchById(list);
+                boolean suc = trueCustomerService.updateBatchById(list);
                 if(suc)return renderSuccess("恢复成功！");
             }
         }
@@ -159,12 +159,12 @@ public Object rollback(String ids) {
      * @return
      */
     @GetMapping("/editPage")
-    @RequiresPermissions("/photographer/edit")
+    @RequiresPermissions("/trueCustomer/edit")
     public String editPage(Model model, Long id) {
-        Photographer photographer = photographerService.selectById(id);
-        model.addAttribute("photographer", photographer);
+        TrueCustomer trueCustomer = trueCustomerService.selectById(id);
+        model.addAttribute("trueCustomer", trueCustomer);
         model.addAttribute("method", "edit");
-        return "photographer/photographerEdit";
+        return "trueCustomer/trueCustomer";
     }
     
     /**
@@ -173,11 +173,11 @@ public Object rollback(String ids) {
      * @return
      */
     @PostMapping("/edit")
-    @RequiresPermissions("/photographer/edit")
+    @RequiresPermissions("/trueCustomer/edit")
     @ResponseBody
-    public Object edit(@Valid Photographer photographer) {
-        photographer.setUpdateTime(new Date());
-        boolean b = photographerService.updateById(photographer);
+    public Object edit(@Valid TrueCustomer trueCustomer) {
+        trueCustomer.setUpdateTime(new Date());
+        boolean b = trueCustomerService.updateById(trueCustomer);
         if (b) {
             return renderSuccess("编辑成功！");
         } else {

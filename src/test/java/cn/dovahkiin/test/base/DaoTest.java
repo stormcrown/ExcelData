@@ -2,7 +2,6 @@ package cn.dovahkiin.test.base;
 
 import cn.dovahkiin.mapper.VideoCostMapper;
 import cn.dovahkiin.model.VideoCost;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -32,5 +31,10 @@ public class DaoTest  extends BaseTest{
     public void seleectMaxCou(){
         double max = videoCostMapper.selectMaxConsumption();
         logger.info("MaxConsumption = "+max);
+    }
+    @Test
+    public void testCount(){
+        Map map = videoCostMapper.selectDataForListPage(new HashMap<String, Object>());
+        logger.info(map);
     }
 }

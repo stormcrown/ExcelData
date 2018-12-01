@@ -56,8 +56,8 @@
                     <td><input name="excels" type="file" accept=".xls,.xlsx" placeholder="请输入累计消耗排名" class="easyui-validatebox span2" data-options="prompt:'请输入累计消耗排名',required:true" value=""></td>
                 </tr>
                 <tr>
-                    <td>数据日期</td>
-                    <td><input id="recoredDate" name="recoredDate" type="text"  placeholder="日期格式：年-月-日" class="easyui-datebox span2" data-options="prompt:'请输入数据日期',required:true,invalidMessage:'日期格式：年-月-日'" value=""></td>
+                    <td>消耗日期</td>
+                    <td><input id="recoredDate" name="recoredDate" type="text"  placeholder="日期格式：年-月-日" class="easyui-datebox span2" data-options="prompt:'请输入消耗日期',required:true,invalidMessage:'日期格式：年-月-日'" value=""></td>
                 </tr>
                 <tr>
                     <td id="tips" colspan="2" ></td>

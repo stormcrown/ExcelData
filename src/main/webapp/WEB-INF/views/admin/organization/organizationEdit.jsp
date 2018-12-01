@@ -5,7 +5,7 @@
         $('#organizationEditPid').combotree({
             url : '${path }/organization/tree?flag=false',
             parentField : 'pid',
-            panelHeight : 'auto',
+            panelHeight : 300,
             value :'${organization.pid}'
         });
         

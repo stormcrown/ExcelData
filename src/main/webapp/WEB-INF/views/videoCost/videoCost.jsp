@@ -30,14 +30,7 @@
         try {
             var organizations = ${organizations};
             var customers = ${customers};
-            var editors = ${editors};
-            var industries = ${industries};
             var optimizers = ${optimizers};
-            var originalities = ${originalities};
-            var performers = ${performers};
-            var photographers = ${photographers};
-            var productTypes = ${productTypes};
-            var videoTypes = ${videoTypes};
             var opt = {
                 valueField: 'id',
                 textField: 'name',
@@ -46,62 +39,31 @@
             };
             opt.data = organizations;
             opt.formatter = function (row) {
-                if (row.simpleNames != null) return row.name + "_" + row.simpleNames;
-                else return row.name
+                if (row.simpleNames != null) return row.name + "_" + row.simpleNames; else return row.name
             }
             $('#businessDepartment').combobox(opt);
             $("#demandSector").combobox(opt);
-            opt.data = productTypes;
-            $('#productType').combobox(opt);
-            opt.data = industries;
-            $('#industry').combobox(opt);
             opt.data = optimizers;
             $('#optimizer').combobox(opt);
-            opt.data = videoTypes;
-            $('#videoType').combobox(opt);
-            opt.data = originalities;
-            $('#originality').combobox(opt);
-            opt.data = editors;
-            $('#editor').combobox(opt);
-            opt.data = photographers;
-            $('#photographer').combobox(opt);
-            opt.data = performers;
-            $('#performer1').combobox(opt);
-            $('#performer2').combobox(opt);
-            $('#performer3').combobox(opt);
-
-
             opt.data = customers;
             opt.required = true;
             opt.onSelect = function (record) {
                 if(record==undefined || record==null )return;
-                if(record.productType !=null )$('#productType').combobox('setValue',record.productType.id);else $('#productType').combobox('setValue',"");
-                if(record.industry !=null )$('#industry').combobox('setValue',record.industry.id);else $('#industry').combobox('setValue',"");
-                if(record.videoType !=null )$('#videoType').combobox('setValue',record.videoType.id);else $('#videoType').combobox('setValue',"");
-                if(record.originality !=null )$('#originality').combobox('setValue',record.originality.id);else $('#originality').combobox('setValue',"");
-                if(record.photographer !=null )$('#photographer').combobox('setValue',record.photographer.id);else $('#photographer').combobox('setValue',"");
-                if(record.editor !=null )$('#editor').combobox('setValue',record.editor.id);else $('#editor').combobox('setValue',"");
-                if(record.performer1 !=null )$('#performer1').combobox('setValue',record.performer1.id);else $('#performer1').combobox('setValue',"");
-                if(record.performer2 !=null )$('#performer2').combobox('setValue',record.performer2.id);else $('#performer2').combobox('setValue',"");
-                if(record.performer3 !=null )$('#performer3').combobox('setValue',record.performer3.id);else $('#performer3').combobox('setValue',"");
-                if(record.completeDate !=null )$('#completeDate').datebox('setValue',record.completeDate);else $('#completeDate').datebox('setValue',"");
-
-                $.ajax({
-                    url:'${path}/videoCost/countByDay',
-                    method:'get',
-                    data:{ recoredDate:$('#recoredDate').datebox("getValue"),customerId:record.id },
-                    dataType:'text',
-                    beforeSend:function(){
-                        $('#tips_videoCost').html("");
-                    },
-                    success:function(txt){
-                        $('#tips_videoCost').html( redFont(record.name)+ " 在 "+ redFont( getCommonDate($('#recoredDate').datebox("getValue")) ) +" 已有数据："+redFont(txt)+" 条");
-                    }
-                });
-
+                if(record.productType !=null ) $('#productTypeTD').html(record.productType.name); else $('#productTypeTD').html("");
+                if(record.industry !=null ) $('#industryTD').html(record.industry.name); else $('#industryTD').html('');
+                if(record.videoType !=null ) $('#videoTypeTD').html(record.videoType.name); else $('#videoTypeTD').html('');
+                if(record.originality !=null ) $('#originalityTD').html(record.originality.name); else $('#originalityTD').html('');
+                if(record.photographer !=null ) $('#photographerTD').html(record.photographer.name); else $('#photographerTD').html("");
+                if(record.editor !=null ) $('#editorTD').html(record.editor.name); else $('#editorTD').html("");
+                if(record.performer1 !=null ) $('#performer1TD').html(record.performer1.name); else $('#performer1TD').html("");
+                if(record.performer2 !=null ) $('#performer2TD').html(record.performer2.name); else $('#performer2TD').html("");
+                if(record.performer3 !=null ) $('#performer3TD').html(record.performer3.name); else $('#performer3TD').html('');
+                if(record.completeDate !=null ) $('#completeDateTD').html(record.completeDateStr); else $('#completeDateTD').html('');
+                if(record.trueCustomer !=null ) $('#trueCustomerTD').html(record.trueCustomer.name); else $('#trueCustomerTD').html('');
+                checkRecordCountOnNameAndDate($('#recoredDate').datebox("getValue"),record.id,record.name);
             };
             $('#customer').combobox(opt);
-
+            $('#customer').combobox('setValue','${videoCost.customer.id}');
         } catch (e) {
             console.log(e)
         }
@@ -109,45 +71,49 @@
             required: false,
             width: 200,
         };
-        $('#completeDate').datebox(opti)
         opti.required = true;
         opti.onChange=function(newValue, oldValue){
             var customerId = $('#customer').combobox('getValue');
             var customerName = $('#customer').combobox('getText');
-            $.ajax({
-                url:'${path}/videoCost/countByDay',
-                method:'get',
-                data:{ recoredDate:newValue,customerId:customerId },
-                dataType:'text',
-                beforeSend:function(){
-                    $('#tips_videoCost').html("");
-                },
-                success:function(txt){
-                    $('#tips_videoCost').html(  redFont(customerName)+ " 在 " + redFont(getCommonDate(newValue)) +" 已有数据："+redFont(txt)+" 条");
-                }
-            });
+            checkRecordCountOnNameAndDate(newValue,customerId,customerName);
         }
+        if('${method}'=='edit'  )opti.value = "${videoCost.recoredDateStr}"; else if('${method}'=='add'  )opti.value = getCommonDate(new Date());
         $('#recoredDate').datebox(opti);
-
-
+        checkRecordCountOnNameAndDate($('#recoredDate').datebox("getValue"),$('#customer').combobox('getValue'),$('#customer').combobox('getText'))
     });
+    function checkRecordCountOnNameAndDate(recordDate,cusId,cusName){
+        $.ajax({
+            url:'${path}/videoCost/countByDay',
+            method:'get',
+            data:{ recoredDate:recordDate,customerId:cusId },
+            dataType:'text',
+            beforeSend:function(){
+                $('#tips_videoCost').html("");
+            },
+            success:function(txt){
+                $('#tips_videoCost').html(  redFont(cusName)+ " 在 " + redFont(getCommonDate(recordDate)) +" 已有数据："+redFont(txt)+" 条");
+            }
+        });
+    }
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
     <div data-options="region:'center',border:false" style="overflow: hidden;padding: 3px;">
         <form id="videoCostAddForm" method="post">
             <input name="id" type="hidden" value="${videoCost.id}">
             <div class="layui-card">
-                <div class="layui-card-header">常用</div>
                 <div class="layui-card-body">
                     <table class="grid">
+                        <tr>
+                            <td  colspan="4" style="color: #00bbee;font-size: 24px" >变量</td>
+                        </tr>
                         <tr>
                             <td>当日消耗</td>
                             <td><input name="consumption" value="${videoCost.consumption}" type="text"
                                        class="easyui-numberbox"
                                        data-options="prefix:'￥',groupSeparator:',', min:0,precision:2,required:false,width:200">
                             </td>
-                            <td>数据日期</td>
-                            <td><input id="recoredDate" name="recoredDate" value="${videoCost.recoredDate}" type="text"
+                            <td>消耗日期</td>
+                            <td><input id="recoredDate" name="recoredDate"  type="text"
                                        class="easyui-datebox"/></td>
                         </tr>
                         <tr>
@@ -167,97 +133,66 @@
                         <tr>
                             <td id="tips_videoCost" colspan="4" ></td>
                         </tr>
-                    </table>
-                </div>
-            </div>
-            <div class="layui-card">
-                <div class="layui-card-header">一般</div>
-                <div class="layui-card-body">
-                    <table class="grid">
+
                         <tr>
-                            <td>客户名</td>
+                            <td  colspan="4" style="color: #00bbee;font-size: 24px" >常量</td>
+                        </tr>
+                        <tr>
+                            <td>素材</td>
                             <td>
                                 <select id="customer" name="customer.id" class="easyui-combobox"
                                         data-options="value:'${videoCost.customer.id}'">
                                 </select>
                             </td>
-                            <td>产品类型</td>
-                            <td>
-                                <select id="productType" name="productType.id" class="easyui-combobox"
-                                        data-options="value:'${videoCost.productType.id}'">
-                                </select>
+                            <td>客户</td>
+                            <td id="trueCustomerTD" >
+                                ${videoCost.customer.trueCustomer.name}
                             </td>
                         </tr>
                         <tr>
-                            <td>剪辑</td>
-                            <td>
-                                <select id="editor" name="editor.id" class="easyui-combobox"
-                                        data-options="value:'${videoCost.editor.id}'">
-                                </select>
+                            <td>产品类型</td>
+                            <td id="productTypeTD" >
+                                ${videoCost.customer.productType.name}
                             </td>
                             <td>行业</td>
-                            <td>
-                                <selec id="industry" name="industry.id" class="easyui-combobox"
-                                       data-options="value:'${videoCost.industry.id}'">
-                                </selec>
+                            <td id="industryTD">${videoCost.customer.industry.name}
                             </td>
                         </tr>
-
                         <tr>
                             <td>视频类型</td>
-                            <td>
-                                <select id="videoType" name="videoType.id" class="easyui-combobox"
-                                        data-options="value:'${videoCost.videoType.id}'">
-                                </select>
+                            <td id="videoTypeTD" >${videoCost.customer.videoType.name}
                             </td>
                             <td>成片日期</td>
-                            <td>
-                                <input id="completeDate" name="completeDate" value="${videoCost.completeDate}"
-                                       type="text" class="easyui-datebox">
+                            <td id="completeDateTD" >${videoCost.customer.completeDateStr}
                             </td>
                         </tr>
                         <tr>
                             <td>创意</td>
-                            <td>
-                                <select id="originality" name="originality.id" class="easyui-combobox"
-                                        data-options="value:'${videoCost.originality.id}'">
-                                </select>
+                            <td id="originalityTD" >${videoCost.customer.originality.name}
                             </td>
                             <td>摄像</td>
-                            <td>
-                                <select id="photographer" name="photographer.id" class="easyui-combobox"
-                                        data-options="value:'${videoCost.photographer.id}'">
-                                </select>
+                            <td id="photographerTD" >${videoCost.customer.photographer.name}
                             </td>
                         </tr>
                         <tr>
                             <td>演员1</td>
-                            <td>
-                                <select id="performer1" name="performer1.id" class="easyui-combobox"
-                                        data-options="value:'${videoCost.performer1.id}'">
-                                </select>
+                            <td id="performer1TD" >${videoCost.customer.performer1.name}
                             </td>
                             <td>演员2</td>
-                            <td>
-                                <select id="performer2" name="performer2.id" class="easyui-combobox"
-                                        data-options="value:'${videoCost.performer2.id}'">
-                                </select>
+                            <td id="performer2TD" >${videoCost.customer.performer2.name}
                             </td>
                         </tr>
                         <tr>
                             <td>演员3</td>
-                            <td>
-                                <select id="performer3" name="performer3.id" class="easyui-combobox"
-                                        data-options="value:'${videoCost.performer3.id}'">
-                                </select>
+                            <td id="performer3TD" >${videoCost.customer.performer3.name}
                             </td>
-                            <td></td>
-                            <td></td>
+                            <td>剪辑</td>
+                            <td id="editorTD" >${videoCost.customer.editor.name}
+                            </td>
                         </tr>
                     </table>
                 </div>
             </div>
-
         </form>
     </div>
 </div>

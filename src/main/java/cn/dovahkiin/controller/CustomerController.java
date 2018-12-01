@@ -5,6 +5,8 @@ import java.util.*;
 
 import cn.dovahkiin.commons.utils.StringUtils;
 import cn.dovahkiin.model.VideoCost;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -71,7 +73,7 @@ public class CustomerController extends BaseController {
         return map;
     }
     @PostMapping("/dataGrid")
-    @RequiresPermissions("/customer/dataGrid")
+    @RequiresPermissions("/customer/dataGrid" )
     @ResponseBody
     public PageInfo dataGrid(Customer customer, Integer page, Integer rows, String sort,String order, String KeyWord, String completeDateRange) {
         PageInfo pageInfo = new PageInfo(page, rows, sort, order);
@@ -88,6 +90,12 @@ public class CustomerController extends BaseController {
         pageInfo.setRows(pages.getRecords());
         pageInfo.setTotal(pages.getTotal());
         return pageInfo;
+    }
+    @PostMapping("/combobox")
+    @ResponseBody
+    @RequiresPermissions("/videoCost/dataGrid")
+    public Object dataGrid() {
+        return JSON.toJSON(customerService.selectForCombobox());
     }
     /**
      * 添加页面

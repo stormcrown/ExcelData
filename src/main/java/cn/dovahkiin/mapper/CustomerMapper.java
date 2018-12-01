@@ -20,6 +20,7 @@ public interface CustomerMapper  {
     int insertSelective(Customer record);
 
     List<Customer> selectList(Map map);
+    List<Customer> selectSimpleList(Map map);
     int selectTotal(Map map);
     int updateByPrimaryKeySelective(Customer record);
     int updateByPrimaryKey(Customer record);

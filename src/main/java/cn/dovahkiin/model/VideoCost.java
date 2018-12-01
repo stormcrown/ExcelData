@@ -8,6 +8,7 @@ import java.util.Date;
 //import com.baomidou.mybatisplus.activerecord.Model;
 //import com.baomidou.mybatisplus.annotations.TableName;
 import cn.dovahkiin.commons.utils.JsonUtils;
+import cn.dovahkiin.commons.utils.StringUtils;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -52,11 +53,12 @@ public class VideoCost  extends Model<VideoCost> {
 	@TableField("delete_flag")
 	private Integer deleteFlag;
     /**
-     * 数据日期
+     * 消耗日期
      */
 
 	@TableField("recored_date")
 	private Date recoredDate;
+	private String recoredDateStr;
     /**
      * 业务部
      */
@@ -65,7 +67,7 @@ public class VideoCost  extends Model<VideoCost> {
      * 产品类型
      */
 
-	private ProductType productType;
+//	private ProductType productType;
     /**
      * 客户名
      */
@@ -73,7 +75,7 @@ public class VideoCost  extends Model<VideoCost> {
     /**
      * 行业
      */
-	private Industry industry;
+//	private Industry industry;
     /**
      * 需求部门
      */
@@ -85,30 +87,31 @@ public class VideoCost  extends Model<VideoCost> {
     /**
      * 视频类型
      */
-	private VideoType videoType;
+//	private VideoType videoType;
     /**
      * 成片日期
      */
-	@TableField("complete_date")
-	private Date completeDate;
+//	@TableField("complete_date")
+//	private Date completeDate;
+//	private String completeDateStr;
     /**
      * 创意
      */
-	private Originality originality;
+//	private Originality originality;
     /**
      * 摄像
      */
-	private Photographer photographer;
+//	private Photographer photographer;
     /**
      * 剪辑
      */
-	private Editor editor;
+//	private Editor editor;
     /**
      * 演员1
      */
-    private Performer performer1;
-	private Performer performer2;
-	private Performer performer3;
+//    private Performer performer1;
+//	private Performer performer2;
+//	private Performer performer3;
 
     /**
      * 当日消耗
@@ -204,13 +207,13 @@ public class VideoCost  extends Model<VideoCost> {
 		this.businessDepartment = businessDepartment;
 	}
 
-	public ProductType getProductType() {
-		return productType;
-	}
-
-	public void setProductType(ProductType productType) {
-		this.productType = productType;
-	}
+//	public ProductType getProductType() {
+//		return productType;
+//	}
+//
+//	public void setProductType(ProductType productType) {
+//		this.productType = productType;
+//	}
 
 	public Customer getCustomer() {
 		return customer;
@@ -219,14 +222,14 @@ public class VideoCost  extends Model<VideoCost> {
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
-
-	public Industry getIndustry() {
-		return industry;
-	}
-
-	public void setIndustry(Industry industry) {
-		this.industry = industry;
-	}
+//
+//	public Industry getIndustry() {
+//		return industry;
+//	}
+//
+//	public void setIndustry(Industry industry) {
+//		this.industry = industry;
+//	}
 
 	public Organization getDemandSector() {
 		return demandSector;
@@ -244,69 +247,69 @@ public class VideoCost  extends Model<VideoCost> {
 		this.optimizer = optimizer;
 	}
 
-	public VideoType getVideoType() {
-		return videoType;
-	}
-
-	public void setVideoType(VideoType videoType) {
-		this.videoType = videoType;
-	}
-
-	public Date getCompleteDate() {
-		return completeDate;
-	}
-
-	public void setCompleteDate(Date completeDate) {
-		this.completeDate = completeDate;
-	}
-
-	public Originality getOriginality() {
-		return originality;
-	}
-
-	public void setOriginality(Originality originality) {
-		this.originality = originality;
-	}
-
-	public Photographer getPhotographer() {
-		return photographer;
-	}
-
-	public void setPhotographer(Photographer photographer) {
-		this.photographer = photographer;
-	}
-
-	public Editor getEditor() {
-		return editor;
-	}
-
-	public void setEditor(Editor editor) {
-		this.editor = editor;
-	}
-
-	public Performer getPerformer1() {
-		return performer1;
-	}
-
-	public void setPerformer1(Performer performer1) {
-		this.performer1 = performer1;
-	}
-
-	public Performer getPerformer2() {
-		return performer2;
-	}
-
-	public void setPerformer2(Performer performer2) {
-		this.performer2 = performer2;
-	}
-
-	public Performer getPerformer3() {
-		return performer3;
-	}
-
-	public void setPerformer3(Performer performer3) {
-		this.performer3 = performer3;
-	}
+//	public VideoType getVideoType() {
+//		return videoType;
+//	}
+//
+//	public void setVideoType(VideoType videoType) {
+//		this.videoType = videoType;
+//	}
+//
+//	public Date getCompleteDate() {
+//		return completeDate;
+//	}
+//
+//	public void setCompleteDate(Date completeDate) {
+//		this.completeDate = completeDate;
+//	}
+//
+//	public Originality getOriginality() {
+//		return originality;
+//	}
+//
+//	public void setOriginality(Originality originality) {
+//		this.originality = originality;
+//	}
+//
+//	public Photographer getPhotographer() {
+//		return photographer;
+//	}
+//
+//	public void setPhotographer(Photographer photographer) {
+//		this.photographer = photographer;
+//	}
+//
+//	public Editor getEditor() {
+//		return editor;
+//	}
+//
+//	public void setEditor(Editor editor) {
+//		this.editor = editor;
+//	}
+//
+//	public Performer getPerformer1() {
+//		return performer1;
+//	}
+//
+//	public void setPerformer1(Performer performer1) {
+//		this.performer1 = performer1;
+//	}
+//
+//	public Performer getPerformer2() {
+//		return performer2;
+//	}
+//
+//	public void setPerformer2(Performer performer2) {
+//		this.performer2 = performer2;
+//	}
+//
+//	public Performer getPerformer3() {
+//		return performer3;
+//	}
+//
+//	public void setPerformer3(Performer performer3) {
+//		this.performer3 = performer3;
+//	}
 
 	public Double getConsumption() {
 		return consumption;
@@ -328,6 +331,28 @@ public class VideoCost  extends Model<VideoCost> {
 		return cumulativeConsumptionRanking;
 	}
 
+//	public String getCompleteDateStr() {
+//		if(completeDate!=null){
+//			return StringUtils.dateToStr2(completeDate);
+//		}
+//		return completeDateStr;
+//	}
+
+//	public void setCompleteDateStr(String completeDateStr) {
+//		this.completeDateStr = completeDateStr;
+//	}
+
+	public String getRecoredDateStr() {
+		if(recoredDate!=null){
+			return StringUtils.dateToStr2(recoredDate);
+		}
+		return recoredDateStr;
+	}
+
+	public void setRecoredDateStr(String recoredDateStr) {
+		this.recoredDateStr = recoredDateStr;
+	}
+
 	public void setCumulativeConsumptionRanking(Integer cumulativeConsumptionRanking) {
 		this.cumulativeConsumptionRanking = cumulativeConsumptionRanking;
 	}
@@ -335,34 +360,5 @@ public class VideoCost  extends Model<VideoCost> {
 	public String toString() {
 		return JsonUtils.toJson(this);
 	}
-//	@Override
-//	public String toString() {
-//		return "VideoCost{" +
-//				"id=" + id +
-//				", updateTime=" + updateTime +
-//				", createTime=" + createTime +
-//				", deleteFlag=" + deleteFlag +
-//				", recoredDate=" + recoredDate +
-//				", businessDepartment=" + businessDepartment +
-//				", productType=" + productType +
-//				", customer=" + customer +
-//				", industry=" + industry +
-//				", demandSector=" + demandSector +
-//				", optimizer=" + optimizer +
-//				", videoType=" + videoType +
-//				", completeDate=" + completeDate +
-//				", originality=" + originality +
-//				", photographer=" + photographer +
-//				", editor=" + editor +
-//				", performer1=" + performer1 +
-//				", performer2=" + performer2 +
-//				", performer3=" + performer3 +
-//				", consumption=" + consumption +
-//				", cumulativeConsumption=" + cumulativeConsumption +
-//				", cumulativeConsumptionRanking=" + cumulativeConsumptionRanking +
-//				", cumulativeConsumptionByPro=" + cumulativeConsumptionByPro +
-//				", cumulativeConsumptionRankingByProglam=" + cumulativeConsumptionRankingByProglam +
-//				'}';
-//	}
 
 }

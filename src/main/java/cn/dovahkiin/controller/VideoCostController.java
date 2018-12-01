@@ -16,6 +16,8 @@ import cn.dovahkiin.commons.utils.StringUtils;
 import cn.dovahkiin.model.Customer;
 import cn.dovahkiin.service.*;
 import cn.dovahkiin.service.impl.IndustryServiceImpl;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -45,9 +47,10 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/videoCost")
 public class VideoCostController extends BaseController {
     @Autowired private IVideoCostService videoCostService;
+    @Autowired private ICustomerService customerService;
     @GetMapping("/manager")
     @RequiresPermissions("/videoCost/manager")
-    public String manager(HttpServletResponse response) {
+    public String manager(Model model,HttpServletResponse response) {
         double max = videoCostService.selectMaxConsumption();
         if(max==0)max = 100;
 //        if((max+"") .indexOf(".")>0 )max++;
@@ -106,17 +109,18 @@ public class VideoCostController extends BaseController {
         Page<VideoCost> pages = getPage(page, rows, sort, order);
         map.put("offset",pages.getOffset());
         map.put("limit",pages.getLimit());
+        map.put("videoCost",videoCost);
 
         pages= videoCostService.selectWithCount(pages,map);
-
-//        pages = videoCostService.selectPage(pages, ew);
-//        List<VideoCost> list = pages.getRecords();
-
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.putAll(videoCostService.selectDataForListPage(map));
+        pageInfo.setOtherMsg(jsonObject);
         pageInfo.setRows(pages.getRecords());
         pageInfo.setTotal(pages.getTotal());
         return pageInfo;
     }
-    
+
+
     /**
      * 添加页面
      * @return

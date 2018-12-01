@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
 import cn.dovahkiin.commons.utils.StringUtils;
+import com.alibaba.fastjson.JSON;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -54,6 +55,14 @@ public class VideoTypeController extends BaseController {
         pageInfo.setRows(pages.getRecords());
         pageInfo.setTotal(pages.getTotal());
         return pageInfo;
+    }
+    @PostMapping("/combobox")
+    @ResponseBody
+    @RequiresPermissions("/videoCost/dataGrid")
+    public Object dataGrid() {
+        EntityWrapper ew = new EntityWrapper();
+        ew.eq("delete_flag", 0 );
+        return JSON.toJSON(videoTypeService.selectList(ew));
     }
     /**
      * 添加页面
