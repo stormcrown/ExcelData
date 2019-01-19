@@ -12,7 +12,7 @@
         idField : 'id',
         sortName : 'createTime',
         sortOrder : 'desc',
-        pageSize : 20,
+        pageSize : 100,
         queryParams :{
             deleteFlag:0
         },
@@ -368,6 +368,21 @@ function customerCleanFun() {
 function customerSearchFun() {
      customerDataGrid.datagrid('load', $.serializeObject($('#customerSearchForm')));
 }
+    function chckKeyWordType_CUS(record) {
+        console.log(record);
+        if(record!=null && record.value=='all')$('#keyWordType_CUS').combobox('setValue','all');
+        var ss= $('#keyWordType').combobox('getValues');
+        for(var i=0;i< ss.length;i++ ){
+            if(i==0 && ss.length>1 && ss[i] =='all'){
+                ss.splice(0,1);
+                $('#keyWordType_CUS').combobox('setValues',ss);
+            }
+            if(i>0 && ss[i] =='all' ){
+                $('#keyWordType_CUS').combobox('setValue','all');
+                return;
+            }
+        }
+    }
 </script>
 
 <div class="easyui-layout" data-options="fit:true,border:false">
@@ -379,6 +394,26 @@ function customerSearchFun() {
                         <td title="英文逗号“,”分隔多个关键字，检测除日期，累计消耗及排名以外的列。" class="easyui-tooltip" >
                             <input id="KeyWord_customList" name="KeyWord" placeholder="关键字" type="text"  class="layui-input" />
                         </td>
+                    <td>
+                        关键字段
+                    </td>
+                    <td>
+                        <select id="keyWordType_CUS" name="keyWordType" class="easyui-combobox" style="width: 200px;" data-options="multiple:true,onSelect:chckKeyWordType_CUS" >
+                            <option value="all" >全部</option>
+                            <option value="customName" >素材名</option><option value="customCode" >素材编码</option>
+                            <option value="trueCustomerName" >客户名</option>
+                            <option value="consumption" >当日消耗</option>
+                            <option value="productName" >产品类型</option>
+                            <option value="industryName">行业名称</option>
+                            <option value="demandSectorName">需求部门</option>
+                            <option value="optimizerName" >优化师名称</option>
+                            <option value="videoTypeName">视频类型</option>
+                            <option value="originalityName">创意</option>
+                            <option value="photographerName">摄像</option>
+                            <option value="editorName">剪辑</option>
+                            <option value="performerName">演员</option>
+                        </select>
+                    </td>
                     <th>成片日期:</th>
                     <td>
                         <input id="completeDateRange_custom" name="completeDateRange" type="text" class="layui-input"    />
@@ -400,37 +435,37 @@ function customerSearchFun() {
                 <tr  >
                     <th>客户</th>
                     <td>
-                        <input name="trueCustomer.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'/trueCustomer/combobox'" />
+                        <input name="trueCustomer.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/trueCustomer/combobox'" />
                     </td>
                     <th>演员</th>
                     <td  >
-                        <input name="performer1.id"  class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'/performer/combobox'" />
+                        <input name="performer1.id"  class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/performer/combobox'" />
                     </td>
                     <th>摄像</th>
                     <td>
-                        <input name="photographer.id"  class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'/photographer/combobox'" />
+                        <input name="photographer.id"  class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/photographer/combobox'" />
                     </td>
                     <th>剪辑</th>
                     <td>
-                        <input name="editor.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'/editor/combobox'" />
+                        <input name="editor.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/editor/combobox'" />
                     </td>
                 </tr>
                 <tr  >
                     <td >创意</td>
                     <td>
-                        <input name="originality.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'/originality/combobox'" />
+                        <input name="originality.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/originality/combobox'" />
                     </td>
                     <td >行业</td>
                     <td>
-                        <input name="industry.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'/industry/combobox'" />
+                        <input name="industry.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/industry/combobox'" />
                     </td>
                     <td >产品类型</td>
                     <td>
-                        <input name="productType.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'/productType/combobox'" />
+                        <input name="productType.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/productType/combobox'" />
                     </td>
                     <td >视频类型</td>
                     <td>
-                        <input name="videoType.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'/videoType/combobox'" />
+                        <input name="videoType.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/videoType/combobox'" />
                     </td>
 
                 </tr>

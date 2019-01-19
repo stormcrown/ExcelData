@@ -1,10 +1,13 @@
 package cn.dovahkiin.service.impl;
 
+import cn.dovahkiin.model.Editor;
 import cn.dovahkiin.model.Optimizer;
 import cn.dovahkiin.mapper.OptimizerMapper;
 import cn.dovahkiin.service.IOptimizerService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p>
@@ -16,5 +19,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class OptimizerServiceImpl extends ServiceImpl<OptimizerMapper, Optimizer> implements IOptimizerService {
-	
+    @Override
+    @Transactional(propagation=Propagation.REQUIRES_NEW)
+    public boolean insert(Optimizer optimizer){
+        return super.insert(optimizer);
+    }
 }

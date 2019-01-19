@@ -3,7 +3,7 @@
 <script type="text/javascript">
     var videoCostDataGrid;
     $(function () {
-        var max = getCookie("MaxConsumption");
+        var max = '${MaxConsumption}';
         // if(max!=null && max.indexOf(".")>0  )max = max.substring(0,max.indexOf("."));
         $("#ConsumptionRange").slider({
             max:max,
@@ -21,8 +21,8 @@
             idField: 'id',
             sortName: 'recoredDate',
             sortOrder: 'desc',
-            pageSize: 10,
-            pageList: [10, 20, 30, 40, 50, 100, 200, 300, 400, 500],
+            pageSize: 100,
+            pageList: [10, 20, 30, 40, 50, 100, 200, 300, 400, 500,1000],
             onBeforeLoad:function(param){
                 $('#videoCostDataGrid').datagrid('clearChecked').datagrid('clearSelections');
                // $('#videoCostDataGrid').datagrid('uncheckAll');
@@ -277,28 +277,17 @@
                 $('.videoCost-easyui-linkbutton-edit').linkbutton({text: '编辑'});
                 $('.videoCost-easyui-linkbutton-del').linkbutton({text: '删除'});
                 $('#videoCostDataGrid').datagrid('clearChecked').datagrid('clearSelections');
-
                 if(data!=null && data.otherMsg!=null && data.otherMsg.sum >0){
                     $('#sum').html(data.otherMsg.sum.toFixed(2));
                 }else{
                     $('#sum').html(0.00);
                 }
-                $('#code').html(data.otherMsg.code);
-                $('#name').html(data.otherMsg.name);
+                $('#cus').html(data.otherMsg.cus);
+                $('#tcus').html(data.otherMsg.tcus);
             },
             toolbar: '#videoCostToolbar'
         });
-
-
-        $('#organizationAddPid').combotree({
-            url : '${path }/organization/tree',
-            parentField : 'pid',
-            panelHeight : 300,editable:true,
-            width:200
-        });
-
     });
-
     //一般直接写在一个js文件中
     layui.use(['laydate','slider','layer'], function(){
         var laydate = layui.laydate,slider = layui.slider;
@@ -311,8 +300,6 @@
             ,range: '~' //或 range: '~' 来自定义分割字符
         });
     });
-
-
     /**
      * 添加框
      * @param url
@@ -352,7 +339,6 @@
                         f.submit();
                     }
                 }
-
             ]
         });
     }
@@ -489,12 +475,34 @@
         $("#ConsumptionRange").slider('reset');
         videoCostDataGrid.datagrid('load', {});
     }
-
     /**
      * 搜索
      */
     function videoCostSearchFun() {
         $('#videoCostDataGrid').datagrid('load', $.serializeObject($('#videoCostSearchForm')));
+    }
+    function checkConsumption_star(newValue, oldValue) {
+        var end = $("#Consumption_end").numberbox('getValue');
+        if(newValue>end)$("#Consumption_star").numberbox('setValue',oldValue);
+    }
+    function checkConsumption_end(newValue, oldValue) {
+        var start = $("#Consumption_start").numberbox('getValue');
+        if(newValue<start)$("#Consumption_end").numberbox('setValue',oldValue);
+    }
+    function chckKeyWordType(record) {
+        console.log(record);
+        if(record!=null && record.value=='all')$('#keyWordType').combobox('setValue','all');
+        var ss= $('#keyWordType').combobox('getValues');
+        for(var i=0;i< ss.length;i++ ){
+            if(i==0 && ss.length>1 && ss[i] =='all'){
+                ss.splice(0,1);
+                $('#keyWordType').combobox('setValues',ss);
+            }
+            if(i>0 && ss[i] =='all' ){
+                $('#keyWordType').combobox('setValue','all');
+                return;
+            }
+        }
     }
 </script>
 
@@ -503,76 +511,97 @@
         <form id="videoCostSearchForm">
             <table style="margin-top: 5px;margin-bottom: 5px;" >
             <tr  >
-                <th>关键字</th><td title="英文逗号“,”分隔多个关键字，检测除日期，累计消耗及排名以外的列。" class="easyui-tooltip" ><input id="KeyWord" name="KeyWord" placeholder="关键字" type="text"  class="layui-input" /></td>
+                <th>关键字</th>
+                <td title="英文逗号“,”分隔多个关键字，检测除日期，累计消耗及排名以外的列。" class="easyui-tooltip" >
+                    <input id="KeyWord" name="KeyWord" placeholder="关键字" type="text"  class="layui-input" />
+                </td>
+                <td>
+                    关键字段
+                </td>
+                <td>
+                    <select id="keyWordType" name="keyWordType" class="easyui-combobox" style="width: 200px;" data-options="multiple:true,onSelect:chckKeyWordType" >
+                        <option value="all" >全部</option>
+                        <option value="customName" >素材名</option><option value="customCode" >素材编码</option>
+                        <option value="trueCustomerName" >客户名</option>
+                        <option value="consumption" >当日消耗</option>
+                        <option value="productName" >产品类型</option>
+                        <option value="industryName">行业名称</option>
+                        <option value="demandSectorName">需求部门</option>
+                        <option value="optimizerName" >优化师名称</option>
+                        <option value="videoTypeName">视频类型</option>
+                        <option value="originalityName">创意</option>
+                        <option value="photographerName">摄像</option>
+                        <option value="editorName">剪辑</option>
+                        <option value="performerName">演员</option>
+                    </select>
+                </td>
                 <th>消耗日期:</th>
                 <td>
-                   <input id = 'recoredDateRange' name="recoredDateRange" type="text" class="layui-input" >
+                   <input id = 'recoredDateRange' name="recoredDateRange"  type="text" class="layui-input" >
                 </td>
                 <th>成片日期</th>
                 <td>
                     <input id="completeDateRange" name="completeDateRange" type="text" class="layui-input"    />
-                </td>
-                <td>日消耗范围</td>
-                <td  style="margin: 10px;height: 50px;" >
-                <input id="ConsumptionRange" name="ConsumptionRange"  class="easyui-slider" data-options="min:0,range:true,showTip:true,step:10000" style="width:200px" />
-                </td>
-                <td width="50px">
-                    视频类型
-                </td>
-                <td>
-
-                    <input name="customer.videoType.id" class="easyui-combobox"  data-options="width:100,valueField:'id',textField:'name',url:'/videoType/combobox'" />
                 </td>
                 <td>
                     <button type="button" class="layui-btn layui-btn-radius layui-btn-normal" onclick="videoCostSearchFun();">查询</button>
                     <button type="button" class="layui-btn layui-btn-radius layui-btn-danger" onclick="videoCostCleanFun();" >清空</button>
                 </td>
             </tr>
-                <tr  >
-                    <th>素材</th>
-                    <td  >
-                        <input name="customer.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'/customer/combobox'" />
-                    </td>
-                    <th>客户</th>
-                    <td>
-                        <input name="customer.trueCustomer.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'/trueCustomer/combobox'" />
-                    </td>
-                    <th>需求部门</th>
-                    <td>
-                        <select name="demandSector.id" id="organizationAddPid" ></select>
-                    </td>
-                    <td>优化师</td>
-                    <td   >
-                        <input name="optimizer.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'/optimizer/combobox'" />
-                    </td>
-                    <td >创意</td>
-                    <td>
-                        <input name="customer.originality.id" class="easyui-combobox"  data-options="width:100,valueField:'id',textField:'name',url:'/originality/combobox'" />
-                    </td>
-                </tr>
-                <tr  >
-                    <th>演员</th>
-                    <td  >
-                        <input name="customer.performer1.id"  class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'/performer/combobox'" />
-                    </td>
-                    <th>摄像</th>
-                    <td>
-                        <input name="customer.photographer.id"  class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'/photographer/combobox'" />
-                    </td>
-                    <th>剪辑</th>
-                    <td>
-                        <input name="customer.editor.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'/editor/combobox'" />
-                    </td>
-                    <td >行业</td>
-                    <td>
-                        <input name="customer.industry.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'/industry/combobox'" />
-                    </td>
-                    <td >产品类型</td>
-                    <td>
-                        <input name="customer.productType.id" class="easyui-combobox"  data-options="width:100,valueField:'id',textField:'name',url:'/productType/combobox'" />
-                    </td>
-
-                </tr>
+            <tr  >
+                <td>日消耗范围</td>
+                <td>
+                    <input id="Consumption_star" name="consumption_min"  type="text" onchange="checkConsumption_star()" class="easyui-numberbox" value="0" data-options="min:0,precision:2,onChange:checkConsumption_star" />
+                </td>
+                <td> -- </td>
+                <td>
+                    <input id="Consumption_end" name="consumption_max" type="text" class="easyui-numberbox" value="${MaxConsumption}" data-options="min:0,precision:2" />
+                </td>
+            </tr>
+                <%--<tr  >--%>
+                    <%--<th>素材</th>--%>
+                    <%--<td  >--%>
+                        <%--<input name="customer.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/customer/combobox'" />--%>
+                    <%--</td>--%>
+                    <%--<th>客户</th>--%>
+                    <%--<td>--%>
+                        <%--<input name="customer.trueCustomer.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/trueCustomer/combobox'" />--%>
+                    <%--</td>--%>
+                    <%--<th>需求部门</th>--%>
+                    <%--<td>--%>
+                        <%--<select name="demandSector.id" id="organizationAddPid" ></select>--%>
+                    <%--</td>--%>
+                    <%--<td>优化师</td>--%>
+                    <%--<td   >--%>
+                        <%--<input name="optimizer.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/optimizer/combobox'" />--%>
+                    <%--</td>--%>
+                    <%--<td >创意</td>--%>
+                    <%--<td>--%>
+                        <%--<input name="customer.originality.id" class="easyui-combobox"  data-options="width:100,valueField:'id',textField:'name',url:'${path}/originality/combobox'" />--%>
+                    <%--</td>--%>
+                <%--</tr>--%>
+                <%--<tr  >--%>
+                    <%--<th>演员</th>--%>
+                    <%--<td  >--%>
+                        <%--<input name="customer.performer1.id"  class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/performer/combobox'" />--%>
+                    <%--</td>--%>
+                    <%--<th>摄像</th>--%>
+                    <%--<td>--%>
+                        <%--<input name="customer.photographer.id"  class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/photographer/combobox'" />--%>
+                    <%--</td>--%>
+                    <%--<th>剪辑</th>--%>
+                    <%--<td>--%>
+                        <%--<input name="customer.editor.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/editor/combobox'" />--%>
+                    <%--</td>--%>
+                    <%--<td >行业</td>--%>
+                    <%--<td>--%>
+                        <%--<input name="customer.industry.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/industry/combobox'" />--%>
+                    <%--</td>--%>
+                    <%--<td >产品类型</td>--%>
+                    <%--<td>--%>
+                        <%--<input name="customer.productType.id" class="easyui-combobox"  data-options="width:100,valueField:'id',textField:'name',url:'${path}/productType/combobox'" />--%>
+                    <%--</td>--%>
+                <%--</tr>--%>
             </table>
         </form>
     </div>
@@ -599,5 +628,5 @@
     <shiro:hasPermission name="/videoCost/delete">
         <a onclick="videoCostDeleteFun()" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-remove  icon-red'">删除</a>
     </shiro:hasPermission>
-    总消耗：￥ <span id="sum" style="color: red" >0.00</span>&nbsp;&nbsp;||&nbsp;&nbsp;素材量：<span id="code" style="color: red" >0</span>&nbsp;&nbsp;||&nbsp;&nbsp;成片量：<span id="name" style="color: red" >0</span>
+    总消耗：￥ <span id="sum" style="color: red" >0.00</span>&nbsp;&nbsp;||&nbsp;&nbsp;素材数量：<span id="cus" style="color: red" >0</span>&nbsp;&nbsp;||&nbsp;&nbsp;客户数量：<span id="tcus" style="color: red" >0</span>
 </div>

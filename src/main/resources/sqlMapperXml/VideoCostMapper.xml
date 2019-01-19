@@ -119,17 +119,6 @@
             <result column="create_time" property="createTime"/>
             <result column="delete_flag" property="deleteFlag"/>
         </association>
-        <association property="businessDepartment" javaType="cn.dovahkiin.model.Organization" columnPrefix="business_department_">
-            <id column="id" property="id"/>
-            <result column="name" property="name"/>
-            <result column="simple_names" property="simpleNames"/>
-            <result column="address" property="address"/>
-            <result column="code" property="code"/>
-            <result column="icon" property="icon"/>
-            <result column="pid" property="pid"/>
-            <result column="seq" property="seq"/>
-            <result column="create_time" property="createTime"/>
-        </association>
     </resultMap>
     <resultMap id="BaseResultMapWithCount" type="cn.dovahkiin.model.VideoCost" extends="BaseResultMap">
         <result column="cumulativeConsumptionByPro" property="cumulativeConsumptionByPro"/>
@@ -138,7 +127,7 @@
     <insert id="insertMany" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         insert into `video_cost`
         (
-        create_time,delete_flag, recored_date, business_department_id,  customer_id,
+        create_time,delete_flag, recored_date,   customer_id,
         demand_sector_id,optimizer_id,
         consumption
         )
@@ -146,7 +135,6 @@
         <foreach collection="list" item="videoCost" index="index" separator=",">
             (
             #{videoCost.createTime}, #{videoCost.deleteFlag},#{videoCost.recoredDate},
-            #{videoCost.businessDepartment.id},
             #{videoCost.customer.id},
             #{videoCost.demandSector.id},
             #{videoCost.optimizer.id},
@@ -174,7 +162,6 @@
         update `video_cost`
         set
         recored_date = #{recoredDate} ,
-        business_department_id = #{businessDepartment.id},
         customer_id = #{customer.id},
         demand_sector_id=#{demandSector.id},
         optimizer_id=#{optimizer.id},
@@ -196,7 +183,7 @@
         vc.create_time ,
         vc.delete_flag ,
         vc.recored_date ,
-        vc.business_department_id ,
+
         vc.customer_id ,
         vc.demand_sector_id ,
         vc.optimizer_id,
@@ -258,10 +245,6 @@
         edi.create_time as customer_editor_create_time,
         edi.delete_flag as customer_editor_delete_flag,
 
-        bdi.`name` as business_department_name,
-        bdi.`code` as business_department_code,
-        bdi.simple_names as business_department_simple_names,
-        bdi.create_time as business_department_create_time,
 
         per1.`name` as customer_performer1_name,
         per1.`code` as customer_performer1_code,
@@ -307,7 +290,7 @@
         left join organization dem on dem.id = vc.demand_sector_id
         left join optimizer opt on opt.id = vc.optimizer_id
         left join customer cus on cus.id = vc.customer_id
-        left join organization bdi on bdi.id = vc.business_department_id
+
         left join industry ind on ind.id = cus.industry_id
         left join product_type pty on pty.id = cus.product_type_id
         left join video_type vdt on vdt.id = cus.video_type_id
@@ -365,23 +348,53 @@
             </if>
             <if test="KeyWord !=null" >
                 <foreach collection="KeyWord" item="keyW" >
-                  and  (
-                    vc.consumption like #{keyW}
-                    or pty.`name` like #{keyW}
-                    or cus.`name` like #{keyW}
-                    or cus.`code` like #{keyW}
-                    or ind.`name` like #{keyW}
-                    or dem.`name` like #{keyW}
-                    or opt.`name` like #{keyW}
-                    or vdt.`name` like #{keyW}
-                    or ori.`name` like #{keyW}
-                    or pho.`name` like #{keyW}
-                    or edi.`name` like #{keyW}
-                    or bdi.`name` like #{keyW}
-                    or per1.`name` like #{keyW}
-                    or per2.`name` like #{keyW}
-                    or per3.`name` like #{keyW}
-                    or tcus.`name` like #{keyW}
+                  and  ( 1=2
+                    <if test="all !=null or consumption!=null ">
+                        or vc.consumption like #{keyW}
+                    </if>
+                    <if test="all !=null or productName != null ">
+                        or pty.`name` like #{keyW}
+                    </if>
+                    <if test="all !=null or customName != null ">
+                        or cus.`name` like #{keyW}
+                    </if>
+                    <if test="all !=null or customCode != null ">
+                        or cus.`code` like #{keyW}
+                    </if>
+
+                    <if test="all !=null or industryName != null ">
+                        or ind.`name` like #{keyW}
+                    </if>
+                    <if test="all !=null or demandSectorName != null ">
+                        or dem.`name` like #{keyW}
+                    </if>
+
+                    <if test="all !=null or optimizerName != null ">
+                        or opt.`name` like #{keyW}
+                    </if>
+
+                    <if test="all !=null or videoTypeName != null ">
+                        or vdt.`name` like #{keyW}
+                    </if>
+                    <if test="all !=null or originalityName != null ">
+                        or ori.`name` like #{keyW}
+                    </if>
+
+                    <if test="all !=null or photographerName != null ">
+                        or pho.`name` like #{keyW}
+                    </if>
+                    <if test="all !=null or editorName != null ">
+                        or edi.`name` like #{keyW}
+                    </if>
+
+                    <if test="all !=null or performerName != null ">
+                        or per1.`name` like #{keyW}
+                        or per2.`name` like #{keyW}
+                        or per3.`name` like #{keyW}
+                    </if>
+                    <if test="all !=null or trueCustomerName != null ">
+                        or tcus.`name` like #{keyW}
+                    </if>
                     )
                 </foreach>
             </if>
@@ -402,7 +415,7 @@
             ORDER BY
             <choose>
                 <when test="sort=='recoredDate'">vc.recored_date</when>
-                <when test="sort=='businessDepartment'">bdi.`name`</when>
+
                 <when test="sort=='productType'">pty.`name`</when>
                 <when test="sort=='customerCode'">cus.`code`</when>
                 <when test="sort=='customer'">cus.`name`</when>
@@ -519,24 +532,53 @@
             </if>
             <if test="KeyWord !=null" >
                 <foreach collection="KeyWord" item="keyW" >
-                     and (
-                    vc.consumption like #{keyW}
-                    or pty.`name` like #{keyW}
-                    or cus.`name` like #{keyW}
-                    or cus.`code` like #{keyW}
-                    or ind.`name` like #{keyW}
-                    or dem.`name` like #{keyW}
-                    or opt.`name` like #{keyW}
-                    or vdt.`name` like #{keyW}
-                    or ori.`name` like #{keyW}
-                    or ori.`name` like #{keyW}
-                    or pho.`name` like #{keyW}
-                    or edi.`name` like #{keyW}
-                    or bdi.`name` like #{keyW}
-                    or per1.`name` like #{keyW}
-                    or per2.`name` like #{keyW}
-                    or per3.`name` like #{keyW}
-                    or tcus.`name` like #{keyW}
+                    and  ( 1=2
+                    <if test="all !=null or consumption!=null ">
+                        or vc.consumption like #{keyW}
+                    </if>
+                    <if test="all !=null or productName != null ">
+                        or pty.`name` like #{keyW}
+                    </if>
+                    <if test="all !=null or customName != null ">
+                        or cus.`name` like #{keyW}
+                    </if>
+                    <if test="all !=null or customCode != null ">
+                        or cus.`code` like #{keyW}
+                    </if>
+
+                    <if test="all !=null or industryName != null ">
+                        or ind.`name` like #{keyW}
+                    </if>
+                    <if test="all !=null or demandSectorName != null ">
+                        or dem.`name` like #{keyW}
+                    </if>
+
+                    <if test="all !=null or optimizerName != null ">
+                        or opt.`name` like #{keyW}
+                    </if>
+
+                    <if test="all !=null or videoTypeName != null ">
+                        or vdt.`name` like #{keyW}
+                    </if>
+                    <if test="all !=null or originalityName != null ">
+                        or ori.`name` like #{keyW}
+                    </if>
+
+                    <if test="all !=null or photographerName != null ">
+                        or pho.`name` like #{keyW}
+                    </if>
+                    <if test="all !=null or editorName != null ">
+                        or edi.`name` like #{keyW}
+                    </if>
+
+                    <if test="all !=null or performerName != null ">
+                        or per1.`name` like #{keyW}
+                        or per2.`name` like #{keyW}
+                        or per3.`name` like #{keyW}
+                    </if>
+                    <if test="all !=null or trueCustomerName != null ">
+                        or tcus.`name` like #{keyW}
+                    </if>
                     )
                 </foreach>
             </if>
@@ -635,22 +677,53 @@
             </if>
             <if test="KeyWord !=null" >
                 <foreach collection="KeyWord" item="keyW" >
-                    and  (
-                    vc.consumption like #{keyW}
-                    or pty.`name` like #{keyW}
-                    or cus.`name` like #{keyW}
-                    or cus.`code` like #{keyW}
-                    or ind.`name` like #{keyW}
-                    or dem.`name` like #{keyW}
-                    or opt.`name` like #{keyW}
-                    or vdt.`name` like #{keyW}
-                    or ori.`name` like #{keyW}
-                    or pho.`name` like #{keyW}
-                    or edi.`name` like #{keyW}
-                    or bdi.`name` like #{keyW}
-                    or per1.`name` like #{keyW}
-                    or per2.`name` like #{keyW}
-                    or per3.`name` like #{keyW}
+                    and  ( 1=2
+                    <if test="all !=null or consumption!=null ">
+                        or vc.consumption like #{keyW}
+                    </if>
+                    <if test="all !=null or productName != null ">
+                        or pty.`name` like #{keyW}
+                    </if>
+                    <if test="all !=null or customName != null ">
+                        or cus.`name` like #{keyW}
+                    </if>
+                    <if test="all !=null or customCode != null ">
+                        or cus.`code` like #{keyW}
+                    </if>
+
+                    <if test="all !=null or industryName != null ">
+                        or ind.`name` like #{keyW}
+                    </if>
+                    <if test="all !=null or demandSectorName != null ">
+                        or dem.`name` like #{keyW}
+                    </if>
+
+                    <if test="all !=null or optimizerName != null ">
+                        or opt.`name` like #{keyW}
+                    </if>
+
+                    <if test="all !=null or videoTypeName != null ">
+                        or vdt.`name` like #{keyW}
+                    </if>
+                    <if test="all !=null or originalityName != null ">
+                        or ori.`name` like #{keyW}
+                    </if>
+
+                    <if test="all !=null or photographerName != null ">
+                        or pho.`name` like #{keyW}
+                    </if>
+                    <if test="all !=null or editorName != null ">
+                        or edi.`name` like #{keyW}
+                    </if>
+
+                    <if test="all !=null or performerName != null ">
+                        or per1.`name` like #{keyW}
+                        or per2.`name` like #{keyW}
+                        or per3.`name` like #{keyW}
+                    </if>
+                    <if test="all !=null or trueCustomerName != null ">
+                        or tcus.`name` like #{keyW}
+                    </if>
                     )
                 </foreach>
             </if>
@@ -671,7 +744,7 @@
 
     <select id="selectDataForListPage" resultType="map" >
         SELECT
-        sum(vc.consumption) `sum`,count(vc.id) `total`,COUNT(DISTINCT cus.name) `name` ,COUNT(DISTINCT cus.code) `code`
+        sum(vc.consumption) `sum`,count(vc.id) `total`,COUNT(DISTINCT cus.id) `cus` ,COUNT(DISTINCT tcus.id) `tcus`
         FROM video_cost vc
         left join (
         SELECT
@@ -751,23 +824,53 @@
             </if>
             <if test="KeyWord !=null" >
                 <foreach collection="KeyWord" item="keyW" >
-                    and  (
-                    vc.consumption like #{keyW}
-                    or pty.`name` like #{keyW}
-                    or cus.`name` like #{keyW}
-                    or cus.`code` like #{keyW}
-                    or ind.`name` like #{keyW}
-                    or dem.`name` like #{keyW}
-                    or opt.`name` like #{keyW}
-                    or vdt.`name` like #{keyW}
-                    or ori.`name` like #{keyW}
-                    or pho.`name` like #{keyW}
-                    or edi.`name` like #{keyW}
-                    or bdi.`name` like #{keyW}
-                    or per1.`name` like #{keyW}
-                    or per2.`name` like #{keyW}
-                    or per3.`name` like #{keyW}
-                    or tcus.`name` like #{keyW}
+                    and  ( 1=2
+                    <if test="all !=null or consumption!=null ">
+                        or vc.consumption like #{keyW}
+                    </if>
+                    <if test="all !=null or productName != null ">
+                        or pty.`name` like #{keyW}
+                    </if>
+                    <if test="all !=null or customName != null ">
+                        or cus.`name` like #{keyW}
+                    </if>
+                    <if test="all !=null or customCode != null ">
+                        or cus.`code` like #{keyW}
+                    </if>
+
+                    <if test="all !=null or industryName != null ">
+                        or ind.`name` like #{keyW}
+                    </if>
+                    <if test="all !=null or demandSectorName != null ">
+                        or dem.`name` like #{keyW}
+                    </if>
+
+                    <if test="all !=null or optimizerName != null ">
+                        or opt.`name` like #{keyW}
+                    </if>
+
+                    <if test="all !=null or videoTypeName != null ">
+                        or vdt.`name` like #{keyW}
+                    </if>
+                    <if test="all !=null or originalityName != null ">
+                        or ori.`name` like #{keyW}
+                    </if>
+
+                    <if test="all !=null or photographerName != null ">
+                        or pho.`name` like #{keyW}
+                    </if>
+                    <if test="all !=null or editorName != null ">
+                        or edi.`name` like #{keyW}
+                    </if>
+
+                    <if test="all !=null or performerName != null ">
+                        or per1.`name` like #{keyW}
+                        or per2.`name` like #{keyW}
+                        or per3.`name` like #{keyW}
+                    </if>
+                    <if test="all !=null or trueCustomerName != null ">
+                        or tcus.`name` like #{keyW}
+                    </if>
                     )
                 </foreach>
             </if>

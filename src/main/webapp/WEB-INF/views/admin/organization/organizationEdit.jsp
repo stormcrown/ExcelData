@@ -2,12 +2,12 @@
 <%@ include file="/commons/global.jsp" %>
 <script type="text/javascript">
     $(function() {
-        $('#organizationEditPid').combotree({
-            url : '${path }/organization/tree?flag=false',
-            parentField : 'pid',
-            panelHeight : 300,
-            value :'${organization.pid}'
-        });
+        <%--$('#organizationEditPid').combotree({--%>
+            <%--url : '${path }/organization/tree?flag=false',--%>
+            <%--parentField : 'pid',--%>
+            <%--panelHeight : 300,--%>
+            <%--value :'${organization.pid}'--%>
+        <%--});--%>
         
         $('#organizationEditForm').form({
             url : '${path }/organization/edit',
@@ -62,7 +62,9 @@
             </tr>
             <tr>
                 <td>上级资源</td>
-                <td colspan="3"><select id="organizationEditPid" name="pid" style="width: 200px; height: 29px;"></select>
+                <td colspan="3">
+
+                    <select id="organizationAddPid" name="pid" class="easyui-combotree" style="width:200px;height: 29px;" data-options="url : '${path }/organization/tree',parentField : 'pid', panelHeight : 300,value :'${organization.pid}'" ></select>
                 <a class="easyui-linkbutton" href="javascript:void(0)" onclick="$('#pid').combotree('clear');" >清空</a></td>
             </tr>
         </table>

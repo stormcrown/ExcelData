@@ -12,7 +12,7 @@
             idField : 'id',
             sortName : 'id',
             sortOrder : 'asc',
-            pageSize : 20,
+            pageSize : 100,
             pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500 ],
             frozenColumns : [ [ {
                 width : '100',

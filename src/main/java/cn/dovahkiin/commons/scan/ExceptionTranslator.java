@@ -49,13 +49,13 @@ public class ExceptionTranslator {
 		FieldError error = ex.getFieldError();
 		return getFieldErrorResult(error);
 	}
-	@ExceptionHandler
+	@ExceptionHandler(Exception.class)
 	@ResponseBody
 	public Result processException(Exception ex) {
 		log.error(ex.getMessage(), ex);
 		ex.printStackTrace();
 		Result result = new Result();
-		result.setSuccess(true);
+		result.setSuccess(false);
 		result.setMsg(ex.getMessage());
 		return result;
 	}

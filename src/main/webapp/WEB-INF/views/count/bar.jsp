@@ -19,6 +19,12 @@
 
             });
         });
+        $('#organizationAddPid_count_bar').combotree({
+            url : '${path }/organization/tree',
+            parentField : 'pid',
+            panelHeight : 300,editable:true,
+            width:200
+        });
     });
 
 
@@ -32,11 +38,8 @@
             else dates = getAllDates( dates[0],dates[1] );
             $.ajax({
                 type:'post',
-                url:'/count/count1',
-                data:{
-                    recoredDateRange: $('#recoredDateRange_COUNT').val(),
-                    type :type
-                },
+                url:'${path}/count/bar',
+                data:$("#barForm").serialize(),
                 dataType:'json',
                 beforeSend:function(){
 
@@ -56,9 +59,7 @@
                         }
                         if(!got)dataArr.push(0);
                     }
-
                     drawTable1(dates,dataArr);
-                    console.log(data);
                 },
                 error:function(){
                 },
@@ -118,28 +119,77 @@
     }
     function chearDraw(){
         $("#chats1").html('');
+        $('#barForm input').val('');
     }
 </script>
 
 <div class="easyui-layout" data-options="fit:true,border:false">
     <div data-options="region:'north',border:false" style="margin: 5px; overflow: hidden;background-color: #fff">
+        <form id="barForm">
             <table>
                 <tr>
                     <th>消耗日期:</th>
                     <td>
                         <input id = 'recoredDateRange_COUNT' name="recoredDateRange" type="text" class="layui-input" >
                     </td>
-                    <td>
-                        <select id="count1_R" style="width: 100px" class="layui-input" onchange="clearDate()" >
-                            <option value="0" >日</option><option value="1" >月</option>
-                        </select>
+
+                    <th>素材</th>
+                    <td  >
+                        <input name="customer.id" class="easyui-combobox"  data-options="width:150,valueField:'id',textField:'name',url:'${path}/customer/combobox'" />
                     </td>
+                    <th>客户</th>
+                    <td>
+                        <input name="customer.trueCustomer.id" class="easyui-combobox"  data-options="width:150,valueField:'id',textField:'name',url:'${path}/trueCustomer/combobox'" />
+                    </td>
+
                     <td>
                         <button type="button" class="layui-btn layui-btn-radius layui-btn-normal" onclick="drawTable();">生成</button>
-                        <%--<button type="button" class="layui-btn layui-btn-radius layui-btn-danger" onclick="chearDraw()" >清空</button>--%>
+                        <button type="button" class="layui-btn layui-btn-radius layui-btn-danger" onclick="chearDraw()" >清空</button>
+                    </td>
+                    <td>
+                        <select id="count1_R" name="type" style="width: 100px" class="layui-input" onchange="clearDate()" >
+                            <option value="0" > 日 </option><option value="1" > 月 </option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th>需求部门</th>
+                    <td>
+                        <select name="demandSector.id" id="organizationAddPid_count_bar" ></select>
+                    </td>
+                    <td>优化师</td>
+                    <td   >
+                        <input name="optimizer.id" class="easyui-combobox"  data-options="width:150,valueField:'id',textField:'name',url:'${path}/optimizer/combobox'" />
+                    </td>
+                    <td >创意</td>
+                    <td>
+                        <input name="customer.originality.id" class="easyui-combobox"  data-options="width:150,valueField:'id',textField:'name',url:'${path}/originality/combobox'" />
+                    </td>
+                </tr>
+                <tr  >
+                    <th>演员</th>
+                    <td  >
+                        <input name="customer.performer1.id"  class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/performer/combobox'" />
+                    </td>
+                    <th>摄像</th>
+                    <td>
+                        <input name="customer.photographer.id"  class="easyui-combobox"  data-options="width:150,valueField:'id',textField:'name',url:'${path}/photographer/combobox'" />
+                    </td>
+                    <th>剪辑</th>
+                    <td>
+                        <input name="customer.editor.id" class="easyui-combobox"  data-options="width:150,valueField:'id',textField:'name',url:'${path}/editor/combobox'" />
+                    </td>
+                    <td >行业</td>
+                    <td>
+                        <input name="customer.industry.id" class="easyui-combobox"  data-options="width:150,valueField:'id',textField:'name',url:'${path}/industry/combobox'" />
+                    </td>
+                    <td >产品类型</td>
+                    <td>
+                        <input name="customer.productType.id" class="easyui-combobox"  data-options="width:150,valueField:'id',textField:'name',url:'${path}/productType/combobox'" />
                     </td>
                 </tr>
             </table>
+        </form>
      </div>
     <div data-options="region:'center',border:false">
         <div class="layui-card">

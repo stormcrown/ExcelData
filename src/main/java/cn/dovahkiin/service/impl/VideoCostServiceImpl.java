@@ -106,7 +106,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
         List<Originality> originalities = iOriginalityService.selectList(un_delete);
         List<Performer> performers = performerService.selectList(un_delete);
         List<Photographer> photographers = iPhotographerService.selectList(un_delete);
-        List<ProductType> productTypes = iProductTypeService.selectList(un_delete);
+      //  List<ProductType> productTypes = iProductTypeService.selectList(un_delete);
         List<VideoType> videoTypes = videoTypeService.selectList(un_delete);
         List<TrueCustomer> trueCustomers = trueCustomerService.selectList(un_delete);
         int first = sheet.getFirstRowNum();
@@ -114,10 +114,20 @@ public class VideoCostServiceImpl implements IVideoCostService {
         logger.info("first=" + first + "\tlast=" + last + "\trecoredDate=" + recoredDate);
         List<VideoCost> videoCosts = new ArrayList();
 
+        for (int i = first; i < last + 1; i++) {
+            Row row = sheet.getRow(i);
+            if (row != null) {
+                    Cell cell=row.getCell(0);
+                    Object value = getCellValue(cell);
+                    if(value!=null && "排名".equals(value)){
+                          first = i;
+                          break ;
+                    }
 
+            }
+        }
+        first++;
         Date now = new Date();
-        first = 3;//实际数据从哪一行开始
-
         /*  被合并的单元格  */
         Map<String, String> mergeDatas = new HashMap<>((last - first) * 2);
         /*  被合并的单元格 */
@@ -143,7 +153,10 @@ public class VideoCostServiceImpl implements IVideoCostService {
                 VideoCost videoCost = new VideoCost(now, now, 0, recoredDate);
                 videoCost.setBusinessDepartment(new Organization());
                 Customer customer_1 = new Customer(null, null, new Date(), 0);
-                String code = "";
+                Object codeC = getCellValue(row.getCell(1)) ; ;
+                String code ="";
+                if(codeC!=null)code=codeC.toString();
+                if(!StringUtils.hasText(code))code=null;
                 格:
                 for (int j = 0; j < 17; j++) {
                     Cell cell = row.getCell(j);
@@ -168,72 +181,55 @@ public class VideoCostServiceImpl implements IVideoCostService {
                                 value = getCellValue(cell);
 
                         }
-                        if (value != null) {
-                            String valueStr = value.toString().trim();
+                        if (value != null  ) {
+                            String valueStr = value.toString().replaceAll(" ","");
+                            if(!StringUtils.hasText(valueStr))continue 格;
                             if ("——".equals(valueStr.replaceAll(" ", ""))) continue 格;
                             ;
                             switch (j) {
-                                case 0: //业务部
-                                    synchronized (organizations) {
-                                        Organization business = checkName(organizations, valueStr);
-                                        if (business == null) business = checkSimpleName(organizations, valueStr);
-                                        if (business == null) {
-                                            business = new Organization(valueStr, "", 0, new Date());
-                                            business.setCode(business.CreateCode());
-                                            iOrganizationService.insert(business);
-                                            organizations.add(business);
-                                        }
-                                        videoCost.setBusinessDepartment(business);
-                                        break;
-                                    }
 
                                 case 1:
-                                    synchronized (productTypes) {
-                                        if (valueStr.indexOf("·") > 0) valueStr = valueStr.split("·")[0];
-                                        ProductType productType = checkName(productTypes, valueStr);
-                                        if (productType == null) {
-                                            productType = new ProductType(valueStr, null, new Date(), 0);
-                                            productType.setCode(productType.CreateCode());
-                                            iProductTypeService.insert(productType);
-                                            productTypes.add(productType);
-                                        }
-                                        customer_1.setProductType(productType);
-//                                        videoCost.setProductType(productType);
-                                        break;
-                                    }
-                                case 2:
-                                    code = valueStr;
-                                    break;
-                                case 3:
-                                    Customer customer=null;
                                     synchronized (customers ) {
-                                        customer = checkName(customers, valueStr);
+                                        customer_1.setCode(valueStr);
+                                        code=valueStr;
+                                    }
+                                    break;
+                                case 2:
+                                    synchronized (trueCustomers){
+                                        TrueCustomer trueCustomer = checkName(trueCustomers,valueStr);
+                                        if(trueCustomer==null){
+                                            trueCustomer = new TrueCustomer(valueStr,new Date(),new Date(),0);
+                                            trueCustomer.CreateCode();
+                                            trueCustomerService.insert(trueCustomer);
+                                            trueCustomers.add(trueCustomer);
+                                        }
+                                        customer_1.setTrueCustomer(trueCustomer);
+
+                                        break ;
+                                    }
+
+                                case 3:
+                                    synchronized (customers ) {
+                                        customer_1.setName(valueStr);
+                                        //customer_1.setCode(code);
+                                        Customer     customer = checkCodeOrName(customers,customer_1.getCode(),customer_1.getName());
                                         if (customer == null) {
-                                            customer_1.setName(valueStr);
                                             if (!cn.dovahkiin.commons.utils.StringUtils.hasText(customer_1.getCode())) customer_1.CreateCode();
                                             customerService.insert(customer_1);
                                             customers.add(customer_1);
                                             customer = customer_1;
-
+                                        }
+                                        else if( !customer_1.getName().equals(customer.getName()) || ( StringUtils.hasText(customer_1.getCode()) && !customer.getCode().equals(customer_1.getCode()) ) ) {
+                                            StringBuffer stringBuffer = new StringBuffer("第");
+                                            stringBuffer.append(i+1).append(" 行，编码：")
+                                                    .append(customer_1.getCode()).append("对应的素材名：").append(customer_1.getName()).append(",与数据库中的素材名称：")
+                                                    .append(customer.getName()).append("编码：").append(customer.getCode()).append("不一致");
+                                            throw new  RuntimeException(stringBuffer.toString() );
                                         }
 
+                                        videoCost.setCustomer(customer);
+                                        break;
                                     }
-                                    synchronized (trueCustomers){
-                                        if(customer!=null && customer.getTrueCustomer()==null){
-                                            TrueCustomer trueCustomer=checkTrueCustomer(trueCustomers,valueStr);
-                                            if(trueCustomer==null ){
-                                                trueCustomer = new TrueCustomer(TrueCustomer.guessName(valueStr),new Date(),new Date(),0);
-                                                trueCustomer.CreateCode();
-                                                trueCustomerService.insert(trueCustomer);
-                                            }
-                                            customer_1.setId(customer.getId());
-                                            customer_1.setTrueCustomer(trueCustomer);
-                                            customer.setTrueCustomer(trueCustomer);
-                                            trueCustomers.add(trueCustomer);
-                                        }
-                                    }
-                                    videoCost.setCustomer(customer);
-                                    break;
                                 case 4:
                                     synchronized (industries) {
                                         Industry industry = checkName(industries, valueStr);
@@ -360,39 +356,42 @@ public class VideoCostServiceImpl implements IVideoCostService {
                                         customer_1.setPerformer2(performer);
                                         break;
                                     }
+//                                case 14:
+//                                    synchronized (performers) {
+//                                        Performer performer = checkName(performers, valueStr);
+//                                        if (performer == null) {
+//                                            performer = new Performer(valueStr, null, new Date(), 0);
+//                                            performer.CreateCode();
+//                                            performerService.insert(performer);
+//                                            performers.add(performer);
+//                                        }
+////                                            videoCost.setPerformer3(performer);
+//                                        customer_1.setPerformer3(performer);
+//                                        break;
+//                                    }
                                 case 14:
-                                    synchronized (performers) {
-                                        Performer performer = checkName(performers, valueStr);
-                                        if (performer == null) {
-                                            performer = new Performer(valueStr, null, new Date(), 0);
-                                            performer.CreateCode();
-                                            performerService.insert(performer);
-                                            performers.add(performer);
-                                        }
-//                                            videoCost.setPerformer3(performer);
-                                        customer_1.setPerformer3(performer);
-                                        break;
-                                    }
-                                case 15:
                                     if (cn.dovahkiin.commons.utils.StringUtils.isNumber(valueStr))
                                         videoCost.setConsumption(Double.parseDouble(valueStr));
                                     break;
-//                                case 15:
-//                                    if(cn.dovahkiin.commons.utils.StringUtils.isNumber(valueStr)) videoCost.setCumulativeConsumption(Double.parseDouble(valueStr) );
-//                                    break ;
-//                                case 16:
-//                                    if(cn.dovahkiin.commons.utils.StringUtils.isInteger(valueStr)) videoCost.setCumulativeConsumptionRanking(Integer.parseInt(valueStr) );
-//                                    break ;
                             }
                         }
                     }
-                    // customerService.updateByPrimaryKey(customer_1);
                 }
                 if (customer_1.getId() != null) {
                     customer_1.setUpdateTime(new Date());
-                    if (StringUtils.hasText(code)) customer_1.setCode(code);
-
+                    if(StringUtils.hasText(customer_1.getCode())){
+                        Customer customer = customerService.selectByCode(customer_1.getCode());
+                        if(customer!=null && (!customer.getId().equals(customer_1.getId()) || !customer_1.getName().equals(customer.getName()) ) ){
+                            StringBuffer stringBuffer = new StringBuffer("第");
+                            stringBuffer.append(i+1).append(" 行，编码：")
+                                    .append(customer_1.getCode()).append("对应的素材名：").append(customer_1.getName()).append(",与数据库中的素材名称：")
+                                    .append(customer.getName()).append("编码：").append(customer.getCode()).append("不一致");
+                            throw new  RuntimeException(stringBuffer.toString() );
+                        }
+                    }
                     customerService.updateByPrimaryKeySelective(customer_1);
+
+
                 }
                 if (videoCost.getCustomer() != null) videoCosts.add(videoCost);
             }
@@ -439,33 +438,28 @@ public class VideoCostServiceImpl implements IVideoCostService {
         }
         Row ttile_row = sheet.createRow(2);
 
-        CellStyle style_title2 = sheet.getWorkbook().createCellStyle();
-        style_title2.setBorderBottom(BorderStyle.THIN);
-        style_title2.setBorderLeft(BorderStyle.THIN);
-        style_title2.setBorderRight(BorderStyle.THIN);
-        style_title2.setBorderTop(BorderStyle.THIN);
-        style_title2.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
-        style_title2.setFillPattern(SOLID_FOREGROUND);
-
         CellStyle border_title = sheet.getWorkbook().createCellStyle();
         border_title.setBorderBottom(BorderStyle.THIN);
         border_title.setBorderLeft(BorderStyle.THIN);
         border_title.setBorderRight(BorderStyle.THIN);
         border_title.setBorderTop(BorderStyle.THIN);
-        border_title.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.index);
-        border_title.setFillPattern(SOLID_FOREGROUND);
+        Font font_title2 = sheet.getWorkbook().createFont();
+        font_title2.setBold(Boolean.TRUE);
+//        font_title2.setFontHeight((short) 480);
+        font_title2.setFontName("楷体");
+        border_title.setFont(font_title2);
 
         Cell cell_2_0 = ttile_row.createCell(0);
-        cell_2_0.setCellValue("业务部");
-        cell_2_0.setCellStyle(style_title2);
+        cell_2_0.setCellValue("累计排名");
+        cell_2_0.setCellStyle(border_title);
         Cell cell_2_1 = ttile_row.createCell(1);
-        cell_2_1.setCellValue("产品类型");
-        cell_2_1.setCellStyle(style_title2);
+        cell_2_1.setCellValue("编号");
+        cell_2_1.setCellStyle(border_title);
         Cell cell_2_2 = ttile_row.createCell(2);
-        cell_2_2.setCellValue("客户编码");
-        cell_2_2.setCellStyle(style_title2);
+        cell_2_2.setCellValue("客户名");
+        cell_2_2.setCellStyle(border_title);
         Cell cell_2_3 = ttile_row.createCell(3);
-        cell_2_3.setCellValue("客户名");
+        cell_2_3.setCellValue("素材名");
         cell_2_3.setCellStyle(border_title);
         Cell cell_2_4 = ttile_row.createCell(4);
         cell_2_4.setCellValue("行业");
@@ -484,41 +478,42 @@ public class VideoCostServiceImpl implements IVideoCostService {
         cell_2_8.setCellStyle(border_title);
         Cell cell_2_9 = ttile_row.createCell(9);
         cell_2_9.setCellValue("创意");
-        cell_2_9.setCellStyle(style_title2);
+        cell_2_9.setCellStyle(border_title);
         Cell cell_2_10 = ttile_row.createCell(10);
         cell_2_10.setCellValue("摄像");
-        cell_2_10.setCellStyle(style_title2);
+        cell_2_10.setCellStyle(border_title);
         Cell cell_2_11 = ttile_row.createCell(11);
         cell_2_11.setCellValue("剪辑");
-        cell_2_11.setCellStyle(style_title2);
+        cell_2_11.setCellStyle(border_title);
         Cell cell_2_12 = ttile_row.createCell(12);
-        cell_2_12.setCellValue("演员1");
-        cell_2_12.setCellStyle(style_title2);
+        cell_2_12.setCellValue("演员");
+        cell_2_12.setCellStyle(border_title);
         Cell cell_2_13 = ttile_row.createCell(13);
-        cell_2_13.setCellValue("演员2");
-        cell_2_13.setCellStyle(style_title2);
-        Cell cell_2_14 = ttile_row.createCell(14);
-        cell_2_14.setCellValue("演员3");
-        cell_2_14.setCellStyle(style_title2);
-        Cell cell_2_15 = ttile_row.createCell(15);
+        cell_2_13.setCellValue("");
+        cell_2_13.setCellStyle(border_title);
+//        Cell cell_2_14 = ttile_row.createCell(14);
+//        cell_2_14.setCellValue("演员3");
+//        cell_2_14.setCellStyle(border_title);
+        Cell cell_2_15 = ttile_row.createCell(14);
         cell_2_15.setCellValue("当日消耗");
-        cell_2_15.setCellStyle(style_title2);
-        Cell cell_2_16 = ttile_row.createCell(16);
+        cell_2_15.setCellStyle(border_title);
+        Cell cell_2_16 = ttile_row.createCell(15);
         cell_2_16.setCellValue("累计消耗");
-        cell_2_16.setCellStyle(style_title2);
-        Cell cell_2_17 = ttile_row.createCell(17);
-        cell_2_17.setCellValue("累计排名");
-        cell_2_17.setCellStyle(style_title2);
-        Cell cell_2_18 = ttile_row.createCell(18);
+        cell_2_16.setCellStyle(border_title);
+//        Cell cell_2_17 = ttile_row.createCell(17);
+//        cell_2_17.setCellValue("累计排名");
+//        cell_2_17.setCellStyle(border_title);
+        Cell cell_2_18 = ttile_row.createCell(16);
         cell_2_18.setCellValue("消耗日期");
-        cell_2_18.setCellStyle(style_title2);
+        cell_2_18.setCellStyle(border_title);
         List<VideoCost> videoCosts = videoCostMapper.selectWithCount(map);
         if (videoCosts != null) {
             sheet.setColumnWidth(2, 4000);
             sheet.setColumnWidth(8, 4000);
+            sheet.setColumnWidth(14, 4000);
             sheet.setColumnWidth(15, 4000);
             sheet.setColumnWidth(16, 4000);
-            sheet.setColumnWidth(18, 4000);
+
 
             CellStyle cellStyle_date = sheet.getWorkbook().createCellStyle();
             DataFormat format = sheet.getWorkbook().createDataFormat();
@@ -535,6 +530,25 @@ public class VideoCostServiceImpl implements IVideoCostService {
             cellStyle_money.setBorderRight(BorderStyle.THIN);
             cellStyle_money.setBorderTop(BorderStyle.THIN);
 
+            CellStyle cellStyle_txt = sheet.getWorkbook().createCellStyle();
+            //  DataFormat money_format= sheet.getWorkbook().createDataFormat();
+            cellStyle_txt.setDataFormat(format.getFormat("0"));
+            cellStyle_txt.setBorderBottom(BorderStyle.THIN);
+            cellStyle_txt.setBorderLeft(BorderStyle.THIN);
+            cellStyle_txt.setBorderRight(BorderStyle.THIN);
+            cellStyle_txt.setBorderTop(BorderStyle.THIN);
+
+            CellStyle border_red = sheet.getWorkbook().createCellStyle();
+            border_red.setBorderBottom(BorderStyle.THIN);
+            border_red.setBorderLeft(BorderStyle.THIN);
+            border_red.setBorderRight(BorderStyle.THIN);
+            border_red.setBorderTop(BorderStyle.THIN);
+            Font font_red = sheet.getWorkbook().createFont();
+            font_red.setBold(Boolean.TRUE);
+            font_red.setFontName("楷体");
+            font_red.setColor(IndexedColors.RED.index);
+            border_red.setFont(font_red);
+
             CellStyle border = sheet.getWorkbook().createCellStyle();
             border.setBorderBottom(BorderStyle.THIN);
             border.setBorderLeft(BorderStyle.THIN);
@@ -548,7 +562,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
                 Cell cell_i_0 = data_row.createCell(0);
                 cell_i_0.setCellStyle(border);
                 Cell cell_i_1 = data_row.createCell(1);
-                cell_i_1.setCellStyle(border);
+                cell_i_1.setCellStyle(cellStyle_txt);
                 Cell cell_i_2 = data_row.createCell(2);
                 cell_i_2.setCellStyle(border);
                 Cell cell_i_3 = data_row.createCell(3);
@@ -574,49 +588,35 @@ public class VideoCostServiceImpl implements IVideoCostService {
                 Cell cell_i_13 = data_row.createCell(13);
                 cell_i_13.setCellStyle(border);
                 Cell cell_i_14 = data_row.createCell(14);
-                cell_i_14.setCellStyle(border);
+                cell_i_14.setCellStyle(cellStyle_money);
                 Cell cell_i_15 = data_row.createCell(15);
                 cell_i_15.setCellStyle(cellStyle_money);
                 Cell cell_i_16 = data_row.createCell(16);
-                cell_i_16.setCellStyle(cellStyle_money);
-                Cell cell_i_17 = data_row.createCell(17);
-                ;
-                cell_i_17.setCellStyle(border);
-                Cell cell_i_18 = data_row.createCell(18);
-                cell_i_18.setCellStyle(cellStyle_date);
+                cell_i_16.setCellStyle(cellStyle_date);
+//                Cell cell_i_17 = data_row.createCell(17);
+//                cell_i_17.setCellStyle(border);
+//                Cell cell_i_18 = data_row.createCell(18);
+//                cell_i_18.setCellStyle(cellStyle_date);
 
-                if (videoCost.getBusinessDepartment() != null)
-                    cell_i_0.setCellValue(videoCost.getBusinessDepartment().getName());
-                if (videoCost.getCustomer() != null && videoCost.getCustomer().getProductType() != null)
-                    cell_i_1.setCellValue(videoCost.getCustomer().getProductType().getName());
-                if (videoCost.getCustomer() != null) cell_i_2.setCellValue(videoCost.getCustomer().getCode());
-                if (videoCost.getCustomer() != null) cell_i_3.setCellValue(videoCost.getCustomer().getName());
-                if (videoCost.getCustomer() != null && videoCost.getCustomer().getIndustry() != null)
-                    cell_i_4.setCellValue(videoCost.getCustomer().getIndustry().getName());
+                if (videoCost.getCumulativeConsumptionRankingByProglam() != null) cell_i_0.setCellValue(videoCost.getCumulativeConsumptionRankingByProglam());
+                if (videoCost.getCustomer() != null && videoCost.getCustomer().getCode() != null) cell_i_1.setCellValue(videoCost.getCustomer().getCode());
+                if (videoCost.getCustomer() != null && videoCost.getCustomer().getTrueCustomer()!=null  ) cell_i_2.setCellValue(videoCost.getCustomer().getTrueCustomer().getName());
+                if (videoCost.getCustomer() != null  ) cell_i_3.setCellValue(videoCost.getCustomer().getName());
+                if (videoCost.getCustomer() != null && videoCost.getCustomer().getIndustry() != null) cell_i_4.setCellValue(videoCost.getCustomer().getIndustry().getName());
                 if (videoCost.getDemandSector() != null) cell_i_5.setCellValue(videoCost.getDemandSector().getName());
                 if (videoCost.getOptimizer() != null) cell_i_6.setCellValue(videoCost.getOptimizer().getName());
-                if (videoCost.getCustomer() != null && videoCost.getCustomer().getVideoType() != null)
-                    cell_i_7.setCellValue(videoCost.getCustomer().getVideoType().getName());
-                if (videoCost.getCustomer() != null && videoCost.getCustomer().getCompleteDate() != null)
-                    cell_i_8.setCellValue(videoCost.getCustomer().getCompleteDate());
-                if (videoCost.getCustomer() != null && videoCost.getCustomer().getOriginality() != null)
-                    cell_i_9.setCellValue(videoCost.getCustomer().getOriginality().getName());
-                if (videoCost.getCustomer() != null && videoCost.getCustomer().getPhotographer() != null)
-                    cell_i_10.setCellValue(videoCost.getCustomer().getPhotographer().getName());
-                if (videoCost.getCustomer() != null && videoCost.getCustomer().getEditor() != null)
-                    cell_i_11.setCellValue(videoCost.getCustomer().getEditor().getName());
-                if (videoCost.getCustomer() != null && videoCost.getCustomer().getPerformer1() != null)
-                    cell_i_12.setCellValue(videoCost.getCustomer().getPerformer1().getName());
-                if (videoCost.getCustomer() != null && videoCost.getCustomer().getPerformer2() != null)
-                    cell_i_13.setCellValue(videoCost.getCustomer().getPerformer2().getName());
-                if (videoCost.getCustomer() != null && videoCost.getCustomer().getPerformer3() != null)
-                    cell_i_14.setCellValue(videoCost.getCustomer().getPerformer3().getName());
-                if (videoCost.getConsumption() != null) cell_i_15.setCellValue(videoCost.getConsumption());
-                if (videoCost.getCumulativeConsumptionByPro() != null)
-                    cell_i_16.setCellValue(videoCost.getCumulativeConsumptionByPro());
-                if (videoCost.getCumulativeConsumptionRankingByProglam() != null)
-                    cell_i_17.setCellValue(videoCost.getCumulativeConsumptionRankingByProglam());
-                if (videoCost.getRecoredDate() != null) cell_i_18.setCellValue(videoCost.getRecoredDate());
+                if (videoCost.getCustomer() != null && videoCost.getCustomer().getVideoType() != null) cell_i_7.setCellValue(videoCost.getCustomer().getVideoType().getName());
+                if (videoCost.getCustomer() != null && videoCost.getCustomer().getCompleteDate() != null) cell_i_8.setCellValue(videoCost.getCustomer().getCompleteDate());
+                if (videoCost.getCustomer() != null && videoCost.getCustomer().getOriginality() != null) cell_i_9.setCellValue(videoCost.getCustomer().getOriginality().getName());
+                if (videoCost.getCustomer() != null && videoCost.getCustomer().getPhotographer() != null) cell_i_10.setCellValue(videoCost.getCustomer().getPhotographer().getName());
+                if (videoCost.getCustomer() != null && videoCost.getCustomer().getEditor() != null) cell_i_11.setCellValue(videoCost.getCustomer().getEditor().getName());
+                if (videoCost.getCustomer() != null && videoCost.getCustomer().getPerformer1() != null) cell_i_12.setCellValue(videoCost.getCustomer().getPerformer1().getName());
+                if (videoCost.getCustomer() != null && videoCost.getCustomer().getPerformer2() != null) cell_i_13.setCellValue(videoCost.getCustomer().getPerformer2().getName());
+//                if (videoCost.getCustomer() != null && videoCost.getCustomer().getPerformer3() != null) cell_i_14.setCellValue(videoCost.getCustomer().getPerformer3().getName());
+                if (videoCost.getConsumption() != null) cell_i_14.setCellValue(videoCost.getConsumption());
+                if (videoCost.getCumulativeConsumptionByPro() != null) cell_i_15.setCellValue(videoCost.getCumulativeConsumptionByPro());
+//                if (videoCost.getCumulativeConsumptionRankingByProglam() != null) cell_i_17.setCellValue(videoCost.getCumulativeConsumptionRankingByProglam());
+                if (videoCost.getRecoredDate() != null) cell_i_16.setCellValue(videoCost.getRecoredDate());
 
             }
         }
@@ -687,27 +687,38 @@ public class VideoCostServiceImpl implements IVideoCostService {
     }
 
     private Object getCellValue(Cell cell) {
+        if(cell==null)return null;
         CellType cellType = cell.getCellTypeEnum();
+        cell.setCellType(CellType.STRING);
         Object value = null;
         switch (cellType) {
             case STRING:
                 value = cell.getStringCellValue();
                 break;
             case NUMERIC:
-                value = cell.getNumericCellValue();
+//                value = cell.getNumericCellValue();
+                value = cell.getStringCellValue();
                 break;
-            case BOOLEAN:
-                value = cell.getBooleanCellValue();
-                break;
-            case FORMULA:
-                value = cell.getNumericCellValue();
-                break;
+//            case BOOLEAN:
+//                value = cell.getBooleanCellValue();
+//                break;
+//            case FORMULA:
+//                value = cell.getNumericCellValue();
+//                break;
         }
         return value;
     }
 
+    private <T extends Model> T checkCodeOrName(List<T> models, String code,String name) {
+        T t = checkCode(models,code);
+        if (t==null)t=checkName(models,name);
+        return t;
+    }
     private <T extends Model> T checkName(List<T> models, String name) {
         return checkNameWithMethodName(models, name, "getName");
+    }
+    private <T extends Model> T checkCode(List<T> models, String name) {
+        return checkNameWithMethodName(models, name, "getCode");
     }
 
     private <T extends Model> T checkSimpleName(List<T> models, String name) {

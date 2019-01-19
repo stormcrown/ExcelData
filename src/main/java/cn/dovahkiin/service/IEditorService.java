@@ -1,6 +1,7 @@
 package cn.dovahkiin.service;
 
 import cn.dovahkiin.model.Editor;
+import cn.dovahkiin.model.TrueCustomer;
 import com.baomidou.mybatisplus.service.IService;
 
 /**
@@ -12,5 +13,6 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2018-11-03
  */
 public interface IEditorService extends IService<Editor> {
-	
+    @Override
+    boolean insert(Editor editor);
 }

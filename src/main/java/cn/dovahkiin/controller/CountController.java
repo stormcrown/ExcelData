@@ -2,12 +2,12 @@ package cn.dovahkiin.controller;
 
 import cn.dovahkiin.commons.base.BaseController;
 import cn.dovahkiin.commons.utils.DateTools;
+import cn.dovahkiin.model.VideoCost;
 import cn.dovahkiin.service.ICountService;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.aspectj.lang.annotation.AfterReturning;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,12 +30,12 @@ import java.util.Map;
 public class CountController extends BaseController {
     public static final Log logger = LogFactory.getLog(CountController.class);
     @Autowired private ICountService countService;
-    @GetMapping("/manager")
-    @RequiresPermissions("/count/manager")
+    @GetMapping("/bar")
+    @RequiresPermissions("/count/bar")
     public String manager() {
-        return "/count/manager";
+        return "count/bar";
     }
-    private Map handleCondition(String recoredDateRange ,Integer type){
+    private Map handleCondition(String recoredDateRange ,Integer type, VideoCost videoCost){
         Map map = new HashMap();
         if(recoredDateRange!=null && recoredDateRange.indexOf("~")>0){
             String[] da = recoredDateRange.split("~");
@@ -58,14 +58,15 @@ public class CountController extends BaseController {
 //            map.put("recoredDates",DateTools.getBetweenDates(DateTools.firstDay(),DateTools.lastDate()));
         }
         map.put("type",type==null?0:type);
+        map.put("videoCost",videoCost);
 
         return map;
     }
-    @PostMapping("/count1")
-    @RequiresPermissions("/count/manager")
+    @PostMapping("/bar")
+    @RequiresPermissions("/count/bar")
     @ResponseBody
-    public Object count1(String recoredDateRange,Integer type ) {
-        Map map = handleCondition(recoredDateRange,type);
+    public Object count1(String recoredDateRange, Integer type , VideoCost videoCost) {
+        Map map = handleCondition(recoredDateRange,type,videoCost);
         return JSON.toJSON(countService.count1(map));
     }
 

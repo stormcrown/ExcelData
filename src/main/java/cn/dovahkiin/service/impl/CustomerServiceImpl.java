@@ -10,6 +10,9 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
 import java.util.*;
@@ -53,6 +56,12 @@ public class CustomerServiceImpl implements ICustomerService {
         map.put("customer",customer);
         return customerMapper.selectList(map);
     }
+
+    @Override
+    public Customer selectByCode(String code) {
+        return customerMapper.selectByCode(code);
+    }
+
     @Override
     public List<Customer> selectForCombobox() {
         Customer customer = new Customer();
@@ -103,6 +112,7 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
     @Override
+    @Transactional(propagation=Propagation.REQUIRES_NEW)
     public int insert(Customer record) {
         return customerMapper.insert(record);
     }
@@ -123,28 +133,26 @@ public class CustomerServiceImpl implements ICustomerService {
         return  set.toArray(n_ids);
     }
 
-    @Override
-    public Model modelForEdit(Model model) {
-        EntityWrapper un_delete = new EntityWrapper();
-        un_delete.eq("delete_flag",0);
-//        List<Customer> customers = customerService.selectUnDeleted();
-//        model.addAttribute("customers",customers);
-        List<Editor> editors = editorService.selectList(un_delete);
-        model.addAttribute("editors",JsonUtils.toJson(editors));
-        List<Industry> industries = iIndustryService.selectList(un_delete);
-        model.addAttribute("industries",JsonUtils.toJson(industries));
-        List<Originality> originalities = iOriginalityService.selectList(un_delete);
-        model.addAttribute("originalities",JsonUtils.toJson(originalities));
-        List<Performer> performers = performerService.selectList(un_delete);
-        model.addAttribute("performers",JsonUtils.toJson(performers));
-        List<Photographer> photographers = iPhotographerService.selectList(un_delete);
-        model.addAttribute("photographers",JsonUtils.toJson(photographers));
-        List<ProductType> productTypes = iProductTypeService.selectList(un_delete);
-        model.addAttribute("productTypes",JsonUtils.toJson(productTypes));
-        List<VideoType> videoTypes = videoTypeService.selectList(un_delete);
-        model.addAttribute("videoTypes",JsonUtils.toJson(videoTypes));
-        List<TrueCustomer> trueCustomers = trueCustomerService.selectList(un_delete);
-        model.addAttribute("trueCustomers",JsonUtils.toJson(trueCustomers));
-        return model;
-    }
+//    @Override
+//    public Model modelForEdit(Model model) {
+//        EntityWrapper un_delete = new EntityWrapper();
+//        un_delete.eq("delete_flag",0);
+//        List<Editor> editors = editorService.selectList(un_delete);
+//        model.addAttribute("editors",JsonUtils.toJson(editors));
+//        List<Industry> industries = iIndustryService.selectList(un_delete);
+//        model.addAttribute("industries",JsonUtils.toJson(industries));
+//        List<Originality> originalities = iOriginalityService.selectList(un_delete);
+//        model.addAttribute("originalities",JsonUtils.toJson(originalities));
+//        List<Performer> performers = performerService.selectList(un_delete);
+//        model.addAttribute("performers",JsonUtils.toJson(performers));
+//        List<Photographer> photographers = iPhotographerService.selectList(un_delete);
+//        model.addAttribute("photographers",JsonUtils.toJson(photographers));
+//        List<ProductType> productTypes = iProductTypeService.selectList(un_delete);
+//        model.addAttribute("productTypes",JsonUtils.toJson(productTypes));
+//        List<VideoType> videoTypes = videoTypeService.selectList(un_delete);
+//        model.addAttribute("videoTypes",JsonUtils.toJson(videoTypes));
+//        List<TrueCustomer> trueCustomers = trueCustomerService.selectList(un_delete);
+//        model.addAttribute("trueCustomers",JsonUtils.toJson(trueCustomers));
+//        return model;
+//    }
 }

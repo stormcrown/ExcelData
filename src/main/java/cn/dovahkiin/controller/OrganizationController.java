@@ -110,7 +110,7 @@ public class OrganizationController extends BaseController {
      * @param organization
      * @return
      */
-    @RequestMapping("/edit")
+    @PostMapping("/edit")
     @ResponseBody
     @RequiresPermissions("/organization/edit")
     public Object edit(@Valid Organization organization) {

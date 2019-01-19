@@ -12,5 +12,6 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2018-11-29
  */
 public interface ITrueCustomerService extends IService<TrueCustomer> {
-	
+    @Override
+    boolean insert(TrueCustomer trueCustomer);
 }

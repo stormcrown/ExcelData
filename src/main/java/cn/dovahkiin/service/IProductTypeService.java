@@ -12,5 +12,6 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2018-11-04
  */
 public interface IProductTypeService extends IService<ProductType> {
-	
+    @Override
+    boolean insert(ProductType productType);
 }

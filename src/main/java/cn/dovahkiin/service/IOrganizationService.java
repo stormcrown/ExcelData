@@ -2,6 +2,7 @@ package cn.dovahkiin.service;
 
 import java.util.List;
 
+import cn.dovahkiin.model.Optimizer;
 import com.baomidou.mybatisplus.service.IService;
 import cn.dovahkiin.commons.result.Tree;
 import cn.dovahkiin.model.Organization;
@@ -12,7 +13,8 @@ import cn.dovahkiin.model.Organization;
  *
  */
 public interface IOrganizationService extends IService<Organization> {
-
+    @Override
+    boolean insert(Organization organization);
     List<Tree> selectTree();
 
     List<Organization> selectTreeGrid();

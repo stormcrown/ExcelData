@@ -12,5 +12,6 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2018-11-04
  */
 public interface IIndustryService extends IService<Industry> {
-	
+    @Override
+    boolean insert(Industry industry);
 }

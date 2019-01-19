@@ -94,7 +94,7 @@ public class CustomerController extends BaseController {
     }
     @PostMapping("/combobox")
     @ResponseBody
-    @RequiresPermissions(value = {"/videoCost/dataGrid","/customer/dataGrid" },logical = Logical.OR)
+    @RequiresPermissions(value = {"/videoCost/dataGrid","/customer/*","/count/bar" },logical = Logical.OR)
     public Object dataGrid() {
         return JSON.toJSON(customerService.selectForCombobox());
     }
@@ -106,7 +106,7 @@ public class CustomerController extends BaseController {
     @RequiresPermissions("/customer/add")
     public String addPage(Model model,Long id) {
         model.addAttribute("method", "add");
-        customerService.modelForEdit(model);
+//        customerService.modelForEdit(model);
         if(id!=null){
             Customer customer = customerService.selectByPrimaryKey(id);
             if(customer!=null){
@@ -196,7 +196,7 @@ public Object rollback(String ids) {
         Customer customer = customerService.selectByPrimaryKey(id);
         model.addAttribute("customer", customer);
         model.addAttribute("method", "edit");
-        customerService.modelForEdit(model);
+//        customerService.modelForEdit(model);
         return "customer/customerEdit";
     }
     

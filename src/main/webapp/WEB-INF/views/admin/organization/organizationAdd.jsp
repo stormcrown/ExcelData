@@ -2,11 +2,11 @@
 <%@ include file="/commons/global.jsp" %>
 <script type="text/javascript">
     $(function() {
-        $('#organizationAddPid').combotree({
-            url : '${path }/organization/tree',
-            parentField : 'pid',
-            panelHeight : 300
-        });
+        <%--$('#organizationAddPid').combotree({--%>
+            <%--url : '${path }/organization/tree',--%>
+            // parentField : 'pid',
+            // panelHeight : 300
+        <%--});--%>
         
         $('#organizationAddForm').form({
             url : '${path }/organization/add',
@@ -58,7 +58,8 @@
             </tr>
             <tr>
                 <td>上级部门</td>
-                <td colspan="3"><select id="organizationAddPid" name="pid" style="width:200px;height: 29px;"></select>
+                <td colspan="3">
+                    <select id="organizationAddPid" name="pid" class="easyui-combotree" style="width:200px;height: 29px;" data-options="url : '${path }/organization/tree',parentField : 'pid', panelHeight : 300" ></select>
                 <a class="easyui-linkbutton" href="javascript:void(0)" onclick="$('#pid').combotree('clear');" >清空</a></td>
             </tr>
         </table>

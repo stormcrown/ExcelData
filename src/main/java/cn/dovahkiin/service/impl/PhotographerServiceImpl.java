@@ -1,10 +1,13 @@
 package cn.dovahkiin.service.impl;
 
+import cn.dovahkiin.model.Editor;
 import cn.dovahkiin.model.Photographer;
 import cn.dovahkiin.mapper.PhotographerMapper;
 import cn.dovahkiin.service.IPhotographerService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p>
@@ -16,5 +19,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class PhotographerServiceImpl extends ServiceImpl<PhotographerMapper, Photographer> implements IPhotographerService {
-	
+    @Override
+    @Transactional(propagation=Propagation.REQUIRES_NEW)
+    public boolean insert(Photographer photographer){
+        return super.insert(photographer);
+    }
 }

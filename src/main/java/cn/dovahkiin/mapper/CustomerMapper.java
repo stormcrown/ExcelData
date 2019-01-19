@@ -18,7 +18,7 @@ public interface CustomerMapper  {
     int deleteByPrimaryKey(Long id);
     int insert(Customer record);
     int insertSelective(Customer record);
-
+    Customer selectByCode(String code);
     List<Customer> selectList(Map map);
     List<Customer> selectSimpleList(Map map);
     int selectTotal(Map map);

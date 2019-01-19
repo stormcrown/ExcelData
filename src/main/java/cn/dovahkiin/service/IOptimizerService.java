@@ -12,5 +12,6 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2018-11-03
  */
 public interface IOptimizerService extends IService<Optimizer> {
-	
+    @Override
+    boolean insert(Optimizer optimizer);
 }

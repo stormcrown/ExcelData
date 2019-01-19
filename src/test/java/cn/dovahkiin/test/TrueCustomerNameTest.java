@@ -30,7 +30,7 @@ public class TrueCustomerNameTest {
 
         };
         for (String str : names) {
-            logger.info("素材名：" + str + "\t客户名：" + TrueCustomer.guessName(str));
+          //  logger.info("素材名：" + str + "\t客户名：" + TrueCustomer.guessName(str));
         }
 
 

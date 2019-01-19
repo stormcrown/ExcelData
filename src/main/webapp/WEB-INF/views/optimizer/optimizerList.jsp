@@ -12,7 +12,7 @@
         idField : 'id',
         sortName : 'createTime',
         sortOrder : 'desc',
-        pageSize : 20,
+        pageSize : 100,
         queryParams :{
             deleteFlag:0
         },

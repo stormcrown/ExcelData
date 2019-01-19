@@ -12,5 +12,6 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2018-11-04
  */
 public interface IVideoTypeService extends IService<VideoType> {
-	
+    @Override
+    boolean insert(VideoType videoType);
 }

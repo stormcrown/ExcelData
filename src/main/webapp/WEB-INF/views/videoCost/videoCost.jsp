@@ -15,7 +15,6 @@
             success: function (result) {
                 progressClose();
                 result = $.parseJSON(result);
-                console.log(result);
                 if (result.success) {
                     //之所以能在这里调用到parent.$.modalDialog.openner_dataGrid这个对象，是因为user.jsp页面预定义好了
                     parent.$.modalDialog.openner_dataGrid.datagrid('reload');
@@ -41,7 +40,6 @@
             opt.formatter = function (row) {
                 if (row.simpleNames != null) return row.name + "_" + row.simpleNames; else return row.name
             }
-            $('#businessDepartment').combobox(opt);
             $("#demandSector").combobox(opt);
             opt.data = optimizers;
             $('#optimizer').combobox(opt);
@@ -113,36 +111,33 @@
                                        data-options="prefix:'￥',groupSeparator:',', min:0,precision:2,required:false,width:200">
                             </td>
                             <td>消耗日期</td>
-                            <td><input id="recoredDate" name="recoredDate"  type="text"
-                                       class="easyui-datebox"/></td>
+                            <td><input id="recoredDate" name="recoredDate"  type="text" class="easyui-datebox"/></td>
                         </tr>
                         <tr>
                             <td>需求部门</td>
                             <td>
-                                <select id="demandSector" name="demandSector.id" class="easyui-combobox"
-                                        data-options="value:'${videoCost.demandSector.id}'">
-                                </select>
+                               <select id="demandSector" name="demandSector.id" class="easyui-combobox" data-options="value:'${videoCost.demandSector.id}'"></select>
+                                    <%--<select name="demandSector.id"  class="easyui-combotree" data-options="value:'${videoCost.demandSector.id}',url : '${path }/organization/tree',parentField : 'pid',panelHeight : 300,editable:true,width:200" ></select>--%>
                             </td>
                             <td>优化师</td>
                             <td>
-                                <select id="optimizer" name="optimizer.id" class="easyui-combobox"
-                                        data-options="value:'${videoCost.optimizer.id}'">
+                                <select id="optimizer" name="optimizer.id" class="easyui-combobox" data-options="value:'${videoCost.optimizer.id}'">
                                 </select>
+                                <%--<input name="optimizer.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/optimizer/combobox',value:'${videoCost.optimizer.id}'" />--%>
                             </td>
                         </tr>
                         <tr>
                             <td id="tips_videoCost" colspan="4" ></td>
                         </tr>
-
                         <tr>
                             <td  colspan="4" style="color: #00bbee;font-size: 24px" >常量</td>
                         </tr>
                         <tr>
                             <td>素材</td>
                             <td>
-                                <select id="customer" name="customer.id" class="easyui-combobox"
-                                        data-options="value:'${videoCost.customer.id}'">
+                                <select id="customer" name="customer.id" class="easyui-combobox" data-options="value:'${videoCost.customer.id}'">
                                 </select>
+                                <%--<input name="customer.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/customer/combobox',value:'${videoCost.customer.id}'" />--%>
                             </td>
                             <td>客户</td>
                             <td id="trueCustomerTD" >
@@ -184,7 +179,7 @@
                         </tr>
                         <tr>
                             <td>演员3</td>
-                            <td id="performer3TD" >${videoCost.customer.performer3.name}
+                                <td id="performer3TD" >${videoCost.customer.performer3.name}
                             </td>
                             <td>剪辑</td>
                             <td id="editorTD" >${videoCost.customer.editor.name}

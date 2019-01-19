@@ -60,7 +60,7 @@ public class OriginalityController extends BaseController {
     }
     @PostMapping("/combobox")
     @ResponseBody
-    @RequiresPermissions(value = {"/videoCost/dataGrid","/customer/dataGrid" },logical = Logical.OR)
+    @RequiresPermissions(value = {"/videoCost/dataGrid","/customer/*","/count/bar" },logical = Logical.OR)
     public Object dataGrid() {
         EntityWrapper ew = new EntityWrapper();
         ew.eq("delete_flag", 0 );

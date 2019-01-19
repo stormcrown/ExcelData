@@ -25,34 +25,32 @@ public class TrueCustomer extends Model<TrueCustomer> {
 
     private static final long serialVersionUID = 1L;
 
-    public static String guessName(String customerName) {
-        if (StringUtils.hasText(customerName)) {
-            if (customerName.contains("-")) customerName = customerName.substring(0, customerName.indexOf("-"));
-            if (customerName.contains("（")) customerName = customerName.substring(0, customerName.indexOf("（"));
-            if (customerName.contains("(")) customerName = customerName.substring(0, customerName.indexOf("("));
-            int strLen = customerName.length();
-            int limitLen=2;
-            if(StringUtils.isInteger(customerName.trim()))limitLen=3;
-
-            boolean end = false;
-            StringBuffer str = new StringBuffer(customerName);
-            for (int i = strLen - 1; i > -1; i--) {
-                char ar = str.charAt(i);
-                if (
-                        (
-                                Character.isDigit(ar)
-                                || Character.compare(' ', ar) == 0
-                        )
-                                && str.length() > limitLen
-                    ) {
-                    str.deleteCharAt(i);
-                }else break;
-            }
-//            if(str.length()>3 && str.toString().toUpperCase().endsWith("APP") )str.delete(str.length()-3,str.length());
-            return str.toString();
-        }
-        return customerName;
-    }
+//    public static String guessName(String customerName) {
+//        if (StringUtils.hasText(customerName)) {
+//            if (customerName.contains("-")) customerName = customerName.substring(0, customerName.indexOf("-"));
+//            if (customerName.contains("（")) customerName = customerName.substring(0, customerName.indexOf("（"));
+//            if (customerName.contains("(")) customerName = customerName.substring(0, customerName.indexOf("("));
+//            int strLen = customerName.length();
+//            int limitLen=2;
+//            if(StringUtils.isInteger(customerName.trim()))limitLen=3;
+//            StringBuffer str = new StringBuffer(customerName);
+//            for (int i = strLen - 1; i > -1; i--) {
+//                char ar = str.charAt(i);
+//                if (
+//                        (
+//                                Character.isDigit(ar)
+//                                || Character.compare(' ', ar) == 0
+//                        )
+//                                && str.length() > limitLen
+//                    ) {
+//                    str.deleteCharAt(i);
+//                }else break;
+//            }
+////            if(str.length()>3 && str.toString().toUpperCase().endsWith("APP") )str.delete(str.length()-3,str.length());
+//            return str.toString();
+//        }
+//        return customerName;
+//    }
 
     public TrueCustomer() {
     }

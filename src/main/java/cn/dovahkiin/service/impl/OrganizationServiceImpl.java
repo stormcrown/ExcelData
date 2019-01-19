@@ -3,6 +3,7 @@ package cn.dovahkiin.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.dovahkiin.model.Editor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,8 @@ import cn.dovahkiin.commons.result.Tree;
 import cn.dovahkiin.mapper.OrganizationMapper;
 import cn.dovahkiin.model.Organization;
 import cn.dovahkiin.service.IOrganizationService;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -23,7 +26,11 @@ public class OrganizationServiceImpl extends ServiceImpl<OrganizationMapper, Org
 
     @Autowired
     private OrganizationMapper organizationMapper;
-    
+    @Override
+    @Transactional(propagation=Propagation.REQUIRES_NEW)
+    public boolean insert(Organization organization){
+        return super.insert(organization);
+    }
     @Override
     public List<Tree> selectTree() {
         List<Organization> organizationList = selectTreeGrid();

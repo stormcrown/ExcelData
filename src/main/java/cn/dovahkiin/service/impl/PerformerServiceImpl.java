@@ -1,10 +1,13 @@
 package cn.dovahkiin.service.impl;
 
+import cn.dovahkiin.model.Editor;
 import cn.dovahkiin.model.Performer;
 import cn.dovahkiin.mapper.PerformerMapper;
 import cn.dovahkiin.service.IPerformerService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p>
@@ -16,5 +19,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class PerformerServiceImpl extends ServiceImpl<PerformerMapper, Performer> implements IPerformerService {
-	
+    @Override
+    @Transactional(propagation=Propagation.REQUIRES_NEW)
+    public boolean insert(Performer performer){
+        return super.insert(performer);
+    }
 }

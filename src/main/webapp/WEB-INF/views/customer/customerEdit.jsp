@@ -24,56 +24,6 @@
                 }
             }
         });
-
-        try {
-
-
-            var editors = ${editors};
-            var industries = ${industries};
-
-            var originalities = ${originalities};
-            var performers = ${performers};
-            var photographers = ${photographers};
-            var productTypes = ${productTypes};
-            var videoTypes = ${videoTypes};
-            var trueCustomers = ${trueCustomers};
-            var opt = {
-                valueField:'id',
-                textField:'name',
-                required:false,
-                width:200,
-            };
-
-
-            opt.data = trueCustomers;
-            $('#trueCustomer_cus').combobox(opt);
-            opt.data = productTypes;
-            $('#productType_cus').combobox(opt);
-            opt.data = industries;
-            $('#industry_cus').combobox(opt);
-            opt.data = videoTypes;
-            $('#videoType_cus').combobox(opt);
-            opt.data=originalities;
-            $('#originality_cus').combobox(opt);
-            opt.data = editors;
-            $('#editor_cus').combobox(opt);
-            opt.data = photographers;
-            $('#photographer_cus').combobox(opt);
-            opt.data=performers;
-            $('#performer1_cus').combobox(opt);
-            $('#performer2_cus').combobox(opt);
-            $('#performer3_cus').combobox(opt);
-            var opti ={
-                required:false,
-                width:200,
-            };
-            $('#completeDate_cus').datebox(opti)
-
-        }catch (e) {
-            console.log(e)
-        }
-
-
     });
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
@@ -89,68 +39,60 @@
                 </tr>
                 <tr>
                     <td>客户</td>
-                    <td colspan="3" >
-                        <select id="trueCustomer_cus" name="trueCustomer.id" class="easyui-combobox" data-options="value:'${customer.trueCustomer.id}'" >
-                        </select>
+                    <td  colspan="3" >
+                        <input name="trueCustomer.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/trueCustomer/combobox',value:'${customer.trueCustomer.id}'" />
                     </td>
+
                 </tr>
                 <tr>
                     <td>产品类型</td>
                     <td>
-                        <select id="productType_cus" name="productType.id" class="easyui-combobox" data-options="value:'${customer.productType.id}'" >
-                        </select>
+                        <input name="productType.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/productType/combobox',value:'${customer.productType.id}'" />
                     </td>
+
                     <td>行业</td>
                     <td>
-                        <selec  id="industry_cus" name="industry.id"class="easyui-combobox" data-options="value:'${customer.industry.id}'" >
-                        </selec>
+                        <input name="industry.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/industry/combobox',value:'${customer.industry.id}'" />
                     </td>
                 </tr>
                 <tr>
                     <td>视频类型</td>
                     <td>
-                        <select id="videoType_cus"  name="videoType.id"  class="easyui-combobox" data-options="value:'${customer.videoType.id}'" >
-                        </select>
+                        <input name="videoType.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/videoType/combobox',value:'${customer.videoType.id}'" />
                     </td>
                     <td>成片日期</td>
                     <td>
-                        <input  id="completeDate_cus" name="completeDate" value="${customer.completeDateStr}" type="text"  class="easyui-datebox" >
+                        <input  id="completeDate_cus" name="completeDate" value="${customer.completeDateStr}" type="text"  class="easyui-datebox" data-options="width:200" >
                     </td>
                 </tr>
                 <tr>
                     <td>创意</td>
                     <td>
-                        <select id="originality_cus"  name="originality.id"  class="easyui-combobox" data-options="value:'${customer.originality.id}'" >
-                        </select>
+                        <input name="originality.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/originality/combobox',value:'${customer.originality.id}'" />
                     </td>
                     <td>摄像</td>
                     <td>
-                        <select id="photographer_cus"  name="photographer.id"  class="easyui-combobox" data-options="value:'${customer.photographer.id}'" >
-                        </select>
+                        <input name="photographer.id"  class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/photographer/combobox',value:'${customer.photographer.id}'" />
                     </td>
                 </tr>
                 <tr>
                     <td>剪辑</td>
                     <td>
-                        <select id="editor_cus"  name="editor.id"  class="easyui-combobox" data-options="value:'${customer.editor.id}'" >
-                        </select>
+                        <input name="editor.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/editor/combobox',value:'${customer.editor.id}'" />
                     </td>
                     <td>演员1</td>
                     <td>
-                        <select id="performer1_cus"  name="performer1.id"  class="easyui-combobox" data-options="value:'${customer.performer1.id}'" >
-                        </select>
+                        <input name="performer1.id"  class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/performer/combobox',value:'${customer.performer1.id}'" />
                     </td>
                 </tr>
                 <tr>
                     <td>演员2</td>
                     <td>
-                        <select id="performer2_cus"  name="performer2.id"  class="easyui-combobox" data-options="value:'${customer.performer2.id}'" >
-                        </select>
+                        <input name="performer2.id"  class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/performer/combobox',value:'${customer.performer2.id}'" />
                     </td>
                     <td>演员3</td>
                     <td>
-                        <select id="performer3_cus"  name="performer3.id"  class="easyui-combobox" data-options="value:'${customer.performer3.id}'" >
-                        </select>
+                        <input name="performer3.id"  class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/performer/combobox',value:'${customer.performer3.id}'" />
                     </td>
                 </tr>
             </table>

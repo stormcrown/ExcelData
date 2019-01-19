@@ -12,5 +12,6 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2018-11-03
  */
 public interface IPerformerService extends IService<Performer> {
-	
+    @Override
+    boolean insert(Performer performer);
 }

@@ -53,23 +53,23 @@ public class VideoCostController extends BaseController {
     public String manager(Model model,HttpServletResponse response) {
         double max = videoCostService.selectMaxConsumption();
         if(max==0)max = 100;
-//        if((max+"") .indexOf(".")>0 )max++;
-        Cookie cookie = new Cookie("MaxConsumption", max+"");
-        cookie.setPath("/");
-        addCookie(response,cookie);
+        model.addAttribute("MaxConsumption",max);
         return "videoCost/videoCostList";
     }
 
     private Map handle(VideoCost videoCost,Integer page,Integer rows,String sort,String order ,
-                       String  ConsumptionRange, String KeyWord, String recoredDateRange, String completeDateRange){
+                       String  ConsumptionRange, String KeyWord, String recoredDateRange, String completeDateRange,String keyWordType,Double consumption_min,Double consumption_max){
         Map map = new HashMap(10);
-        if(ConsumptionRange!=null && ConsumptionRange.indexOf(",")>0){
-            String [] cuns = ConsumptionRange.split(",");
-            if(Double.parseDouble(cuns[0])!=0.0) map.put("consumption_min",Double.parseDouble(cuns[0]));
-            map.put("consumption_max",Double.parseDouble(cuns[1]));
+        if(StringUtils.hasText(keyWordType)){
+            String[] keyTypes = keyWordType.split(",");
+            for(String str :keyTypes){
+               if(StringUtils.hasText(str)) map.put(str,str);
+            }
         }
         map.put("order",order );
         map.put("sort",sort);
+        map.put("consumption_min",consumption_min);
+        map.put("consumption_max",consumption_max);
         if(recoredDateRange!=null && recoredDateRange.indexOf("~")>0){
             String[] da = recoredDateRange.split("~");
             if(da!=null && da.length==2 && da[0]!=null && da[1] !=null ){
@@ -102,9 +102,9 @@ public class VideoCostController extends BaseController {
     @ResponseBody
     @RequiresPermissions("/videoCost/dataGrid")
     public PageInfo dataGrid(VideoCost videoCost,@NotNull Integer page,@NotNull Integer rows,@NotNull String sort,@NotNull String order ,
-                             String  ConsumptionRange, String KeyWord, String recoredDateRange, String completeDateRange
+                             String  ConsumptionRange, String KeyWord, String recoredDateRange, String completeDateRange,String keyWordType,Double consumption_min,Double consumption_max
     ) {
-        Map map = handle(videoCost,page,rows,sort,order ,ConsumptionRange,KeyWord,recoredDateRange,completeDateRange);
+        Map map = handle(videoCost,page,rows,sort,order ,ConsumptionRange,KeyWord,recoredDateRange,completeDateRange,keyWordType,consumption_min,consumption_max);
         PageInfo pageInfo = new PageInfo(page, rows, sort, order);
         Page<VideoCost> pages = getPage(page, rows, sort, order);
         map.put("offset",pages.getOffset());
@@ -227,8 +227,8 @@ public class VideoCostController extends BaseController {
     @ResponseBody
     @RequiresPermissions("/videoCost/exportExcel")
     public Object exportExcel(VideoCost videoCost,@NotNull Integer page,@NotNull Integer rows,@NotNull String sort,@NotNull String order ,
-                              String  ConsumptionRange, String KeyWord, String recoredDateRange, String completeDateRange,HttpServletResponse response) {
-        Map map = handle(videoCost,page,rows,sort,order ,ConsumptionRange,KeyWord,recoredDateRange,completeDateRange);
+                              String  ConsumptionRange, String KeyWord, String recoredDateRange, String completeDateRange,HttpServletResponse response,String keyWordType,Double consumption_min,Double consumption_max) {
+        Map map = handle(videoCost,page,rows,sort,order ,ConsumptionRange,KeyWord,recoredDateRange,completeDateRange,keyWordType,consumption_min,consumption_max);
         map.put("offset",0);
         map.put("limit",100000);
         try {

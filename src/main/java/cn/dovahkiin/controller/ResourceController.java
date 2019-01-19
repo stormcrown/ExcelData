@@ -82,7 +82,7 @@ public class ResourceController extends BaseController {
      * @param resource
      * @return
      */
-    @RequestMapping("/add")
+    @PostMapping("/add")
     @ResponseBody
     @RequiresPermissions("/resource/add")
     public Object add(@Valid Resource resource) {

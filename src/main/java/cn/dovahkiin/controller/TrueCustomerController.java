@@ -59,7 +59,7 @@ public class TrueCustomerController extends BaseController {
     }
     @PostMapping("/combobox")
     @ResponseBody
-    @RequiresPermissions(value = {"/videoCost/dataGrid","/customer/dataGrid" },logical = Logical.OR)
+    @RequiresPermissions(value = {"/videoCost/dataGrid","/customer/*","/count/bar" },logical = Logical.OR)
     public Object dataGrid() {
         EntityWrapper<TrueCustomer> ew = new EntityWrapper<TrueCustomer>();
         ew.eq("delete_flag", 0 );

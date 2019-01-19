@@ -22,6 +22,7 @@ public interface ICustomerService {
     int insert(Customer record);
     int insertSelective(Customer record);
     Customer selectByPrimaryKey(Long id);
+    Customer selectByCode(String code);
     List<Customer> selectUnDeleted();
     List<Customer> selectForCombobox();
     List<Customer> selectList(Map map);
@@ -30,5 +31,5 @@ public interface ICustomerService {
     int updateByPrimaryKey(Customer record);
     int deleteMany(List<String> ids);
     int rollBack(List<String> ids);
-    Model modelForEdit(Model model);
+//    Model modelForEdit(Model model);
 }
