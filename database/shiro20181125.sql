@@ -35,8 +35,8 @@ CREATE TABLE `customer`  (
   `product_type_id` bigint(20) NULL DEFAULT NULL,
   `industry_id` bigint(20) NULL DEFAULT NULL,
   `code` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '客户编码',
-  `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
-  `create_time` datetime(0) NOT NULL COMMENT '创建时间',
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
   `delete_flag` int(1) NULL DEFAULT 0 COMMENT '是否删除',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `code`(`code`) USING BTREE
@@ -50,8 +50,8 @@ CREATE TABLE `editor`  (
   `id` bigint(19) NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '剪辑师名称',
   `code` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '剪辑师编码',
-  `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
-  `create_time` datetime(0) NOT NULL COMMENT '创建时间',
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
   `delete_flag` int(1) NULL DEFAULT 0 COMMENT '是否删除',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `code`(`code`) USING BTREE
@@ -65,8 +65,8 @@ CREATE TABLE `industry`  (
   `id` bigint(19) NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '行业名称',
   `code` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '行业编码',
-  `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
-  `create_time` datetime(0) NOT NULL COMMENT '创建时间',
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
   `delete_flag` int(1) NULL DEFAULT 0 COMMENT '是否删除',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `code`(`code`) USING BTREE
@@ -80,8 +80,8 @@ CREATE TABLE `optimizer`  (
   `id` bigint(19) NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '优化师名称',
   `code` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '优化师编码',
-  `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
-  `create_time` datetime(0) NOT NULL COMMENT '创建时间',
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
   `delete_flag` int(1) NULL DEFAULT 0 COMMENT '是否删除',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `code`(`code`) USING BTREE
@@ -100,7 +100,7 @@ CREATE TABLE `organization`  (
   `icon` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '图标',
   `pid` bigint(19) NULL DEFAULT NULL COMMENT '父级主键',
   `seq` tinyint(2) NOT NULL DEFAULT 0 COMMENT '排序',
-  `create_time` datetime(0) NOT NULL COMMENT '创建时间',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 37 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '组织机构' ROW_FORMAT = Dynamic;
 
@@ -150,8 +150,8 @@ CREATE TABLE `originality`  (
   `id` bigint(19) NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '创意师名称',
   `code` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '创意师编码',
-  `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
-  `create_time` datetime(0) NOT NULL COMMENT '创建时间',
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
   `delete_flag` int(1) NULL DEFAULT 0 COMMENT '是否删除',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `code`(`code`) USING BTREE
@@ -165,8 +165,8 @@ CREATE TABLE `performer`  (
   `id` bigint(19) NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '演员名称',
   `code` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '演员编码',
-  `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
-  `create_time` datetime(0) NOT NULL COMMENT '创建时间',
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
   `delete_flag` int(1) NULL DEFAULT 0 COMMENT '是否删除',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `code`(`code`) USING BTREE
@@ -180,8 +180,8 @@ CREATE TABLE `photographer`  (
   `id` bigint(19) NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '摄像师名称',
   `code` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '摄像师编码',
-  `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
-  `create_time` datetime(0) NOT NULL COMMENT '创建时间',
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
   `delete_flag` int(1) NULL DEFAULT 0 COMMENT '是否删除',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `code`(`code`) USING BTREE
@@ -195,8 +195,8 @@ CREATE TABLE `product_type`  (
   `id` bigint(19) NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '产品类型名称',
   `code` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '产品类型编码',
-  `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
-  `create_time` datetime(0) NOT NULL COMMENT '创建时间',
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
   `delete_flag` int(1) NULL DEFAULT 0 COMMENT '是否删除',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `code`(`code`) USING BTREE
@@ -218,7 +218,7 @@ CREATE TABLE `resource`  (
   `status` tinyint(2) NOT NULL DEFAULT 0 COMMENT '状态',
   `opened` tinyint(2) NOT NULL DEFAULT 1 COMMENT '打开状态',
   `resource_type` tinyint(2) NOT NULL DEFAULT 0 COMMENT '资源类别',
-  `create_time` datetime(0) NOT NULL COMMENT '创建时间',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 287 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '资源' ROW_FORMAT = Dynamic;
 
@@ -521,7 +521,7 @@ CREATE TABLE `sys_log`  (
   `role_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '角色名',
   `opt_content` varchar(1024) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '内容',
   `client_ip` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '客户端ip',
-  `create_time` datetime(0) NOT NULL COMMENT '创建时间',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1367 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '系统日志' ROW_FORMAT = Dynamic;
 
@@ -541,7 +541,7 @@ CREATE TABLE `user`  (
   `user_type` tinyint(2) NOT NULL DEFAULT 0 COMMENT '用户类别',
   `status` tinyint(2) NOT NULL DEFAULT 0 COMMENT '用户状态',
   `organization_id` int(11) NOT NULL DEFAULT 0 COMMENT '所属机构',
-  `create_time` datetime(0) NOT NULL COMMENT '创建时间',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `IDx_user_login_name`(`login_name`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 18 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户' ROW_FORMAT = Dynamic;
@@ -610,7 +610,8 @@ CREATE TABLE `video_cost`  (
   INDEX `video_cost_industry_FK`(`industry_id`) USING BTREE,
   INDEX `video_cost_video_type_FK`(`video_type_id`) USING BTREE,
   INDEX `video_cost_organization_FK`(`business_department_id`) USING BTREE,
-  INDEX `video_cost_demand_sector_FK`(`demand_sector_id`) USING BTREE,
+  INDEX `video_cost_demand_sector_FK`(`demand_sector_id`) USING BTREE
+  /*,
   CONSTRAINT `video_cost_customer_FK` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `video_cost_demand_sector_FK` FOREIGN KEY (`demand_sector_id`) REFERENCES `organization` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `video_cost_editor_FK` FOREIGN KEY (`editor_id`) REFERENCES `editor` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
@@ -621,6 +622,7 @@ CREATE TABLE `video_cost`  (
   CONSTRAINT `video_cost_photographer_FK` FOREIGN KEY (`photographer_id`) REFERENCES `photographer` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `video_cost_product_type_FK` FOREIGN KEY (`product_type_id`) REFERENCES `product_type` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `video_cost_video_type_FK` FOREIGN KEY (`video_type_id`) REFERENCES `video_type` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  */
 ) ENGINE = InnoDB AUTO_INCREMENT = 16580 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '视频成片消耗' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
