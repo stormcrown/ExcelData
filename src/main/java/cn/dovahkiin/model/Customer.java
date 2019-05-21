@@ -20,7 +20,7 @@ import java.io.Serializable;
 public class Customer extends Model<Customer> {
     private static final long serialVersionUID = 2L;
 	private static final String codePrex="CUS";
-	public   String CreateCode(){
+	public synchronized String CreateCode(){
 		StringBuffer newCode= new StringBuffer()
 				.append(codePrex)
 				.append(StringUtils.getDateCode())

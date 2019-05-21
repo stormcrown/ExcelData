@@ -370,7 +370,6 @@ public class VideoCostServiceImpl implements IVideoCostService {
 //                                        break;
 //                                    }
                                 case 14:
-                                    if (cn.dovahkiin.commons.utils.StringUtils.isNumber(valueStr))
                                         videoCost.setConsumption(Double.parseDouble(valueStr));
                                     break;
                             }
@@ -390,8 +389,6 @@ public class VideoCostServiceImpl implements IVideoCostService {
                         }
                     }
                     customerService.updateByPrimaryKeySelective(customer_1);
-
-
                 }
                 if (videoCost.getCustomer() != null) videoCosts.add(videoCost);
             }
