@@ -325,6 +325,7 @@ CREATE TABLE `role`  (
 -- ----------------------------
 INSERT INTO `role` VALUES (1, 'adminll', 1, '超级管', 0);
 INSERT INTO `role` VALUES (3, '主管', 0, '超级管理员', 0);
+INSERT INTO `role`(`id`, `name`, `seq`, `description`, `status`) VALUES (4, '优化师', 2, '', 0);
 
 -- ----------------------------
 -- Table structure for role_resource
@@ -575,6 +576,10 @@ CREATE TABLE `user`  (
   UNIQUE INDEX `IDx_user_login_name`(`login_name`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 18 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户' ROW_FORMAT = Dynamic;
 
+INSERT INTO `user`(`id`, `login_name`, `name`, `password`, `salt`, `sex`, `age`, `phone`, `user_type`, `status`, `organization_id`, `create_time`) VALUES (1, 'admin', 'admin', '05a671c66aefea124cc08b76ea6d30bb', 'test', 0, 25, '18707173376', 0, 0, 1, '2015-12-06 13:14:05');
+INSERT INTO `user`(`id`, `login_name`, `name`, `password`, `salt`, `sex`, `age`, `phone`, `user_type`, `status`, `organization_id`, `create_time`) VALUES (15, 'test', 'test', '05a671c66aefea124cc08b76ea6d30bb', 'test', 0, 25, '18707173376', 1, 0, 6, '2015-12-06 13:13:03');
+INSERT INTO `user`(`id`, `login_name`, `name`, `password`, `salt`, `sex`, `age`, `phone`, `user_type`, `status`, `organization_id`, `create_time`) VALUES (17, 'CQCQ', '编辑', 'efca8087f2d6d15ceddc156c428521a1', '7354c43b-4a7e-4150-99f1-63a7e1a7e074', 0, 0, '', 1, 0, 1, '2018-11-19 14:34:55');
+INSERT INTO `user`(`id`, `login_name`, `name`, `password`, `salt`, `sex`, `age`, `phone`, `user_type`, `status`, `organization_id`, `create_time`) VALUES (18, 'hujiankang', '胡健康', '20b309803b2691f38950516840d3433a', '88d11853-9396-4e4f-9215-7077f46e4f84', 0, 0, '', 1, 0, 53, '2019-05-24 18:24:15');
 
 -- ----------------------------
 -- Table structure for user_role
@@ -595,6 +600,7 @@ INSERT INTO `user_role` VALUES (70, 1, 1);
 INSERT INTO `user_role` VALUES (71, 1, 3);
 INSERT INTO `user_role` VALUES (68, 15, 2);
 INSERT INTO `user_role` VALUES (74, 17, 3);
+INSERT INTO `user_role`(`id`, `user_id`, `role_id`) VALUES (75, 18, 4);
 
 -- ----------------------------
 -- Table structure for video_cost
