@@ -105,7 +105,7 @@
 			vc.delete_flag = 0
 			and vc.recored_date BETWEEN #{recoredDate_start } and #{recoredDate_end  }
 			<choose>
-				<when test="countZero!=null and countZero=true ">
+				<when test="countZero!=null and countZero==true ">
 					and vc.`consumption` >=0
 				</when>
 				<otherwise>
@@ -188,7 +188,7 @@
 			vc.delete_flag = 0
 			and vc.recored_date BETWEEN #{recoredDate_start } and #{recoredDate_end  }
 			<choose>
-				<when test="countZero!=null and countZero=true ">
+				<when test="countZero!=null and countZero==true ">
 					and vc.`consumption` >=0
 				</when>
 				<otherwise>

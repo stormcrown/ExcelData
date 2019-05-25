@@ -179,7 +179,7 @@
             },
             tooltip : {
                 trigger: 'item',
-                formatter: "{a} <br/>{b} :消耗 {c} ({d}%)"
+                formatter: "{a} <br/>{b} :消耗量 {c} ({d}%)"
             },
             // visualMap: {
             //     show: true,
@@ -193,6 +193,8 @@
                 {
                     name:'总计',
                     type:'pie',
+                    radius : '65%',
+                    center: ['50%', '50%'],
                     data: count_consumption.sort(function (a, b) { return a.value - b.value; }),
                     roseType: 'radius',
                     label: {
@@ -237,6 +239,7 @@
         option.series[0].data = count_num.sort(function (a, b) { return a.value - b.value; }) ;
         // option.title.text = "消耗记录数量分优化师统计图表";
         option.title.text = title2;
+        option.tooltip.formatter = "{a} <br/>{b} :消耗记录数 {c} ({d}%)"
         chart2.setOption(option);
         // var chats2 = document.getElementById("chats3");
         // chats2.appendChild(div2);
@@ -350,22 +353,25 @@
             </div>
             <div class="layui-colla-item">
                 <h2 class="layui-colla-title">优化师统计</h2>
-
                 <div class="layui-colla-content layui-show">
                     <div class="layui-row">
                         <div class="layui-col-xs6">
-                            <div class="layui-card">
-                                    <div class="layui-card-header">消耗量分优化师统计图表</div>
-                                    <div id="chats2" class="layui-card-body">
+<%--                            <div class="layui-card">--%>
+<%--                                <div class="layui-card-header">消耗量分优化师统计图表</div>--%>
+<%--                                <div class="layui-card-body">--%>
+                                    <div id="chats2" >
                                     </div>
-                            </div>
+<%--                                </div>--%>
+<%--                            </div>--%>
                         </div>
                         <div class="layui-col-xs6">
-                            <div class="layui-card">
-                                <div class="layui-card-header">消耗记录数量分优化师统计图表</div>
-                                <div id="chats3" class="layui-card-body">
-                                </div>
-                            </div>
+<%--                            <div class="layui-card">--%>
+<%--                                <div class="layui-card-header">消耗记录数量分优化师统计图表</div>--%>
+<%--                                <div class="layui-card-body">--%>
+                                    <div id="chats3" >
+                                    </div>
+<%--                                </div>--%>
+<%--                            </div>--%>
                         </div>
                     </div>
                 </div>
@@ -374,19 +380,23 @@
                 <h2 class="layui-colla-title">客户统计</h2>
                 <div class="layui-colla-content layui-show">
                     <div class="layui-row">
-                        <div class="layui-col-xs6">
-                            <div class="layui-card">
-                                <div class="layui-card-header">消耗量按客户统计图表</div>
-                                <div id="chats4" class="layui-card-body">
-                                </div>
-                            </div>
+                        <div class="layui-col-xs6"  >
+<%--                            <div class="layui-card">--%>
+<%--                                <div class="layui-card-header">消耗量按客户统计图表</div>--%>
+<%--                                <div class="layui-card-body">--%>
+                                    <div id="chats4" >
+                                    </div>
+<%--                                </div>--%>
+<%--                            </div>--%>
                         </div>
                         <div class="layui-col-xs6">
-                            <div class="layui-card">
-                                <div class="layui-card-header">消耗记录数量按客户统计图表</div>
-                                <div id="chats5" class="layui-card-body">
-                                </div>
-                            </div>
+<%--                            <div class="layui-card">--%>
+<%--                                <div class="layui-card-header">消耗记录数量按客户统计图表</div>--%>
+<%--                                <div class="layui-card-body">--%>
+                                    <div id="chats5" >
+                                    </div>
+<%--                                </div>--%>
+<%--                            </div>--%>
                         </div>
                     </div>
                 </div>
