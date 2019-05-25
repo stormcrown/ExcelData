@@ -149,16 +149,16 @@
                         return "";
                     }
                 },
-                {
-                    width: '80',
-                    title: '产品类型',
-                    field: 'productType',
-                    sortable: true,
-                    formatter: function (value, row, index) {
-                        if(value!=null)return commonForm(value.name,$("#KeyWord_customList").val().trim());
-                        return "";
-                    }
-                },
+                // {
+                //     width: '80',
+                //     title: '产品类型',
+                //     field: 'productType',
+                //     sortable: true,
+                //     formatter: function (value, row, index) {
+                //         if(value!=null)return commonForm(value.name,$("#KeyWord_customList").val().trim());
+                //         return "";
+                //     }
+                // },
                 {
                     width: '80',
                     title: '行业',

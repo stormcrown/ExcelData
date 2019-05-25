@@ -16,4 +16,6 @@ import java.util.Map;
  */
 public interface CountMapper  {
     List<Map> count1(Map map);
+    List<Map> countByOptimizer(Map map);
+    List<Map> countByCustomer(Map map);
 }

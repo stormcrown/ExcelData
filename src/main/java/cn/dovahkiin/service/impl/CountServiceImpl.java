@@ -27,4 +27,14 @@ public class CountServiceImpl implements ICountService {
     public List<Map> count1(Map map) {
         return countMapper.count1(map);
     }
+
+    @Override
+    public List<Map> countByOptimizer(Map map) {
+        return countMapper.countByOptimizer(map);
+    }
+
+    @Override
+    public List<Map> countByCustomer(Map map) {
+        return countMapper.countByCustomer(map);
+    }
 }

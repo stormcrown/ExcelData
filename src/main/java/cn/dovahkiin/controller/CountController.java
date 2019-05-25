@@ -76,5 +76,20 @@ public class CountController extends BaseController {
         Map map = handleCondition(recoredDateRange,type,videoCost);
         return JSON.toJSON(countService.count1(map));
     }
-
+    @PostMapping("/countByOptimizer")
+    @RequiresPermissions("/count/bar")
+    @ResponseBody
+    public Object line(String recoredDateRange, Integer type , VideoCost videoCost,Boolean countZero) {
+        Map map = handleCondition(recoredDateRange,type,videoCost);
+        map.put("countZero",countZero);
+        return JSON.toJSON(countService.countByOptimizer(map));
+    }
+    @PostMapping("/countByTrueCustomer")
+    @RequiresPermissions("/count/bar")
+    @ResponseBody
+    public Object countByCustomer(String recoredDateRange, Integer type , VideoCost videoCost,Boolean countZero) {
+        Map map = handleCondition(recoredDateRange,type,videoCost);
+        map.put("countZero",countZero);
+        return JSON.toJSON(countService.countByCustomer(map));
+    }
 }
