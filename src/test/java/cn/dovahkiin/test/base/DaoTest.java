@@ -29,7 +29,7 @@ public class DaoTest  extends BaseTest{
     }
     @Test
     public void seleectMaxCou(){
-        double max = videoCostMapper.selectMaxConsumption();
+        double max = videoCostMapper.selectMaxConsumption(-1L,"sss");
         logger.info("MaxConsumption = "+max);
     }
     @Test

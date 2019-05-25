@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import cn.dovahkiin.util.Const;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -174,7 +175,7 @@ public class RoleController extends BaseController {
      * @param resourceIds
      * @return
      */
-    @RequiresRoles("admin")
+    @RequiresRoles(Const.Administor_Role_Name)
     @RequestMapping("/grant")
     @ResponseBody
     @RequiresPermissions("/role/grant")

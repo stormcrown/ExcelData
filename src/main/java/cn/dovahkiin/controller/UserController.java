@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import cn.dovahkiin.util.Const;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,7 +146,7 @@ public class UserController extends BaseController {
      * @param userVo
      * @return
      */
-    @RequiresRoles("admin")
+    @RequiresRoles(Const.Administor_Role_Name)
     @PostMapping("/edit")
     @ResponseBody
     @RequiresPermissions("/user/edit")
@@ -207,7 +208,7 @@ public class UserController extends BaseController {
      * @param id
      * @return
      */
-    @RequiresRoles("admin")
+    @RequiresRoles(Const.Administor_Role_Name)
     @PostMapping("/delete")
     @ResponseBody
     @RequiresPermissions("/user/delete")

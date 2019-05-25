@@ -42,11 +42,15 @@ public class VideoCost  extends Model<VideoCost> {
      */
 	@TableField("update_time")
 	private Date updateTime;
+	@TableField("updated_by")
+	private Long updatedBy;
     /**
      * 创建时间
      */
 	@TableField("create_time")
 	private Date createTime;
+	@TableField("created_by")
+	private Long createdBy;
     /**
      * 是否删除
      */
@@ -58,6 +62,7 @@ public class VideoCost  extends Model<VideoCost> {
 
 	@TableField("recored_date")
 	private Date recoredDate;
+
 	private String recoredDateStr;
     /**
      * 业务部
@@ -141,6 +146,22 @@ public class VideoCost  extends Model<VideoCost> {
 		return cumulativeConsumptionRankingByProglam;
 	}
 
+	public Long getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(Long updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public Long getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(Long createdBy) {
+		this.createdBy = createdBy;
+	}
+
 	public void setCumulativeConsumptionByPro(Double cumulativeConsumptionByPro) {
 		this.cumulativeConsumptionByPro = cumulativeConsumptionByPro;
 	}
@@ -152,7 +173,9 @@ public class VideoCost  extends Model<VideoCost> {
 	public VideoCost() {
 	}
 
-	public VideoCost(Date updateTime, Date createTime, Integer deleteFlag, Date recoredDate) {
+	public VideoCost(Long updatedBy, Date updateTime,Long createdBy ,Date createTime, Integer deleteFlag, Date recoredDate) {
+		this.updatedBy = updatedBy;
+		this.createdBy = createdBy;
 		this.updateTime = updateTime;
 		this.createTime = createTime;
 		this.deleteFlag = deleteFlag;

@@ -1,6 +1,7 @@
 package cn.dovahkiin.test.base;
 
 import cn.dovahkiin.commons.converter.DateConverter;
+import cn.dovahkiin.commons.shiro.ShiroUser;
 import cn.dovahkiin.commons.utils.StringUtils;
 import cn.dovahkiin.mapper.VideoCostMapper;
 import cn.dovahkiin.model.Customer;
@@ -50,7 +51,11 @@ public class ServiceTest extends BaseTest{
         InputStream inputStream = new FileInputStream("D:/0425.xlsx");
         Workbook workbook= WorkbookFactory.create(inputStream);
         Sheet sheet=workbook.getSheetAt(0);
-        int x =  iVideoCostService.saveExcel(sheet,new Date(),dateConverter);
+        Set<String> sets = new HashSet<>();
+
+        ShiroUser user = new ShiroUser(-1L,"testUser","五",sets);
+
+        int x =  iVideoCostService.saveExcel(sheet,new Date(),dateConverter,user);
         System.out.print(x);
     }
 }

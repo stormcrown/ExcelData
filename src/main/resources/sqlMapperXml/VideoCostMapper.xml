@@ -4,6 +4,8 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="cn.dovahkiin.model.VideoCost" >
         <id column="id" property="id"/>
+        <result column="created_by" property="createdBy" />
+        <result column="updated_by" property="updatedBy" />
         <result column="update_time" property="updateTime"/>
         <result column="create_time" property="createTime"/>
         <result column="delete_flag" property="deleteFlag"/>
@@ -11,7 +13,8 @@
         <result column="consumption" property="consumption"/>
         <result column="cumulative_consumption" property="cumulativeConsumption"/>
         <result column="cumulative_consumption_ranking" property="cumulativeConsumptionRanking"/>
-        <association property="customer" javaType="cn.dovahkiin.model.Customer" columnPrefix="customer_">
+        <association property="customer" javaType="cn.dovahkiin.model.Customer" columnPrefix="customer_"  resultMap="cn.dovahkiin.mapper.CustomerMapper.BaseResultMap" />
+        <!-- <association property="customer" javaType="cn.dovahkiin.model.Customer" columnPrefix="customer_">
             <id column="id" property="id"/>
             <result column="name" property="name"/>
             <result column="code" property="code"/>
@@ -99,7 +102,7 @@
                 <result column="create_time" property="createTime" />
                 <result column="delete_flag" property="deleteFlag" />
             </association>
-        </association>
+        </association>-->
         <association property="demandSector" javaType="cn.dovahkiin.model.Organization" columnPrefix="demand_sector_">
             <id column="id" property="id"/>
             <result column="name" property="name"/>
@@ -127,9 +130,9 @@
     <insert id="insertMany" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         insert into `video_cost`
         (
-        create_time,delete_flag, recored_date,   customer_id,
+        create_time,delete_flag, recored_date,customer_id,
         demand_sector_id,optimizer_id,
-        consumption
+        consumption,updated_by,created_by
         )
         values
         <foreach collection="list" item="videoCost" index="index" separator=",">
@@ -146,6 +149,8 @@
                     0
                 </otherwise>
             </choose>
+            ,
+             #{videoCost.updatedBy},#{videoCost.createdBy}
             )
         </foreach>
     </insert>
@@ -165,6 +170,7 @@
         customer_id = #{customer.id},
         demand_sector_id=#{demandSector.id},
         optimizer_id=#{optimizer.id},
+        update_time = now(),updated_by = #{updatedBy},
         consumption =
         <choose>
             <when test="consumption !=null">
@@ -183,7 +189,7 @@
         vc.create_time ,
         vc.delete_flag ,
         vc.recored_date ,
-
+        vc.created_by,vc.updated_by,
         vc.customer_id ,
         vc.demand_sector_id ,
         vc.optimizer_id,
@@ -278,11 +284,17 @@
         FROM
         (
         SELECT
-        customer_id,
-        SUM(consumption) AS cumulativeConsumptionByPro
-        FROM video_cost
-        WHERE consumption > 0 and delete_flag = 0
-        GROUP BY customer_id
+        vc.customer_id,
+        SUM(vc.consumption) AS cumulativeConsumptionByPro
+        FROM video_cost vc
+        LEFT JOIN optimizer op on vc.optimizer_id = op.id
+        WHERE vc.consumption > 0 and vc.delete_flag = 0
+        <choose>
+            <when test="userId!=null and userId!='' and optimizer == null ">and vc.created_by = #{userId}</when>
+            <when test="userId==null and optimizer != null and optimizer != ''" >and op.name = #{optimizer} </when>
+            <when test="userId!=null and userId!='' and optimizer != null and optimizer != ''" >and ( op.name = #{optimizer} or vc.created_by = #{userId} )  </when>
+        </choose>
+        GROUP BY vc.customer_id
         ORDER BY cumulativeConsumptionByPro DESC
         ) t1,
         (SELECT @rownum := 0) rownum
@@ -302,6 +314,11 @@
         LEFT JOIN performer per3 ON per3.id = cus.performer3_id
         LEFT JOIN true_customer tcus ON tcus.id = cus.true_customer_id
         <where> vc.delete_flag = 0
+            <choose>
+                <when test="userId!=null and userId!='' and optimizer == null ">and vc.created_by = #{userId}</when>
+                <when test="userId==null and optimizer != null and optimizer != ''" >and opt.name = #{optimizer} </when>
+                <when test="userId!=null and userId!='' and optimizer != null and optimizer != ''" >and ( opt.name = #{optimizer} or vc.created_by = #{userId} )  </when>
+            </choose>
             <if test="videoCostId !=null and videoCostId !=''" >
                 and vc.id = #{videoCostId}
             </if>
@@ -458,11 +475,17 @@
         FROM
         (
         SELECT
-        customer_id,
-        SUM(consumption) AS cumulativeConsumptionByPro
-        FROM video_cost
-        WHERE consumption > 0 and delete_flag = 0
-        GROUP BY customer_id
+        vc.customer_id,
+        SUM(vc.consumption) AS cumulativeConsumptionByPro
+        FROM video_cost vc
+        LEFT JOIN optimizer op on vc.optimizer_id = op.id
+        WHERE consumption > 0 and vc.delete_flag = 0
+        <choose>
+            <when test="userId!=null and userId!='' and optimizer == null ">and vc.created_by = #{userId}</when>
+            <when test="userId==null and optimizer != null and optimizer != ''" >and op.name = #{optimizer} </when>
+            <when test="userId!=null and userId!='' and optimizer != null and optimizer != ''" >and ( op.name = #{optimizer} or vc.created_by = #{userId} )  </when>
+        </choose>
+        GROUP BY vc.customer_id
         ORDER BY cumulativeConsumptionByPro DESC
         ) t1,
         (SELECT @rownum := 0) rownum
@@ -482,6 +505,11 @@
         LEFT JOIN true_customer tcus ON tcus.id = cus.true_customer_id
         <where>
             vc.delete_flag = 0
+            <choose>
+                <when test="userId!=null and userId!='' and optimizer == null ">and vc.created_by = #{userId}</when>
+                <when test="userId==null and optimizer != null and optimizer != ''" >and opt.name = #{optimizer} </when>
+                <when test="userId!=null and userId!='' and optimizer != null and optimizer != ''" >and ( opt.name = #{optimizer} or vc.created_by = #{userId} )  </when>
+            </choose>
             <if test="videoCostId !=null and videoCostId !=''" >
                 and vc.id = #{videoCostId}
             </if>
@@ -607,11 +635,17 @@
         FROM
         (
         SELECT
-        customer_id,
-        SUM(consumption) AS cumulativeConsumptionByPro
-        FROM video_cost
-        WHERE consumption > 0 and delete_flag = 0
-        GROUP BY customer_id
+        vc.customer_id,
+        SUM(vc.consumption) AS cumulativeConsumptionByPro
+        FROM video_cost vc
+        LEFT JOIN optimizer op on vc.optimizer_id = op.id
+        WHERE vc.consumption > 0 and vc.delete_flag = 0
+        <choose>
+            <when test="userId!=null and userId!='' and optimizer == null ">and vc.created_by = #{userId}</when>
+            <when test="userId==null and optimizer != null and optimizer != ''" >and op.name = #{optimizer} </when>
+            <when test="userId!=null and userId!='' and optimizer != null and optimizer != ''" >and ( op.name = #{optimizer} or vc.created_by = #{userId} )  </when>
+        </choose>
+        GROUP BY vc.customer_id
         ORDER BY cumulativeConsumptionByPro DESC
         ) t1,
         (SELECT @rownum := 0) rownum
@@ -630,6 +664,11 @@
         LEFT JOIN performer per2 ON per2.id = cus.performer2_id
         LEFT JOIN performer per3 ON per3.id = cus.performer3_id
         <where> vc.delete_flag = 0
+            <choose>
+                <when test="userId!=null and userId!='' and optimizer == null ">and vc.created_by = #{userId}</when>
+                <when test="userId==null and optimizer != null and optimizer != ''" >and opt.name = #{optimizer} </when>
+                <when test="userId!=null and userId!='' and optimizer != null and optimizer != ''" >and ( opt.name = #{optimizer} or vc.created_by = #{userId} )  </when>
+            </choose>
             <if test="videoCostId !=null and videoCostId !=''" >
                 and vc.id = #{videoCostId}
             </if>
@@ -752,11 +791,17 @@
         FROM
         (
         SELECT
-        customer_id,
-        SUM(consumption) AS cumulativeConsumptionByPro
-        FROM video_cost
-        WHERE consumption > 0 and delete_flag = 0
-        GROUP BY customer_id
+        vc.customer_id,
+        SUM(vc.consumption) AS cumulativeConsumptionByPro
+        FROM video_cost vc
+        LEFT JOIN optimizer op on vc.optimizer_id = op.id
+        WHERE vc.consumption > 0 and vc.delete_flag = 0
+        <choose>
+            <when test="userId!=null and userId!='' and optimizer == null ">and vc.created_by = #{userId}</when>
+            <when test="userId==null and optimizer != null and optimizer != ''" >and op.name = #{optimizer} </when>
+            <when test="userId!=null and userId!='' and optimizer != null and optimizer != ''" >and ( op.name = #{optimizer} or vc.created_by = #{userId} )  </when>
+        </choose>
+        GROUP BY vc.customer_id
         ORDER BY cumulativeConsumptionByPro DESC
         ) t1,
         (SELECT @rownum := 0) rownum
@@ -776,6 +821,11 @@
         LEFT JOIN performer per3 ON per3.id = cus.performer3_id
         LEFT JOIN true_customer tcus ON tcus.id = cus.true_customer_id
         <where> vc.delete_flag = 0
+            <choose>
+                <when test="userId!=null and userId!='' and optimizer == null ">and vc.created_by = #{userId}</when>
+                <when test="userId==null and optimizer != null and optimizer != ''" >and opt.name = #{optimizer} </when>
+                <when test="userId!=null and userId!='' and optimizer != null and optimizer != ''" >and ( opt.name = #{optimizer} or vc.created_by = #{userId} )  </when>
+            </choose>
             <if test="videoCostId !=null and videoCostId !=''" >
                 and vc.id = #{videoCostId}
             </if>
@@ -891,6 +941,13 @@
 
 
     <select id="selectMaxConsumption" resultType="double" >
-        select max(consumption) from video_cost where delete_flag =0
+        select max(vc.consumption) from video_cost vc
+        left join optimizer op on op.id = vc.optimizer_id
+        where vc.delete_flag =0
+        <choose>
+            <when test="userId!=null and userId!='' and optimizer == null ">and vc.created_by = #{userId}</when>
+            <when test="userId==null and optimizer != null and  optimizer != ''" >and op.name = #{optimizer} </when>
+            <when test="userId!=null and userId!='' and optimizer != null and optimizer != ''" >and ( op.name = #{optimizer} or vc.created_by = #{userId} )  </when>
+        </choose>
     </select>
 </mapper>

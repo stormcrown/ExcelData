@@ -1,11 +1,13 @@
 package cn.dovahkiin.service.impl;
 
 import cn.dovahkiin.commons.converter.DateConverter;
+import cn.dovahkiin.commons.shiro.ShiroUser;
 import cn.dovahkiin.commons.utils.JsonUtils;
 import cn.dovahkiin.commons.utils.StringUtils;
 import cn.dovahkiin.model.*;
 import cn.dovahkiin.mapper.VideoCostMapper;
 import cn.dovahkiin.service.*;
+import cn.dovahkiin.util.Const;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -94,7 +96,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
 
     @Override
     @Transactional
-    public int saveExcel(Sheet sheet, Date recoredDate, DateConverter dateConverter) {
+    public int saveExcel(Sheet sheet, Date recoredDate, DateConverter dateConverter, ShiroUser user) {
         EntityWrapper un_delete = new EntityWrapper();
 
         List<Organization> organizations = iOrganizationService.selectList(un_delete);
@@ -150,7 +152,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
         for (int i = first; i < last + 1; i++) {
             Row row = sheet.getRow(i);
             if (row != null) {
-                VideoCost videoCost = new VideoCost(now, now, 0, recoredDate);
+                VideoCost videoCost = new VideoCost(user.getId() ,now,user.getId(), now, 0, recoredDate);
                 videoCost.setBusinessDepartment(new Organization());
                 Customer customer_1 = new Customer(null, null, new Date(), 0);
                 Object codeC = getCellValue(row.getCell(1)) ; ;
@@ -356,21 +358,23 @@ public class VideoCostServiceImpl implements IVideoCostService {
                                         customer_1.setPerformer2(performer);
                                         break;
                                     }
-//                                case 14:
-//                                    synchronized (performers) {
-//                                        Performer performer = checkName(performers, valueStr);
-//                                        if (performer == null) {
-//                                            performer = new Performer(valueStr, null, new Date(), 0);
-//                                            performer.CreateCode();
-//                                            performerService.insert(performer);
-//                                            performers.add(performer);
-//                                        }
-////                                            videoCost.setPerformer3(performer);
-//                                        customer_1.setPerformer3(performer);
-//                                        break;
-//                                    }
                                 case 14:
                                         videoCost.setConsumption(Double.parseDouble(valueStr));
+                                    break;
+                                case 15:
+                                    try {
+                                        Date rec = videoCost.getRecoredDate();
+                                        if(StringUtils.isNotBlank(valueStr)){
+                                            try {
+                                                rec = dateConverter.convert(valueStr) ;
+                                            } catch (IllegalArgumentException e) {
+                                               e.printStackTrace();
+                                            }
+                                        }
+                                        videoCost.setRecoredDate(rec);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                     break;
                             }
                         }
@@ -405,6 +409,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
     @Override
     @Transactional(readOnly = true)
     public Workbook exportData(Map map, Workbook workbook) {
+
         Sheet sheet = workbook.createSheet();
         sheet.addMergedRegion(new CellRangeAddress(1, 1, 0, 18));
         Row title = sheet.createRow(1);
@@ -685,16 +690,16 @@ public class VideoCostServiceImpl implements IVideoCostService {
 
     private Object getCellValue(Cell cell) {
         if(cell==null)return null;
-        CellType cellType = cell.getCellTypeEnum();
         cell.setCellType(CellType.STRING);
+        CellType cellType = cell.getCellTypeEnum();
         Object value = null;
         switch (cellType) {
             case STRING:
                 value = cell.getStringCellValue();
                 break;
             case NUMERIC:
-//                value = cell.getNumericCellValue();
-                value = cell.getStringCellValue();
+                value = cell.getNumericCellValue();
+//                value = cell.getStringCellValue();
                 break;
 //            case BOOLEAN:
 //                value = cell.getBooleanCellValue();
@@ -771,13 +776,16 @@ public class VideoCostServiceImpl implements IVideoCostService {
     }
 
     @Override
-    public int selectCount(Date recoredDate, Long customerId) {
+    public int selectCount(Date recoredDate, Long customerId,ShiroUser user) {
         Map map = new HashMap();
         if (recoredDate != null) {
             map.put("recoredDate_start", recoredDate);
             map.put("recoredDate_end", recoredDate);
         }
         if (customerId != null) map.put("customerId", customerId);
+        Set<String> roles = user.getRoles();
+        if(!roles.contains(Const.Administor_Role_Name))map.put("userId",user.getId());
+        if(roles.contains(Const.OptimizerCN))map.put(Const.Optimizer,user.getName());
         Integer x = videoCostMapper.selectCount(map);
         if (x == null) x = 0;
         return x;
@@ -793,8 +801,13 @@ public class VideoCostServiceImpl implements IVideoCostService {
     }
 
     @Override
-    public double selectMaxConsumption() {
-        Double d = videoCostMapper.selectMaxConsumption();
+    public double selectMaxConsumption(ShiroUser user) {
+        Long userId =null;
+        String optimizer = null;
+        Set<String> roles = user.getRoles();
+        if(!roles.contains(Const.Administor_Role_Name))userId=user.getId();
+        if(roles.contains(Const.OptimizerCN))optimizer = user.getName();
+        Double d = videoCostMapper.selectMaxConsumption(userId,optimizer);
         if (d != null) return d;
         return 0;
     }

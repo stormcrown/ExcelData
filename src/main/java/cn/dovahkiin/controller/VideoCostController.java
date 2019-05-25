@@ -12,16 +12,19 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 
+import cn.dovahkiin.commons.shiro.ShiroUser;
 import cn.dovahkiin.commons.utils.StringUtils;
 import cn.dovahkiin.model.Customer;
 import cn.dovahkiin.service.*;
 import cn.dovahkiin.service.impl.IndustryServiceImpl;
+import cn.dovahkiin.util.Const;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
@@ -50,8 +53,8 @@ public class VideoCostController extends BaseController {
     @Autowired private ICustomerService customerService;
     @GetMapping("/manager")
     @RequiresPermissions("/videoCost/manager")
-    public String manager(Model model,HttpServletResponse response) {
-        double max = videoCostService.selectMaxConsumption();
+    public String manager(Model model) {
+        double max = videoCostService.selectMaxConsumption(getShiroUser());
         if(max==0)max = 100;
         model.addAttribute("MaxConsumption",max);
         return "videoCost/videoCostList";
@@ -60,6 +63,10 @@ public class VideoCostController extends BaseController {
     private Map handle(VideoCost videoCost,Integer page,Integer rows,String sort,String order ,
                        String  ConsumptionRange, String KeyWord, String recoredDateRange, String completeDateRange,String keyWordType,Double consumption_min,Double consumption_max){
         Map map = new HashMap(10);
+        ShiroUser user = getShiroUser();
+        Set<String> roles = user.getRoles();
+        if(!roles.contains(Const.Administor_Role_Name))map.put("userId",user.getId());
+        if(roles.contains(Const.OptimizerCN))map.put(Const.Optimizer,user.getName());
         if(StringUtils.hasText(keyWordType)){
             String[] keyTypes = keyWordType.split(",");
             for(String str :keyTypes){
@@ -110,7 +117,8 @@ public class VideoCostController extends BaseController {
         map.put("offset",pages.getOffset());
         map.put("limit",pages.getLimit());
         map.put("videoCost",videoCost);
-
+        ShiroUser user = getShiroUser();
+        Set<String> los=user.getRoles();
         pages= videoCostService.selectWithCount(pages,map);
         JSONObject jsonObject = new JSONObject();
         jsonObject.putAll(videoCostService.selectDataForListPage(map));
@@ -173,6 +181,8 @@ public class VideoCostController extends BaseController {
         videoCost.setCreateTime(new Date());
         videoCost.setUpdateTime(new Date());
         videoCost.setDeleteFlag(0);
+        videoCost.setCreatedBy(getUserId());
+        videoCost.setUpdatedBy(getUserId());
         List<VideoCost> videoCosts = new ArrayList<>();
         videoCosts.add(videoCost);
         int b = videoCostService.insertMany(videoCosts);
@@ -184,9 +194,9 @@ public class VideoCostController extends BaseController {
     }
     @GetMapping("/countByDay")
     @ResponseBody
-    @RequiresPermissions("/videoCost/add")
+    @RequiresPermissions(value = {"/videoCost/add","/videoCost/importExcel" } ,logical = Logical.OR)
     public Object countByDay(Date recoredDate,Long customerId) {
-        return videoCostService.selectCount(recoredDate,customerId);
+        return videoCostService.selectCount(recoredDate,customerId,getShiroUser());
     }
     /**
      * 添加
@@ -204,7 +214,7 @@ public class VideoCostController extends BaseController {
             InputStream inputStream = excels.getInputStream();
             Workbook workbook= WorkbookFactory.create(inputStream);
             Sheet sheet=workbook.getSheetAt(0);
-            m = videoCostService.saveExcel(sheet,recoredDate,dateConverter);
+            m = videoCostService.saveExcel(sheet,recoredDate,dateConverter,getShiroUser());
             b = m>0;
             inputStream.close();
         }catch (InvalidFormatException e){
@@ -280,6 +290,7 @@ public class VideoCostController extends BaseController {
     @RequiresPermissions("/videoCost/edit")
     public Object edit(@Valid VideoCost videoCost) {
         videoCost.setUpdateTime(new Date());
+        videoCost.setUpdatedBy(getUserId());
         int b = videoCostService.updateByPrimaryKey(videoCost);
         if (b==1) {
             return renderSuccess("编辑成功！");
