@@ -9,30 +9,30 @@
         <!-- myibatis log configure -->
         <logger name="com.apache.ibatis" level="WARN"/>
         <logger name="org.mybatis.spring" level="WARN"/>
-        <logger name="java.sql.Connection" level="INFO"/>
-        <logger name="java.sql.Statement" level="INFO"/>
-        <logger name="java.sql.PreparedStatement" level="INFO"/>
+        <logger name="java.sql.Connection" level="WARN"/>
+        <logger name="java.sql.Statement" level="WARN"/>
+        <logger name="java.sql.PreparedStatement" level="WARN"/>
         
         <!-- 减少部分debug日志 -->
-        <logger name="druid.sql" level="INFO"/>
-        <logger name="org.apache.shiro" level="INFO"/>
-        <logger name="org.mybatis.spring" level="INFO"/>
-        <logger name="org.springframework" level="INFO"/>
+        <logger name="druid.sql" level="WARN"/>
+        <logger name="org.apache.shiro" level="WARN"/>
+        <logger name="org.mybatis.spring" level="WARN"/>
+        <logger name="org.springframework" level="WARN"/>
         <logger name="org.springframework.context" level="WARN"/>
         <logger name="org.springframework.beans" level="WARN"/>
         <logger name="com.baomidou.mybatisplus" level="INFO"/>
-        <logger name="org.apache.ibatis.io" level="INFO"/>
-        <logger name="org.apache.velocity" level="INFO"/>
-        <logger name="org.hibernate.validator" level="INFO"/>
+        <logger name="org.apache.ibatis.io" level="WARN"/>
+        <logger name="org.apache.velocity" level="WARN"/>
+        <logger name="org.hibernate.validator" level="WARN"/>
         <!-- cache INFO -->
-        <logger name="net.sf.ehcache" level="INFO"/>
-        <logger name="org.springframework.cache" level="INFO"/>
-        <logger name="cn.dovahkiin.commons.shiro.cache" level="INFO"/>
+        <logger name="net.sf.ehcache" level="WARN"/>
+        <logger name="org.springframework.cache" level="WARN"/>
+        <logger name="cn.dovahkiin.commons.shiro.cache" level="WARN"/>
         
         <!-- 业务debug日志 -->
-        <logger name="cn.dovahkiin" level="DEBUG"/>
+        <logger name="cn.dovahkiin" level="WARN"/>
         
-        <Root level="debug">
+        <Root level="WARN">
             <AppenderRef ref="Console" />
         </Root>
     </Loggers>

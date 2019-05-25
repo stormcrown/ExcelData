@@ -195,7 +195,6 @@
 					and vc.`consumption` >0
 				</otherwise>
 			</choose>
-
 			<choose>
 				<when test="userId!=null and userId!='' and optimizer == null ">and vc.created_by = #{userId}</when>
 				<when test="userId==null and optimizer != null and optimizer != ''" >and opt.name = #{optimizer} </when>
