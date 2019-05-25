@@ -1,9 +1,11 @@
 package cn.dovahkiin.controller;
 
 import cn.dovahkiin.commons.base.BaseController;
+import cn.dovahkiin.commons.shiro.ShiroUser;
 import cn.dovahkiin.commons.utils.DateTools;
 import cn.dovahkiin.model.VideoCost;
 import cn.dovahkiin.service.ICountService;
+import cn.dovahkiin.util.Const;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author 骆长涛
@@ -37,6 +40,10 @@ public class CountController extends BaseController {
     }
     private Map handleCondition(String recoredDateRange ,Integer type, VideoCost videoCost){
         Map map = new HashMap();
+        ShiroUser user = getShiroUser();
+        Set<String> roles = user.getRoles();
+        if(!roles.contains(Const.Administor_Role_Name))map.put("userId",user.getId());
+        if(roles.contains(Const.OptimizerCN))map.put(Const.Optimizer,user.getName());
         if(recoredDateRange!=null && recoredDateRange.indexOf("~")>0){
             String[] da = recoredDateRange.split("~");
             if(da!=null && da.length==2 && da[0]!=null && da[1] !=null ){

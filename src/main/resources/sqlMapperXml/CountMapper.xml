@@ -12,7 +12,6 @@
 					DATE_FORMAT( vc.recored_date, '%Y-%m' ) days,
 				</when>
 			</choose>
-
 			sum( vc.`consumption` ) consumption
 		FROM video_cost vc
 		left join optimizer opt on opt.id = vc.optimizer_id
@@ -31,6 +30,11 @@
 		<where>
 			vc.`consumption` >0 and vc.delete_flag = 0
 			and vc.recored_date BETWEEN #{recoredDate_start } and #{recoredDate_end  }
+			<choose>
+				<when test="userId!=null and userId!='' and optimizer == null ">and vc.created_by = #{userId}</when>
+				<when test="userId==null and optimizer != null and optimizer != ''" >and opt.name = #{optimizer} </when>
+				<when test="userId!=null and userId!='' and optimizer != null and optimizer != ''" >and ( opt.name = #{optimizer} or vc.created_by = #{userId} )  </when>
+			</choose>
 			<if test="videoCost!=null" >
 				<if test="videoCost.optimizer!=null and videoCost.optimizer.id!=null  " >
 					and vc.optimizer_id = #{videoCost.optimizer.id }

@@ -67,10 +67,8 @@
 
                 }
             });
-
-
         }else{
-            layer.msg('必须有一个时间段', {
+            layer.msg('消耗日期必须有一个时间段', {
                 time: 20000, //20s后自动关闭
                 btn: ['哦']
             });
@@ -82,7 +80,7 @@
         $("#chats1").html('');
         // 第二个参数可以指定前面引入的主题
         var div = document.createElement("div");
-        div.setAttribute("style","width:1200px;height:400px")
+        div.setAttribute("style","width:1700px;height:800px")
         var chart = echarts.init(div, 'vintage');
         // 指定图表的配置项和数据
         var option = {
