@@ -20,7 +20,6 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- 为方便按日期查询数据，因此建立日期表，
 /*数字表 */
 CREATE TABLE  IF NOT EXISTS num(i INT);
-CREATE TABLE num (i INT);
 INSERT INTO num (i) VALUES (0), (1), (2), (3), (4), (5), (6), (7), (8), (9);
 COMMIT ;
 /* 日期表 **/
