@@ -65,8 +65,8 @@ public class VideoCostController extends BaseController {
         Map map = new HashMap(10);
         ShiroUser user = getShiroUser();
         Set<String> roles = user.getRoles();
-        if(!roles.contains(Const.Administor_Role_Name))map.put("userId",user.getId());
-        if(roles.contains(Const.OptimizerCN))map.put(Const.Optimizer,user.getName());
+        if(!roles.contains(Const.Administor_Role_Name)  && !roles.contains(Const.OptimizerAdministorCN)  )map.put("userId",user.getId());
+        if(roles.contains(Const.OptimizerCN) && !roles.contains(Const.OptimizerAdministorCN)  && !roles.contains(Const.Administor_Role_Name)  )map.put(Const.Optimizer,user.getName());
         if(StringUtils.hasText(keyWordType)){
             String[] keyTypes = keyWordType.split(",");
             for(String str :keyTypes){

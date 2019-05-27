@@ -322,9 +322,10 @@ CREATE TABLE `role`  (
 -- ----------------------------
 -- Records of role
 -- ----------------------------
-INSERT INTO `role` VALUES (1, 'adminll', 1, '超级管', 0);
+INSERT INTO `role` VALUES (1, 'admin', 1, '超级管', 0);
 INSERT INTO `role` VALUES (3, '主管', 0, '超级管理员', 0);
 INSERT INTO `role`(`id`, `name`, `seq`, `description`, `status`) VALUES (4, '优化师', 2, '', 0);
+INSERT INTO `role`(`id`, `name`, `seq`, `description`, `status`) VALUES (5, '优化师管理员', 3, '', 0);
 
 -- ----------------------------
 -- Table structure for role_resource

@@ -287,10 +287,17 @@ public class VideoCostServiceImpl implements IVideoCostService {
                                     }
                                 case 8:
                                     try {
-//                                        videoCost.setCompleteDate(dateConverter.convert(valueStr));
-                                        customer_1.setCompleteDate(dateConverter.convert(valueStr));
+                                        if(StringUtils.isNotBlank(valueStr)){
+                                            Date date = null;
+                                            try {
+                                                cell.setCellType(CellType.NUMERIC);
+                                                date = cell.getDateCellValue();
+                                                if(date!=null)customer_1.setCompleteDate(date);
+                                            } catch (Exception e) { e.printStackTrace(); }
+                                            if(date==null)customer_1.setCompleteDate(dateConverter.convert(valueStr));
+                                        }
                                     } catch (IllegalArgumentException e) {
-//                                        e.printStackTrace();
+                                        throw new RuntimeException("第"+(i+1)+"行无法识别列“成片日期”：\n"+valueStr);
                                     }
                                     break;
                                 case 9:
@@ -362,19 +369,21 @@ public class VideoCostServiceImpl implements IVideoCostService {
                                         videoCost.setConsumption(Double.parseDouble(valueStr));
                                     break;
                                 case 15:
-                                    try {
-                                        Date rec = videoCost.getRecoredDate();
+                                    Date rec = videoCost.getRecoredDate();
                                         if(StringUtils.isNotBlank(valueStr)){
+                                            Date date = null;
                                             try {
-                                                rec = dateConverter.convert(valueStr) ;
+                                                cell.setCellType(CellType.NUMERIC);
+                                                date = cell.getDateCellValue();
+                                                if(date!=null)rec = date;
+                                            } catch (Exception e) { e.printStackTrace(); }
+                                            try {
+                                                if(date==null) rec = dateConverter.convert(valueStr) ;
                                             } catch (IllegalArgumentException e) {
-                                               e.printStackTrace();
+                                               throw new RuntimeException("第"+(i+1)+"行无法识别列“消耗日期”：\n"+valueStr);
                                             }
                                         }
                                         videoCost.setRecoredDate(rec);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
                                     break;
                             }
                         }
@@ -784,8 +793,8 @@ public class VideoCostServiceImpl implements IVideoCostService {
         }
         if (customerId != null) map.put("customerId", customerId);
         Set<String> roles = user.getRoles();
-        if(!roles.contains(Const.Administor_Role_Name))map.put("userId",user.getId());
-        if(roles.contains(Const.OptimizerCN))map.put(Const.Optimizer,user.getName());
+        if(!roles.contains(Const.Administor_Role_Name)  && !roles.contains(Const.OptimizerAdministorCN)  )map.put("userId",user.getId());
+        if(roles.contains(Const.OptimizerCN) && !roles.contains(Const.OptimizerAdministorCN)  && !roles.contains(Const.Administor_Role_Name)  )map.put(Const.Optimizer,user.getName());
         Integer x = videoCostMapper.selectCount(map);
         if (x == null) x = 0;
         return x;
@@ -805,8 +814,8 @@ public class VideoCostServiceImpl implements IVideoCostService {
         Long userId =null;
         String optimizer = null;
         Set<String> roles = user.getRoles();
-        if(!roles.contains(Const.Administor_Role_Name))userId=user.getId();
-        if(roles.contains(Const.OptimizerCN))optimizer = user.getName();
+        if(!roles.contains(Const.Administor_Role_Name)  && !roles.contains(Const.OptimizerAdministorCN)  )userId=user.getId();
+        if(roles.contains(Const.OptimizerCN) && !roles.contains(Const.OptimizerAdministorCN)  && !roles.contains(Const.Administor_Role_Name)  )optimizer = user.getName();
         Double d = videoCostMapper.selectMaxConsumption(userId,optimizer);
         if (d != null) return d;
         return 0;

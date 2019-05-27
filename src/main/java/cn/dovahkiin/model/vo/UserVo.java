@@ -24,7 +24,7 @@ public class UserVo implements Serializable {
 	private Long id;
 
 	@NotBlank
-	@Length(min = 4, max = 64)
+	@Length(min = 1, max = 64,message = "登录名称长度在1和64之间")
 	private String loginName;
 
 	private String name;
