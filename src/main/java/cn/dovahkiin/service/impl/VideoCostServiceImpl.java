@@ -147,14 +147,17 @@ public class VideoCostServiceImpl implements IVideoCostService {
                 }
             }
         }
-
+        Calendar date2010 = Calendar.getInstance();
+        date2010.set(Calendar.YEAR,2010);
+        date2010.set(Calendar.MONTH,9);
+        Date date_2010 = date2010.getTime();
         行:
         for (int i = first; i < last + 1; i++) {
             Row row = sheet.getRow(i);
             if (row != null) {
                 VideoCost videoCost = new VideoCost(user.getId() ,now,user.getId(), now, 0, recoredDate);
                 videoCost.setBusinessDepartment(new Organization());
-                Customer customer_1 = new Customer(null, null, new Date(), 0);
+                Customer customer_1 = new Customer(null, null, now, 0);
                 Object codeC = getCellValue(row.getCell(1)) ; ;
                 String code ="";
                 if(codeC!=null)code=codeC.toString();
@@ -200,7 +203,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
                                     synchronized (trueCustomers){
                                         TrueCustomer trueCustomer = checkName(trueCustomers,valueStr);
                                         if(trueCustomer==null){
-                                            trueCustomer = new TrueCustomer(valueStr,new Date(),new Date(),0);
+                                            trueCustomer = new TrueCustomer(valueStr,now,now,0);
                                             trueCustomer.CreateCode();
                                             trueCustomerService.insert(trueCustomer);
                                             trueCustomers.add(trueCustomer);
@@ -236,7 +239,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
                                     synchronized (industries) {
                                         Industry industry = checkName(industries, valueStr);
                                         if (industry == null) {
-                                            industry = new Industry(valueStr, null, new Date(), 0);
+                                            industry = new Industry(valueStr, null, now, 0);
                                             industry.CreateCode();
                                             iIndustryService.insert(industry);
                                             industries.add(industry);
@@ -250,7 +253,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
                                         Organization organization = checkSimpleName(organizations, valueStr);
                                         if (organization == null) organization = checkName(organizations, valueStr);
                                         if (organization == null) {
-                                            organization = new Organization(valueStr, null, 0, new Date());
+                                            organization = new Organization(valueStr, null, 0, now);
                                             organization.CreateCode();
                                             iOrganizationService.insert(organization);
                                             organizations.add(organization);
@@ -263,7 +266,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
                                     synchronized (optimizers) {
                                         Optimizer optimizer = checkName(optimizers, valueStr);
                                         if (optimizer == null) {
-                                            optimizer = new Optimizer(valueStr, null, new Date(), 0);
+                                            optimizer = new Optimizer(valueStr, null, now, 0);
                                             optimizer.CreateCode();
                                             iOptimizerService.insert(optimizer);
                                             optimizers.add(optimizer);
@@ -276,7 +279,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
                                         valueStr = StringUtils.replace(valueStr, "类", "");
                                         VideoType videoType = checkName(videoTypes, valueStr);
                                         if (videoType == null) {
-                                            videoType = new VideoType(valueStr, null, new Date(), 0);
+                                            videoType = new VideoType(valueStr, null, now, 0);
                                             videoType.CreateCode();
                                             videoTypeService.insert(videoType);
                                             videoTypes.add(videoType);
@@ -292,9 +295,9 @@ public class VideoCostServiceImpl implements IVideoCostService {
                                             try {
                                                 cell.setCellType(CellType.NUMERIC);
                                                 date = cell.getDateCellValue();
-                                                if(date!=null)customer_1.setCompleteDate(date);
+                                                if(date!=null  && date.getTime() > date_2010.getTime() )customer_1.setCompleteDate(date);
                                             } catch (Exception e) { e.printStackTrace(); }
-                                            if(date==null)customer_1.setCompleteDate(dateConverter.convert(valueStr));
+                                            if(date==null || date.getTime() > date_2010.getTime() )customer_1.setCompleteDate(dateConverter.convert(valueStr));
                                         }
                                     } catch (IllegalArgumentException e) {
                                         throw new RuntimeException("第"+(i+1)+"行无法识别列“成片日期”：\n"+valueStr);
@@ -304,7 +307,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
                                     synchronized (originalities) {
                                         Originality originality = checkName(originalities, valueStr);
                                         if (originality == null) {
-                                            originality = new Originality(valueStr, null, new Date(), 0);
+                                            originality = new Originality(valueStr, null, now, 0);
                                             originality.CreateCode();
                                             iOriginalityService.insert(originality);
                                             originalities.add(originality);
@@ -317,7 +320,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
                                     synchronized (photographers) {
                                         Photographer photographer = checkName(photographers, valueStr);
                                         if (photographer == null) {
-                                            photographer = new Photographer(valueStr, null, new Date(), 0);
+                                            photographer = new Photographer(valueStr, null, now, 0);
                                             photographer.CreateCode();
                                             iPhotographerService.insert(photographer);
                                             photographers.add(photographer);
@@ -330,7 +333,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
                                     synchronized (editors) {
                                         Editor editor = checkName(editors, valueStr);
                                         if (editor == null) {
-                                            editor = new Editor(valueStr, null, new Date(), 0);
+                                            editor = new Editor(valueStr, null, now, 0);
                                             editor.CreateCode();
                                             editorService.insert(editor);
                                             editors.add(editor);
@@ -343,7 +346,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
                                     synchronized (performers) {
                                         Performer performer = checkName(performers, valueStr);
                                         if (performer == null) {
-                                            performer = new Performer(valueStr, null, new Date(), 0);
+                                            performer = new Performer(valueStr, null, now, 0);
                                             performer.CreateCode();
                                             performerService.insert(performer);
                                             performers.add(performer);
@@ -356,7 +359,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
                                     synchronized (performers) {
                                         Performer performer = checkName(performers, valueStr);
                                         if (performer == null) {
-                                            performer = new Performer(valueStr, null, new Date(), 0);
+                                            performer = new Performer(valueStr, null, now, 0);
                                             performer.CreateCode();
                                             performerService.insert(performer);
                                             performers.add(performer);
@@ -366,7 +369,12 @@ public class VideoCostServiceImpl implements IVideoCostService {
                                         break;
                                     }
                                 case 14:
-                                        videoCost.setConsumption(Double.parseDouble(valueStr));
+                                    try {
+                                        if(StringUtils.isNotBlank(valueStr)) videoCost.setConsumption(Double.parseDouble(valueStr));
+                                    } catch (NumberFormatException e) {
+                                        e.printStackTrace();
+                                        throw new RuntimeException("第"+(i+1)+"行无法识别消耗量");
+                                    }
                                     break;
                                 case 15:
                                     Date rec = videoCost.getRecoredDate();
@@ -375,10 +383,10 @@ public class VideoCostServiceImpl implements IVideoCostService {
                                             try {
                                                 cell.setCellType(CellType.NUMERIC);
                                                 date = cell.getDateCellValue();
-                                                if(date!=null)rec = date;
+                                                if(date!=null && date.getTime() > date_2010.getTime() )rec = date;
                                             } catch (Exception e) { e.printStackTrace(); }
                                             try {
-                                                if(date==null) rec = dateConverter.convert(valueStr) ;
+                                                if(date==null || date.getTime() < date_2010.getTime()) rec = dateConverter.convert(valueStr) ;
                                             } catch (IllegalArgumentException e) {
                                                throw new RuntimeException("第"+(i+1)+"行无法识别列“消耗日期”：\n"+valueStr);
                                             }
@@ -390,7 +398,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
                     }
                 }
                 if (customer_1.getId() != null) {
-                    customer_1.setUpdateTime(new Date());
+                    customer_1.setUpdateTime(now);
                     if(StringUtils.hasText(customer_1.getCode())){
                         Customer customer = customerService.selectByCode(customer_1.getCode());
                         if(customer!=null && (!customer.getId().equals(customer_1.getId()) || !customer_1.getName().equals(customer.getName()) ) ){
