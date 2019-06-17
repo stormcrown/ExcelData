@@ -82,6 +82,13 @@ public class VideoCostServiceImpl implements IVideoCostService {
     }
 
     @Override
+    public int deleteManyForever(String[] ids) {
+        int unDeleted = videoCostMapper.countUndeleted(ids);
+        if(unDeleted==0) return videoCostMapper.deleteMany(ids);
+        else throw new RuntimeException("请先删除数据，再执行永久删除");
+    }
+
+    @Override
     public org.springframework.ui.Model modelForEdit(org.springframework.ui.Model model) {
         EntityWrapper un_delete = new EntityWrapper();
         List<Organization> organizations = iOrganizationService.selectList(un_delete);

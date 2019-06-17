@@ -26,6 +26,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
@@ -276,6 +277,22 @@ public class VideoCostController extends BaseController {
         }
          return renderError("删除失败！");
 
+    }
+    @PostMapping("/deleteForever")
+    @ResponseBody
+    @RequiresPermissions("/videoCost/delete")
+    @RequiresRoles(value = "admin" )
+    public Object deleteForever(String ids){
+        if(ids!=null){
+            String[] strings = ids.split(",");
+            List<String> idss = new ArrayList<>();
+            for(String str:strings){
+                if(StringUtils.hasText(str) &&StringUtils.isInteger(str) )idss.add(str);
+            }
+            int suc= videoCostService.deleteManyForever(idss.toArray(new String[idss.size()]));
+            if(suc>0)return renderSuccess("删除成功！");
+        }
+        return renderError("删除失败！");
     }
     
 

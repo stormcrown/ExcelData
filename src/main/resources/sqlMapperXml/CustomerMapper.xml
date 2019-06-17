@@ -626,6 +626,9 @@
         </foreach>
         )
     </update>
+    <delete id="deleteFlagIsOne" >
+        delete from customer where delete_flag = 1
+    </delete>
     <update id="rollBack">
         update `customer`
         set delete_flag= 0

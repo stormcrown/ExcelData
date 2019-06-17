@@ -32,4 +32,5 @@ public interface ICustomerService {
     int deleteMany(List<String> ids);
     int rollBack(List<String> ids);
 //    Model modelForEdit(Model model);
+    int deleteFlagIsOne();
 }

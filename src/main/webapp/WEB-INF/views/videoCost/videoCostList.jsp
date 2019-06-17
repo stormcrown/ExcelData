@@ -456,17 +456,46 @@
                     $.post('${path}/videoCost/delete', {
                         ids: id
                     }, function (result) {
-                        if (result.success) {
+                        // if (result.success) {
                             parent.$.messager.alert('提示', result.msg, 'info');
                             videoCostDataGrid.datagrid('reload');
-                        }
+                        // }
                         progressClose();
                     }, 'JSON');
                 }
             });
         }
     }
-
+    /**
+     * 删除
+     */
+    function videoCostDeleteForever(id) {
+        var tip="";
+        if (id == undefined) {
+            id="";
+            var rows = videoCostDataGrid.datagrid('getSelections');
+            for(var i=0;i<rows.length;i++){
+                id+=(rows[i].id+",");
+                tip+=( "<br/>客户："+ redFont(rows[i].customer.name) +" 消耗日期："+ redFont(getCommonDate(rows[i].recoredDate))+" ；");
+            }
+        }
+        if(id!=undefined && id!=null && id!='' ){
+            parent.$.messager.confirm('询问', '您是否要删除当前数据？'+tip, function (b) {
+                if (b) {
+                    progressLoad();
+                    $.post('${path}/videoCost/deleteForever', {
+                        ids: id
+                    }, function (result) {
+                        // if (result.success) {
+                            parent.$.messager.alert('提示', result.msg, 'info');
+                            videoCostDataGrid.datagrid('reload');
+                        // }
+                        progressClose();
+                    }, 'JSON');
+                }
+            });
+        }
+    }
     /**
      * 清除
      */
@@ -628,5 +657,8 @@
     <shiro:hasPermission name="/videoCost/delete">
         <a onclick="videoCostDeleteFun()" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-remove  icon-red'">删除</a>
     </shiro:hasPermission>
+    <shiro:hasRole name="admin">
+        <a onclick="videoCostDeleteForever()" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-remove  icon-red'">永久删除</a>
+    </shiro:hasRole>
     总消耗：￥ <span id="sum" style="color: red" >0.00</span>&nbsp;&nbsp;||&nbsp;&nbsp;素材数量：<span id="cus" style="color: red" >0</span>&nbsp;&nbsp;||&nbsp;&nbsp;客户数量：<span id="tcus" style="color: red" >0</span>
 </div>

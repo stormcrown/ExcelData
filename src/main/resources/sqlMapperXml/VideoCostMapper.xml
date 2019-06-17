@@ -163,6 +163,24 @@
         </foreach>
         )
     </update>
+    <delete id="deleteManyForever">
+        delete from `video_cost`
+        where id in (
+        <foreach collection="array" item="id"  separator=",">
+            #{id}
+        </foreach>
+        )
+        and delete_flag = 1
+    </delete>
+    <select id="countUndeleted" resultType="int" >
+        select count(*) from `video_cost`
+        where id in (
+        <foreach collection="array" item="id"  separator=",">
+            #{id}
+        </foreach>
+        )
+        and delete_flag = 0
+    </select>
     <update id="updateByPrimaryKey" parameterType="cn.dovahkiin.model.VideoCost" >
         update `video_cost`
         set

@@ -133,7 +133,12 @@ public class CustomerServiceImpl implements ICustomerService {
         return  set.toArray(n_ids);
     }
 
-//    @Override
+    @Override
+    public int deleteFlagIsOne() {
+
+        return customerMapper.deleteFlagIsOne();
+    }
+    //    @Override
 //    public Model modelForEdit(Model model) {
 //        EntityWrapper un_delete = new EntityWrapper();
 //        un_delete.eq("delete_flag",0);

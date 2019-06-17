@@ -25,6 +25,7 @@ public interface IVideoCostService  {
     int insertMany(List<VideoCost> videoCostList);
     int updateByPrimaryKey(VideoCost videoCost);
     int deleteMany(String[] ids);
+    int deleteManyForever(String[] ids);
     int saveExcel(Sheet sheet, Date recoredDate, DateConverter dateConverter, ShiroUser user);
     Workbook exportData(Map map,Workbook workbook);
     VideoCost selectByPrimaryKey(Long  id);
