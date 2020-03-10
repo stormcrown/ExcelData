@@ -2,6 +2,7 @@ package cn.dovahkiin.model;
 
 import cn.dovahkiin.commons.utils.JsonUtils;
 import cn.dovahkiin.commons.utils.JsonUtils;
+import com.baomidou.mybatisplus.annotations.TableField;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -51,6 +52,7 @@ public class User implements Serializable {
 	/** 创建时间 */
 	private Date createTime;
 	/** 所属供应商 */
+	@TableField(exist = false)
 	private Supplier supplier;
 
 
@@ -148,6 +150,14 @@ public class User implements Serializable {
 
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+
+	public Supplier getSupplier() {
+		return supplier;
+	}
+
+	public void setSupplier(Supplier supplier) {
+		this.supplier = supplier;
 	}
 
 	@Override

@@ -1,14 +1,10 @@
 
-package cn.dovahkiin.util;
+package cn.dovahkiin.util.excel;
 
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.support.ExcelTypeEnum;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.List;
 

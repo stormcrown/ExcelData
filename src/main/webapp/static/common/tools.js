@@ -1,8 +1,20 @@
 function getCommonDate(value){
     if(value !=null && value !=""){
         try{
-            var date = new Date(value);
+            let date = new Date(value);
             return date.getFullYear()+'-'+(date.getMonth()+1)+"-"+date.getDate();
+        }catch (e) {
+            return value;
+        }
+    }else{
+        return "";
+    }
+}
+function getCommonDateTime(value){
+    if(value !=null && value !=""){
+        try{
+            let date = new Date(value);
+            return date.getFullYear()+'-'+(date.getMonth()+1)+"-"+date.getDate()+" "+date.getHours()+":"+date.getMinutes()+":"+date.getSeconds();
         }catch (e) {
             return value;
         }

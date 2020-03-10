@@ -17,6 +17,8 @@ import java.util.List;
 public class DateTools {
     public static final Log logger = LogFactory.getLog(DateTools.class);
     public static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+    public static final SimpleDateFormat TIMEFORMAT = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+    public static String getDateTimeStr(Date date){return TIMEFORMAT.format(date);}
     /**
      * 获取两个日期之间的日期
      * @param start 开始日期
