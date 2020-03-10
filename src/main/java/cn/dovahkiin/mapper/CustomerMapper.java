@@ -2,6 +2,7 @@ package cn.dovahkiin.mapper;
 
 import cn.dovahkiin.model.Customer;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ public interface CustomerMapper  {
     Customer selectByCode(String code);
     List<Customer> selectList(Map map);
     List<Customer> selectSimpleList(Map map);
+    List<Customer> selectSimpleListByVideoCost(Map map );
     int selectTotal(Map map);
     int updateByPrimaryKeySelective(Customer record);
     int updateByPrimaryKey(Customer record);

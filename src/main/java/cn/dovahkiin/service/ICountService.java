@@ -3,6 +3,7 @@ package cn.dovahkiin.service;
 import cn.dovahkiin.model.Editor;
 import com.baomidou.mybatisplus.service.IService;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -18,4 +19,8 @@ public interface ICountService  {
     List<Map> count1(Map map);
     List<Map> countByOptimizer(Map map);
     List<Map> countByCustomer(Map map);
+
+//    List<Map> effCount1(Map map, Integer effectDays, Double maxEffectCon, Date startDate,Date endDate);
+    /** 第一个统计  */
+
 }

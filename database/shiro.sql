@@ -204,7 +204,7 @@ CREATE TABLE `resource`  (
   `url` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '资源路径',
   `open_mode` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '打开方式 ajax,iframe',
   `description` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '资源介绍',
-  `icon` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '资源图标',
+  `icon` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '资源图标',
   `pid` bigint(19) NULL DEFAULT NULL COMMENT '父级资源id',
   `seq` tinyint(2) NOT NULL DEFAULT 0 COMMENT '排序',
   `status` tinyint(2) NOT NULL DEFAULT 0 COMMENT '状态',

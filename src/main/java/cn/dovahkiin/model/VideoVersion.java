@@ -1,29 +1,29 @@
 package cn.dovahkiin.model;
 
-import cn.dovahkiin.commons.utils.JsonUtils;
 import cn.dovahkiin.commons.utils.StringUtils;
 import com.baomidou.mybatisplus.enums.IdType;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableName;
 import java.io.Serializable;
-import java.util.Objects;
 
 /**
  * <p>
- * 行业信息
+ * 
  * </p>
  *
  * @author lzt
- * @since 2018-11-04
+ * @since 2020-03-10
  */
-public class Industry extends Model<Industry> {
+@TableName("video_version")
+public class VideoVersion extends Model<VideoVersion> {
 
-    private static final long serialVersionUID = 2L;
-	private static final String codePrex="IND";
-	public   String CreateCode(){
-		StringBuffer newCode= new StringBuffer()
+    private static final long serialVersionUID = 1L;
+	private static final String codePrex="VV";
+	public String CreateCode(){
+		StringBuilder newCode= new StringBuilder()
 				.append(codePrex)
 				.append(StringUtils.getDateCode())
 				.append(this.hashCode())
@@ -31,18 +31,17 @@ public class Industry extends Model<Industry> {
 		if(this.code==null)this.code=newCode.toString();
 		return newCode.toString();
 	}
-
-	/**
+    /**
      * 主键id
      */
 	@TableId(value="id", type= IdType.AUTO)
 	private Long id;
     /**
-     * 行业名称
+     * 版本名称
      */
 	private String name;
     /**
-     * 行业编码
+     * 版本编码
      */
 	private String code;
     /**
@@ -61,15 +60,6 @@ public class Industry extends Model<Industry> {
 	@TableField("delete_flag")
 	private Integer deleteFlag;
 
-	public Industry() {
-	}
-
-	public Industry(String name, String code, Date createTime, Integer deleteFlag) {
-		this.name = name;
-		this.code = code;
-		this.createTime = createTime;
-		this.deleteFlag = deleteFlag;
-	}
 
 	public Long getId() {
 		return id;
@@ -123,8 +113,5 @@ public class Industry extends Model<Industry> {
 	protected Serializable pkVal() {
 		return this.id;
 	}
-	@Override
-	public String toString() {
-		return JsonUtils.toJson(this);
-	}
+
 }

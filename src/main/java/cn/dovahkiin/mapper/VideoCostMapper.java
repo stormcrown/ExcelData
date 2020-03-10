@@ -2,6 +2,7 @@ package cn.dovahkiin.mapper;
 
 import cn.dovahkiin.model.VideoCost;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.Map;
  * @author lzt
  * @since 2018-10-15
  */
+@Mapper
 public interface VideoCostMapper extends BaseMapper<VideoCost> {
     int insertMany(List<VideoCost> videoCostList);
     int updateByPrimaryKey(VideoCost videoCost);
@@ -21,9 +23,9 @@ public interface VideoCostMapper extends BaseMapper<VideoCost> {
     int countUndeleted(String[] ids);
     int deleteManyForever(String[] ids);
     List<VideoCost> selectWithCount(Map<String ,Object> map);
-    Integer selectCount(Map<String ,Object> map);
+    Integer selectCountTotal(Map<String ,Object> map);
     Double selectMaxConsumption(@Param("userId")Long userId,@Param("optimizer")String optimizer);
     Double sumConsumption(Map<String , Object> map);
     Map selectDataForListPage(Map<String , Object> map);
-//    List<VideoCost> countByCustomName();
+
 }

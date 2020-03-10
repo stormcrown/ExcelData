@@ -83,7 +83,7 @@
     <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
         <property name="converters">
             <list>
-                <bean class="cn.dovahkiin.commons.converter.DateConverter"></bean>
+                <bean class="cn.dovahkiin.commons.converter.DateConverter"/>
             </list>
         </property>
     </bean>

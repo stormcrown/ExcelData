@@ -246,4 +246,19 @@
 		GROUP BY tcus.id
 		ORDER BY total desc
 	</select>
+
+	<!-- 此处将所有素材的有效期内的消耗统计起来，如果有大于最大消耗的数据，则进一步处理	-->
+	<select id="effCount1" resultType="hashmap">
+		SELECT
+		sum( IF(vc.recored_date  &lt;= DATE_ADD(cus.complete_date, INTERVAL #{effectDays,jdbcType=INTEGER} day) and vc.recored_date >= cus.complete_date, consumption, 0) ) as sumEffCon,
+		cus.`name` ,cus.id ,
+		min(IF(vc.recored_date &lt;= DATE_ADD(cus.complete_date, INTERVAL #{effectDays,jdbcType=INTEGER} day) and vc.recored_date >= cus.complete_date and consumption > 0, vc.recored_date, cus.complete_date)) as min_date,
+		max(IF(vc.recored_date &lt;= DATE_ADD(cus.complete_date, INTERVAL #{effectDays,jdbcType=INTEGER} day) and vc.recored_date >= cus.complete_date and consumption > 0, vc.recored_date, cus.complete_date)) as max_date
+		FROM video_cost vc
+		left join customer cus on cus.id = vc.customer_id
+		where    cus.complete_date &lt;= #{startDate} and DATE_ADD(cus.complete_date, INTERVAL 60 day) &gt;= #{endDate}
+		GROUP BY cus.id,cus.`name`
+		having sumEffCon &gt; #{maxEffectCon,jdbcType=DOUBLE}
+	</select>
+
 </mapper>

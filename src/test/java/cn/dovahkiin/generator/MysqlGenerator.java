@@ -43,7 +43,7 @@ public class MysqlGenerator {
 		Properties props = getProperties();
 		AutoGenerator mpg = new AutoGenerator();
 
-		String outputDir = "D:/Develop/IDEAProjects/Codes";
+		String outputDir = "E:/Develop/IDEAProjects/Codes";
 		final String viewOutputDir = outputDir + "/views/";
 		
 		// 全局配置

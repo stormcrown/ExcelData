@@ -24,7 +24,7 @@ public class VideoType extends Model<VideoType> {
     private static final long serialVersionUID = 2L;
 	private static final String codePrex="VIT";
 	public   String CreateCode(){
-		StringBuffer newCode= new StringBuffer()
+		StringBuilder newCode= new StringBuilder()
 				.append(codePrex)
 				.append(StringUtils.getDateCode())
 				.append(this.hashCode())
@@ -45,6 +45,11 @@ public class VideoType extends Model<VideoType> {
      * 产品类型编码
      */
 	private String code;
+	/**
+	 * 固定价格
+	 */
+	@TableField("base_price")
+	private Double basePrice;
     /**
      * 更新时间
      */
@@ -115,6 +120,14 @@ public class VideoType extends Model<VideoType> {
 
 	public void setDeleteFlag(Integer deleteFlag) {
 		this.deleteFlag = deleteFlag;
+	}
+
+	public Double getBasePrice() {
+		return basePrice;
+	}
+
+	public void setBasePrice(Double basePrice) {
+		this.basePrice = basePrice;
 	}
 
 	@Override

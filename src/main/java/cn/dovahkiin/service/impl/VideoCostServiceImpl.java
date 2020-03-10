@@ -84,7 +84,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
     @Override
     public int deleteManyForever(String[] ids) {
         int unDeleted = videoCostMapper.countUndeleted(ids);
-        if(unDeleted==0) return videoCostMapper.deleteMany(ids);
+        if(unDeleted==0) return videoCostMapper.deleteManyForever(ids);
         else throw new RuntimeException("请先删除数据，再执行永久删除");
     }
 
@@ -786,7 +786,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
     @Override
     public Page<VideoCost> selectWithCount(Page<VideoCost> pages, Map<String, Object> map) {
         List<VideoCost> videoCosts = videoCostMapper.selectWithCount(map);
-        int total = videoCostMapper.selectCount(map);
+        int total = videoCostMapper.selectCountTotal(map);
         pages.setRecords(videoCosts);
         pages.setTotal(total);
         return pages;
@@ -810,7 +810,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
         Set<String> roles = user.getRoles();
         if(!roles.contains(Const.Administor_Role_Name)  && !roles.contains(Const.OptimizerAdministorCN)  )map.put("userId",user.getId());
         if(roles.contains(Const.OptimizerCN) && !roles.contains(Const.OptimizerAdministorCN)  && !roles.contains(Const.Administor_Role_Name)  )map.put(Const.Optimizer,user.getName());
-        Integer x = videoCostMapper.selectCount(map);
+        Integer x = videoCostMapper.selectCountTotal(map);
         if (x == null) x = 0;
         return x;
     }

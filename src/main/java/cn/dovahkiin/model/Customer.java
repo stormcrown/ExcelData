@@ -59,6 +59,16 @@ public class Customer extends Model<Customer> {
      */
 	@TableField("delete_flag")
 	private Integer deleteFlag;
+	/**
+	 * 最大有效消耗
+	 */
+	@TableField("max_effect_con")
+	private Double maxEffectCon;
+	/**
+	 * 收入比率 ， 收入 =  固定价格 + 有效消耗 * 收入比率
+	 */
+	@TableField("income_ratio")
+	private Double inComeRatio;
 
 	private Industry industry;
 
@@ -80,6 +90,9 @@ public class Customer extends Model<Customer> {
 
 	private Performer performer3;
 
+	private Supplier supplier;
+
+	private VideoVersion videoVersion;
 
 	@TableField(exist = false)
 	private Double cumulativeConsumptionByPro;
@@ -267,5 +280,37 @@ public class Customer extends Model<Customer> {
 
 	public void setCompleteDateStr(String completeDateStr) {
 		this.completeDateStr = completeDateStr;
+	}
+
+	public Supplier getSupplier() {
+		return supplier;
+	}
+
+	public void setSupplier(Supplier supplier) {
+		this.supplier = supplier;
+	}
+
+	public VideoVersion getVideoVersion() {
+		return videoVersion;
+	}
+
+	public void setVideoVersion(VideoVersion videoVersion) {
+		this.videoVersion = videoVersion;
+	}
+
+	public Double getMaxEffectCon() {
+		return maxEffectCon;
+	}
+
+	public void setMaxEffectCon(Double maxEffectCon) {
+		this.maxEffectCon = maxEffectCon;
+	}
+
+	public Double getInComeRatio() {
+		return inComeRatio;
+	}
+
+	public void setInComeRatio(Double inComeRatio) {
+		this.inComeRatio = inComeRatio;
 	}
 }

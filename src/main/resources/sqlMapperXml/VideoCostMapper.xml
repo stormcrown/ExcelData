@@ -483,7 +483,7 @@
 
 
     </select>
-    <select id="selectCount" resultType="integer">
+    <select id="selectCountTotal" resultType="integer">
         SELECT
         count(vc.id)
         FROM video_cost vc

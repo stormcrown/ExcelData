@@ -1,15 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/commons/global.jsp" %>
 <script type="text/javascript">
-
-
-
     $(function() {
         //注意：折叠面板 依赖 element 模块，否则无法进行功能性操作
         layui.use(['laydate','slider','layer'], function(){
             var laydate = layui.laydate,slider = layui.slider;
             laydate.render({
-                elem: '#recoredDateRange_COUNT'
+                elem: '#recoredDateRange_eff'
                 ,range: '~' //或 range: '~' 来自定义分割字符
             });
         });
@@ -21,29 +18,29 @@
         });
     });
 
-
-    function  drawTable(){
-        var recoredDateRange = $('#recoredDateRange_COUNT').val();
-        var type = $("#count1_R").val();
-        if(recoredDateRange!=null && recoredDateRange!='' ){
-            var dates;
+    function  drawTableEff(){
+        let recoredDateRange = $('#recoredDateRange_eff').val();
+        let type = $("#count1_eff").val();
+        if(recoredDateRange!=null && recoredDateRange!=='' ){
+            let dates;
             dates = recoredDateRange.split("~");
-            if(type=="1")dates=getMonthBetween(dates[0],dates[1]);
+            if(type==="1")dates=getMonthBetween(dates[0],dates[1]);
             else dates = getAllDates( dates[0],dates[1] );
+             let params = $("#effBarForm").serialize();
             $.ajax({
                 type:'post',
-                url:'${path}/count/bar',
-                data:$("#barForm").serialize(),
+                url:'${path}/count/effBar',
+                data:params,
                 dataType:'json',
                 beforeSend:function(){
 
                 } ,
                 success:function(data){
-                    var dataArr = new Array();
-                    for(var i=0;i<dates.length;i++){
-                        var got = false;
-                        for(var j=0;j<data.length;j++){
-                            if(data[j] !=null && data[j].days ==dates[i]  ){
+                    let dataArr = [];
+                    for(let i=0;i<dates.length;i++){
+                        let got = false;
+                        for(let j=0;j<data.length;j++){
+                            if(data[j] !=null && data[j].days ===dates[i]  ){
                                 if(data[j].consumption!=null){
                                     dataArr.push(data[j].consumption.toFixed(2));
                                     got = true;
@@ -53,9 +50,13 @@
                         }
                         if(!got)dataArr.push(0);
                     }
-                    drawTable1(dates,dataArr);
+                    drawTableEff1(dates,dataArr);
                 },
                 error:function(){
+                    layer.msg('系统异常！！！', {
+                        time: 20000, //20s后自动关闭
+                        btn: ['哦']
+                    });
                 },
                 complete:function(){
 
@@ -64,7 +65,7 @@
             $.ajax({
                 type:'post',
                 url:'${path}/count/countByOptimizer',
-                data:$("#barForm").serialize(),
+                data:params,
                 dataType:'json',
                 success:function(data){
                     // drawTable2(data);
@@ -74,7 +75,7 @@
             $.ajax({
                 type:'post',
                 url:'${path}/count/countByTrueCustomer',
-                data:$("#barForm").serialize(),
+                data:params,
                 dataType:'json',
                 success:function(data){
                     // drawTable2(data);
@@ -90,19 +91,18 @@
 
 
     }
-    function drawTable1(X_,Y_) {
+    function drawTableEff1(X_,Y_) {
         $("#chats1").html('');
         // 第二个参数可以指定前面引入的主题
         var div = document.createElement("div");
         div.setAttribute("style","width:1700px;height:800px")
         var chart = echarts.init(div, 'vintage');
         // 指定图表的配置项和数据
-        var seriesO = new Object();
+        var seriesO = {};
         seriesO.name= '消耗';
         seriesO.data = Y_;
         var cav_type  = $("#count1_c").val();
         seriesO.type='bar';
-        console.log( typeof cav_type);
         if(cav_type === "1" ){
             seriesO.type='line';
             seriesO.smooth=true;
@@ -111,7 +111,7 @@
             seriesO.type='line';
             seriesO.smooth=false;
         }
-        var option = {
+        let option = {
             title: {
                 text: '时间段消耗总计'
             },
@@ -132,7 +132,7 @@
         };
         // 使用刚指定的配置项和数据显示图表。
         chart.setOption(option);
-        var chats = document.getElementById("chats1");
+        var chats = document.getElementById("effChats1");
         chats.appendChild(div);
     }
 
@@ -241,18 +241,18 @@
     }
     function chearDraw(){
         $("#chats1").html('');
-        $('#barForm input').val('');
+        $('#effBarForm input').val('');
     }
 </script>
 
 <div class="easyui-layout" data-options="fit:true,border:false">
     <div data-options="region:'north',border:false" style="margin: 5px; overflow: hidden;background-color: #fff">
-        <form id="barForm">
+        <form id="effBarForm">
             <table>
                 <tr style="height: 40px">
                     <th>消耗日期:</th>
                     <td>
-                        <input id = 'recoredDateRange_COUNT' name="recoredDateRange" type="text" class="layui-input" >
+                        <input id = 'recoredDateRange_eff' name="recoredDateRange" type="text" class="layui-input" >
                     </td>
                     <th>素材</th>
                     <td  >
@@ -266,12 +266,12 @@
                         统计精度
                     </td>
                     <td>
-                        <select id="count1_R" name="type" style="width: 150px" class="layui-input"  >
+                        <select id="count1_eff" name="type" style="width: 150px" class="layui-input"  >
                             <option value="0" > 日 </option><option value="1" > 月 </option>
                         </select>
                     </td>
                     <td>
-                        <button type="button" class="layui-btn layui-btn-radius layui-btn-normal" onclick="drawTable();">生成</button>
+                        <button type="button" class="layui-btn layui-btn-radius layui-btn-normal" onclick="drawTableEff();">生成</button>
                     </td>
                     <td>
                         <button type="button" class="layui-btn layui-btn-radius layui-btn-danger" onclick="chearDraw()" >清空</button>
@@ -327,8 +327,18 @@
 <%--                    <td>--%>
 <%--                        <input name="customer.productType.id" class="easyui-combobox"  data-options="width:150,valueField:'id',textField:'name',url:'${path}/productType/combobox'" />--%>
 <%--                    </td>--%>
-                    <td></td>
-                    <td></td>
+                    <td>
+                        有效消耗有效期
+                    </td>
+                    <td>
+                        <input name = "effectDays" class="easyui-numberbox" data-options="width:150,min:0,precision:0" >
+                    </td>
+                    <td>
+                        最大累积有效消耗
+                    </td>
+                    <td>
+                        <input name = "maxEffectCon" class="easyui-numberbox" data-options="width:150,min:0,precision:2" >
+                    </td>
                 </tr>
             </table>
         </form>
@@ -336,11 +346,11 @@
     <div data-options="region:'center',border:false">
         <div class="layui-collapse" lay-accordion>
             <div class="layui-colla-item">
-                <h2 class="layui-colla-title">时间段消耗统计</h2>
+                <h2 class="layui-colla-title">时间段有效消耗统计</h2>
                 <div class="layui-colla-content layui-show">
                     <div class="layui-card">
-                        <div class="layui-card-header">时间段消耗统计图表</div>
-                        <div id="chats1" class="layui-card-body">
+                        <div class="layui-card-header">时间段有效消耗统计图表</div>
+                        <div id="effChats1" class="layui-card-body">
                         </div>
                     </div>
                 </div>

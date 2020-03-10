@@ -17,10 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author 骆长涛
@@ -32,14 +29,26 @@ import java.util.Set;
 @RequestMapping("/count")
 public class CountController extends BaseController {
     public static final Log logger = LogFactory.getLog(CountController.class);
-    @Autowired private ICountService countService;
+    private ICountService countService;
+    public static final String dateStart ="recoredDate_start";
+    public static final String dateEnd ="recoredDate_end";
+    @Autowired
+    public void setCountService(ICountService countService) {
+        this.countService = countService;
+    }
+
     @GetMapping("/bar")
     @RequiresPermissions("/count/bar")
     public String manager() {
         return "count/bar";
     }
-    private Map handleCondition(String recoredDateRange ,Integer type, VideoCost videoCost){
-        Map map = new HashMap();
+    @GetMapping("/eff")
+    @RequiresPermissions("/count/eff")
+    public String manager2() {
+        return "count/effect_con";
+    }
+    private Map<String,Object> handleCondition(String recoredDateRange ,Integer type, VideoCost videoCost){
+        Map<String,Object> map = new HashMap<>();
         ShiroUser user = getShiroUser();
         Set<String> roles = user.getRoles();
          if(!roles.contains(Const.Administor_Role_Name)  && !roles.contains(Const.OptimizerAdministorCN)  )map.put("userId",user.getId());
@@ -47,22 +56,22 @@ public class CountController extends BaseController {
 
         if(recoredDateRange!=null && recoredDateRange.indexOf("~")>0){
             String[] da = recoredDateRange.split("~");
-            if(da!=null && da.length==2 && da[0]!=null && da[1] !=null ){
+            if(da.length==2 && da[0]!=null && da[1] !=null ){
                 Date date1 = dateConverter.convert(da[0].replaceAll(" ",""));
                 Date date2 = dateConverter.convert(da[1].replaceAll(" ",""));
                 if(type==1){
-                    map.put("recoredDate_start", DateTools.firstDayD(date1));
-                    map.put("recoredDate_end",DateTools.lastDateD(date2));
+                    map.put(dateStart, DateTools.firstDayD(date1));
+                    map.put(dateEnd,DateTools.lastDateD(date2));
                 }else{
-                    map.put("recoredDate_start",date1);
-                    map.put("recoredDate_end",date2);
+                    map.put(dateStart,date1);
+                    map.put(dateEnd,date2);
                 }
 
 //                map.put("recoredDates",DateTools.getBetweenDates(date1,date2));
             }
         }else{
-            map.put("recoredDate_start",DateTools.firstDay());
-            map.put("recoredDate_end",DateTools.lastDate());
+            map.put(dateStart,DateTools.firstDay());
+            map.put(dateEnd,DateTools.lastDate());
 //            map.put("recoredDates",DateTools.getBetweenDates(DateTools.firstDay(),DateTools.lastDate()));
         }
         map.put("type",type==null?0:type);
@@ -93,4 +102,15 @@ public class CountController extends BaseController {
         map.put("countZero",countZero);
         return JSON.toJSON(countService.countByCustomer(map));
     }
+
+    @PostMapping("/effBar")
+    @RequiresPermissions("/count/eff")
+    @ResponseBody
+    public Object effCount(String recoredDateRange, Integer type ,Integer effectDays,Double maxEffectCon, VideoCost videoCost) {
+        Map<String,Object> map = handleCondition(recoredDateRange,type,videoCost);
+        map.put("effectDays",effectDays);
+        map.put("maxEffectCon",maxEffectCon);
+        return JSON.toJSON(5);
+    }
+
 }

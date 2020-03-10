@@ -50,6 +50,8 @@ public class User implements Serializable {
 
 	/** 创建时间 */
 	private Date createTime;
+	/** 所属供应商 */
+	private Supplier supplier;
 
 
 	public Long getId() {

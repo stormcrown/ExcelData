@@ -480,7 +480,7 @@
             }
         }
         if(id!=undefined && id!=null && id!='' ){
-            parent.$.messager.confirm('询问', '您是否要删除当前数据？'+tip, function (b) {
+            parent.$.messager.confirm('询问', '您是否要永久删除当前数据？'+tip, function (b) {
                 if (b) {
                     progressLoad();
                     $.post('${path}/videoCost/deleteForever', {
