@@ -24,7 +24,13 @@ function getCommonDateTime(value){
 }
 function redFont(str) {
     if( str!=undefined && str!=null && str.trim()!=''){
-        return "<span style='color:red;'>"+str+"</span> "
+        return "<span style='color:red;'>"+str+"</span>"
+    }
+    else return'';
+}
+function greenFont(str) {
+    if( str!=undefined && str!=null && str.trim()!=''){
+        return "<span style='color:green;'>"+str+"</span>"
     }
     else return'';
 }
@@ -45,18 +51,18 @@ function getCookie(c_name)
 }
 function commonForm(value,keyStrs) {
     if(value==undefined || value == null || value ==null)return"";
-    var str = new String(value);
-    var keys="";
+    let str = new String(value);
+    let keys="";
     if(keyStrs==undefined || keyStrs==null )
         keys = (new String($("#KeyWord").val())).trim().split(",");
     else keys = (new String(keyStrs)).trim().split(",");
-    var arr = new Array();
-    var speci = "&*$%^#~%@!&*";
-    for(var i=0;i<keys.length;i++){
+    let arr = new Array();
+    let speci = "&*$%^#~%@!&*";
+    for(let i=0;i<keys.length;i++){
         arr.push(keys[i]);
         str=str.replace(keys[i],speci+i+"_-_");
     }
-    for(var j=0;j<arr.length;j++){
+    for(let j=0;j<arr.length;j++){
         str=str.replace(speci+j+"_-_",redFont(arr[j]));
     }
     return str;

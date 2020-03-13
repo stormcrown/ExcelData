@@ -137,8 +137,8 @@ function systemConfigEditFun(id) {
      if(id!=null && id!=''){
         parent.$.modalDialog({
             title : '编辑',
-            width : 400,
-            height : 320,
+            width : 500,
+            height : 420,
             href :  '${path}/systemConfig/editPage?id=' + id,
             buttons : [ {
                 text : '确定',
@@ -251,7 +251,8 @@ function systemConfigSearchFun() {
                     <td width="50px;" ></td>
                     <td>
                         <button type="button" class="layui-btn layui-btn-radius layui-btn-normal" onclick="systemConfigSearchFun();">查询</button>
-                        <button type="button" class="layui-btn layui-btn-radius layui-btn-danger" onclick="systemConfigCleanFun();" >清空</button>
+                        <button type="button" class="layui-btn layui-btn-radius layui-btn-danger" onclick="systemConfigEditFun();">修改</button>
+<%--                        <button type="button" class="layui-btn layui-btn-radius layui-btn-danger" onclick="systemConfigCleanFun();" >清空</button>--%>
                      </td>
                 </tr>
             </table>

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
 import cn.dovahkiin.commons.utils.StringUtils;
+import com.alibaba.fastjson.JSON;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -55,7 +57,14 @@ public class PriceLevelController extends BaseController {
         pageInfo.setTotal(pages.getTotal());
         return pageInfo;
     }
-    
+    @PostMapping("/combobox")
+    @ResponseBody
+    @RequiresPermissions(value = {"/videoCost/dataGrid","/customer/*","/count/bar"  },logical = Logical.OR)
+    public Object combobox(){
+        EntityWrapper ew = new EntityWrapper();
+        ew.eq("delete_flag", 0 );
+        return JSON.toJSON(priceLevelService.selectList(ew));
+    }
     /**
      * 添加页面
      * @return

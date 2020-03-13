@@ -35,15 +35,15 @@
             <table class="grid">
                 <tr>
                     <td  width="150px">编码:</td>
-                    <td><input id="code" name="code" value="${priceLevel.code}" type="text" class="layui-input easyui-textbox" /></td>
+                    <td><input id="code" name="code" value="${priceLevel.code}" type="text" class="layui-input easyui-textbox" data-options="width:200,height:40, required:true" /></td>
                 </tr>
                 <tr>
                     <td>名称:</td>
-                    <td><input id="name" name="name" value="${priceLevel.name}" type="text" class="layui-input easyui-textbox" data-options="height:40, required:true" /></td>
+                    <td><input id="name" name="name" value="${priceLevel.name}" type="text" class="layui-input easyui-textbox" data-options="width:200,height:40, required:true" /></td>
                 </tr>
                 <tr>
                     <td>固定价格(数字):</td>
-                    <td><input id="basePrice" name="basePrice" value="${priceLevel.basePrice}" type="text" class="layui-input easyui-numberbox" data-options="height:40, required:true,missingMessage:'提供固定价格',min:0,precision:2"  /></td>
+                    <td><input id="basePrice" name="basePrice" value="${priceLevel.basePrice}" type="text" class="layui-input easyui-numberbox" data-options="width:200,height:40, required:true,missingMessage:'提供固定价格',min:0,precision:2"  /></td>
                 </tr>
             </table>
         </form>

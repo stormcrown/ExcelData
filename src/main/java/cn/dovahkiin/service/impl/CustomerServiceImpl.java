@@ -5,6 +5,7 @@ import cn.dovahkiin.commons.utils.StringUtils;
 import cn.dovahkiin.model.*;
 import cn.dovahkiin.mapper.CustomerMapper;
 import cn.dovahkiin.service.*;
+import cn.dovahkiin.util.Const;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -58,7 +59,7 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
     @Override
-    public Customer selectByCode(String code) {
+    public List<Customer> selectByCode(String code) {
         return customerMapper.selectByCode(code);
     }
 
@@ -74,6 +75,18 @@ public class CustomerServiceImpl implements ICustomerService {
     @Override
     public List<Customer> selectList(Map map) {
         return customerMapper.selectList(map);
+    }
+
+    @Override
+    public int countAll(Customer customer) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(Const.customerStr,customer);
+        return customerMapper.selectTotal(map);
+    }
+
+    @Override
+    public int countFrCheckCodeVersion(String code, Long versionId, Long selfId) {
+        return customerMapper.countForCheck(code,versionId,selfId);
     }
 
     @Override

@@ -23,6 +23,8 @@ import cn.dovahkiin.model.Customer;
 import cn.dovahkiin.service.ICustomerService;
 import cn.dovahkiin.commons.base.BaseController;
 
+import static cn.dovahkiin.util.Const.customerStr;
+
 /**
  * <p>
  * 客户信息 前端控制器
@@ -43,6 +45,7 @@ public class CustomerController extends BaseController {
         return "customer/customerList";
     }
 
+
     private Map handle(Customer customer, Integer page, Integer rows, String sort, String order ,
                         String KeyWord, String completeDateRange){
         Map map = new HashMap(10);
@@ -51,7 +54,7 @@ public class CustomerController extends BaseController {
 //            if(Double.parseDouble(cuns[0])!=0.0) map.put("consumption_min",Double.parseDouble(cuns[0]));
 //            map.put("consumption_max",Double.parseDouble(cuns[1]));
 //        }
-        map.put("customer",customer);
+        map.put(customerStr,customer);
         map.put("order",order );
         map.put("sort",sort);
 
@@ -113,7 +116,6 @@ public class CustomerController extends BaseController {
                 customer.setId(null);
                 model.addAttribute("customer", customer);
             }
-
         }
         return "customer/customerEdit";
     }
@@ -215,6 +217,17 @@ public Object rollback(String ids) {
             return renderSuccess("编辑成功！");
         } else {
             return renderError("编辑失败！");
+        }
+    }
+    @GetMapping("/checkCodeVersion")
+    @RequiresPermissions(value = {"/customer/edit","/customer/add" },logical = Logical.OR)
+    @ResponseBody
+    public Object checkCodeVersion(String code ,Long versionId,Long selfId) {
+        int b = customerService.countFrCheckCodeVersion(code,versionId,selfId);
+        if (b>0) {
+            return renderError(b+"");
+        } else {
+            return renderSuccess();
         }
     }
 }

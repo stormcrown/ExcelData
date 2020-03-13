@@ -22,10 +22,12 @@ public interface ICustomerService {
     int insert(Customer record);
     int insertSelective(Customer record);
     Customer selectByPrimaryKey(Long id);
-    Customer selectByCode(String code);
+    List<Customer> selectByCode(String code);
     List<Customer> selectUnDeleted();
     List<Customer> selectForCombobox();
     List<Customer> selectList(Map map);
+    int countAll(Customer customer);
+    int countFrCheckCodeVersion(String code ,Long versionId,Long selfId);
     Page<Customer> selectPage(Page<Customer> pages, Map<String , Object> map);
     int updateByPrimaryKeySelective(Customer record);
     int updateByPrimaryKey(Customer record);

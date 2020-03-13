@@ -25,6 +25,24 @@
             }
         });
     });
+    function checkCustomerCodeVersion(rec) {
+        let code =$('#customer_edit_code').val();
+        let versionID = null;
+        if(rec!=null)versionID = rec.id;
+        $.ajax({
+            url:'${path}/customer/checkCodeVersion',
+            method:'get',
+            data:{ code:code,'versionId':versionID,selfId:'${customer.id}' },
+            dataType:'json',
+            beforeSend:function(){
+                $('#checkCodeVersion').html("");
+            },
+            success:function(js){
+                if(js.success)$('#checkCodeVersion').html(greenFont('通过') );
+                else $('#checkCodeVersion').html( "编号 "+ redFont(code)+ " 的素材 ,已经包含版本" + redFont(rec.name) );
+            }
+        });
+    }
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
     <div data-options="region:'center',border:false" title="" style="overflow: hidden;padding: 3px;">
@@ -32,24 +50,41 @@
             <input name="id" type="hidden"  value="${customer.id}">
             <table class="grid" >
                 <tr>
-                    <th>素材编码:</th>
-                    <td><input id="code" name="code" value="${customer.code}" type="text" class="layui-input" /></td>
-                    <th>素材名称:</th>
-                    <td><input id="name" name="name" value="${customer.name}" type="text" class="layui-input" /></td>
+                    <td>素材编码</td>
+                    <td><input id="customer_edit_code" name="code" value="${customer.code}" type="text" class="layui-input easyui-textbox" data-options="width:200" /></td>
+                    <td>素材名称:</td>
+                    <td><input id="name" name="name" value="${customer.name}" type="text" class="layui-input easyui-textbox" data-options="width:200" /></td>
+                </tr>
+                <tr>
+                    <td >视频版本</td>
+                    <td>
+                        <input id="customer_edit_version" name="videoVersion.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/videoVersion/combobox',value:'${customer.videoVersion.id}',onSelect:checkCustomerCodeVersion" />
+                    </td>
+                    <td  id="checkCodeVersion" colspan="2" ></td>
+                </tr>
+                <tr>
+                    <td>最大有效消耗</td>
+                    <td  colspan="1" class="easyui-tooltip" title="不填表示使用系统默认配置" >
+                        <input name="maxEffectCon" type="text" class="easyui-numberbox"  data-options="width:200,min:0,precision:2,value:'${customer.maxEffectCon}'">
+                    </td>
+                    <td>收入比率(%)</td>
+                    <td  colspan="1" class="easyui-tooltip" title="不填表示使用系统默认配置" >
+                        <input name="inComeRatio" type="text" class="easyui-numberbox"  data-options="width:200,min:0,precision:2,value:'${customer.inComeRatio}'">
+                    </td>
                 </tr>
                 <tr>
                     <td>客户</td>
                     <td  colspan="3" >
                         <input name="trueCustomer.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/trueCustomer/combobox',value:'${customer.trueCustomer.id}'" />
                     </td>
-
                 </tr>
                 <tr>
-                    <td>产品类型</td>
                     <td>
-                        <input name="productType.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/productType/combobox',value:'${customer.productType.id}'" />
+<%--                        产品类型--%>
                     </td>
-
+                    <td>
+<%--                        <input name="productType.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/productType/combobox',value:'${customer.productType.id}'" />--%>
+                    </td>
                     <td>行业</td>
                     <td>
                         <input name="industry.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/industry/combobox',value:'${customer.industry.id}'" />
@@ -93,6 +128,17 @@
                     <td>演员3</td>
                     <td>
                         <input name="performer3.id"  class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/performer/combobox',value:'${customer.performer3.id}'" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td >价格分级</td>
+                    <td>
+                        <input name="priceLevel.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/priceLevel/combobox',formatter: function(row){ return row['name']+': ￥'+row['basePrice'] },value:'${customer.priceLevel.id}'   " />
+                    </td>
+                    <td >供应商</td>
+                    <td>
+                        <input name="supplier.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/supplier/combobox',value:'${customer.supplier.id}'" />
                     </td>
                 </tr>
             </table>

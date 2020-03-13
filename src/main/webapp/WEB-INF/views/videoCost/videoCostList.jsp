@@ -315,8 +315,8 @@
         parent.$.modalDialog({
             title: '添加',
             iconCls: 'icon-add',
-            width: 700,
-            height: 520,
+            width: 800,
+            height: 720,
             resizable:true,
             href: '${path}/videoCost/addPage?id='+id,
             buttons: [
@@ -420,8 +420,8 @@
         if(id!=null && id!=''){
             parent.$.modalDialog({
                 title: '编辑',
-                width: 700,
-                height: 520,
+                width: 800,
+                height: 720,
                 href: '${path}/videoCost/editPage?id=' + id,
                 buttons: [{
                     text: '确定',

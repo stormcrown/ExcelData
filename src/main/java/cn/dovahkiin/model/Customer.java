@@ -94,13 +94,14 @@ public class Customer extends Model<Customer> {
 
 	private VideoVersion videoVersion;
 
+	private PriceLevel priceLevel;
+
 	@TableField(exist = false)
 	private Double cumulativeConsumptionByPro;
 	@TableField(exist = false)
 	private Integer cumulativeConsumptionRankingByProglam;
 
-	public Customer() {
-	}
+	public Customer() { }
 
 	public Customer(String name, String code, Date createTime, Integer deleteFlag) {
 		this.name = name;
@@ -270,7 +271,7 @@ public class Customer extends Model<Customer> {
 	public String toString() {
 		return JsonUtils.toJson(this);
 	}
-
+	/**  注意 */
 	public String getCompleteDateStr() {
 		if(completeDate!=null){
 			return StringUtils.dateToStr2(completeDate);
@@ -312,5 +313,13 @@ public class Customer extends Model<Customer> {
 
 	public void setInComeRatio(Double inComeRatio) {
 		this.inComeRatio = inComeRatio;
+	}
+
+	public PriceLevel getPriceLevel() {
+		return priceLevel;
+	}
+
+	public void setPriceLevel(PriceLevel priceLevel) {
+		this.priceLevel = priceLevel;
 	}
 }

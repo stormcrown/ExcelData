@@ -48,8 +48,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     public void insertByVo(UserVo userVo) {
         User user = BeanUtils.copy(userVo, User.class);
         user.setCreateTime(new Date());
-        this.insert(user);
-        
+        userMapper.insertAll(user);
         Long id = user.getId();
         String[] roles = userVo.getRoleIds().split(",");
         UserRole userRole = new UserRole();
@@ -68,10 +67,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public void updateByVo(UserVo userVo) {
         User user = BeanUtils.copy(userVo, User.class);
-        if (StringUtils.isBlank(user.getPassword())) {
-            user.setPassword(null);
-        }
-        this.updateById(user);
+        if (StringUtils.isBlank(user.getPassword())) user.setPassword(null);
+
+//        this.updateById(user);
+        userMapper.updateByPrimaryKey(user);
         
         Long id = userVo.getId();
         List<UserRole> userRoles = userRoleMapper.selectByUserId(id);

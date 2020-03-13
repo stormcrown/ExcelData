@@ -62,8 +62,48 @@
              }
         },
             {
+                width: '120',
+                title: '价格分级',
+                field: 'priceLevel',
+                sortable: true,
+                align:'right',
+                formatter: function (value, row, index) {
+                    let plrl = '';
+                    if(value!=null){
+                        let baseP = value.basePrice;
+                        if(baseP!=null)baseP = " ￥:"+baseP.toFixed(2);
+                        let priceLN = value.name;
+                        if(priceLN!=null)priceLN =  commonForm(priceLN,$("#KeyWord_customList").val().trim())
+                        plrl = (priceLN==null?'':priceLN) + (baseP==null?'':baseP );
+                    }
+                    return plrl;
+                }
+            },
+            {
+                width: '120',
+                title: '最大累计消耗',
+                field: 'maxEffectCon',
+                sortable: true,
+                align:'right',
+                formatter: function (value, row, index) {
+                    if(value!=null) return value.toFixed(2);
+                    return "";
+                }
+            },
+            {
+                width: '120',
+                title: '有效收入比率',
+                field: 'inComeRatio',
+                sortable: true,
+                align:'right',
+                formatter: function (value, row, index) {
+                    if(value!=null) return value.toFixed(2);
+                    return "";
+                }
+            },
+            {
                 width: '80',
-                title: '累计消耗',
+                title: '实际累计消耗',
                 field: 'cumulativeConsumptionByPro',
                 sortable: true,
                 align:'right',
@@ -123,6 +163,26 @@
                     width: '60',
                     title: '演员3',
                     field: 'performer3',
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        if(value!=null)return commonForm(value.name,$("#KeyWord_customList").val().trim());
+                        return "";
+                    }
+                },
+                {
+                    width: '60',
+                    title: '供应商',
+                    field: 'supplier',
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        if(value!=null)return commonForm(value.name,$("#KeyWord_customList").val().trim());
+                        return "";
+                    }
+                },
+                {
+                    width: '60',
+                    title: '视频版本',
+                    field: 'videoVersion',
                     sortable: true,
                     formatter: function (value, row, index) {
                         if(value!=null)return commonForm(value.name,$("#KeyWord_customList").val().trim());
@@ -243,8 +303,8 @@ function customerAddFun() {
         }
     parent.$.modalDialog({
         title : '添加',
-        width : 700,
-        height : 420,
+        width : 800,
+        height : 620,
         href : '${path}/customer/addPage?id='+id,
         buttons : [ {
             text : '确定',
@@ -262,7 +322,7 @@ function customerAddFun() {
  * 编辑
  */
 function customerEditFun(id) {
-     if (id == undefined) {
+     if (id === undefined) {
             var rows = customerDataGrid.datagrid('getSelections');
             if(rows!=null && rows.length==1) id = rows[0].id;
             else {
@@ -276,8 +336,8 @@ function customerEditFun(id) {
      if(id!=null && id!=''){
         parent.$.modalDialog({
             title : '编辑',
-            width : 700,
-            height : 420,
+            width : 800,
+            height : 620,
             href :  '${path}/customer/editPage?id=' + id,
             buttons : [ {
                 text : '确定',
@@ -369,15 +429,14 @@ function customerSearchFun() {
      customerDataGrid.datagrid('load', $.serializeObject($('#customerSearchForm')));
 }
     function chckKeyWordType_CUS(record) {
-        console.log(record);
-        if(record!=null && record.value=='all')$('#keyWordType_CUS').combobox('setValue','all');
+        if(record!=null && record.value==='all')$('#keyWordType_CUS').combobox('setValue','all');
         var ss= $('#keyWordType').combobox('getValues');
         for(var i=0;i< ss.length;i++ ){
-            if(i==0 && ss.length>1 && ss[i] =='all'){
+            if(i==0 && ss.length>1 && ss[i] ==='all'){
                 ss.splice(0,1);
                 $('#keyWordType_CUS').combobox('setValues',ss);
             }
-            if(i>0 && ss[i] =='all' ){
+            if(i>0 && ss[i] ==='all' ){
                 $('#keyWordType_CUS').combobox('setValue','all');
                 return;
             }
@@ -435,37 +494,56 @@ function customerSearchFun() {
                 <tr  >
                     <th>客户</th>
                     <td>
-                        <input name="trueCustomer.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/trueCustomer/combobox'" />
+                        <input name="trueCustomer.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/trueCustomer/combobox'" />
                     </td>
                     <th>演员</th>
                     <td  >
-                        <input name="performer1.id"  class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/performer/combobox'" />
+                        <input name="performer1.id"  class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/performer/combobox'" />
                     </td>
                     <th>摄像</th>
                     <td>
-                        <input name="photographer.id"  class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/photographer/combobox'" />
+                        <input name="photographer.id"  class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/photographer/combobox'" />
                     </td>
                     <th>剪辑</th>
                     <td>
-                        <input name="editor.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/editor/combobox'" />
+                        <input name="editor.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/editor/combobox'" />
                     </td>
                 </tr>
                 <tr  >
                     <td >创意</td>
                     <td>
-                        <input name="originality.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/originality/combobox'" />
+                        <input name="originality.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/originality/combobox'" />
                     </td>
                     <td >行业</td>
                     <td>
-                        <input name="industry.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/industry/combobox'" />
+                        <input name="industry.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/industry/combobox'" />
                     </td>
-                    <td >产品类型</td>
+                    <td ><%--产品类型--%></td>
                     <td>
-                        <input name="productType.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/productType/combobox'" />
+<%--                        <input name="productType.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'$ {path}/productType/combobox'" />--%>
                     </td>
                     <td >视频类型</td>
                     <td>
-                        <input name="videoType.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/videoType/combobox'" />
+                        <input name="videoType.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/videoType/combobox'" />
+                    </td>
+
+                </tr>
+                <tr  >
+                    <td >价格分级</td>
+                    <td>
+                        <input name="priceLevel.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/priceLevel/combobox',formatter: function(row){ return row['name']+': ￥'+row['basePrice'] }   " />
+                    </td>
+                    <td >供应商</td>
+                    <td>
+                        <input name="supplier.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/supplier/combobox'" />
+                    </td>
+                    <td >视频版本</td>
+                    <td>
+                        <input name="videoVersion.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/videoVersion/combobox'" />
+                    </td>
+                    <td ></td>
+                    <td>
+
                     </td>
 
                 </tr>

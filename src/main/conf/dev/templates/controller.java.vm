@@ -61,7 +61,14 @@ public class ${table.controllerName} {
         pageInfo.setTotal(pages.getTotal());
         return pageInfo;
     }
-    
+    @PostMapping("/combobox")
+    @ResponseBody
+    @RequiresPermissions(value = {"/videoCost/dataGrid","/customer/*","/count/bar" },logical = Logical.OR)
+    public Object dataGrid() {
+        EntityWrapper ew = new EntityWrapper();
+        ew.eq("delete_flag", 0 );
+        return JSON.toJSON(${table.entityPath}Service.selectList(ew));
+        }
     /**
      * 添加页面
      * @return

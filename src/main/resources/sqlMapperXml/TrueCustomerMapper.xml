@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.qhzx.smallroutine.dao.TrueCustomerMapper">
+<mapper namespace="cn.dovahkiin.mapper.TrueCustomerMapper">
   <resultMap id="BaseResultMap" type="cn.dovahkiin.model.TrueCustomer">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
@@ -22,14 +22,6 @@
     delete from true_customer
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="cn.dovahkiin.model.TrueCustomer">
-    insert into true_customer (id, name, code, 
-      update_time, create_time, delete_flag
-      )
-    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{deleteFlag,jdbcType=INTEGER}
-      )
-  </insert>
   <insert id="insertSelective" parameterType="cn.dovahkiin.model.TrueCustomer">
     insert into true_customer
     <trim prefix="(" suffix=")" suffixOverrides=",">

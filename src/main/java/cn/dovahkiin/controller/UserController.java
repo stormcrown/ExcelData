@@ -69,18 +69,16 @@ public class UserController extends BaseController {
         PageInfo pageInfo = new PageInfo(page, rows, sort, order);
         Map<String, Object> condition = new HashMap<String, Object>();
 
-        if (StringUtils.isNotBlank(userVo.getName())) {
-            condition.put("name", userVo.getName());
-        }
-        if (userVo.getOrganizationId() != null) {
-            condition.put("organizationId", userVo.getOrganizationId());
-        }
-        if (userVo.getCreatedateStart() != null) {
-            condition.put("startTime", userVo.getCreatedateStart());
-        }
-        if (userVo.getCreatedateEnd() != null) {
-            condition.put("endTime", userVo.getCreatedateEnd());
-        }
+        if (StringUtils.isNotBlank(userVo.getName())) condition.put("name", userVo.getName());
+
+        if (userVo.getOrganizationId() != null) condition.put("organizationId", userVo.getOrganizationId());
+
+        if (userVo.getCreatedateStart() != null) condition.put("startTime", userVo.getCreatedateStart());
+
+        if (userVo.getCreatedateEnd() != null) condition.put("endTime", userVo.getCreatedateEnd());
+
+        if(userVo.getSupplier()!=null)condition.put("supplierId",userVo.getSupplier().getId());
+
         pageInfo.setCondition(condition);
         userService.selectDataGrid(pageInfo);
         return pageInfo;
@@ -93,8 +91,11 @@ public class UserController extends BaseController {
      */
     @GetMapping("/addPage")
     @RequiresPermissions("/user/add")
-    public String addPage() {
-        return "admin/user/userAdd";
+    public String addPage(Model model,Long id) {
+        model.addAttribute("method", "add");
+        model.addAttribute("roleIds", new ArrayList<Long>());
+        model.addAttribute("user", null);
+        return "admin/user/userEdit";
     }
 
     /**
@@ -103,15 +104,15 @@ public class UserController extends BaseController {
      * @param userVo
      * @return
      */
+    @RequiresRoles(Const.Administor_Role_Name)
     @PostMapping("/add")
     @ResponseBody
     @RequiresPermissions("/user/add")
     public Object add(@Valid UserVo userVo) {
         List<User> list = userService.selectByLoginName(userVo);
-        if (list != null && !list.isEmpty()) {
-            return renderError("登录名已存在!");
-        }
+        if (list != null && !list.isEmpty()) return renderError("登录名已存在!");
         String salt = StringUtils.getUUId();
+        if(StringUtils.isBlank(userVo.getPassword()))return renderError("密码为空!");
         String pwd = passwordHash.toHex(userVo.getPassword(), salt);
         userVo.setSalt(salt);
         userVo.setPassword(pwd);
@@ -132,11 +133,11 @@ public class UserController extends BaseController {
         UserVo userVo = userService.selectVoById(id);
         List<Role> rolesList = userVo.getRolesList();
         List<Long> ids = new ArrayList<Long>();
-        for (Role role : rolesList) {
-            ids.add(role.getId());
-        }
+        for (Role role : rolesList) ids.add(role.getId());
+
         model.addAttribute("roleIds", ids);
         model.addAttribute("user", userVo);
+        model.addAttribute("method", "edit");
         return "admin/user/userEdit";
     }
 
@@ -152,15 +153,14 @@ public class UserController extends BaseController {
     @RequiresPermissions("/user/edit")
     public Object edit(@Valid UserVo userVo) {
         List<User> list = userService.selectByLoginName(userVo);
-        if (list != null && !list.isEmpty()) {
-            return renderError("登录名已存在!");
-        }
+        if (list != null && !list.isEmpty()) return renderError("登录名已存在!");
         // 更新密码
         if (StringUtils.isNotBlank(userVo.getPassword())) {
             User user = userService.selectById(userVo.getId());
             String salt = user.getSalt();
             String pwd = passwordHash.toHex(userVo.getPassword(), salt);
             userVo.setPassword(pwd);
+            userVo.setSalt(salt);
         }
         userService.updateByVo(userVo);
         return renderSuccess("修改成功！");

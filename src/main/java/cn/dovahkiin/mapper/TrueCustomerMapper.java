@@ -12,5 +12,13 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * @since 2018-11-29
  */
 public interface TrueCustomerMapper extends BaseMapper<TrueCustomer> {
+    int deleteByPrimaryKey(Long id);
 
+    int insertSelective(TrueCustomer record);
+
+    TrueCustomer selectByPrimaryKey(Long id);
+
+    int updateByPrimaryKeySelective(TrueCustomer record);
+
+    int updateByPrimaryKey(TrueCustomer record);
 }

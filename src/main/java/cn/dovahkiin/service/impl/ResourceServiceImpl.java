@@ -1,6 +1,7 @@
 package cn.dovahkiin.service.impl;
 
 import cn.dovahkiin.service.IResourceService;
+import cn.dovahkiin.util.Const;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import cn.dovahkiin.commons.result.Tree;
@@ -112,7 +113,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
             return trees;
         }
         // 如果有超级管理员权限
-        if (roles.contains("admin")) {
+        if (roles.contains(Const.Administor_Role_Name)) {
             List<Resource> resourceList = this.selectByType(RESOURCE_MENU);
             if (resourceList == null) {
                 return trees;

@@ -46,12 +46,24 @@
                 width : '80',
                 title : '所属部门',
                 field : 'organizationName'
-            },{
-                width : '130',
-                title : '创建时间',
-                field : 'createTime',
-                sortable : true
-            },  {
+            },
+                {
+                    width : '80',
+                    title : '供应商',
+                    field : 'supplierName'
+                },
+                {
+                    width: '130',
+                    title: '创建时间',
+                    field: 'createTime',
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        if (value != null) {
+                            let date = new Date(value);
+                            return date.getFullYear() + '-' + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+                        }
+                    }
+                },  {
                 width : '40',
                 title : '性别',
                 field : 'sex',
@@ -85,9 +97,9 @@
                 field : 'userType',
                 sortable : true,
                 formatter : function(value, row, index) {
-                    if(value == 0) {
+                    if(value === 0) {
                         return "管理员";
-                    }else if(value == 1) {
+                    }else if(value === 1) {
                         return "用户";
                     }
                     return "未知类型";
@@ -132,14 +144,14 @@
     function addUserFun() {
         parent.$.modalDialog({
             title : '添加',
-            width : 500,
-            height : 300,
+            width : 600,
+            height : 400,
             href : '${path }/user/addPage',
             buttons : [ {
                 text : '添加',
                 handler : function() {
                     parent.$.modalDialog.openner_dataGrid = userDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
-                    var f = parent.$.modalDialog.handler.find('#userAddForm');
+                    let f = parent.$.modalDialog.handler.find('#userEditForm');
                     f.submit();
                 }
             } ]
@@ -173,7 +185,7 @@
     }
     
     function editUserFun(id) {
-        if (id == undefined) {
+        if (id === undefined) {
             var rows = userDataGrid.datagrid('getSelections');
             id = rows[0].id;
         } else {
@@ -181,8 +193,8 @@
         }
         parent.$.modalDialog({
             title : '编辑',
-            width : 500,
-            height : 300,
+            width : 600,
+            height : 400,
             href : '${path }/user/editPage?id=' + id,
             buttons : [ {
                 text : '确定',
@@ -204,19 +216,32 @@
     }
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
-    <div data-options="region:'north',border:false" style="height: 30px; overflow: hidden;background-color: #fff">
+    <div data-options="region:'north',border:false" style="overflow: hidden;background-color: #fff">
         <form id="searchUserForm">
-            <table>
+            <table style="margin: 5px;" >
                 <tr>
                     <th>姓名:</th>
-                    <td><input name="name" placeholder="请输入用户姓名"/></td>
+                    <td>
+                        <input name="name"  class="easyui-textbox" data-options="width:200,height:30" >
+                    </td>
                     <th>创建时间:</th>
                     <td>
-                        <input class="Wdate" name="createdateStart" placeholder="点击选择时间" onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})" readonly="readonly" />至
-                        <input class="Wdate" name="createdateEnd" placeholder="点击选择时间" onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})" readonly="readonly" />
-                        <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'glyphicon-search icon-blue',plain:true" onclick="searchUserFun();">查询</a>
-                        <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'glyphicon-remove-circle icon-red',plain:true" onclick="cleanUserFun();">清空</a>
+                        <input class="easyui-datetimebox" name="createdateStart" data-options="width:200,height:30,required:false,showSeconds:true" >
+<%--                        <input  class="Wdate" name="createdateStart" placeholder="点击选择时间" onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})" readonly="readonly" />--%>
+
+<%--                        <input class="Wdate" name="createdateEnd" placeholder="点击选择时间" onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})" readonly="readonly" />--%>
+
+<%--                        <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'glyphicon-search icon-blue',plain:true" onclick="searchUserFun();">查询</a>--%>
+<%--                        <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'glyphicon-remove-circle icon-red',plain:true" onclick="cleanUserFun();">清空</a>--%>
                     </td>
+                    <td>至</td>
+                    <td><input class="easyui-datetimebox" name="createdateEnd" data-options="width:200,height:30,required:false,showSeconds:true" ></td>
+                    <td >供应商:</td>
+                    <td>
+                        <input name="supplier.id" class="easyui-combobox"  data-options="width:200,height:30,valueField:'id',textField:'name',url:'${path}/supplier/combobox',value:'${user.supplier.id}'" />
+                    </td>
+                    <td><button type="button" class="layui-btn layui-btn-radius layui-btn-normal" onclick="searchUserFun();">查询</button></td>
+                    <td><button type="button" class="layui-btn layui-btn-radius layui-btn-danger" onclick="cleanUserFun();" >清空</button></td>
                 </tr>
             </table>
         </form>

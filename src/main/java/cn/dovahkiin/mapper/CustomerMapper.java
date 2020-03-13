@@ -19,11 +19,12 @@ public interface CustomerMapper  {
     int deleteByPrimaryKey(Long id);
     int insert(Customer record);
     int insertSelective(Customer record);
-    Customer selectByCode(String code);
+    List<Customer> selectByCode(String code);
     List<Customer> selectList(Map map);
     List<Customer> selectSimpleList(Map map);
     List<Customer> selectSimpleListByVideoCost(Map map );
     int selectTotal(Map map);
+    int countForCheck(@Param("code")String code,@Param("videoVersionId")Long videoVersionId,@Param("selfId")Long selfId);
     int updateByPrimaryKeySelective(Customer record);
     int updateByPrimaryKey(Customer record);
     int deleteMany(String[] ids);

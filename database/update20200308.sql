@@ -1,7 +1,7 @@
 select * from customer ;
 -- 素材的最大有效消耗
--- alter table customer add column max_effect_con double default -1 comment '素材最大有效消耗，-1 表示使用默认系统配置值' ;
--- alter table customer add column income_ratio double default -1 comment '收入比率，-1 表示使用默认系统配置值' ;
+alter table customer ADD column max_effect_con double NULL  comment '素材最大有效消耗，-1 表示使用默认系统配置值' ;
+alter table customer ADD column income_ratio double NULL  comment '收入比率，表示使用默认系统配置值' ;
 alter table customer add column supplier_id bigint comment '供应商外键' , add index supplier_id_index (supplier_id) ;
 alter table customer add index originality_id_index (originality_id) ;
 alter table customer add index performer1_id_index (performer1_id) ;
@@ -57,7 +57,6 @@ create table video_version
     `create_time` datetime    NOT NULL COMMENT '创建时间',
     `delete_flag` int(1)      NOT NULL DEFAULT 0 COMMENT '是否删除'
 )ENGINE = InnoDB  CHARACTER SET = utf8 ;
-
 /* 将编号唯一，改为编号，版本Id唯一 */
 -- alter table customer add column video_version_id bigint(19) , add index video_version_index (video_version_id) ,drop index uniqueCode ,add unique index code_version (code,video_version_id);
 
@@ -75,4 +74,5 @@ create table price_level
     `create_by` bigint    NOT NULL  COMMENT '创建人',
     `delete_flag` int(1)      NOT NULL DEFAULT 0 COMMENT '是否删除'
 )ENGINE = InnoDB  CHARACTER SET = utf8 ;
+alter table customer add column price_level_id bigint comment '价格分级外键' , add index price_level_id_index (price_level_id) ;
 select  * from price_level;

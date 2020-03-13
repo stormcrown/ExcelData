@@ -281,7 +281,7 @@ public class VideoCostController extends BaseController {
     @PostMapping("/deleteForever")
     @ResponseBody
     @RequiresPermissions("/videoCost/delete")
-    @RequiresRoles(value = "admin" )
+    @RequiresRoles(Const.Administor_Role_Name )
     public Object deleteForever(String ids){
         if(ids!=null){
             String[] strings = ids.split(",");

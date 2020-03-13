@@ -407,7 +407,8 @@ public class VideoCostServiceImpl implements IVideoCostService {
                 if (customer_1.getId() != null) {
                     customer_1.setUpdateTime(now);
                     if(StringUtils.hasText(customer_1.getCode())){
-                        Customer customer = customerService.selectByCode(customer_1.getCode());
+                        List<Customer> customers1 = customerService.selectByCode(customer_1.getCode());
+                        Customer customer = customers1.get(0);
                         if(customer!=null && (!customer.getId().equals(customer_1.getId()) || !customer_1.getName().equals(customer.getName()) ) ){
                             StringBuffer stringBuffer = new StringBuffer("第");
                             stringBuffer.append(i+1).append(" 行，编码：")

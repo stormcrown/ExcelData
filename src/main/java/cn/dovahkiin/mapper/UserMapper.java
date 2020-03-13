@@ -21,4 +21,7 @@ public interface UserMapper extends BaseMapper<User> {
 
     List<Map<String, Object>> selectUserPage(Pagination page, Map<String, Object> params);
 
+    int insertAll(User user);
+    int updateByPrimaryKey(User user);
+
 }

@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import cn.dovahkiin.commons.utils.JsonUtils;
+import cn.dovahkiin.model.Supplier;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -56,6 +57,8 @@ public class UserVo implements Serializable {
 
 	private Date createdateStart;
 	private Date createdateEnd;
+
+	private Supplier supplier;
 
 	public Long getId() {
 		return id;
@@ -207,6 +210,14 @@ public class UserVo implements Serializable {
 			return false;
 		}
 		return id.equals(userId);
+	}
+
+	public Supplier getSupplier() {
+		return supplier;
+	}
+
+	public void setSupplier(Supplier supplier) {
+		this.supplier = supplier;
 	}
 
 	@Override

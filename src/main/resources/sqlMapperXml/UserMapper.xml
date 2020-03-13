@@ -16,7 +16,7 @@
         <result column="phone" property="phone" jdbcType="VARCHAR"/>
 
         <result column="organizationName" property="organizationName" jdbcType="VARCHAR"/>
-
+        <association property="supplier" columnPrefix="supplier_" javaType="cn.dovahkiin.model.Supplier" resultMap="cn.dovahkiin.mapper.SupplierMapper.BaseResultMap" />
         <collection property="rolesList" ofType="Role">
             <id column="roleId" property="id"/>
             <result column="roleName" property="name"/>
@@ -27,7 +27,33 @@
     <sql id="Base_Column_List">
         id, login_name AS loginName, name, password, salt, sex, age, phone, user_type AS userType, status, organization_id AS organizationId, create_time AS createTime
     </sql>
-
+    <insert id="insertAll" keyColumn="id" keyProperty="id" parameterType="cn.dovahkiin.model.User" useGeneratedKeys="true">
+        insert into user (login_name, `name`, `password`,
+                          salt, sex, age, phone,
+                          user_type, `status`, organization_id,
+                          create_time, supplier_id)
+        values (#{loginName,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
+                #{salt,jdbcType=VARCHAR}, #{sex,jdbcType=TINYINT}, #{age,jdbcType=TINYINT}, #{phone,jdbcType=VARCHAR},
+                #{userType,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, #{organizationId,jdbcType=INTEGER},
+                #{createTime,jdbcType=TIMESTAMP}, #{supplier.id,jdbcType=BIGINT})
+    </insert>
+    <update id="updateByPrimaryKey" parameterType="cn.dovahkiin.model.User">
+        update user
+        set login_name = #{loginName,jdbcType=VARCHAR},
+            `name` = #{name,jdbcType=VARCHAR},
+            <if test="password!=null">
+                password = #{password},
+                salt = #{salt,jdbcType=VARCHAR},
+            </if>
+            sex = #{sex,jdbcType=TINYINT},
+            age = #{age,jdbcType=TINYINT},
+            phone = #{phone,jdbcType=VARCHAR},
+            user_type = #{userType,jdbcType=TINYINT},
+            `status` = #{status,jdbcType=TINYINT},
+            organization_id = #{organizationId,jdbcType=INTEGER},
+            supplier_id = #{supplier.id,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
     <select id="selectUserVoById" resultMap="userVoResultMap" parameterType="java.lang.Long">
         SELECT
         t.id,
@@ -43,12 +69,14 @@
         phone,
         s.`name` AS organizationName,
         o.id AS roleId,
-        o.`name` AS roleName
+        o.`name` AS roleName,
+               t.supplier_id,s2.name as supplier_name,s2.code as supplier_code
         FROM
         user t
         LEFT JOIN user_role r ON t.id = r.user_id
         LEFT JOIN role o ON r.role_id = o.id
         LEFT JOIN organization s ON s.id = t.organization_id
+        left join supplier s2 on t.supplier_id = s2.id
         <where>
             t.id = #{id}
         </where>
@@ -56,14 +84,16 @@
 
     <select id="selectUserPage" resultType="Map">
         SELECT 
-        t.id, t.login_name AS loginName, t.`name`, t.phone, t.`password`, 
+        t.id, t.login_name AS loginName, t.`name`, t.phone,
         t.sex, t.age, t.create_time AS createTime, t.user_type AS userType, 
         t.`status`, t.organization_id AS organizationId,  
-        s.`name` AS organizationName, group_concat(o.`name`) AS rolesList
+        s.`name` AS organizationName, group_concat(o.`name`) AS rolesList,
+               t.supplier_id as supplierId,sup.name as supplierName
         FROM user t
         LEFT JOIN user_role r ON t.id = r.user_id
         LEFT JOIN role o ON r.role_id = o.id
         LEFT JOIN organization s ON s.id = t.organization_id
+        LEFT JOIN supplier sup on t.supplier_id = sup.id
         <where>
             <if test=" name != null and name != '' ">
                 t.name = #{name}
@@ -71,6 +101,7 @@
             <if test=" organizationId != null ">
                 t.organization_id = #{organizationId}
             </if>
+            <if test="supplierId!=null">and t.supplier_id = #{supplierId}</if>
             <if test=" startTime != null ">
                 <![CDATA[ and t.create_time >= #{startTime} ]]>
             </if>

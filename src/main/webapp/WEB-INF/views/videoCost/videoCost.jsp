@@ -44,9 +44,12 @@
             opt.data = optimizers;
             $('#optimizer').combobox(opt);
             opt.data = customers;
+            opt['width'] = 500;
             opt.required = true;
             opt.onSelect = function (record) {
-                if(record==undefined || record==null )return;
+                if(record === undefined )return;
+                $('#maxEffectConTD').html(record.maxEffectCon);
+                $('#inComeRatioTD').html(record.inComeRatio);
                 if(record.productType !=null ) $('#productTypeTD').html(record.productType.name); else $('#productTypeTD').html("");
                 if(record.industry !=null ) $('#industryTD').html(record.industry.name); else $('#industryTD').html('');
                 if(record.videoType !=null ) $('#videoTypeTD').html(record.videoType.name); else $('#videoTypeTD').html('');
@@ -58,6 +61,9 @@
                 if(record.performer3 !=null ) $('#performer3TD').html(record.performer3.name); else $('#performer3TD').html('');
                 if(record.completeDate !=null ) $('#completeDateTD').html(record.completeDateStr); else $('#completeDateTD').html('');
                 if(record.trueCustomer !=null ) $('#trueCustomerTD').html(record.trueCustomer.name); else $('#trueCustomerTD').html('');
+                if(record.supplier !=null ) $('#supplierTD').html(record.supplier.name); else $('#supplierTD').html('');
+                if(record.videoVersion !=null ) $('#videoVersionTD').html(record.videoVersion.name); else $('#videoVersionTD').html('');
+                if(record.priceLevel !=null ) $('#priceLevelTD').html(record.priceLevel.name+" ￥:"+record.priceLevel.basePrice); else $('#priceLevelTD').html('');
                 checkRecordCountOnNameAndDate($('#recoredDate').datebox("getValue"),record.id,record.name);
             };
             $('#customer').combobox(opt);
@@ -95,7 +101,7 @@
     }
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
-    <div data-options="region:'center',border:false" style="overflow: hidden;padding: 3px;">
+    <div data-options="region:'center',border:false" style="overflow: hidden;padding: 1px;">
         <form id="videoCostAddForm" method="post">
             <input name="id" type="hidden" value="${videoCost.id}">
             <div class="layui-card">
@@ -134,56 +140,69 @@
                         </tr>
                         <tr>
                             <td>素材</td>
-                            <td>
+                            <td  colspan="3" >
                                 <select id="customer" name="customer.id" class="easyui-combobox" data-options="value:'${videoCost.customer.id}'">
                                 </select>
                                 <%--<input name="customer.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/customer/combobox',value:'${videoCost.customer.id}'" />--%>
                             </td>
-                            <td>客户</td>
-                            <td id="trueCustomerTD" >
-                                ${videoCost.customer.trueCustomer.name}
+                        </tr>
+                        <tr>
+                            <td>最大有效消耗</td>
+                            <td id = "maxEffectConTD" >
+                                ${videoCost.customer.maxEffectCon}
                             </td>
+                            <td>收入比率（%）</td>
+                            <td id = "inComeRatioTD" >
+                                ${videoCost.customer.inComeRatio}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>价格分级</td>
+                            <td id="priceLevelTD" >${videoCost.customer.priceLevel.name} ￥:${videoCost.customer.priceLevel.basePrice}</td>
+                            <td>客户</td>
+                            <td id="trueCustomerTD" >${videoCost.customer.trueCustomer.name}</td>
                         </tr>
                         <tr>
                             <td>产品类型</td>
-                            <td id="productTypeTD" >
-                                ${videoCost.customer.productType.name}
-                            </td>
+                            <td id="productTypeTD" >${videoCost.customer.productType.name}</td>
                             <td>行业</td>
-                            <td id="industryTD">${videoCost.customer.industry.name}
-                            </td>
+                            <td id="industryTD">${videoCost.customer.industry.name}</td>
                         </tr>
                         <tr>
                             <td>视频类型</td>
-                            <td id="videoTypeTD" >${videoCost.customer.videoType.name}
-                            </td>
+                            <td id="videoTypeTD" >${videoCost.customer.videoType.name}</td>
                             <td>成片日期</td>
-                            <td id="completeDateTD" >${videoCost.customer.completeDateStr}
-                            </td>
+                            <td id="completeDateTD" >${videoCost.customer.completeDateStr}</td>
                         </tr>
                         <tr>
                             <td>创意</td>
-                            <td id="originalityTD" >${videoCost.customer.originality.name}
-                            </td>
+                            <td id="originalityTD" >${videoCost.customer.originality.name}</td>
                             <td>摄像</td>
-                            <td id="photographerTD" >${videoCost.customer.photographer.name}
-                            </td>
+                            <td id="photographerTD" >${videoCost.customer.photographer.name}</td>
                         </tr>
                         <tr>
                             <td>演员1</td>
-                            <td id="performer1TD" >${videoCost.customer.performer1.name}
-                            </td>
+                            <td id="performer1TD" >${videoCost.customer.performer1.name}</td>
                             <td>演员2</td>
-                            <td id="performer2TD" >${videoCost.customer.performer2.name}
-                            </td>
+                            <td id="performer2TD" >${videoCost.customer.performer2.name}</td>
                         </tr>
                         <tr>
                             <td>演员3</td>
-                                <td id="performer3TD" >${videoCost.customer.performer3.name}
-                            </td>
+                            <td id="performer3TD" >${videoCost.customer.performer3.name}</td>
                             <td>剪辑</td>
-                            <td id="editorTD" >${videoCost.customer.editor.name}
-                            </td>
+                            <td id="editorTD" >${videoCost.customer.editor.name}</td>
+                        </tr>
+                        <tr>
+                            <td>供应商</td>
+                            <td id="supplierTD" >${videoCost.customer.supplier.name}</td>
+                            <td>视频版本</td>
+                            <td id="videoVersionTD" >${videoCost.customer.videoVersion.name}</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                         </tr>
                     </table>
                 </div>

@@ -25,10 +25,6 @@
                 field : 'name',
                 title : '部门名称',
                 width : 180
-            },{
-                field : 'name',
-                title : '部门名称',
-                width : 180
             },
                 {
                 field : 'seq',

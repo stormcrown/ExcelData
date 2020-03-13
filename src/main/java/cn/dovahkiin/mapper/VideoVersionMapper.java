@@ -12,5 +12,13 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * @since 2020-03-10
  */
 public interface VideoVersionMapper extends BaseMapper<VideoVersion> {
+    int deleteByPrimaryKey(Long id);
 
+    int insertSelective(VideoVersion record);
+
+    VideoVersion selectByPrimaryKey(Long id);
+
+    int updateByPrimaryKeySelective(VideoVersion record);
+
+    int updateByPrimaryKey(VideoVersion record);
 }

@@ -11,86 +11,22 @@
         <result column="create_time" property="createTime"/>
         <result column="delete_flag" property="deleteFlag"/>
         <result column="complete_date" property="completeDate"/>
-        <association property="editor" javaType="cn.dovahkiin.model.Editor" columnPrefix="editor_">
-            <id column="id" property="id"/>
-            <result column="name" property="name"/>
-            <result column="code" property="code"/>
-            <result column="update_time" property="updateTime"/>
-            <result column="create_time" property="createTime"/>
-            <result column="delete_flag" property="deleteFlag"/>
-        </association>
-        <association property="industry" javaType="cn.dovahkiin.model.Industry" columnPrefix="industry_">
-            <id column="id" property="id"/>
-            <result column="name" property="name"/>
-            <result column="code" property="code"/>
-            <result column="update_time" property="updateTime"/>
-            <result column="create_time" property="createTime"/>
-            <result column="delete_flag" property="deleteFlag"/>
-        </association>
-        <association property="productType" javaType="cn.dovahkiin.model.ProductType" columnPrefix="product_type_">
-            <id column="id" property="id"/>
-            <result column="name" property="name"/>
-            <result column="code" property="code"/>
-            <result column="update_time" property="updateTime"/>
-            <result column="create_time" property="createTime"/>
-            <result column="delete_flag" property="deleteFlag"/>
-        </association>
-        <association property="originality" javaType="cn.dovahkiin.model.Originality" columnPrefix="originality_">
-            <id column="id" property="id"/>
-            <result column="name" property="name"/>
-            <result column="code" property="code"/>
-            <result column="update_time" property="updateTime"/>
-            <result column="create_time" property="createTime"/>
-            <result column="delete_flag" property="deleteFlag"/>
-        </association>
-        <association property="videoType" javaType="cn.dovahkiin.model.VideoType" columnPrefix="video_type_">
-            <id column="id" property="id"/>
-            <result column="name" property="name"/>
-            <result column="code" property="code"/>
-            <result column="update_time" property="updateTime"/>
-            <result column="create_time" property="createTime"/>
-            <result column="delete_flag" property="deleteFlag"/>
-        </association>
-        <association property="photographer" javaType="cn.dovahkiin.model.Photographer" columnPrefix="photographer_">
-            <id column="id" property="id"/>
-            <result column="name" property="name"/>
-            <result column="code" property="code"/>
-            <result column="update_time" property="updateTime"/>
-            <result column="create_time" property="createTime"/>
-            <result column="delete_flag" property="deleteFlag"/>
-        </association>
-        <association property="performer1" javaType="cn.dovahkiin.model.Performer" columnPrefix="performer1_">
-            <id column="id" property="id"/>
-            <result column="name" property="name"/>
-            <result column="code" property="code"/>
-            <result column="update_time" property="updateTime"/>
-            <result column="create_time" property="createTime"/>
-            <result column="delete_flag" property="deleteFlag"/>
-        </association>
-        <association property="performer2" javaType="cn.dovahkiin.model.Performer" columnPrefix="performer2_">
-            <id column="id" property="id"/>
-            <result column="name" property="name"/>
-            <result column="code" property="code"/>
-            <result column="update_time" property="updateTime"/>
-            <result column="create_time" property="createTime"/>
-            <result column="delete_flag" property="deleteFlag"/>
-        </association>
-        <association property="performer3" javaType="cn.dovahkiin.model.Performer" columnPrefix="performer3_">
-            <id column="id" property="id"/>
-            <result column="name" property="name"/>
-            <result column="code" property="code"/>
-            <result column="update_time" property="updateTime"/>
-            <result column="create_time" property="createTime"/>
-            <result column="delete_flag" property="deleteFlag"/>
-        </association>
-        <association property="trueCustomer" javaType="cn.dovahkiin.model.TrueCustomer" columnPrefix="true_customer_">
-            <id column="id" property="id"/>
-            <result column="name" property="name"/>
-            <result column="code" property="code"/>
-            <result column="update_time" property="updateTime"/>
-            <result column="create_time" property="createTime"/>
-            <result column="delete_flag" property="deleteFlag"/>
-        </association>
+        <result column="max_effect_con" property="maxEffectCon" />
+        <result column="income_ratio" property="inComeRatio" />
+        <association property="editor" javaType="cn.dovahkiin.model.Editor" columnPrefix="editor_" resultMap="cn.dovahkiin.mapper.EditorMapper.BaseResultMap" />
+        <association property="industry" javaType="cn.dovahkiin.model.Industry" columnPrefix="industry_" resultMap="cn.dovahkiin.mapper.IndustryMapper.BaseResultMap" />
+        <association property="productType" javaType="cn.dovahkiin.model.ProductType" columnPrefix="product_type_" resultMap="cn.dovahkiin.mapper.ProductTypeMapper.BaseResultMap" />
+        <association property="originality" javaType="cn.dovahkiin.model.Originality" columnPrefix="originality_" resultMap="cn.dovahkiin.mapper.OriginalityMapper.BaseResultMap" />
+        <association property="videoType" javaType="cn.dovahkiin.model.VideoType" columnPrefix="video_type_" resultMap="cn.dovahkiin.mapper.VideoTypeMapper.BaseResultMap" />
+        <association property="photographer" javaType="cn.dovahkiin.model.Photographer" columnPrefix="photographer_" resultMap="cn.dovahkiin.mapper.PhotographerMapper.BaseResultMap" />
+        <association property="performer1" javaType="cn.dovahkiin.model.Performer" columnPrefix="performer1_" resultMap="cn.dovahkiin.mapper.PerformerMapper.BaseResultMap" />
+        <association property="performer2" javaType="cn.dovahkiin.model.Performer" columnPrefix="performer2_" resultMap="cn.dovahkiin.mapper.PerformerMapper.BaseResultMap" />
+        <association property="performer3" javaType="cn.dovahkiin.model.Performer" columnPrefix="performer3_" resultMap="cn.dovahkiin.mapper.PerformerMapper.BaseResultMap" />
+        <association property="trueCustomer" javaType="cn.dovahkiin.model.TrueCustomer" columnPrefix="true_customer_" resultMap="cn.dovahkiin.mapper.TrueCustomerMapper.BaseResultMap" />
+        <association property="supplier" javaType="cn.dovahkiin.model.Supplier" columnPrefix="supplier_" resultMap="cn.dovahkiin.mapper.SupplierMapper.BaseResultMap" />
+        <association property="videoVersion" javaType="cn.dovahkiin.model.VideoVersion" columnPrefix="video_version_" resultMap="cn.dovahkiin.mapper.VideoVersionMapper.BaseResultMap" />
+        <association property="priceLevel" javaType="cn.dovahkiin.model.PriceLevel" columnPrefix="price_level_" resultMap="cn.dovahkiin.mapper.PriceLevelMapper.BaseResultMap" />
+
     </resultMap>
     <resultMap id="BaseResultMapWithCount" type="cn.dovahkiin.model.Customer" extends="BaseResultMap">
         <result column="cumulativeConsumptionByPro" property="cumulativeConsumptionByPro"/>
@@ -112,16 +48,11 @@
     	code,
     	update_time,
     	create_time,
-    	delete_flag
+    	delete_flag,supplier_id,video_version_id,price_level_id,max_effect_con,income_ratio
   	</sql>
     <select id="selectByCode" resultMap="BaseResultMapWithCount">
          SELECT
-        id ,
-        update_time,
-        create_time ,
-        delete_flag ,
-        name,
-        code
+        <include refid="Base_Column_List" />
          from customer where code = #{ code }
     </select>
     <select id="selectList" resultMap="BaseResultMapWithCount">
@@ -143,6 +74,8 @@
         cus.performer2_id,
         cus.performer3_id,
         cus.true_customer_id,
+        cus.max_effect_con,
+        cus.income_ratio,
         pty.`name` as product_type_name,
         pty.`code` as product_type_code,
         pty.update_time as product_type_update_time,
@@ -194,8 +127,27 @@
         tcus.update_time as true_customer_update_time,
         tcus.create_time as true_customer_create_time,
         tcus.delete_flag as true_customer_delete_flag,
-
-
+        sup.id as supplier_id,
+        sup.`name` as supplier_name,
+        sup.code as supplier_code,
+        sup.update_time as supplier_update_time,
+        sup.create_time as supplier_create_time,
+        sup.delete_flag as supplier_delete_flag,
+        vve.id as video_version_id,
+        vve.`name` as video_version_name,
+        vve.code as video_version_code,
+        vve.update_time as video_version_update_time,
+        vve.create_time as video_version_create_time,
+        vve.delete_flag  as video_version_delete_flag,
+        ple.id as price_level_id,
+        ple.`name` as price_level_name,
+        ple.code as price_level_code,
+        ple.base_price as price_level_base_price,
+        ple.update_time as price_level_update_time,
+        ple.update_by as price_level_update_by,
+        ple.create_time as price_level_create_time,
+        ple.create_by as price_level_create_by,
+        ple.delete_flag as price_level_delete_flag,
         pm.cumulativeConsumptionByPro,
         pm.cumulativeConsumptionRankingByProglam
         from customer cus
@@ -209,6 +161,9 @@
         LEFT JOIN performer per2 ON per2.id = cus.performer2_id
         LEFT JOIN performer per3 ON per3.id = cus.performer3_id
         LEFT JOIN true_customer tcus ON tcus.id = cus.true_customer_id
+        LEFT JOIN supplier sup ON sup.id = cus.supplier_id
+        LEFT JOIN video_version vve ON vve.id = cus.video_version_id
+        LEFT JOIN price_level ple ON ple.id = cus.price_level_id
         left join (
         SELECT
         customer_id,cumulativeConsumptionByPro,@rownum :=@rownum + 1 AS cumulativeConsumptionRankingByProglam
@@ -263,6 +218,15 @@
                 <if test="customer.videoType !=null and customer.videoType.id != null  ">
                     and cus.video_type_id = #{ customer.videoType.id }
                 </if>
+                <if test="customer.supplier!=null and customer.supplier.id!=null">
+                    and cus.supplier_id = #{customer.supplier.id}
+                </if>
+                <if test="customer.priceLevel!=null and customer.priceLevel.id!=null" >
+                    and cus.price_level_id = #{customer.priceLevel.id}
+                </if>
+                <if test="customer.videoVersion!=null and customer.videoVersion.id!=null" >
+                    and cus.video_version_id = #{customer.videoVersion.id}
+                </if>
             </if>
             <if test="KeyWord !=null">
                 <foreach collection="KeyWord" item="keyW">
@@ -279,6 +243,9 @@
                     or per2.`name` like #{keyW}
                     or per3.`name` like #{keyW}
                     or tcus.`name` like #{keyW}
+                    or sup.name like #{keyW}
+                    or vve.name like #{keyW}
+                    or ple.name like #{keyW}
                     )
                 </foreach>
             </if>
@@ -295,10 +262,8 @@
                 <when test="sort=='cumulativeConsumptionByPro'">pm.cumulativeConsumptionByPro</when>
                 <when test="sort=='cumulativeConsumptionRankingByProglam'">pm.cumulativeConsumptionByPro</when>
                 <when test="sort=='industry'">ind.`name`</when>
-
                 <when test="sort=='videoType'">vdt.`name`</when>
                 <when test="sort=='completeDate'">cus.complete_date</when>
-
                 <when test="sort=='originality'">ori.`name`</when>
                 <when test="sort=='photographer'">pho.`name`</when>
                 <when test="sort=='editor'">edi.`name`</when>
@@ -306,6 +271,11 @@
                 <when test="sort=='performer2'">per2.`name`</when>
                 <when test="sort=='performer3'">per3.`name`</when>
                 <when test="sort=='trueCustomer'">tcus.`name`</when>
+                <when test="sort=='supplier'">sup.`name`</when>
+                <when test="sort=='videoVersion'">vve.`name`</when>
+                <when test="sort=='priceLevel'">ple.`base_Price`</when>
+                <when test="sort=='inComeRatio'">cus.`income_ratio`</when>
+                <when test="sort=='maxEffectCon'">cus.`max_effect_con`</when>
                 <otherwise>pm.cumulativeConsumptionByPro</otherwise>
             </choose>
             <choose>
@@ -320,13 +290,13 @@
 
     <select id="selectSimpleList" resultMap="BaseResultMap">
         SELECT
-        id ,
-        update_time,
-        create_time ,
-        delete_flag ,
-        name,
-        code
-        from customer
+        cus.id ,
+        cus.update_time,
+        cus.create_time ,
+        cus.delete_flag ,
+        cus.name,
+        cus.code
+        from customer cus
         <where>
             <if test=" customer!=null and customer.deleteFlag!=null">
                 delete_flag = #{ customer.deleteFlag }
@@ -341,7 +311,13 @@
         cus.id ,cus.name,cus.code,
         cus.update_time,
         cus.create_time ,
-        cus.delete_flag
+        cus.delete_flag,
+        vve.id as video_version_id,
+        vve.`name` as video_version_name,
+        vve.code as video_version_code,
+        vve.update_time as video_version_update_time,
+        vve.create_time as video_version_create_time,
+        vve.delete_flag  as video_version_delete_flag
         from video_cost vc
         left join optimizer opt on opt.id = vc.optimizer_id
         left join organization dem on dem.id = vc.demand_sector_id
@@ -356,6 +332,9 @@
         LEFT JOIN performer per2 ON per2.id = cus.performer2_id
         LEFT JOIN performer per3 ON per3.id = cus.performer3_id
         LEFT JOIN true_customer tcus ON tcus.id = cus.true_customer_id
+        LEFT JOIN supplier sup ON sup.id = cus.supplier_id
+        LEFT JOIN video_version vve ON vve.id = cus.video_version_id
+        LEFT JOIN price_level ple ON ple.id = cus.price_level_id
         <where>
             vc.`consumption` >0 and vc.delete_flag = 0
             and vc.recored_date BETWEEN #{recoredDate_start } and #{recoredDate_end  }
@@ -404,11 +383,18 @@
                     <if test="videoCost.customer.videoType !=null and videoCost.customer.videoType.id != null  ">
                         and cus.video_type_id = #{ videoCost.customer.videoType.id }
                     </if>
+                    <if test="customer.supplier!=null and customer.supplier.id!=null">
+                        and cus.supplier_id = #{customer.supplier.id}
+                    </if>
+                    <if test="customer.priceLevel!=null and customer.priceLevel.id!=null" >
+                        and cus.price_level_id = #{customer.priceLevel.id}
+                    </if>
+                    <if test="customer.videoVersion!=null and customer.videoVersion.id!=null" >
+                        and cus.video_version_id = #{customer.videoVersion.id}
+                    </if>
                 </if>
             </if>
         </where>
-
-
     </select>
 
 
@@ -427,6 +413,9 @@
         LEFT JOIN performer per2 ON per2.id = cus.performer2_id
         LEFT JOIN performer per3 ON per3.id = cus.performer3_id
         LEFT JOIN true_customer tcus ON tcus.id = cus.true_customer_id
+        LEFT JOIN supplier sup ON sup.id = cus.supplier_id
+        LEFT JOIN video_version vve ON vve.id = cus.video_version_id
+        LEFT JOIN price_level ple ON ple.id = cus.price_level_id
         <where>
             <if test="customer!=null">
                 <if test="customer.deleteFlag!=null">
@@ -466,6 +455,15 @@
                 <if test="customer.videoType !=null and customer.videoType.id != null  ">
                     and cus.video_type_id = #{ customer.videoType.id }
                 </if>
+                <if test="customer.supplier!=null and customer.supplier.id!=null">
+                    and cus.supplier_id = #{customer.supplier.id}
+                </if>
+                <if test="customer.priceLevel!=null and customer.priceLevel.id!=null" >
+                    and cus.price_level_id = #{customer.priceLevel.id}
+                </if>
+                <if test="customer.videoVersion!=null and customer.videoVersion.id!=null" >
+                    and cus.video_version_id = #{customer.videoVersion.id}
+                </if>
             </if>
             <if test="KeyWord !=null">
                 <foreach collection="KeyWord" item="keyW">
@@ -482,6 +480,9 @@
                     or per2.`name` like #{keyW}
                     or per3.`name` like #{keyW}
                     or tcus.`name` like #{keyW}
+                    or sup.name like #{keyW}
+                    or vve.name like #{keyW}
+                    or ple.name like #{keyW}
                     )
                 </foreach>
             </if>
@@ -493,24 +494,30 @@
 
     </select>
 
+    <select id="countForCheck" resultType="int" >
+        select count(*) from customer where code = #{code} and video_version_id = #{videoVersionId}
+        <if test="selfId!=null">and id != #{selfId}</if>
+    </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     	delete from customer where id = #{id,jdbcType=BIGINT}
   	</delete>
     <insert id="insert" parameterType="cn.dovahkiin.model.Customer" useGeneratedKeys="true" keyProperty="id"
             keyColumn="id">
-    	insert into customer (id, name, complete_date,true_customer_id,
-      		performer3_id, performer2_id, performer1_id,
-      		editor_id, photographer_id, originality_id,
-      		video_type_id, product_type_id, industry_id,
-      		code, update_time, create_time,
-      		delete_flag)
-    	values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{completeDate,jdbcType=DATE},#{trueCustomer.id,jdbcType=BIGINT},
-     	 #{performer3.id,jdbcType=BIGINT}, #{performer2.id,jdbcType=BIGINT}, #{performer1.id,jdbcType=BIGINT},
-      	  #{editor.id,jdbcType=BIGINT}, #{photographer.id,jdbcType=BIGINT}, #{originality.id,jdbcType=BIGINT},
-      	  #{videoType.id,jdbcType=BIGINT}, #{productType.id,jdbcType=BIGINT}, #{industry.id,jdbcType=BIGINT},
-      	 #{code,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP},
-      	#{deleteFlag,jdbcType=INTEGER})
+        insert into customer (`name`, true_customer_id, originality_id,
+                              complete_date, performer3_id, performer2_id,
+                              performer1_id, editor_id, photographer_id,
+                              video_type_id, product_type_id, industry_id,
+                              code, update_time, create_time,
+                              delete_flag, max_effect_con, income_ratio,
+                              supplier_id, video_version_id, price_level_id)
+        values (#{name,jdbcType=VARCHAR}, #{trueCustomer.id,jdbcType=BIGINT}, #{originality.id,jdbcType=BIGINT},
+                #{completeDate,jdbcType=DATE}, #{performer3.id,jdbcType=BIGINT}, #{performer2.id,jdbcType=BIGINT},
+                #{performer1.id,jdbcType=BIGINT}, #{editor.id,jdbcType=BIGINT}, #{photographer.id,jdbcType=BIGINT},
+                #{videoType.id,jdbcType=BIGINT}, #{productType.id,jdbcType=BIGINT}, #{industry.id,jdbcType=BIGINT},
+                #{code,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP},
+                #{deleteFlag,jdbcType=INTEGER}, #{maxEffectCon,jdbcType=DOUBLE}, #{inComeRatio,jdbcType=DOUBLE},
+                #{supplier.id,jdbcType=BIGINT}, #{videoVersion.id,jdbcType=BIGINT}, #{priceLevel.id,jdbcType=BIGINT})
   	</insert>
     <insert id="insertSelective" parameterType="cn.dovahkiin.model.Customer" useGeneratedKeys="true" keyProperty="id"
             keyColumn="id">
@@ -567,6 +574,21 @@
             <if test="deleteFlag != null">
                 delete_flag,
             </if>
+            <if test="maxEffectCon != null">
+                max_effect_con,
+            </if>
+            <if test="inComeRatio != null">
+                income_ratio,
+            </if>
+            <if test="supplier!=null and supplier.id != null">
+                supplier_id,
+            </if>
+            <if test="videoVersion !=null and videoVersion.id != null">
+                video_version_id,
+            </if>
+            <if test="priceLevel !=null and priceLevel.id != null">
+                price_level_id,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -620,6 +642,21 @@
             <if test="deleteFlag != null">
                 #{deleteFlag,jdbcType=INTEGER},
             </if>
+            <if test="maxEffectCon != null">
+                #{maxEffectCon,jdbcType=DOUBLE},
+            </if>
+            <if test="inComeRatio != null">
+                #{inComeRatio,jdbcType=DOUBLE},
+            </if>
+            <if test="supplier!=null and supplier.id != null">
+                #{supplier.id,jdbcType=BIGINT},
+            </if>
+            <if test="videoVersion!=null and videoVersion.id != null">
+                #{videoVersion.id,jdbcType=BIGINT},
+            </if>
+            <if test="priceLevel!=null and priceLevel.id != null">
+                #{priceLevel.id,jdbcType=BIGINT},
+            </if>
         </trim>
     </insert>
 
@@ -668,29 +705,46 @@
             <if test="updateTime != null">
                 update_time = #{updateTime,jdbcType=TIMESTAMP}
             </if>
-
-
+            <if test="maxEffectCon != null">
+                max_effect_con = #{maxEffectCon,jdbcType=DOUBLE},
+            </if>
+            <if test="inComeRatio != null">
+                income_ratio = #{inComeRatio,jdbcType=DOUBLE},
+            </if>
+            <if test="supplier!=null and supplier.id != null">
+                supplier_id = #{supplierId,jdbcType=BIGINT},
+            </if>
+            <if test="videoVersion!=null and videoVersion.id != null">
+                video_version_id = #{videoVersion.id,jdbcType=BIGINT},
+            </if>
+            <if test="priceLevel!=null and priceLevel.id != null">
+                price_level_id = #{priceLevel.id,jdbcType=BIGINT},
+            </if>
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
     <update id="updateByPrimaryKey" parameterType="cn.dovahkiin.model.Customer">
-    update customer
-    set
-    	name = #{name,jdbcType=VARCHAR},
-      complete_date = #{completeDate,jdbcType=DATE},
-      performer3_id = #{performer3.id,jdbcType=BIGINT},
-      performer2_id = #{performer2.id,jdbcType=BIGINT},
-      performer1_id = #{performer1.id,jdbcType=BIGINT},
-      editor_id = #{editor.id,jdbcType=BIGINT},
-      true_customer_id = #{trueCustomer.id,jdbcType=BIGINT},
-      photographer_id = #{photographer.id,jdbcType=BIGINT},
-      originality_id = #{originality.id,jdbcType=BIGINT},
-      video_type_id = #{videoType.id,jdbcType=BIGINT},
-      product_type_id = #{productType.id,jdbcType=BIGINT},
-      industry_id = #{industry.id,jdbcType=BIGINT},
-      code = #{code,jdbcType=VARCHAR},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=BIGINT}
+        update customer
+        set name             = #{name,jdbcType=VARCHAR},
+            complete_date    = #{completeDate,jdbcType=DATE},
+            performer3_id    = #{performer3.id,jdbcType=BIGINT},
+            performer2_id    = #{performer2.id,jdbcType=BIGINT},
+            performer1_id    = #{performer1.id,jdbcType=BIGINT},
+            editor_id        = #{editor.id,jdbcType=BIGINT},
+            true_customer_id = #{trueCustomer.id,jdbcType=BIGINT},
+            photographer_id  = #{photographer.id,jdbcType=BIGINT},
+            originality_id   = #{originality.id,jdbcType=BIGINT},
+            video_type_id    = #{videoType.id,jdbcType=BIGINT},
+            product_type_id  = #{productType.id,jdbcType=BIGINT},
+            industry_id      = #{industry.id,jdbcType=BIGINT},
+            code             = #{code,jdbcType=VARCHAR},
+            update_time      = #{updateTime,jdbcType=TIMESTAMP},
+            max_effect_con   = #{maxEffectCon,jdbcType=DOUBLE},
+            income_ratio     = #{inComeRatio,jdbcType=DOUBLE},
+            supplier_id      = #{supplier.id,jdbcType=BIGINT},
+            video_version_id = #{videoVersion.id,jdbcType=BIGINT},
+            price_level_id   = #{priceLevel.id,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
   </update>
     <update id="deleteMany">
         update `customer`
