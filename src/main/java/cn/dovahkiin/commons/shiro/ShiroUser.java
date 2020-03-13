@@ -3,6 +3,8 @@
  */
 package cn.dovahkiin.commons.shiro;
 
+import cn.dovahkiin.model.Supplier;
+
 import java.io.Serializable;
 import java.util.Set;
 
@@ -19,16 +21,17 @@ public class ShiroUser implements Serializable {
     private String name;
     private Set<String> urlSet;
     private Set<String> roles;
-
+    private Supplier supplier;
     public ShiroUser(String loginName) {
         this.loginName = loginName;
     }
 
-    public ShiroUser(Long id, String loginName, String name, Set<String> urlSet) {
+    public ShiroUser(Long id, String loginName, String name, Set<String> urlSet,Supplier supplier) {
         this.id = id;
         this.loginName = loginName;
         this.name = name;
         this.urlSet = urlSet;
+        this.supplier = supplier;
     }
 
     public Long getId() {
@@ -66,6 +69,10 @@ public class ShiroUser implements Serializable {
     public String getLoginName() {
         return loginName;
     }
+
+    public Supplier getSupplier() { return supplier; }
+
+    public void setSupplier(Supplier supplier) { this.supplier = supplier; }
 
     /**
      * 本函数输出将作为默认的<shiro:principal/>输出.

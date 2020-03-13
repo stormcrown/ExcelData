@@ -7,6 +7,7 @@
         <result column="login_name" property="loginName" jdbcType="VARCHAR"/>
         <result column="name" property="name" jdbcType="VARCHAR"/>
         <result column="password" property="password" jdbcType="VARCHAR"/>
+        <result column="salt" property="salt" jdbcType="VARCHAR" />
         <result column="sex" property="sex" jdbcType="TINYINT"/>
         <result column="age" property="age" jdbcType="TINYINT"/>
         <result column="user_type" property="userType" jdbcType="TINYINT"/>
@@ -14,13 +15,9 @@
         <result column="organization_id" property="organizationId" jdbcType="INTEGER"/>
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
         <result column="phone" property="phone" jdbcType="VARCHAR"/>
-
         <result column="organizationName" property="organizationName" jdbcType="VARCHAR"/>
         <association property="supplier" columnPrefix="supplier_" javaType="cn.dovahkiin.model.Supplier" resultMap="cn.dovahkiin.mapper.SupplierMapper.BaseResultMap" />
-        <collection property="rolesList" ofType="Role">
-            <id column="roleId" property="id"/>
-            <result column="roleName" property="name"/>
-        </collection>
+        <collection property="rolesList" ofType="cn.dovahkiin.model.Role" resultMap="cn.dovahkiin.mapper.RoleMapper.BaseResultMap" columnPrefix="role_" />
     </resultMap>
 
     <!-- 通用查询结果列-->
@@ -59,7 +56,7 @@
         t.id,
         login_name,
         t.`name`,
-        `password`,
+        `password`,salt,
         sex,
         age,
         user_type,
@@ -68,18 +65,22 @@
         t.create_time,
         phone,
         s.`name` AS organizationName,
-        o.id AS roleId,
-        o.`name` AS roleName,
+        rol.id as role_id, rol.name as role_name, rol.seq as role_seq, rol.description as role_description, rol.status as role_status,
                t.supplier_id,s2.name as supplier_name,s2.code as supplier_code
         FROM
         user t
         LEFT JOIN user_role r ON t.id = r.user_id
-        LEFT JOIN role o ON r.role_id = o.id
+        LEFT JOIN role rol ON r.role_id = rol.id
         LEFT JOIN organization s ON s.id = t.organization_id
         left join supplier s2 on t.supplier_id = s2.id
         <where>
-            t.id = #{id}
+           <if test="id!=null">t.id = #{id}</if>
+           <if test="loginName!=null">and t.login_name = #{loginName}</if>
         </where>
+    </select>
+    <select id="checkLoginName" resultType="int" >
+        select count(*) from user where login_name = #{loginName}
+        <if test="selfId!=null">and id != #{selfId}</if>
     </select>
 
     <select id="selectUserPage" resultType="Map">

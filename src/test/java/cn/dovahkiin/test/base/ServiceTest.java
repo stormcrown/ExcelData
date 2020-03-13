@@ -53,7 +53,7 @@ public class ServiceTest extends BaseTest{
         Sheet sheet=workbook.getSheetAt(0);
         Set<String> sets = new HashSet<>();
 
-        ShiroUser user = new ShiroUser(-1L,"testUser","五",sets);
+        ShiroUser user = new ShiroUser(-1L,"testUser","五",sets,null);
 
         int x =  iVideoCostService.saveExcel(sheet,new Date(),dateConverter,user);
         System.out.print(x);

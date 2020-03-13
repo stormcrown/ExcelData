@@ -15,6 +15,7 @@ import java.util.*;
 import cn.dovahkiin.commons.shiro.ShiroUser;
 import cn.dovahkiin.commons.utils.StringUtils;
 import cn.dovahkiin.model.Customer;
+import cn.dovahkiin.model.User;
 import cn.dovahkiin.service.*;
 import cn.dovahkiin.service.impl.IndustryServiceImpl;
 import cn.dovahkiin.util.Const;

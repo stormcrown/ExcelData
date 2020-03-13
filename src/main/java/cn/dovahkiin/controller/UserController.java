@@ -109,8 +109,8 @@ public class UserController extends BaseController {
     @ResponseBody
     @RequiresPermissions("/user/add")
     public Object add(@Valid UserVo userVo) {
-        List<User> list = userService.selectByLoginName(userVo);
-        if (list != null && !list.isEmpty()) return renderError("登录名已存在!");
+        UserVo userOld = userService.selectByLoginName(userVo);
+        if (userOld != null) return renderError("登录名已存在!");
         String salt = StringUtils.getUUId();
         if(StringUtils.isBlank(userVo.getPassword()))return renderError("密码为空!");
         String pwd = passwordHash.toHex(userVo.getPassword(), salt);
@@ -131,6 +131,8 @@ public class UserController extends BaseController {
     @RequiresPermissions("/user/edit")
     public String editPage(Model model, Long id) {
         UserVo userVo = userService.selectVoById(id);
+        userVo.setPassword(null);
+        userVo.setSalt(null);
         List<Role> rolesList = userVo.getRolesList();
         List<Long> ids = new ArrayList<Long>();
         for (Role role : rolesList) ids.add(role.getId());
@@ -152,8 +154,9 @@ public class UserController extends BaseController {
     @ResponseBody
     @RequiresPermissions("/user/edit")
     public Object edit(@Valid UserVo userVo) {
-        List<User> list = userService.selectByLoginName(userVo);
-        if (list != null && !list.isEmpty()) return renderError("登录名已存在!");
+        if(userVo==null)return renderError("登录名为空!");
+        int has = userService.checkUserName(userVo.getId(),userVo.getLoginName());
+        if (has>0) return renderError("登录名已存在!");
         // 更新密码
         if (StringUtils.isNotBlank(userVo.getPassword())) {
             User user = userService.selectById(userVo.getId());

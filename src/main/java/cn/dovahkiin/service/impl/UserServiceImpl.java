@@ -34,14 +34,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     private UserRoleMapper userRoleMapper;
     
     @Override
-    public List<User> selectByLoginName(UserVo userVo) {
-        User user = new User();
-        user.setLoginName(userVo.getLoginName());
-        EntityWrapper<User> wrapper = new EntityWrapper<User>(user);
-        if (null != userVo.getId()) {
-            wrapper.where("id != {0}", userVo.getId());
-        }
-        return this.selectList(wrapper);
+    public UserVo selectByLoginName(UserVo userVo) {
+        return userMapper.selectUserVoById(userVo.getId(),userVo.getLoginName());
+    }
+
+    @Override
+    public UserVo selectByLoginName(String loginName) {
+        return userMapper.selectUserVoById(null,loginName);
+    }
+
+    @Override
+    public int checkUserName(Long selfId, String loginName) {
+        return userMapper.checkLoginName(selfId,loginName);
     }
 
     @Override
@@ -61,7 +65,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     public UserVo selectVoById(Long id) {
-        return userMapper.selectUserVoById(id);
+        return userMapper.selectUserVoById(id,null);
     }
 
     @Override

@@ -14,7 +14,9 @@ import cn.dovahkiin.model.vo.UserVo;
  */
 public interface IUserService extends IService<User> {
 
-    List<User> selectByLoginName(UserVo userVo);
+    UserVo selectByLoginName(UserVo userVo);
+    UserVo selectByLoginName(String loginName);
+    int checkUserName(Long selfId,String loginName);
 
     void insertByVo(UserVo userVo);
 

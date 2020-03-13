@@ -17,7 +17,8 @@ import cn.dovahkiin.model.vo.UserVo;
  */
 public interface UserMapper extends BaseMapper<User> {
 
-    UserVo selectUserVoById(@Param("id") Long id);
+    UserVo selectUserVoById(@Param("id") Long id,@Param("loginName")String loginName);
+    int checkLoginName(@Param("selfId") Long selfId,@Param("loginName")String loginName);
 
     List<Map<String, Object>> selectUserPage(Pagination page, Map<String, Object> params);
 

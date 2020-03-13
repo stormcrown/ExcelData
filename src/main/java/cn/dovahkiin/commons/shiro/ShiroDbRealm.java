@@ -45,27 +45,21 @@ public class ShiroDbRealm extends AuthorizingRealm {
             AuthenticationToken authcToken) throws AuthenticationException {
         LOGGER.info("Shiro开始登录认证");
         UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
-        UserVo uservo = new UserVo();
-        uservo.setLoginName(token.getUsername());
-        List<User> list = userService.selectByLoginName(uservo);
+//        UserVo uservo = new UserVo();
+//        uservo.setLoginName(token.getUsername());
+        UserVo user = userService.selectByLoginName(token.getUsername());
         // 账号不存在
-        if (list == null || list.isEmpty()) {
-            return null;
-        }
-        User user = list.get(0);
+        if (user == null  ) return null;
         // 账号未启用
-        if (user.getStatus() == 1) {
-            return null;
-        }
+        if (user.getStatus() == 1) return null;
         // 读取用户的url和角色
         Map<String, Set<String>> resourceMap = roleService.selectResourceMapByUserId(user.getId());
         Set<String> urls = resourceMap.get("urls");
         Set<String> roles = resourceMap.get("roles");
-        ShiroUser shiroUser = new ShiroUser(user.getId(), user.getLoginName(), user.getName(), urls);
+        ShiroUser shiroUser = new ShiroUser(user.getId(), user.getLoginName(), user.getName(), urls,user.getSupplier());
         shiroUser.setRoles(roles);
         // 认证缓存信息
-        return new SimpleAuthenticationInfo(shiroUser, user.getPassword().toCharArray(), 
-                ShiroByteSource.of(user.getSalt()), getName());
+        return new SimpleAuthenticationInfo(shiroUser, user.getPassword().toCharArray(), ShiroByteSource.of(user.getSalt()), getName());
     }
 
     /**
