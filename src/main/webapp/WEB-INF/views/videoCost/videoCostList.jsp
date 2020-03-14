@@ -519,15 +519,14 @@
         if(newValue<start)$("#Consumption_end").numberbox('setValue',oldValue);
     }
     function chckKeyWordType(record) {
-        console.log(record);
-        if(record!=null && record.value=='all')$('#keyWordType').combobox('setValue','all');
-        var ss= $('#keyWordType').combobox('getValues');
-        for(var i=0;i< ss.length;i++ ){
-            if(i==0 && ss.length>1 && ss[i] =='all'){
+        if(record!=null && record.value==='all')$('#keyWordType').combobox('setValue','all');
+        let ss= $('#keyWordType').combobox('getValues');
+        for(let i=0;i< ss.length;i++ ){
+            if(i===0 && ss.length>1 && ss[i] ==='all'){
                 ss.splice(0,1);
                 $('#keyWordType').combobox('setValues',ss);
             }
-            if(i>0 && ss[i] =='all' ){
+            if(i>0 && ss[i] ==='all' ){
                 $('#keyWordType').combobox('setValue','all');
                 return;
             }
@@ -548,7 +547,7 @@
                     关键字段
                 </td>
                 <td>
-                    <select id="keyWordType" name="keyWordType" class="easyui-combobox" style="width: 200px;" data-options="multiple:true,onSelect:chckKeyWordType" >
+                    <select id="keyWordType" name="keyWordType" class="easyui-combobox" style="width: 200px;" data-options="height:30, multiple:true,onSelect:chckKeyWordType" >
                         <option value="all" >全部</option>
                         <option value="customName" >素材名</option><option value="customCode" >素材编码</option>
                         <option value="trueCustomerName" >客户名</option>

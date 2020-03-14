@@ -430,7 +430,7 @@ function customerSearchFun() {
 }
     function chckKeyWordType_CUS(record) {
         if(record!=null && record.value==='all')$('#keyWordType_CUS').combobox('setValue','all');
-        var ss= $('#keyWordType').combobox('getValues');
+        var ss= $('#keyWordType_CUS').combobox('getValues');
         for(var i=0;i< ss.length;i++ ){
             if(i==0 && ss.length>1 && ss[i] ==='all'){
                 ss.splice(0,1);
@@ -457,7 +457,7 @@ function customerSearchFun() {
                         关键字段
                     </td>
                     <td>
-                        <select id="keyWordType_CUS" name="keyWordType" class="easyui-combobox" style="width: 200px;" data-options="multiple:true,onSelect:chckKeyWordType_CUS" >
+                        <select id="keyWordType_CUS" name="keyWordType" class="easyui-combobox" style="width: 200px;" data-options="height:30,multiple:true,onSelect:chckKeyWordType_CUS" >
                             <option value="all" >全部</option>
                             <option value="customName" >素材名</option><option value="customCode" >素材编码</option>
                             <option value="trueCustomerName" >客户名</option>

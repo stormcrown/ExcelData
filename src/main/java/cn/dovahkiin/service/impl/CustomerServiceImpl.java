@@ -64,12 +64,8 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
     @Override
-    public List<Customer> selectForCombobox() {
-        Customer customer = new Customer();
-        customer.setDeleteFlag(0);
-        Map map = new HashMap();
-        map.put("customer",customer);
-        return customerMapper.selectSimpleList(map);
+    public List<Customer> selectForCombobox(Long supplierId) {
+        return customerMapper.selectSimpleList(supplierId);
     }
 
     @Override
@@ -80,7 +76,7 @@ public class CustomerServiceImpl implements ICustomerService {
     @Override
     public int countAll(Customer customer) {
         Map<String, Object> map = new HashMap<>();
-        map.put(Const.customerStr,customer);
+        map.put(Const.customer,customer);
         return customerMapper.selectTotal(map);
     }
 

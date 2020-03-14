@@ -16,15 +16,15 @@
         <img src="${staticPath }/static/style/images/ajax-loader.gif" style="position: absolute;top: 0;left: 0;right: 0;bottom: 0;margin: auto;"/>
     </div>
     <div id="mainLayout" class="easyui-layout" data-options="fit:true, border:false">
-        <div data-options="region:'north',border:false, collapsedSize:0" style="height:50px;">
+        <div data-options="region:'north',border:false, collapsedSize:0" style="height:100px;">
             <div class="head">
                 <table>
                     <tr>
-                        <td width="50%" style="font-size: 14px;"></td>
-                        <td width="50%" align="right" style="font-size: 12px;">
-                            <div class="easyui-panel rtool" data-options="border:false" style="text-align: right; background: #09C; color: white; margin-top: -1px;">
-                                <a href="#" class="easyui-menubutton" data-options="menu:'#mm1'">
-                                    <shiro:principal></shiro:principal>
+                        <td width="50%" style="font-size: 24px;"></td>
+                        <td width="50%" align="right" style="font-size: 24px;">
+                            <div class="easyui-panel rtool" data-options="border:false" style="text-align: right; background: cornflowerblue; color: cornflowerblue; margin-top: -1px;">
+                                <a href="#" class="easyui-menubutton" data-options="menu:'#mm1'" style="font-family: 'Comic Sans MS',楷体,monospace;font-size: medium;">
+                                   欢迎！${supplierName} &nbsp;&nbsp;&nbsp; ${name}!
                                 </a>
                             </div>
                             <div id="mm1" style="width:150px;">

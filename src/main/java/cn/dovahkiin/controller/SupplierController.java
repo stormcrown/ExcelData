@@ -4,6 +4,8 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
+
+import cn.dovahkiin.commons.shiro.ShiroUser;
 import cn.dovahkiin.commons.utils.StringUtils;
 import com.alibaba.fastjson.JSON;
 import org.apache.shiro.authz.annotation.Logical;
@@ -62,8 +64,10 @@ public class SupplierController extends BaseController {
     @ResponseBody
     @RequiresPermissions(value = {"/videoCost/dataGrid","/customer/*","/count/bar"  },logical = Logical.OR)
     public Object combobox(){
+        ShiroUser shiroUser = getShiroUser();
         EntityWrapper ew = new EntityWrapper();
         ew.eq("delete_flag", 0 );
+        if(shiroUser.getSupplier()!=null)ew.eq("id",shiroUser.getSupplier().getId());
         return JSON.toJSON(supplierService.selectList(ew));
     }
     /**

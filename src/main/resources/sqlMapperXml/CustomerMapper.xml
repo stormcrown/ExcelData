@@ -298,13 +298,9 @@
         cus.code
         from customer cus
         <where>
-            <if test=" customer!=null and customer.deleteFlag!=null">
-                delete_flag = #{ customer.deleteFlag }
-            </if>
+                delete_flag = 0
+                <if test="supplierId!=null">and cus.supplier_id =#{supplierId}</if>
         </where>
-        <if test="offset!=null and limit!=null">
-            LIMIT #{offset} , #{limit}
-        </if>
     </select>
     <select id="selectSimpleListByVideoCost" resultMap="BaseResultMap">
         select DISTINCT

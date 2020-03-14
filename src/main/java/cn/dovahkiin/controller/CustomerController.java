@@ -3,8 +3,10 @@ package cn.dovahkiin.controller;
 import javax.validation.Valid;
 import java.util.*;
 
+import cn.dovahkiin.commons.shiro.ShiroUser;
 import cn.dovahkiin.commons.utils.StringUtils;
 import cn.dovahkiin.model.VideoCost;
+import cn.dovahkiin.util.Const;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import org.apache.shiro.authz.annotation.Logical;
@@ -22,8 +24,6 @@ import cn.dovahkiin.commons.result.PageInfo;
 import cn.dovahkiin.model.Customer;
 import cn.dovahkiin.service.ICustomerService;
 import cn.dovahkiin.commons.base.BaseController;
-
-import static cn.dovahkiin.util.Const.customerStr;
 
 /**
  * <p>
@@ -47,14 +47,27 @@ public class CustomerController extends BaseController {
 
 
     private Map handle(Customer customer, Integer page, Integer rows, String sort, String order ,
-                        String KeyWord, String completeDateRange){
+                        String KeyWord, String keyWordType,String completeDateRange){
         Map map = new HashMap(10);
 //        if(ConsumptionRange!=null && ConsumptionRange.indexOf(",")>0){
 //            String [] cuns = ConsumptionRange.split(",");
 //            if(Double.parseDouble(cuns[0])!=0.0) map.put("consumption_min",Double.parseDouble(cuns[0]));
 //            map.put("consumption_max",Double.parseDouble(cuns[1]));
 //        }
-        map.put(customerStr,customer);
+        if(StringUtils.hasText(keyWordType)){
+            String[] keyTypes = keyWordType.split(",");
+            for(String str :keyTypes){
+                if(StringUtils.hasText(str)) map.put(str,str);
+            }
+        }else{
+            map.put("all","all");
+        }
+        ShiroUser shiroUser = getShiroUser();
+        if(shiroUser.getSupplier()!=null){
+            if(customer==null)customer = new Customer();
+            customer.setSupplier(shiroUser.getSupplier());
+        }
+        map.put(Const.customer,customer);
         map.put("order",order );
         map.put("sort",sort);
 
@@ -79,14 +92,14 @@ public class CustomerController extends BaseController {
     @PostMapping("/dataGrid")
     @RequiresPermissions(value = {"/customer/dataGrid" },logical = Logical.OR)
     @ResponseBody
-    public PageInfo dataGrid(Customer customer, Integer page, Integer rows, String sort,String order, String KeyWord, String completeDateRange) {
+    public PageInfo dataGrid(Customer customer, Integer page, Integer rows, String sort,String order, String KeyWord,String keyWordType, String completeDateRange) {
         PageInfo pageInfo = new PageInfo(page, rows, sort, order);
         EntityWrapper<Customer> ew = new EntityWrapper<Customer>();
         if(customer!=null && StringUtils.hasText(customer.getCode()))ew.like("code","%"+customer.getCode().trim()+"%");
         if(customer!=null && StringUtils.hasText(customer.getName()) )ew.like("name","%"+customer.getName().trim()+"%");
         if(customer!=null && customer.getDeleteFlag()!=null  ) ew.eq("delete_flag", customer.getDeleteFlag() );
         Page<Customer> pages = getPage(page, rows, sort, order);
-        Map map = handle(customer,page,rows,sort,order,KeyWord,completeDateRange);
+        Map map = handle(customer,page,rows,sort,order,KeyWord,keyWordType,completeDateRange);
         map.put("offset",pages.getOffset());
         map.put("limit",pages.getLimit());
 
@@ -99,7 +112,10 @@ public class CustomerController extends BaseController {
     @ResponseBody
     @RequiresPermissions(value = {"/videoCost/dataGrid","/customer/*","/count/bar" },logical = Logical.OR)
     public Object dataGrid() {
-        return JSON.toJSON(customerService.selectForCombobox());
+        ShiroUser shiroUser = getShiroUser();
+        Long supplierId = null;
+        if(shiroUser.getSupplier()!=null)supplierId = shiroUser.getSupplier().getId();
+        return JSON.toJSON(customerService.selectForCombobox(supplierId));
     }
     /**
      * 添加页面

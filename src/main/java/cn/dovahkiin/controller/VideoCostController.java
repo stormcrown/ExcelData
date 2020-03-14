@@ -67,13 +67,21 @@ public class VideoCostController extends BaseController {
         Map map = new HashMap(10);
         ShiroUser user = getShiroUser();
         Set<String> roles = user.getRoles();
+
         if(!roles.contains(Const.Administor_Role_Name)  && !roles.contains(Const.OptimizerAdministorCN)  )map.put("userId",user.getId());
         if(roles.contains(Const.OptimizerCN) && !roles.contains(Const.OptimizerAdministorCN)  && !roles.contains(Const.Administor_Role_Name)  )map.put(Const.Optimizer,user.getName());
+        if(user.getSupplier()!=null){
+            if(videoCost==null)videoCost = new VideoCost();
+            if(videoCost.getCustomer()==null)videoCost.setCustomer(new Customer());
+            videoCost.getCustomer().setSupplier(user.getSupplier());
+        }
         if(StringUtils.hasText(keyWordType)){
             String[] keyTypes = keyWordType.split(",");
             for(String str :keyTypes){
                if(StringUtils.hasText(str)) map.put(str,str);
             }
+        }else{
+            map.put("all","all");
         }
         map.put("order",order );
         map.put("sort",sort);
@@ -104,7 +112,7 @@ public class VideoCostController extends BaseController {
             }
             if(words!=null && words.length>0)map.put("KeyWord",words );
         }
-
+        map.put(Const.videoCost,videoCost);
         return map;
     }
     @PostMapping("/dataGrid")
@@ -118,9 +126,8 @@ public class VideoCostController extends BaseController {
         Page<VideoCost> pages = getPage(page, rows, sort, order);
         map.put("offset",pages.getOffset());
         map.put("limit",pages.getLimit());
-        map.put("videoCost",videoCost);
-        ShiroUser user = getShiroUser();
-        Set<String> los=user.getRoles();
+
+
         pages= videoCostService.selectWithCount(pages,map);
         JSONObject jsonObject = new JSONObject();
         jsonObject.putAll(videoCostService.selectDataForListPage(map));

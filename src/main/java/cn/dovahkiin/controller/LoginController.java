@@ -3,6 +3,8 @@ package cn.dovahkiin.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cn.dovahkiin.commons.shiro.ShiroUser;
+import cn.dovahkiin.model.vo.UserVo;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.DisabledAccountException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -45,6 +47,11 @@ public class LoginController extends BaseController {
      */
     @GetMapping("/index")
     public String index(Model model) {
+        ShiroUser userVo = getShiroUser();
+        if(userVo!=null){
+            model.addAttribute("name",userVo.getName());
+            model.addAttribute("supplierName",userVo.getSupplier()!=null?userVo.getSupplier().getName():"" );
+        }
         return "index";
     }
 

@@ -380,57 +380,35 @@
                     <if test="videoCost.customer.videoType !=null and videoCost.customer.videoType.id != null  ">
                         and cus.video_type_id = #{ videoCost.customer.videoType.id }
                     </if>
+                    <if test="videoCost.customer.priceLevel!=null and videoCost.customer.priceLevel.id!=null" >
+                        and cus.price_level_id = #{videoCost.customer.priceLevel.id}
+                    </if>
+                    <if test="videoCost.customer.videoVersion!=null and videoCost.customer.videoVersion.id!=null" >
+                        and cus.video_version_id = #{videoCost.customer.videoVersion.id}
+                    </if>
+                    <if test="videoCost.customer.supplier !=null and videoCost.customer.supplier.id != null  ">
+                        and cus.supplier_id = #{ videoCost.customer.supplier.id }
+                    </if>
                 </if>
             </if>
             <if test="KeyWord !=null" >
                 <foreach collection="KeyWord" item="keyW" >
-                  and  ( 1=2
-                    <if test="all !=null or consumption!=null ">
-                        or vc.consumption like #{keyW}
-                    </if>
-                    <if test="all !=null or productName != null ">
-                        or pty.`name` like #{keyW}
-                    </if>
-                    <if test="all !=null or customName != null ">
-                        or cus.`name` like #{keyW}
-                    </if>
-                    <if test="all !=null or customCode != null ">
-                        or cus.`code` like #{keyW}
-                    </if>
-
-                    <if test="all !=null or industryName != null ">
-                        or ind.`name` like #{keyW}
-                    </if>
-                    <if test="all !=null or demandSectorName != null ">
-                        or dem.`name` like #{keyW}
-                    </if>
-
-                    <if test="all !=null or optimizerName != null ">
-                        or opt.`name` like #{keyW}
-                    </if>
-
-                    <if test="all !=null or videoTypeName != null ">
-                        or vdt.`name` like #{keyW}
-                    </if>
-                    <if test="all !=null or originalityName != null ">
-                        or ori.`name` like #{keyW}
-                    </if>
-
-                    <if test="all !=null or photographerName != null ">
-                        or pho.`name` like #{keyW}
-                    </if>
-                    <if test="all !=null or editorName != null ">
-                        or edi.`name` like #{keyW}
-                    </if>
-
-                    <if test="all !=null or performerName != null ">
-                        or per1.`name` like #{keyW}
-                        or per2.`name` like #{keyW}
-                        or per3.`name` like #{keyW}
-                    </if>
-                    <if test="all !=null or trueCustomerName != null ">
-                        or tcus.`name` like #{keyW}
-                    </if>
+                  and  (
+                    vc.consumption like #{keyW}
+                    or pty.`name` like #{keyW}
+                    or cus.`name` like #{keyW}
+                    or cus.`code` like #{keyW}
+                    or ind.`name` like #{keyW}
+                    or dem.`name` like #{keyW}
+                    or opt.`name` like #{keyW}
+                    or vdt.`name` like #{keyW}
+                    or ori.`name` like #{keyW}
+                    or pho.`name` like #{keyW}
+                    or edi.`name` like #{keyW}
+                    or per1.`name` like #{keyW}
+                    or per2.`name` like #{keyW}
+                    or per3.`name` like #{keyW}
+                    or tcus.`name` like #{keyW}
                     )
                 </foreach>
             </if>
@@ -480,9 +458,6 @@
         <if test="offset!=null and limit!=null">
             LIMIT #{offset} , #{limit}
         </if>
-
-
-
     </select>
     <select id="selectCountTotal" resultType="integer">
         SELECT
@@ -575,57 +550,35 @@
                     <if test="videoCost.customer.videoType !=null and videoCost.customer.videoType.id != null  ">
                         and cus.video_type_id = #{ videoCost.customer.videoType.id }
                     </if>
+                    <if test="videoCost.customer.priceLevel!=null and videoCost.customer.priceLevel.id!=null" >
+                        and cus.price_level_id = #{videoCost.customer.priceLevel.id}
+                    </if>
+                    <if test="videoCost.customer.videoVersion!=null and videoCost.customer.videoVersion.id!=null" >
+                        and cus.video_version_id = #{videoCost.customer.videoVersion.id}
+                    </if>
+                    <if test="videoCost.customer.supplier !=null and videoCost.customer.supplier.id != null  ">
+                        and cus.supplier_id = #{ videoCost.customer.supplier.id }
+                    </if>
                 </if>
             </if>
             <if test="KeyWord !=null" >
                 <foreach collection="KeyWord" item="keyW" >
-                    and  ( 1=2
-                    <if test="all !=null or consumption!=null ">
-                        or vc.consumption like #{keyW}
-                    </if>
-                    <if test="all !=null or productName != null ">
+                    and  (
+                        vc.consumption like #{keyW}
                         or pty.`name` like #{keyW}
-                    </if>
-                    <if test="all !=null or customName != null ">
                         or cus.`name` like #{keyW}
-                    </if>
-                    <if test="all !=null or customCode != null ">
                         or cus.`code` like #{keyW}
-                    </if>
-
-                    <if test="all !=null or industryName != null ">
                         or ind.`name` like #{keyW}
-                    </if>
-                    <if test="all !=null or demandSectorName != null ">
                         or dem.`name` like #{keyW}
-                    </if>
-
-                    <if test="all !=null or optimizerName != null ">
                         or opt.`name` like #{keyW}
-                    </if>
-
-                    <if test="all !=null or videoTypeName != null ">
                         or vdt.`name` like #{keyW}
-                    </if>
-                    <if test="all !=null or originalityName != null ">
                         or ori.`name` like #{keyW}
-                    </if>
-
-                    <if test="all !=null or photographerName != null ">
                         or pho.`name` like #{keyW}
-                    </if>
-                    <if test="all !=null or editorName != null ">
                         or edi.`name` like #{keyW}
-                    </if>
-
-                    <if test="all !=null or performerName != null ">
                         or per1.`name` like #{keyW}
                         or per2.`name` like #{keyW}
                         or per3.`name` like #{keyW}
-                    </if>
-                    <if test="all !=null or trueCustomerName != null ">
                         or tcus.`name` like #{keyW}
-                    </if>
                     )
                 </foreach>
             </if>
@@ -730,6 +683,15 @@
                     </if>
                     <if test="videoCost.customer.videoType !=null and videoCost.customer.videoType.id != null  ">
                         and cus.video_type_id = #{ videoCost.customer.videoType.id }
+                    </if>
+                    <if test="videoCost.customer.priceLevel!=null and videoCost.customer.priceLevel.id!=null" >
+                        and cus.price_level_id = #{videoCost.customer.priceLevel.id}
+                    </if>
+                    <if test="videoCost.customer.videoVersion!=null and videoCost.customer.videoVersion.id!=null" >
+                        and cus.video_version_id = #{videoCost.customer.videoVersion.id}
+                    </if>
+                    <if test="videoCost.customer.supplier !=null and videoCost.customer.supplier.id != null  ">
+                        and cus.supplier_id = #{ videoCost.customer.supplier.id }
                     </if>
                 </if>
             </if>
@@ -888,6 +850,15 @@
                     </if>
                     <if test="videoCost.customer.videoType !=null and videoCost.customer.videoType.id != null  ">
                         and cus.video_type_id = #{ videoCost.customer.videoType.id }
+                    </if>
+                    <if test="videoCost.customer.priceLevel!=null and videoCost.customer.priceLevel.id!=null" >
+                        and cus.price_level_id = #{videoCost.customer.priceLevel.id}
+                    </if>
+                    <if test="videoCost.customer.videoVersion!=null and videoCost.customer.videoVersion.id!=null" >
+                        and cus.video_version_id = #{videoCost.customer.videoVersion.id}
+                    </if>
+                    <if test="videoCost.customer.supplier !=null and videoCost.customer.supplier.id != null  ">
+                        and cus.supplier_id = #{ videoCost.customer.supplier.id }
                     </if>
                 </if>
             </if>
