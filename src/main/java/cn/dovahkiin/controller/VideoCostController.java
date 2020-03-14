@@ -13,9 +13,9 @@ import java.util.*;
 
 
 import cn.dovahkiin.commons.shiro.ShiroUser;
+import cn.dovahkiin.commons.utils.JsonUtils;
 import cn.dovahkiin.commons.utils.StringUtils;
-import cn.dovahkiin.model.Customer;
-import cn.dovahkiin.model.User;
+import cn.dovahkiin.model.*;
 import cn.dovahkiin.service.*;
 import cn.dovahkiin.service.impl.IndustryServiceImpl;
 import cn.dovahkiin.util.Const;
@@ -36,7 +36,6 @@ import org.springframework.web.bind.annotation.*;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import cn.dovahkiin.commons.result.PageInfo;
-import cn.dovahkiin.model.VideoCost;
 import cn.dovahkiin.commons.base.BaseController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -51,8 +50,27 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 @RequestMapping("/videoCost")
 public class VideoCostController extends BaseController {
-    @Autowired private IVideoCostService videoCostService;
-    @Autowired private ICustomerService customerService;
+    private IVideoCostService videoCostService;
+    private ICustomerService customerService;
+    private IOrganizationService iOrganizationService;
+    private IOptimizerService iOptimizerService;
+    @Autowired
+    public void setVideoCostService(IVideoCostService videoCostService) {
+        this.videoCostService = videoCostService;
+    }
+    @Autowired
+    public void setCustomerService(ICustomerService customerService) {
+        this.customerService = customerService;
+    }
+    @Autowired
+    public void setiOrganizationService(IOrganizationService iOrganizationService) {
+        this.iOrganizationService = iOrganizationService;
+    }
+    @Autowired
+    public void setiOptimizerService(IOptimizerService iOptimizerService) {
+        this.iOptimizerService = iOptimizerService;
+    }
+
     @GetMapping("/manager")
     @RequiresPermissions("/videoCost/manager")
     public String manager(Model model) {
@@ -137,7 +155,17 @@ public class VideoCostController extends BaseController {
         return pageInfo;
     }
 
-
+    private Model modelForEdit(Model model) {
+        EntityWrapper un_delete = new EntityWrapper();
+        List<Organization> organizations = iOrganizationService.selectList(un_delete);
+        model.addAttribute("organizations", organizations);
+        un_delete.eq("delete_flag", 0);
+        List<Customer> customers = customerService.selectUnDeleted(getShiroUser().getSupplier());
+        model.addAttribute("customers", customers);
+        List<Optimizer> optimizers = iOptimizerService.selectList(un_delete);
+        model.addAttribute("optimizers", JsonUtils.toJson(optimizers));
+        return model;
+    }
     /**
      * 添加页面
      * @return
@@ -151,7 +179,7 @@ public class VideoCostController extends BaseController {
             model.addAttribute("videoCost", videoCost);
         }
         model.addAttribute("method", "add");
-        videoCostService.modelForEdit(model);
+        modelForEdit(model);
         return "videoCost/videoCost";
     }
     /**
@@ -166,7 +194,7 @@ public class VideoCostController extends BaseController {
         VideoCost videoCost = videoCostService.selectByPrimaryKey(id);
         model.addAttribute("videoCost", videoCost);
         model.addAttribute("method", "edit");
-        videoCostService.modelForEdit(model);
+        modelForEdit(model);
         return "videoCost/videoCost";
     }
     /**

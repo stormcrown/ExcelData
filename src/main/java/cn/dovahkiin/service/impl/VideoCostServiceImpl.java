@@ -89,26 +89,13 @@ public class VideoCostServiceImpl implements IVideoCostService {
     }
 
     @Override
-    public org.springframework.ui.Model modelForEdit(org.springframework.ui.Model model) {
-        EntityWrapper un_delete = new EntityWrapper();
-        List<Organization> organizations = iOrganizationService.selectList(un_delete);
-        model.addAttribute("organizations", organizations);
-        un_delete.eq("delete_flag", 0);
-        List<Customer> customers = customerService.selectUnDeleted();
-        model.addAttribute("customers", customers);
-        List<Optimizer> optimizers = iOptimizerService.selectList(un_delete);
-        model.addAttribute("optimizers", JsonUtils.toJson(optimizers));
-        return model;
-    }
-
-    @Override
     @Transactional
     public int saveExcel(Sheet sheet, Date recoredDate, DateConverter dateConverter, ShiroUser user) {
         EntityWrapper un_delete = new EntityWrapper();
 
         List<Organization> organizations = iOrganizationService.selectList(un_delete);
         un_delete.eq("delete_flag", 0);
-        List<Customer> customers = customerService.selectUnDeleted();
+        List<Customer> customers = customerService.selectUnDeleted(user.getSupplier());
         List<Editor> editors = editorService.selectList(un_delete);
         List<Industry> industries = iIndustryService.selectList(un_delete);
         List<Optimizer> optimizers = iOptimizerService.selectList(un_delete);

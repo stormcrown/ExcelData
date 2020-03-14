@@ -33,7 +33,7 @@ public class ServiceTest extends BaseTest{
     protected DateConverter dateConverter;
     @Test
     public void seleectAll(){
-        List<Customer> customerList = customerService.selectUnDeleted();
+        List<Customer> customerList = customerService.selectUnDeleted(null);
         for(Customer customer: customerList)logger.info("Customer = " +customer.toString());
 
     }

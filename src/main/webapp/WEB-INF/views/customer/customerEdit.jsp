@@ -51,7 +51,7 @@
             <table class="grid" >
                 <tr>
                     <td>素材编码</td>
-                    <td><input id="customer_edit_code" name="code" value="${customer.code}" type="text" class="layui-input easyui-textbox" data-options="width:200" /></td>
+                    <td><input id="customer_edit_code" name="code" value="${customer.code}" type="text" class="layui-input easyui-textbox" data-options="width:200," /></td>
                     <td>素材名称:</td>
                     <td><input id="name" name="name" value="${customer.name}" type="text" class="layui-input easyui-textbox" data-options="width:200" /></td>
                 </tr>

@@ -93,16 +93,15 @@
     function drawTable1(X_,Y_) {
         $("#chats1").html('');
         // 第二个参数可以指定前面引入的主题
-        var div = document.createElement("div");
+        let div = document.createElement("div");
         div.setAttribute("style","width:1700px;height:800px")
-        var chart = echarts.init(div, 'vintage');
+        let chart = echarts.init(div, 'vintage');
         // 指定图表的配置项和数据
-        var seriesO = new Object();
+        let seriesO = new Object();
         seriesO.name= '消耗';
         seriesO.data = Y_;
         var cav_type  = $("#count1_c").val();
         seriesO.type='bar';
-        console.log( typeof cav_type);
         if(cav_type === "1" ){
             seriesO.type='line';
             seriesO.smooth=true;
@@ -142,26 +141,26 @@
         dom1.html('');
         dom2.html('');
         // 第二个参数可以指定前面引入的主题
-        var div = document.createElement("div");
+        let div = document.createElement("div");
         div.setAttribute("style","width:800px;height:800px")
-        var chart = echarts.init(div, 'vintage');
+        let chart = echarts.init(div, 'vintage');
         // 指定图表的配置项和数据
         if(jsonData==null)jsonData= [];
-        var count_consumption= [];
-        for(var i=0;i<jsonData.length;i++){
-            var da={};
+        let count_consumption= [];
+        for(let i=0;i<jsonData.length;i++){
+            let da={};
             da.name = jsonData[i].name;
             da.value =jsonData[i].consumption;
             count_consumption.push(da);
         }
-        var count_num= [] ;
-        for(var i=0;i<jsonData.length;i++){
-            var da={};
+        let count_num= [] ;
+        for(let i=0;i<jsonData.length;i++){
+            let da={};
             da.name = jsonData[i].name;
             da.value =jsonData[i].total;
             count_num.push(da);
         }
-        var option = {
+        let option = {
             title: {
                 // text: '消耗量按优化师统计图表',
                 text: title1,
@@ -224,18 +223,18 @@
 
         // 使用刚指定的配置项和数据显示图表。
         chart.setOption(option);
-        // var chats = document.getElementById("chats2");
+        // let chats = document.getElementById("chats2");
         // chats.appendChild(div);
         dom1.append(div);
-        var div2 = document.createElement("div");
+        let div2 = document.createElement("div");
         div2.setAttribute("style","width:800px;height:800px")
-        var chart2 = echarts.init(div2, 'vintage');
+        let chart2 = echarts.init(div2, 'vintage');
         option.series[0].data = count_num.sort(function (a, b) { return a.value - b.value; }) ;
         // option.title.text = "消耗记录数量分优化师统计图表";
         option.title.text = title2;
         option.tooltip.formatter = "{a} <br/>{b} :消耗记录数 {c} ({d}%)"
         chart2.setOption(option);
-        // var chats2 = document.getElementById("chats3");
+        // let chats2 = document.getElementById("chats3");
         // chats2.appendChild(div2);
         dom2.append(div2);
     }
@@ -256,11 +255,11 @@
                     </td>
                     <th>素材</th>
                     <td  >
-                        <input name="customer.id" class="easyui-combobox"  data-options="width:150,valueField:'id',textField:'name',url:'${path}/customer/combobox'" />
+                        <input name="customer.id" class="easyui-combobox"  data-options="width:200,height:40, valueField:'id',textField:'name',url:'${path}/customer/combobox'" />
                     </td>
                     <th>客户</th>
                     <td>
-                        <input name="customer.trueCustomer.id" class="easyui-combobox"  data-options="width:150,valueField:'id',textField:'name',url:'${path}/trueCustomer/combobox'" />
+                        <input name="customer.trueCustomer.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/trueCustomer/combobox'" />
                     </td>
                     <td>
                         统计精度
@@ -280,15 +279,15 @@
                 <tr  style="padding-bottom: 10px;" >
                     <th>需求部门</th>
                     <td>
-                        <select name="demandSector.id"  class="easyui-combotree"  data-options=" parentField : 'pid',width:200,panelHeight : 300,editable:true,url:'${path}/organization/tree'"   ></select>
+                        <select name="demandSector.id"  class="easyui-combotree"  data-options=" parentField : 'pid',width:200,height:40,panelHeight:300,editable:true,url:'${path}/organization/tree'"   ></select>
                     </td>
                     <td>优化师</td>
                     <td   >
-                        <input name="optimizer.id" class="easyui-combobox"  data-options="width:150,valueField:'id',textField:'name',url:'${path}/optimizer/combobox'" />
+                        <input name="optimizer.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/optimizer/combobox'" />
                     </td>
                     <td >创意</td>
                     <td>
-                        <input name="customer.originality.id" class="easyui-combobox"  data-options="width:150,valueField:'id',textField:'name',url:'${path}/originality/combobox'" />
+                        <input name="customer.originality.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/originality/combobox'" />
                     </td>
                     <td>图形</td>
                     <td>
@@ -298,21 +297,21 @@
                     </td>
                     <td >行业</td>
                     <td>
-                        <input name="customer.industry.id" class="easyui-combobox"  data-options="width:150,valueField:'id',textField:'name',url:'${path}/industry/combobox'" />
+                        <input name="customer.industry.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/industry/combobox'" />
                     </td>
                 </tr>
                 <tr  >
                     <td>演员</td>
                     <td  >
-                        <input name="customer.performer1.id"  class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/performer/combobox'" />
+                        <input name="customer.performer1.id"  class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/performer/combobox'" />
                     </td>
                     <td>摄像</td>
                     <td>
-                        <input name="customer.photographer.id"  class="easyui-combobox"  data-options="width:150,valueField:'id',textField:'name',url:'${path}/photographer/combobox'" />
+                        <input name="customer.photographer.id"  class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/photographer/combobox'" />
                     </td>
                     <td>剪辑</td>
                     <td>
-                        <input name="customer.editor.id" class="easyui-combobox"  data-options="width:150,valueField:'id',textField:'name',url:'${path}/editor/combobox'" />
+                        <input name="customer.editor.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/editor/combobox'" />
                     </td>
 <%--                    <td>--%>
 <%--                        <label class="layui-form-label">消耗为0的记录计数</label>--%>
@@ -327,8 +326,12 @@
 <%--                    <td>--%>
 <%--                        <input name="customer.productType.id" class="easyui-combobox"  data-options="width:150,valueField:'id',textField:'name',url:'${path}/productType/combobox'" />--%>
 <%--                    </td>--%>
-                    <td></td>
-                    <td></td>
+                    <td >供应商</td>
+                    <td>
+                        <input name="customer.supplier.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/supplier/combobox'" />
+                    </td>
+<%--                    <td></td>--%>
+<%--                    <td></td>--%>
                 </tr>
             </table>
         </form>

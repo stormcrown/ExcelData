@@ -6,7 +6,7 @@
             url: '${path}/videoCost/${method}',
             onSubmit: function () {
                 progressLoad();
-                var isValid = $(this).form('validate');
+                let isValid = $(this).form('validate');
                 if (!isValid) {
                     progressClose();
                 }
@@ -20,17 +20,15 @@
                     parent.$.modalDialog.openner_dataGrid.datagrid('reload');
                     parent.$.modalDialog.handler.dialog('close');
                 } else {
-                    var form = $('#videoCostAddForm');
                     parent.$.messager.alert('错误', result.msg, 'error');
-                    eval(result.obj);
                 }
             }
         });
         try {
-            var organizations = ${organizations};
-            var customers = ${customers};
-            var optimizers = ${optimizers};
-            var opt = {
+            let organizations = ${organizations};
+            let customers = ${customers};
+            let optimizers = ${optimizers};
+            let opt = {
                 valueField: 'id',
                 textField: 'name',
                 required: false,
@@ -71,14 +69,14 @@
         } catch (e) {
             console.log(e)
         }
-        var opti = {
+        let opti = {
             required: false,
             width: 200,
         };
         opti.required = true;
         opti.onChange=function(newValue, oldValue){
-            var customerId = $('#customer').combobox('getValue');
-            var customerName = $('#customer').combobox('getText');
+            let customerId = $('#customer').combobox('getValue');
+            let customerName = $('#customer').combobox('getText');
             checkRecordCountOnNameAndDate(newValue,customerId,customerName);
         }
         if('${method}'=='edit'  )opti.value = "${videoCost.recoredDateStr}"; else if('${method}'=='add'  )opti.value = getCommonDate(new Date());

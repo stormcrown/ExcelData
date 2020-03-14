@@ -75,6 +75,15 @@
 					<if test="videoCost.customer.videoType !=null and videoCost.customer.videoType.id != null  ">
 						and cus.video_type_id = #{ videoCost.customer.videoType.id }
 					</if>
+					<if test="videoCost.customer.priceLevel!=null and videoCost.customer.priceLevel.id!=null" >
+						and cus.price_level_id = #{videoCost.customer.priceLevel.id}
+					</if>
+					<if test="videoCost.customer.videoVersion!=null and videoCost.customer.videoVersion.id!=null" >
+						and cus.video_version_id = #{videoCost.customer.videoVersion.id}
+					</if>
+					<if test="videoCost.customer.supplier !=null and videoCost.customer.supplier.id != null  ">
+						and cus.supplier_id = #{ videoCost.customer.supplier.id }
+					</if>
 				</if>
 			</if>
 		</where>
@@ -158,6 +167,15 @@
 					<if test="videoCost.customer.videoType !=null and videoCost.customer.videoType.id != null  ">
 						and cus.video_type_id = #{ videoCost.customer.videoType.id }
 					</if>
+					<if test="videoCost.customer.priceLevel!=null and videoCost.customer.priceLevel.id!=null" >
+						and cus.price_level_id = #{videoCost.customer.priceLevel.id}
+					</if>
+					<if test="videoCost.customer.videoVersion!=null and videoCost.customer.videoVersion.id!=null" >
+						and cus.video_version_id = #{videoCost.customer.videoVersion.id}
+					</if>
+					<if test="videoCost.customer.supplier !=null and videoCost.customer.supplier.id != null  ">
+						and cus.supplier_id = #{ videoCost.customer.supplier.id }
+					</if>
 				</if>
 			</if>
 		</where>
@@ -239,6 +257,15 @@
 					</if>
 					<if test="videoCost.customer.videoType !=null and videoCost.customer.videoType.id != null  ">
 						and cus.video_type_id = #{ videoCost.customer.videoType.id }
+					</if>
+					<if test="videoCost.customer.priceLevel!=null and videoCost.customer.priceLevel.id!=null" >
+						and cus.price_level_id = #{videoCost.customer.priceLevel.id}
+					</if>
+					<if test="videoCost.customer.videoVersion!=null and videoCost.customer.videoVersion.id!=null" >
+						and cus.video_version_id = #{videoCost.customer.videoVersion.id}
+					</if>
+					<if test="videoCost.customer.supplier !=null and videoCost.customer.supplier.id != null  ">
+						and cus.supplier_id = #{ videoCost.customer.supplier.id }
 					</if>
 				</if>
 			</if>

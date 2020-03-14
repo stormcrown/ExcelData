@@ -50,10 +50,11 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
     @Override
-    public List<Customer> selectUnDeleted() {
+    public List<Customer> selectUnDeleted(Supplier supplier) {
         Map map = new HashMap();
         Customer customer = new Customer();
         customer.setDeleteFlag(0);
+        customer.setSupplier(supplier);
         map.put("customer",customer);
         return customerMapper.selectList(map);
     }

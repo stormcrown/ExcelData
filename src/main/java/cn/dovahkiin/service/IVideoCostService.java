@@ -33,7 +33,6 @@ public interface IVideoCostService  {
     double sumConsumption(Map<String , Object> map);
     int selectCount(Date recoredDate,Long customId,ShiroUser user);
     double selectMaxConsumption(ShiroUser user);
-    Model modelForEdit(Model model);
     Map selectDataForListPage(Map<String , Object> map);
 
 }

@@ -1,6 +1,7 @@
 package cn.dovahkiin.service;
 
 import cn.dovahkiin.model.Customer;
+import cn.dovahkiin.model.Supplier;
 import cn.dovahkiin.model.VideoCost;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
@@ -23,7 +24,7 @@ public interface ICustomerService {
     int insertSelective(Customer record);
     Customer selectByPrimaryKey(Long id);
     List<Customer> selectByCode(String code);
-    List<Customer> selectUnDeleted();
+    List<Customer> selectUnDeleted(Supplier supplier);
     List<Customer> selectForCombobox(Long supplierId);
     List<Customer> selectList(Map map);
     int countAll(Customer customer);

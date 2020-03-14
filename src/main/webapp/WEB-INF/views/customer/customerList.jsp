@@ -449,15 +449,15 @@ function customerSearchFun() {
         <form id="customerSearchForm">
             <table>
                 <tr>
-                    <th>关键字:</th>
-                        <td title="英文逗号“,”分隔多个关键字，检测除日期，累计消耗及排名以外的列。" class="easyui-tooltip" >
-                            <input id="KeyWord_customList" name="KeyWord" placeholder="关键字" type="text"  class="layui-input" />
-                        </td>
+                    <td>关键字:</td>
+                    <td title="英文逗号“,”分隔多个关键字，检测除日期，累计消耗及排名以外的列。" class="easyui-tooltip" >
+                        <input id="KeyWord_customList" name="KeyWord" placeholder="关键字" type="text"  class="layui-input" />
+                    </td>
                     <td>
                         关键字段
                     </td>
                     <td>
-                        <select id="keyWordType_CUS" name="keyWordType" class="easyui-combobox" style="width: 200px;" data-options="height:30,multiple:true,onSelect:chckKeyWordType_CUS" >
+                        <select id="keyWordType_CUS" name="keyWordType" class="easyui-combobox" style="width: 200px;" data-options="height:40,multiple:true,onSelect:chckKeyWordType_CUS" >
                             <option value="all" >全部</option>
                             <option value="customName" >素材名</option><option value="customCode" >素材编码</option>
                             <option value="trueCustomerName" >客户名</option>
@@ -471,13 +471,16 @@ function customerSearchFun() {
                             <option value="photographerName">摄像</option>
                             <option value="editorName">剪辑</option>
                             <option value="performerName">演员</option>
+                            <option value="supplierName">供应商</option>
+                            <option value="videoVersionName">视频版本</option>
+                            <option value="priceLevel">价格分级</option>
                         </select>
                     </td>
-                    <th>成片日期:</th>
+                    <td>成片日期:</td>
                     <td>
                         <input id="completeDateRange_custom" name="completeDateRange" type="text" class="layui-input"    />
                     </td>
-                    <th>是否删除:&nbsp;</th>
+                    <td>是否删除:&nbsp;</td>
                     <td>
                         <select id="deleteFlag" name="deleteFlag" class="layui-input" style="width: 100px;" >
                             <option value="0" selected class="layui-input" style="color: green">通常</option>
@@ -488,8 +491,10 @@ function customerSearchFun() {
                     <td width="50px;" ></td>
                     <td>
                         <button type="button" class="layui-btn layui-btn-radius layui-btn-normal" onclick="customerSearchFun();">查询</button>
-                        <button type="button" class="layui-btn layui-btn-radius layui-btn-danger" onclick="customerCleanFun();" >清空</button>
+
                      </td>
+                    <td width="50px;" ></td>
+                    <td  ><button type="button" class="layui-btn layui-btn-radius layui-btn-danger" onclick="customerCleanFun();" >清空</button></td>
                 </tr>
                 <tr  >
                     <th>客户</th>
@@ -508,6 +513,7 @@ function customerSearchFun() {
                     <td>
                         <input name="editor.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/editor/combobox'" />
                     </td>
+                    <td></td><td></td>
                 </tr>
                 <tr  >
                     <td >创意</td>
@@ -526,7 +532,7 @@ function customerSearchFun() {
                     <td>
                         <input name="videoType.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/videoType/combobox'" />
                     </td>
-
+                    <td></td><td></td>
                 </tr>
                 <tr  >
                     <td >价格分级</td>
@@ -545,7 +551,7 @@ function customerSearchFun() {
                     <td>
 
                     </td>
-
+                    <td></td><td></td>
                 </tr>
             </table>
         </form>

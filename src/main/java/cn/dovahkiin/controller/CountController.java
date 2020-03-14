@@ -3,6 +3,7 @@ package cn.dovahkiin.controller;
 import cn.dovahkiin.commons.base.BaseController;
 import cn.dovahkiin.commons.shiro.ShiroUser;
 import cn.dovahkiin.commons.utils.DateTools;
+import cn.dovahkiin.model.Customer;
 import cn.dovahkiin.model.VideoCost;
 import cn.dovahkiin.service.ICountService;
 import cn.dovahkiin.util.Const;
@@ -75,6 +76,12 @@ public class CountController extends BaseController {
 //            map.put("recoredDates",DateTools.getBetweenDates(DateTools.firstDay(),DateTools.lastDate()));
         }
         map.put("type",type==null?0:type);
+
+        if(user.getSupplier()!=null){
+            if(videoCost==null)videoCost=new VideoCost();
+            if(videoCost.getCustomer()==null)videoCost.setCustomer(new Customer());
+            videoCost.getCustomer().setSupplier(user.getSupplier());
+        }
         map.put("videoCost",videoCost);
 
         return map;
