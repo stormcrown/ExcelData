@@ -68,12 +68,22 @@ public class Organization extends Model<Organization>  {
 	public Organization() {
 	}
 
+	public static Organization craateForInsert(String name){
+		Organization organization = new Organization();
+		organization.name = name;
+		organization.simpleNames = name;
+		organization.CreateCode();
+		organization.createTime = new Date();
+		return organization;
+	}
+
 	public Organization(String name, String code, Integer seq, Date createTime) {
 		this.name = name;
 		this.code = code;
 		this.seq = seq;
 		this.createTime = createTime;
 	}
+
 
 	public Long getId() {
 		return this.id;

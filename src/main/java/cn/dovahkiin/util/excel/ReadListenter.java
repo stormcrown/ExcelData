@@ -11,6 +11,8 @@ import java.lang.reflect.Field;
 import java.util.*;
 public class ReadListenter<T>  extends AnalysisEventListener<T> {
     private List<T> data = new ArrayList<T>();
+    private List<Object> head = new ArrayList<>();
+    private boolean needHead = Boolean.TRUE;
     private Class<T>  tClass;
     public ReadListenter(Class tClass) {
         this.tClass =tClass;

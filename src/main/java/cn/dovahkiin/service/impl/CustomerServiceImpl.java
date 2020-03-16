@@ -1,20 +1,15 @@
 package cn.dovahkiin.service.impl;
 
-import cn.dovahkiin.commons.utils.JsonUtils;
 import cn.dovahkiin.commons.utils.StringUtils;
 import cn.dovahkiin.model.*;
 import cn.dovahkiin.mapper.CustomerMapper;
 import cn.dovahkiin.service.*;
 import cn.dovahkiin.util.Const;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
 
 import java.util.*;
 
@@ -77,7 +72,7 @@ public class CustomerServiceImpl implements ICustomerService {
     @Override
     public int countAll(Customer customer) {
         Map<String, Object> map = new HashMap<>();
-        map.put(Const.customer,customer);
+        map.put(Const.customerStr,customer);
         return customerMapper.selectTotal(map);
     }
 

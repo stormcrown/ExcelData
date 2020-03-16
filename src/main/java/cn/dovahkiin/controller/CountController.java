@@ -52,8 +52,8 @@ public class CountController extends BaseController {
         Map<String,Object> map = new HashMap<>();
         ShiroUser user = getShiroUser();
         Set<String> roles = user.getRoles();
-         if(!roles.contains(Const.Administor_Role_Name)  && !roles.contains(Const.OptimizerAdministorCN)  )map.put("userId",user.getId());
-        if(roles.contains(Const.OptimizerCN) && !roles.contains(Const.OptimizerAdministorCN)  && !roles.contains(Const.Administor_Role_Name)  )map.put(Const.Optimizer,user.getName());
+         if(!roles.contains(Const.Administor_Role_Name)  && !roles.contains(Const.optimizerAdministorCN)  )map.put("userId",user.getId());
+        if(roles.contains(Const.optimizerCN) && !roles.contains(Const.optimizerAdministorCN)  && !roles.contains(Const.Administor_Role_Name)  )map.put(Const.optimizerStr,user.getName());
 
         if(recoredDateRange!=null && recoredDateRange.indexOf("~")>0){
             String[] da = recoredDateRange.split("~");

@@ -196,6 +196,44 @@
                     }
                 },
                 {
+                    width: '120',
+                    title: '价格分类',
+                    field: 'priceLevel',
+                    sortable: true,
+                    align:'right',
+                    formatter: function (value, row, index) {
+                        let plrl = '';
+                        if(row!=null && row.customer!=null && row.customer.priceLevel!=null ){
+                            let baseP = row.customer.priceLevel.basePrice;
+                            if(baseP!=null)baseP = " ￥:"+baseP.toFixed(2);
+                            let priceLN = row.customer.priceLevel.name;
+                            if(priceLN!=null)priceLN =  commonForm(priceLN,$("#KeyWord").val().trim())
+                            plrl = (priceLN==null?'':priceLN) + (baseP==null?'':baseP );
+                        }
+                        return plrl;
+                    }
+                },
+                {
+                    width: '60',
+                    title: '供应商',
+                    field: 'supplier',
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        if(row!=null && row.customer!=null &&  row.customer.supplier  !=null)return commonForm(row.customer.supplier.name,$("#KeyWord").val().trim());
+                        return "";
+                    }
+                },
+                {
+                    width: '60',
+                    title: '视频版本',
+                    field: 'videoVersion',
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        if(row!=null && row.customer!=null && row.customer.videoVersion!=null)return commonForm(row.customer.videoVersion.name,$("#KeyWord").val().trim());
+                        return "";
+                    }
+                },
+                {
                     width: '60',
                     title: '摄像',
                     field: 'photographer',
@@ -350,8 +388,8 @@
     function videoCostImportExcelFun() {
         parent.$.modalDialog({
             title: '导入',
-            width: 400,
-            height: 200,
+            width: 500,
+            height: 250,
             href: '${path}/videoCost/importExcelPage',
             buttons: [{
                 text: '导入',

@@ -1,5 +1,6 @@
 package cn.dovahkiin.model;
 
+import cn.dovahkiin.commons.utils.StringUtils;
 import com.baomidou.mybatisplus.enums.IdType;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
@@ -18,7 +19,25 @@ import java.io.Serializable;
 public class Supplier extends Model<Supplier> {
 
     private static final long serialVersionUID = 1L;
-
+	private static final String codePrex="SUP";
+	public String CreateCode(){
+		StringBuilder newCode= new StringBuilder()
+				.append(codePrex)
+				.append(StringUtils.getDateCode())
+				.append(this.hashCode())
+				;
+		if(this.code==null)this.code=newCode.toString();
+		return newCode.toString();
+	}
+	public static Supplier craateForInsert(String name){
+		Supplier supplier = new Supplier();
+		supplier.name = name;
+		supplier.CreateCode();
+		supplier.createTime = new Date();
+		supplier.updateTime = new Date();
+		supplier.deleteFlag = 0;
+		return supplier;
+	}
     /**
      * 主键id
      */

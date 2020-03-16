@@ -5,10 +5,8 @@ import java.util.*;
 
 import cn.dovahkiin.commons.shiro.ShiroUser;
 import cn.dovahkiin.commons.utils.StringUtils;
-import cn.dovahkiin.model.VideoCost;
 import cn.dovahkiin.util.Const;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +65,7 @@ public class CustomerController extends BaseController {
             if(customer==null)customer = new Customer();
             customer.setSupplier(shiroUser.getSupplier());
         }
-        map.put(Const.customer,customer);
+        map.put(Const.customerStr,customer);
         map.put("order",order );
         map.put("sort",sort);
 

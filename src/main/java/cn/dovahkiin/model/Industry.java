@@ -63,7 +63,15 @@ public class Industry extends Model<Industry> {
 
 	public Industry() {
 	}
-
+	public static Industry craateForInsert(String name){
+		Industry industry = new Industry();
+		industry.name = name;
+		industry.CreateCode();
+		industry.createTime = new Date();
+		industry.updateTime = new Date();
+		industry.deleteFlag = 0;
+		return industry;
+	}
 	public Industry(String name, String code, Date createTime, Integer deleteFlag) {
 		this.name = name;
 		this.code = code;

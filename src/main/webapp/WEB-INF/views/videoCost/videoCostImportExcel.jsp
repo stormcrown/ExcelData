@@ -44,23 +44,30 @@
                 });
             }
         });
+
+        let supplerName = '${supplierName}';
+        if(supplerName!='')$('#tipsSup').html('您的数据会被自动标记为供应商 '+redFont(supplerName));
+        else $('#tipsSup').hide();
     });
 
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false" >
-    <div data-options="region:'center',border:false" style="overflow: hidden;padding: 3px;" >
+    <div data-options="region:'center',border:false" style="overflow: hidden;padding: 0px;" >
         <form id="videoCostimportExcelForm" method="post" enctype="multipart/form-data">
             <table class="grid">
                 <tr>
                     <td>Excel文件</td>
-                    <td><input name="excels" type="file" accept=".xls,.xlsx" placeholder="请输入累计消耗排名" class="easyui-validatebox span2" data-options="prompt:'请输入累计消耗排名',required:true" value=""></td>
+                    <td><input name="excels" accept=".xls,.xlsx"  class="easyui-filebox" data-options="prompt:'',required:true,height:40,width:400,buttonText:'选择消耗文件',buttonIcon:'glyphicon-plus  icon-green'" ></td>
                 </tr>
                 <tr>
                     <td>消耗日期</td>
-                    <td><input id="recoredDate" name="recoredDate" type="text"  placeholder="日期格式：年-月-日" class="easyui-datebox span2" data-options="prompt:'请输入消耗日期',required:true,invalidMessage:'日期格式：年-月-日'" value=""></td>
+                    <td><input id="recoredDate" name="recoredDate" type="text"  placeholder="日期格式：年-月-日" class="easyui-datebox span2" data-options="prompt:'请输入消耗日期',required:true,invalidMessage:'日期格式：年-月-日',width:400,height:40," ></td>
                 </tr>
                 <tr>
                     <td id="tips" colspan="2" ></td>
+                </tr>
+                <tr>
+                    <td id="tipsSup" colspan="2" ></td>
                 </tr>
             </table>
         </form>

@@ -6,6 +6,7 @@ import com.alibaba.excel.support.ExcelTypeEnum;
 import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,6 +27,7 @@ public class SimpleEasyExcelUtil<T> {
 
     public List<T> readXLSX(InputStream in, Class<T> clazz) {
         ReadListenter<T> readListenter = new ReadListenter<T>(clazz);
+
         ExcelReader reader = new ExcelReader(in, ExcelTypeEnum.XLSX, readListenter, true);
         reader.read();
         List<T> list = readListenter.getData();
@@ -38,5 +40,13 @@ public class SimpleEasyExcelUtil<T> {
         reader.read();
         List<T> list = readListenter.getData();
         return list;
+    }
+
+
+    public List<ArrayList<Object>> readComon(InputStream inputStream){
+        CommonReadListenter listenter = new CommonReadListenter();
+        ExcelReader reader = new ExcelReader(inputStream, ExcelTypeEnum.XLSX, listenter, true);
+        reader.read();
+        return listenter.data;
     }
 }

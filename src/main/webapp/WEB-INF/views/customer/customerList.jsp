@@ -63,7 +63,7 @@
         },
             {
                 width: '120',
-                title: '价格分级',
+                title: '价格分类',
                 field: 'priceLevel',
                 sortable: true,
                 align:'right',

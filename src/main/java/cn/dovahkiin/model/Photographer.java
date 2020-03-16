@@ -61,6 +61,15 @@ public class Photographer extends Model<Photographer> {
 
 	public Photographer() {
 	}
+	public static Photographer craateForInsert(String name){
+		Photographer photographer = new Photographer();
+		photographer.name = name;
+		photographer.CreateCode();
+		photographer.createTime = new Date();
+		photographer.updateTime = new Date();
+		photographer.deleteFlag = 0;
+		return photographer;
+	}
 	public Photographer(String name, String code, Date createTime, Integer deleteFlag) {
 		this.name = name;
 		this.code = code;

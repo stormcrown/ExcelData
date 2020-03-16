@@ -21,7 +21,7 @@ import java.io.Serializable;
 public class VideoVersion extends Model<VideoVersion> {
 
     private static final long serialVersionUID = 1L;
-	private static final String codePrex="VV";
+	private static final String codePrex="VVE";
 	public String CreateCode(){
 		StringBuilder newCode= new StringBuilder()
 				.append(codePrex)
@@ -60,7 +60,15 @@ public class VideoVersion extends Model<VideoVersion> {
 	@TableField("delete_flag")
 	private Integer deleteFlag;
 
-
+	public static VideoVersion craateForInsert(String name){
+		VideoVersion videoVersion = new VideoVersion();
+		videoVersion.name = name;
+		videoVersion.CreateCode();
+		videoVersion.createTime = new Date();
+		videoVersion.updateTime = new Date();
+		videoVersion.deleteFlag = 0;
+		return videoVersion;
+	}
 	public Long getId() {
 		return id;
 	}

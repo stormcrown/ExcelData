@@ -54,7 +54,15 @@ public class TrueCustomer extends Model<TrueCustomer> {
 
     public TrueCustomer() {
     }
-
+    public static TrueCustomer craateForInsert(String name){
+        TrueCustomer trueCustomer = new TrueCustomer();
+        trueCustomer.name = name;
+        trueCustomer.CreateCode();
+        trueCustomer.createTime = new Date();
+        trueCustomer.updateTime = new Date();
+        trueCustomer.deleteFlag = 0;
+        return trueCustomer;
+    }
     public TrueCustomer(String name, Date updateTime, Date createTime, Integer deleteFlag) {
         this.name = name;
         this.updateTime = updateTime;

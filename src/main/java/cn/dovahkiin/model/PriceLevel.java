@@ -1,5 +1,6 @@
 package cn.dovahkiin.model;
 
+import cn.dovahkiin.commons.utils.StringUtils;
 import com.baomidou.mybatisplus.enums.IdType;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
@@ -20,7 +21,27 @@ import java.io.Serializable;
 public class PriceLevel extends Model<PriceLevel> {
 
     private static final long serialVersionUID = 1L;
-
+	private static final String codePrex="PLE";
+	public String CreateCode(){
+		StringBuilder newCode= new StringBuilder()
+				.append(codePrex)
+				.append(StringUtils.getDateCode())
+				.append(this.hashCode())
+				;
+		if(this.code==null)this.code=newCode.toString();
+		return newCode.toString();
+	}
+	public static PriceLevel craateForInsert(String name ,Long updateBy,Long createBy){
+		PriceLevel priceLevel = new PriceLevel();
+		priceLevel.name = name;
+		priceLevel.CreateCode();
+		priceLevel.createTime = new Date();
+		priceLevel.updateTime = new Date();
+		priceLevel.deleteFlag = 0;
+		priceLevel.createBy=createBy;
+		priceLevel.updateBy=updateBy;
+		return priceLevel;
+	}
     /**
      * 主键id
      */

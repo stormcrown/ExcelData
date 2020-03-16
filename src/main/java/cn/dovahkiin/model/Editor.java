@@ -61,7 +61,15 @@ public class Editor extends Model<Editor> {
 
 	public Editor() {
 	}
-
+	public static Editor craateForInsert(String name){
+		Editor editor = new Editor();
+		editor.name = name;
+		editor.CreateCode();
+		editor.createTime = new Date();
+		editor.updateTime = new Date();
+		editor.deleteFlag = 0;
+		return editor;
+	}
 	public Editor(String name, String code, Date createTime, Integer deleteFlag) {
 		this.name = name;
 		this.code = code;

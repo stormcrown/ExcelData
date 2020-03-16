@@ -61,7 +61,15 @@ public class Optimizer extends Model<Optimizer> {
 
 	public Optimizer() {
 	}
-
+	public static Optimizer craateForInsert(String name){
+		Optimizer optimizer = new Optimizer();
+		optimizer.name = name;
+		optimizer.CreateCode();
+		optimizer.createTime = new Date();
+		optimizer.updateTime = new Date();
+		optimizer.deleteFlag = 0;
+		return optimizer;
+	}
 	public Optimizer(String name, String code, Date createTime, Integer deleteFlag) {
 		this.name = name;
 		this.code = code;

@@ -9,6 +9,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.ui.Model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +27,8 @@ public interface IVideoCostService  {
     int updateByPrimaryKey(VideoCost videoCost);
     int deleteMany(String[] ids);
     int deleteManyForever(String[] ids);
-    int saveExcel(Sheet sheet, Date recoredDate, DateConverter dateConverter, ShiroUser user);
+//    int saveExcel(Sheet sheet, Date recoredDate, DateConverter dateConverter, ShiroUser user);
+    int handleExcelFile(List<ArrayList<Object>> excelDatas ,Date recoredDate,ShiroUser shiroUser);
     Workbook exportData(Map map,Workbook workbook);
     VideoCost selectByPrimaryKey(Long  id);
     Page<VideoCost> selectWithCount(Page<VideoCost> pages,Map<String , Object> map);

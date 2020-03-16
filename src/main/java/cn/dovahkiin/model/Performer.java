@@ -61,7 +61,15 @@ public class Performer extends Model<Performer> {
 
 	public Performer() {
 	}
-
+	public static Performer craateForInsert(String name){
+		Performer performer = new Performer();
+		performer.name = name;
+		performer.CreateCode();
+		performer.createTime = new Date();
+		performer.updateTime = new Date();
+		performer.deleteFlag = 0;
+		return performer;
+	}
 	public Performer(String name, String code, Date createTime, Integer deleteFlag) {
 		this.name = name;
 		this.code = code;

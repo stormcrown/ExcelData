@@ -1,14 +1,10 @@
 package cn.dovahkiin.controller;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import java.io.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -17,19 +13,17 @@ import cn.dovahkiin.commons.utils.JsonUtils;
 import cn.dovahkiin.commons.utils.StringUtils;
 import cn.dovahkiin.model.*;
 import cn.dovahkiin.service.*;
-import cn.dovahkiin.service.impl.IndustryServiceImpl;
 import cn.dovahkiin.util.Const;
-import com.alibaba.fastjson.JSONArray;
+import cn.dovahkiin.util.excel.CommonReadListenter;
+import com.alibaba.excel.ExcelReader;
+import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.fastjson.JSONObject;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -86,8 +80,8 @@ public class VideoCostController extends BaseController {
         ShiroUser user = getShiroUser();
         Set<String> roles = user.getRoles();
 
-        if(!roles.contains(Const.Administor_Role_Name)  && !roles.contains(Const.OptimizerAdministorCN)  )map.put("userId",user.getId());
-        if(roles.contains(Const.OptimizerCN) && !roles.contains(Const.OptimizerAdministorCN)  && !roles.contains(Const.Administor_Role_Name)  )map.put(Const.Optimizer,user.getName());
+        if(!roles.contains(Const.Administor_Role_Name)  && !roles.contains(Const.optimizerAdministorCN)  )map.put("userId",user.getId());
+        if(roles.contains(Const.optimizerCN) && !roles.contains(Const.optimizerAdministorCN)  && !roles.contains(Const.Administor_Role_Name)  )map.put(Const.optimizerStr,user.getName());
         if(user.getSupplier()!=null){
             if(videoCost==null)videoCost = new VideoCost();
             if(videoCost.getCustomer()==null)videoCost.setCustomer(new Customer());
@@ -130,7 +124,7 @@ public class VideoCostController extends BaseController {
             }
             if(words!=null && words.length>0)map.put("KeyWord",words );
         }
-        map.put(Const.videoCost,videoCost);
+        map.put(Const.videoCostStr,videoCost);
         return map;
     }
     @PostMapping("/dataGrid")
@@ -144,7 +138,6 @@ public class VideoCostController extends BaseController {
         Page<VideoCost> pages = getPage(page, rows, sort, order);
         map.put("offset",pages.getOffset());
         map.put("limit",pages.getLimit());
-
 
         pages= videoCostService.selectWithCount(pages,map);
         JSONObject jsonObject = new JSONObject();
@@ -203,7 +196,9 @@ public class VideoCostController extends BaseController {
      */
     @GetMapping("/importExcelPage")
     @RequiresPermissions("/videoCost/importExcel")
-    public String importExcelPage() {
+    public String importExcelPage(Model model) {
+        ShiroUser userVo = getShiroUser();
+        if(userVo.getSupplier()!=null) model.addAttribute(Const.supplierName,userVo.getSupplier().getName());
         return "videoCost/videoCostImportExcel";
     }
     /**
@@ -243,21 +238,19 @@ public class VideoCostController extends BaseController {
     @PostMapping("/importExcel")
     @ResponseBody
     @RequiresPermissions("/videoCost/importExcel")
-    public Object importExcel(@Valid Date recoredDate, @RequestParam(name="excels") MultipartFile excels) {
+    public Object importExcel(Date recoredDate, @RequestParam(name="excels") MultipartFile excels) {
         int m=0;
         boolean b = true;
         try {
-            StringBuilder tips = new StringBuilder("部分数据需要补充或者修改：");
             InputStream inputStream = excels.getInputStream();
-            Workbook workbook= WorkbookFactory.create(inputStream);
-            Sheet sheet=workbook.getSheetAt(0);
-            m = videoCostService.saveExcel(sheet,recoredDate,dateConverter,getShiroUser());
-            b = m>0;
-            inputStream.close();
-        }catch (InvalidFormatException e){
-            e.printStackTrace();
+            CommonReadListenter listenter = new CommonReadListenter();
+            ExcelReader reader = new ExcelReader(inputStream, ExcelTypeEnum.XLSX, listenter, true);
+            reader.read();
+            List<ArrayList<Object>> list = listenter.data;
+            m = videoCostService.handleExcelFile(list,recoredDate, getShiroUser());
         }catch (IOException e){
             e.printStackTrace();
+            b= false;
         }
         if (b) {
             return renderSuccess("添加成功！"+m+"行数据被导入");

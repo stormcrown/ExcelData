@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PerformerServiceImpl extends ServiceImpl<PerformerMapper, Performer> implements IPerformerService {
     @Override
     @Transactional(propagation=Propagation.REQUIRES_NEW)
-    public boolean insert(Performer performer){
+    public boolean insertTr(Performer performer){
         return super.insert(performer);
     }
 }

@@ -61,7 +61,15 @@ public class Originality extends Model<Originality> {
 
 	public Originality() {
 	}
-
+	public static Originality craateForInsert(String name){
+		Originality originality = new Originality();
+		originality.name = name;
+		originality.CreateCode();
+		originality.createTime = new Date();
+		originality.updateTime = new Date();
+		originality.deleteFlag = 0;
+		return originality;
+	}
 	public Originality(String name, String code, Date createTime, Integer deleteFlag) {
 		this.name = name;
 		this.code = code;

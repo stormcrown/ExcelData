@@ -494,23 +494,18 @@
                     <if test="all !=null or industryName != null ">
                         or ind.`name` like #{keyW}
                     </if>
-
-
-
                     <if test="all !=null or videoTypeName != null ">
                         or vdt.`name` like #{keyW}
                     </if>
                     <if test="all !=null or originalityName != null ">
                         or ori.`name` like #{keyW}
                     </if>
-
                     <if test="all !=null or photographerName != null ">
                         or pho.`name` like #{keyW}
                     </if>
                     <if test="all !=null or editorName != null ">
                         or edi.`name` like #{keyW}
                     </if>
-
                     <if test="all !=null or performerName != null ">
                         or per1.`name` like #{keyW}
                         or per2.`name` like #{keyW}

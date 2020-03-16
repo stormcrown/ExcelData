@@ -1,5 +1,6 @@
 package cn.dovahkiin.test.base;
 
+import cn.dovahkiin.util.excel.SimpleEasyExcelUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
@@ -13,6 +14,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
@@ -25,13 +27,17 @@ import org.springframework.web.context.WebApplicationContext;
 		"classpath:spring-config.xml"
 })
 @WebAppConfiguration
+@Transactional
 public abstract class BaseTest {
 	protected MockMvc mockMvc;
 	protected MockHttpServletRequest request;
 	protected MockHttpServletResponse response;
 	protected Log logger = LogFactory.getLog(this.getClass());
 
+
 	@Autowired protected WebApplicationContext wac;
+
+	protected SimpleEasyExcelUtil simpleEasyExcelUtil = new SimpleEasyExcelUtil();
 
 	@Before
 	public void setUp() {

@@ -11,6 +11,7 @@ import cn.dovahkiin.commons.utils.JsonUtils;
 import cn.dovahkiin.commons.utils.StringUtils;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableName;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -24,7 +25,7 @@ import java.util.List;
  * @author lzt
  * @since 2018-10-15
  */
-//@TableName("video_cost")
+@TableName("video_cost")
 public class VideoCost  extends Model<VideoCost> {
 
     private static final long serialVersionUID = 2L;
@@ -32,6 +33,8 @@ public class VideoCost  extends Model<VideoCost> {
 	protected Serializable pkVal() {
 		return this.id;
 	}
+
+
     /**
      * 主键id
      */

@@ -68,6 +68,15 @@ public class VideoType extends Model<VideoType> {
 
 	public VideoType() {
 	}
+	public static VideoType craateForInsert(String name){
+		VideoType videoType = new VideoType();
+		videoType.name = name;
+		videoType.CreateCode();
+		videoType.createTime = new Date();
+		videoType.updateTime = new Date();
+		videoType.deleteFlag = 0;
+		return videoType;
+	}
 	public VideoType(String name, String code, Date createTime, Integer deleteFlag) {
 		this.name = name;
 		this.code = code;
