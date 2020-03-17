@@ -585,7 +585,7 @@
                     关键字段
                 </td>
                 <td>
-                    <select id="keyWordType" name="keyWordType" class="easyui-combobox" style="width: 200px;" data-options="height:30, multiple:true,onSelect:chckKeyWordType" >
+                    <select id="keyWordType" name="keyWordType" class="easyui-combobox" style="width: 200px;" data-options="height:40, multiple:true,onSelect:chckKeyWordType" >
                         <option value="all" >全部</option>
                         <option value="customName" >素材名</option><option value="customCode" >素材编码</option>
                         <option value="trueCustomerName" >客户名</option>
@@ -601,7 +601,7 @@
                         <option value="performerName">演员</option>
                     </select>
                 </td>
-                <th>消耗日期:</th>
+                <th>消耗日期</th>
                 <td>
                    <input id = 'recoredDateRange' name="recoredDateRange"  type="text" class="layui-input" >
                 </td>
@@ -617,11 +617,11 @@
             <tr  >
                 <td>日消耗范围</td>
                 <td>
-                    <input id="Consumption_star" name="consumption_min"  type="text" onchange="checkConsumption_star()" class="easyui-numberbox" value="0" data-options="min:0,precision:2,onChange:checkConsumption_star" />
+                    <input id="Consumption_star" name="consumption_min"  type="text" onchange="checkConsumption_star()" class="easyui-numberbox" value="0" data-options="width:200,height:40,min:0,precision:2,onChange:checkConsumption_star" />
                 </td>
                 <td> -- </td>
                 <td>
-                    <input id="Consumption_end" name="consumption_max" type="text" class="easyui-numberbox" value="${MaxConsumption}" data-options="min:0,precision:2" />
+                    <input id="Consumption_end" name="consumption_max" type="text" class="easyui-numberbox" value="${MaxConsumption}" data-options="width:200,height:40,min:0,precision:2" />
                 </td>
             </tr>
                 <%--<tr  >--%>

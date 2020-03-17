@@ -841,10 +841,12 @@ public class VideoCostServiceImpl implements IVideoCostService {
         List<VideoCost> videoCosts = videoCostMapper.selectWithCount(map);
         if (videoCosts != null) {
             sheet.setColumnWidth(2, 4000);
+            sheet.setColumnWidth(3, 2*4000);
             sheet.setColumnWidth(8, 4000);
             sheet.setColumnWidth(14, 4000);
             sheet.setColumnWidth(15, 4000);
             sheet.setColumnWidth(16, 4000);
+            sheet.setColumnWidth(18, 4000);
 
 
             CellStyle cellStyle_date = sheet.getWorkbook().createCellStyle();
@@ -1017,9 +1019,13 @@ public class VideoCostServiceImpl implements IVideoCostService {
         row11.createCell(0).setCellValue("排序：");
         row11.createCell(1).setCellValue(map.get("sort") == null ? "" : map.get("sort").toString());
 
-        Row row12 = condition.createRow(11);
-        row12.createCell(0).setCellValue("排序方式：");
-        row12.createCell(1).setCellValue(map.get("order") == null ? "" : ("desc".equalsIgnoreCase(map.get("order").toString()) ? "逆序" : "正序"));
+//        Row row12 = condition.createRow(11);
+//        row12.createCell(0).setCellValue("供应商：");
+
+
+        Row row13 = condition.createRow(12);
+        row13.createCell(0).setCellValue("排序方式：");
+        row13.createCell(1).setCellValue(map.get("order") == null ? "" : ("desc".equalsIgnoreCase(map.get("order").toString()) ? "逆序" : "正序"));
 
 
         return workbook;

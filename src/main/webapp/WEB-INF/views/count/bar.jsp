@@ -1,9 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/commons/global.jsp" %>
 <script type="text/javascript">
-
-
-
     $(function() {
         //注意：折叠面板 依赖 element 模块，否则无法进行功能性操作
         layui.use(['laydate','slider','layer'], function(){
@@ -16,79 +13,89 @@
         layui.use('element', function(){
             var element = layui.element;
             element.render({
-
             });
         });
     });
 
-
-    function  drawTable(){
-        var recoredDateRange = $('#recoredDateRange_COUNT').val();
-        var type = $("#count1_R").val();
-        if(recoredDateRange!=null && recoredDateRange!='' ){
-            var dates;
-            dates = recoredDateRange.split("~");
-            if(type=="1")dates=getMonthBetween(dates[0],dates[1]);
-            else dates = getAllDates( dates[0],dates[1] );
-            $.ajax({
-                type:'post',
-                url:'${path}/count/bar',
-                data:$("#barForm").serialize(),
-                dataType:'json',
-                beforeSend:function(){
-
-                } ,
-                success:function(data){
-                    var dataArr = new Array();
-                    for(var i=0;i<dates.length;i++){
-                        var got = false;
-                        for(var j=0;j<data.length;j++){
-                            if(data[j] !=null && data[j].days ==dates[i]  ){
-                                if(data[j].consumption!=null){
-                                    dataArr.push(data[j].consumption.toFixed(2));
-                                    got = true;
-                                }
-
-                            }
-                        }
-                        if(!got)dataArr.push(0);
-                    }
-                    drawTable1(dates,dataArr);
-                },
-                error:function(){
-                },
-                complete:function(){
-
-                }
-            });
-            $.ajax({
-                type:'post',
-                url:'${path}/count/countByOptimizer',
-                data:$("#barForm").serialize(),
-                dataType:'json',
-                success:function(data){
-                    // drawTable2(data);
-                    drawTable2( $("#chats2"),'消耗量按优化师统计图表', $("#chats3"), "消耗记录数量分优化师统计图表" ,  data)
-                },
-            });
-            $.ajax({
-                type:'post',
-                url:'${path}/count/countByTrueCustomer',
-                data:$("#barForm").serialize(),
-                dataType:'json',
-                success:function(data){
-                    // drawTable2(data);
-                    drawTable2( $("#chats4"),'消耗量按客户统计图表', $("#chats5"), "消耗记录数量按客户统计图表" ,  data)
-                },
-            });
-        }else{
+    function checkRecoredDateRange() {
+        let recoredDateRange = $('#recoredDateRange_COUNT').val();
+        if(recoredDateRange!=null && recoredDateRange!=='' ){
+            return recoredDateRange.split("~");
+        }  else {
             layer.msg('消耗日期必须有一个时间段', {
                 time: 20000, //20s后自动关闭
                 btn: ['哦']
             });
         }
+        return false;
+    }
+    // 总消耗时间段统计
+    function drawTotalConTimeLine() {
+        let dates = checkRecoredDateRange() ;
+        if(dates ===false)return ;
+        let type = $("#count1_R").val();
+        let formData = $("#barForm").serialize();
+        formData += ("&type="+type);
+        if(type==="1")dates=getMonthBetween(dates[0],dates[1]);
+        else dates = getAllDates( dates[0],dates[1] );
+        $.ajax({
+            type:'post',
+            url:'${path}/count/bar',
+            data:formData,
+            dataType:'json',
+            beforeSend:function(){  } ,
+            success:function(data){
+                let dataArr = new Array();
+                for(let i=0;i<dates.length;i++){
+                    let got = false;
+                    for(let j=0;j<data.length;j++){
+                        if(data[j] !=null && data[j].days ===dates[i]  ){
+                            if(data[j].consumption!=null){
+                                dataArr.push(data[j].consumption.toFixed(2));
+                                got = true;
+                            }
+                        }
+                    }
+                    if(!got)dataArr.push(0);
+                }
+                drawTable1(dates,dataArr);
+            },
+            error:function(){
+                layer.msg('系统异常', {time: 20000, btn: ['哦']});
+            },
+            complete:function(){}
+        });
+    }
 
+    // 总消耗优化师统计
+    function drawTotalConOptimizer() {
+        $.ajax({
+            type: 'post',
+            url: '${path}/count/countByOptimizer',
+            data: $("#barForm").serialize(),
+            dataType: 'json',
+            success: function (data) {
+                drawTable2($("#chats2"), '消耗量按优化师统计图表', $("#chats3"), "消耗记录数量分优化师统计图表", data)
+            },
+        });
+    }
+    // 总消耗客户统计
+    function drawTotalConTrueCustomer() {
+        $.ajax({
+            type:'post',
+            url:'${path}/count/countByTrueCustomer',
+            data:$("#barForm").serialize(),
+            dataType:'json',
+            success:function(data){
+                drawTable2( $("#chats4"),'消耗量按客户统计图表', $("#chats5"), "消耗记录数量按客户统计图表" ,  data)
+            },
+        });
+    }
 
+    function  drawTable(){
+        drawTotalConTimeLine();
+        drawTotalConOptimizer();
+        drawTotalConTrueCustomer();
     }
     function drawTable1(X_,Y_) {
         $("#chats1").html('');
@@ -142,7 +149,7 @@
         dom2.html('');
         // 第二个参数可以指定前面引入的主题
         let div = document.createElement("div");
-        div.setAttribute("style","width:800px;height:800px")
+        div.setAttribute("style","width:850px;height:850px")
         let chart = echarts.init(div, 'vintage');
         // 指定图表的配置项和数据
         if(jsonData==null)jsonData= [];
@@ -162,7 +169,6 @@
         }
         let option = {
             title: {
-                // text: '消耗量按优化师统计图表',
                 text: title1,
                 left: 'center',
                 top: 20,
@@ -239,7 +245,7 @@
         dom2.append(div2);
     }
     function chearDraw(){
-        $("#chats1").html('');
+        $("#chats1,#chats2,#chats3,#chats4,#chats5").html('');
         $('#barForm input').val('');
     }
 </script>
@@ -261,20 +267,14 @@
                     <td>
                         <input name="customer.trueCustomer.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/trueCustomer/combobox'" />
                     </td>
-                    <td>
-                        统计精度
-                    </td>
-                    <td>
-                        <select id="count1_R" name="type" style="width: 150px" class="layui-input"  >
-                            <option value="0" > 日 </option><option value="1" > 月 </option>
-                        </select>
-                    </td>
+
                     <td>
                         <button type="button" class="layui-btn layui-btn-radius layui-btn-normal" onclick="drawTable();">生成</button>
                     </td>
                     <td>
                         <button type="button" class="layui-btn layui-btn-radius layui-btn-danger" onclick="chearDraw()" >清空</button>
                     </td>
+                    <td></td><td></td>
                 </tr>
                 <tr  style="padding-bottom: 10px;" >
                     <th>需求部门</th>
@@ -289,15 +289,13 @@
                     <td>
                         <input name="customer.originality.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/originality/combobox'" />
                     </td>
-                    <td>图形</td>
-                    <td>
-                        <select id="count1_c"  style="width: 150px" class="layui-input"  >
-                            <option value="0" SELECTED > 柱形图 </option><option value="1" > 曲线图 </option><option value="2" > 折线图 </option>
-                        </select>
-                    </td>
+
                     <td >行业</td>
                     <td>
                         <input name="customer.industry.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/industry/combobox'" />
+                    </td>
+                    <td></td>
+                    <td>
                     </td>
                 </tr>
                 <tr  >
@@ -337,67 +335,241 @@
         </form>
      </div>
     <div data-options="region:'center',border:false">
-        <div class="layui-collapse" lay-accordion>
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
+            <legend>统计查询：出于性能方面的考虑，不建议一次性生成所有图表</legend>
+        </fieldset>
+        <div class="layui-collapse" >
+
             <div class="layui-colla-item">
-                <h2 class="layui-colla-title">时间段消耗统计</h2>
+                <h2 class="layui-colla-title">总消耗统计</h2>
+                <div class="layui-colla-content" layui-show >
+                    <div class="layui-collapse" >
+                        <div class="layui-colla-item">
+                            <h2 class="layui-colla-title">时间段消耗统计</h2>
+                            <div class="layui-colla-content layui-show">
+                                <div class="layui-card">
+                                    <div class="layui-card-header">
+                                        <table>
+                                            <tr style="height: 40px">
+                                                <td>
+                                                    <button type="button" class="layui-btn layui-btn-sm " onclick="drawTotalConTimeLine();"><i class="layui-icon layui-icon-search"></i></button>
+                                                </td>
+                                                <td>
+                                                    &nbsp;&nbsp;&nbsp;
+                                                </td>
+                                                <td>
+                                                    <select id="count1_c"  style="width: 150px" class="layui-input"  >
+                                                        <option value="0" SELECTED > 柱形图 </option><option value="1" > 曲线图 </option><option value="2" > 折线图 </option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select id="count1_R" name="type" style="width: 150px" class="layui-input"  >
+                                                        <option value="0" > 日 </option><option value="1" > 月 </option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+<%--                                    <div class="layui-card-body"></div>--%>
+                                </div>
+
+                                <div class="layui-card">
+                                    <div class="layui-card-header"> 时间段消耗统计图表 </div>
+                                    <div id="chats1" class="layui-card-body">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-colla-item">
+                            <h2 class="layui-colla-title">优化师统计</h2>
+                            <div class="layui-colla-content layui-show">
+                                <div class="layui-card">
+                                    <div class="layui-card-header">
+                                        <table>
+                                            <tr style="height: 40px">
+                                                <button type="button" class="layui-btn layui-btn-sm " onclick="drawTotalConOptimizer();"><i class="layui-icon layui-icon-search"></i></button>
+                                                <td></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="layui-card-body">
+                                        <div class="layui-row">
+                                            <div class="layui-col-xs6">
+                                                <div id="chats2" ></div>
+                                            </div>
+                                            <div class="layui-col-xs6">
+                                                <div id="chats3" ></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="layui-colla-item">
+                            <h2 class="layui-colla-title">客户统计</h2>
+                            <div class="layui-colla-content layui-show">
+                                <div class="layui-card">
+                                    <div class="layui-card-header">
+                                        <table>
+                                            <tr style="height: 40px">
+                                                <td>
+                                                    <button type="button" class="layui-btn layui-btn-sm " onclick="drawTotalConTrueCustomer();"><i class="layui-icon layui-icon-search"></i></button>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="layui-card-body">
+                                        <div class="layui-row">
+                                            <div class="layui-col-xs6"  >
+                                                <div id="chats4" ></div>
+                                            </div>
+                                            <div class="layui-col-xs6">
+                                                <div id="chats5" ></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-colla-item">
+                <h2 class="layui-colla-title">文豪</h2>
                 <div class="layui-colla-content layui-show">
-                    <div class="layui-card">
-                        <div class="layui-card-header">时间段消耗统计图表</div>
-                        <div id="chats1" class="layui-card-body">
+                    <div class="layui-collapse" >
+                        <div class="layui-colla-item">
+                            <h2 class="layui-colla-title">唐代</h2>
+                            <div class="layui-colla-content layui-show">
+                                <div class="layui-collapse" >
+                                    <div class="layui-colla-item">
+                                        <h2 class="layui-colla-title">杜甫</h2>
+                                        <div class="layui-colla-content layui-show">
+                                            伟大的诗人
+                                        </div>
+                                    </div>
+                                    <div class="layui-colla-item">
+                                        <h2 class="layui-colla-title">李白</h2>
+                                        <div class="layui-colla-content">
+                                            <p>据说是韩国人</p>
+                                        </div>
+                                    </div>
+                                    <div class="layui-colla-item">
+                                        <h2 class="layui-colla-title">王勃</h2>
+                                        <div class="layui-colla-content">
+                                            <p>千古绝唱《滕王阁序》</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="layui-colla-item">
+                            <h2 class="layui-colla-title">宋代</h2>
+                            <div class="layui-colla-content">
+                                <p>比如苏轼、李清照</p>
+                            </div>
+                        </div>
+                        <div class="layui-colla-item">
+                            <h2 class="layui-colla-title">当代</h2>
+                            <div class="layui-colla-content">
+                                <p>比如贤心</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="layui-colla-item">
-                <h2 class="layui-colla-title">优化师统计</h2>
-                <div class="layui-colla-content layui-show">
-                    <div class="layui-row">
-                        <div class="layui-col-xs6">
-<%--                            <div class="layui-card">--%>
-<%--                                <div class="layui-card-header">消耗量分优化师统计图表</div>--%>
-<%--                                <div class="layui-card-body">--%>
-                                    <div id="chats2" >
-                                    </div>
-<%--                                </div>--%>
-<%--                            </div>--%>
-                        </div>
-                        <div class="layui-col-xs6">
-<%--                            <div class="layui-card">--%>
-<%--                                <div class="layui-card-header">消耗记录数量分优化师统计图表</div>--%>
-<%--                                <div class="layui-card-body">--%>
-                                    <div id="chats3" >
-                                    </div>
-<%--                                </div>--%>
-<%--                            </div>--%>
-                        </div>
-                    </div>
+                <h2 class="layui-colla-title">科学家</h2>
+                <div class="layui-colla-content">
+                    <p>伟大的科学家</p>
                 </div>
             </div>
             <div class="layui-colla-item">
-                <h2 class="layui-colla-title">客户统计</h2>
-                <div class="layui-colla-content layui-show">
-                    <div class="layui-row">
-                        <div class="layui-col-xs6"  >
-<%--                            <div class="layui-card">--%>
-<%--                                <div class="layui-card-header">消耗量按客户统计图表</div>--%>
-<%--                                <div class="layui-card-body">--%>
-                                    <div id="chats4" >
-                                    </div>
-<%--                                </div>--%>
-<%--                            </div>--%>
-                        </div>
-                        <div class="layui-col-xs6">
-<%--                            <div class="layui-card">--%>
-<%--                                <div class="layui-card-header">消耗记录数量按客户统计图表</div>--%>
-<%--                                <div class="layui-card-body">--%>
-                                    <div id="chats5" >
-                                    </div>
-<%--                                </div>--%>
-<%--                            </div>--%>
-                        </div>
-                    </div>
+                <h2 class="layui-colla-title">艺术家</h2>
+                <div class="layui-colla-content">
+                    <p>浑身散发着艺术细胞</p>
                 </div>
             </div>
         </div>
+
+        <div class="layui-card">
+            <div class="layui-card-header">
+                <table>
+                    <tr style="height: 40px">
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="layui-card-body">
+            </div>
+        </div>
+
+<%--        <div class="layui-collapse" >--%>
+<%--            <div class="layui-colla-item">--%>
+<%--                <h2 class="layui-colla-title">时间段消耗统计</h2>--%>
+<%--                <div class="layui-colla-content layui-show">--%>
+<%--                    <div class="layui-card">--%>
+<%--                        <div class="layui-card-header">时间段消耗统计图表</div>--%>
+<%--                        <div id="chats1" class="layui-card-body">--%>
+<%--                        </div>--%>
+<%--                    </div>--%>
+<%--                </div>--%>
+<%--            </div>--%>
+<%--            <div class="layui-colla-item">--%>
+<%--                <h2 class="layui-colla-title">优化师统计</h2>--%>
+<%--                <div class="layui-colla-content layui-show">--%>
+<%--                    <div class="layui-row">--%>
+<%--                        <div class="layui-col-xs6">--%>
+<%--&lt;%&ndash;                            <div class="layui-card">&ndash;%&gt;--%>
+<%--&lt;%&ndash;                                <div class="layui-card-header">消耗量分优化师统计图表</div>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                                <div class="layui-card-body">&ndash;%&gt;--%>
+<%--                                    <div id="chats2" >--%>
+<%--                                    </div>--%>
+<%--&lt;%&ndash;                                </div>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                            </div>&ndash;%&gt;--%>
+<%--                        </div>--%>
+<%--                        <div class="layui-col-xs6">--%>
+<%--&lt;%&ndash;                            <div class="layui-card">&ndash;%&gt;--%>
+<%--&lt;%&ndash;                                <div class="layui-card-header">消耗记录数量分优化师统计图表</div>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                                <div class="layui-card-body">&ndash;%&gt;--%>
+<%--                                    <div id="chats3" >--%>
+<%--                                    </div>--%>
+<%--&lt;%&ndash;                                </div>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                            </div>&ndash;%&gt;--%>
+<%--                        </div>--%>
+<%--                    </div>--%>
+<%--                </div>--%>
+<%--            </div>--%>
+<%--            <div class="layui-colla-item">--%>
+<%--                <h2 class="layui-colla-title">客户统计</h2>--%>
+<%--                <div class="layui-colla-content layui-show">--%>
+<%--                    <div class="layui-row">--%>
+<%--                        <div class="layui-col-xs6"  >--%>
+<%--&lt;%&ndash;                            <div class="layui-card">&ndash;%&gt;--%>
+<%--&lt;%&ndash;                                <div class="layui-card-header">消耗量按客户统计图表</div>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                                <div class="layui-card-body">&ndash;%&gt;--%>
+<%--                                    <div id="chats4" >--%>
+<%--                                    </div>--%>
+<%--&lt;%&ndash;                                </div>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                            </div>&ndash;%&gt;--%>
+<%--                        </div>--%>
+<%--                        <div class="layui-col-xs6">--%>
+<%--&lt;%&ndash;                            <div class="layui-card">&ndash;%&gt;--%>
+<%--&lt;%&ndash;                                <div class="layui-card-header">消耗记录数量按客户统计图表</div>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                                <div class="layui-card-body">&ndash;%&gt;--%>
+<%--                                    <div id="chats5" >--%>
+<%--                                    </div>--%>
+<%--&lt;%&ndash;                                </div>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                            </div>&ndash;%&gt;--%>
+<%--                        </div>--%>
+<%--                    </div>--%>
+<%--                </div>--%>
+<%--            </div>--%>
+<%--        </div>--%>
+
     </div>
 </div>

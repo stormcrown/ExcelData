@@ -60,7 +60,7 @@ public class CountController extends BaseController {
             if(da.length==2 && da[0]!=null && da[1] !=null ){
                 Date date1 = dateConverter.convert(da[0].replaceAll(" ",""));
                 Date date2 = dateConverter.convert(da[1].replaceAll(" ",""));
-                if(type==1){
+                if(type!=null &&  type==1){
                     map.put(dateStart, DateTools.firstDayD(date1));
                     map.put(dateEnd,DateTools.lastDateD(date2));
                 }else{
