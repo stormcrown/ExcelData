@@ -439,6 +439,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
         for(int i=0;i<Const.videoCostExcelHead.length;i++){
             if( StringUtils.isNotBlank(Const.videoCostExcelHead[i])  &&   !Const.videoCostExcelHead[i].equals(head.get(i)))throw new RuntimeException("模板错误第 "+(i+1)+"行 需要："+Const.videoCostExcelHead[i] +"，实际"+head.get(i) );
         }
+        Supplier supplier = shiroUser.getSupplier();
         EntityWrapper un_delete = new EntityWrapper();
         List<Organization> organizations = iOrganizationService.selectList(un_delete);
         Set<String> newOrganizations = new HashSet<>();
@@ -496,7 +497,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
                       newPriceLevelList.add(checkNameForNew(priceLevelList,(String)column));
                   else if(vCostEnum.getTypee() == VideoVersion.class)
                       newVideoVersionList.add(checkNameForNew(videoVersionList,(String)column));
-                  else if(vCostEnum.getTypee() == Supplier.class)
+                  else if(vCostEnum.getTypee() == Supplier.class && supplier==null )
                       newSupplierList.add(checkNameForNew(supplierList,(String)column));
 
 
@@ -571,23 +572,28 @@ public class VideoCostServiceImpl implements IVideoCostService {
             boolean b= iPriceLevelService.insert(priceLevel);
             if(b)priceLevelList.add(priceLevel);
         }
-        for(String str:newSupplierList){
-            if(StringUtils.isBlank(str))continue;
-            Supplier supplier = Supplier.craateForInsert(str);
-            boolean b= iSupplierService.insert(supplier);
-            if(b)supplierList.add(supplier);
+        if(supplier==null){
+            for(String str:newSupplierList){
+                if(StringUtils.isBlank(str))continue;
+                Supplier supplierN = Supplier.craateForInsert(str);
+                boolean b= iSupplierService.insert(supplierN);
+                if(b)supplierList.add(supplierN);
+            }
         }
+
 
         // 检测素材
         行:
         for(int i=1;i<excelDatas.size();i++){
             if(excelDatas.get(i)==null ||excelDatas.get(i).size()< Const.videoCostExcelHead.length )continue;
             Customer customer = new Customer();
+            if(supplier!=null) customer.setSupplier(supplier);
             for(int j=0;j<Const.videoCostExcelHead.length;j++){
                 if( excelDatas.get(i).get(j)==null || "".equals(excelDatas.get(i).get(j)) )continue;
                 Object column =  excelDatas.get(i).get(j);
                 Const.VCostEnum vCostEnum = Const.VCostEnum.getByIndex(j);
                 if(vCostEnum==null)continue;
+
                 if(vCostEnum.getTypee() == String.class && Const.code.equals(vCostEnum.getProName()) ) customer.setCode((String) column);
                 else if(vCostEnum.getTypee() == String.class && Const.name.equals(vCostEnum.getProName()) ) customer.setName((String)column);
                 else if(vCostEnum.getTypee() == Industry.class)customer.setIndustry(checkName(industries,(String)column));
@@ -601,7 +607,10 @@ public class VideoCostServiceImpl implements IVideoCostService {
 //                else if(vCostEnum.getTypee() == Performer.class && vCostEnum.getExcelIndex() == 14 )customer.setPerformer3(checkName(performers,(String)column));
                 else if(vCostEnum.getTypee() == PriceLevel.class)customer.setPriceLevel(checkName(priceLevelList,(String)column));
                 else if(vCostEnum.getTypee() == VideoVersion.class)customer.setVideoVersion(checkName(videoVersionList,(String)column));
-                else if(vCostEnum.getTypee() == Supplier.class)customer.setSupplier(checkName(supplierList,(String)column));
+                else if(vCostEnum.getTypee() == Supplier.class  ){
+                    if(supplier==null) customer.setSupplier(checkName(supplierList,(String)column));
+                    else customer.setSupplier(supplier);
+                }
                 else if(vCostEnum.getTypee() ==Date.class && Const.completeDate.equals(vCostEnum.getProName())  ){
                     try {
                         if(column instanceof Date || ( column!=null && column instanceof String && StringUtils.isNotBlank((String)column) )  ){
@@ -624,7 +633,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
             // 编号没有，直接新增,保存
             if(customer.getCode()==null) customer.CreateCode();
             boolean isOldCustom = false;
-            检测素材:
+            检测素材: // 不检测供应商字段，因为如果有用户是有供应商的话，一开始查的就书供应商的素材
             for(Customer customer1:customers){
                 if(customer1.getCode().equals(customer.getCode()) ){
                     if(customer1.getName()!=null && customer1.getName().equals(customer.getName())){

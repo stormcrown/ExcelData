@@ -41,10 +41,10 @@ create table supplier
 )ENGINE = InnoDB  CHARACTER SET = utf8 ;
 select  * from user ;
 /* 用户新增所属供应商 */
--- alter table user add column supplier_id bigint comment '供应商外键' ,add index user_supplier_index(supplier_id) ;
+ alter table user add column supplier_id bigint comment '供应商外键' ,add index user_supplier_index(supplier_id) ;
 
 /* 视频类别的固定价格  */
--- alter table video_type add column base_price double default 0 comment '固定价格';
+ alter table video_type add column base_price double default 0 comment '固定价格';
 
 -- 视频版本
 DROP TABLE IF EXISTS `video_version`;
@@ -57,9 +57,8 @@ create table video_version
     `create_time` datetime    NOT NULL COMMENT '创建时间',
     `delete_flag` int(1)      NOT NULL DEFAULT 0 COMMENT '是否删除'
 )ENGINE = InnoDB  CHARACTER SET = utf8 ;
-/* 将编号唯一，改为编号，版本Id唯一 */
--- alter table customer add column video_version_id bigint(19) , add index video_version_index (video_version_id) ,drop index uniqueCode ,add unique index code_version (code,video_version_id);
-
+/* 将编号唯一，改为编号，版本Id，供应商Id 唯一 */
+alter table customer add column video_version_id bigint(19) , add index video_version_index (video_version_id) ,drop index uniqueCode ,add unique index code_version_supplier (code,video_version_id,supplier_id);
 -- 价格分级
 DROP TABLE IF EXISTS `price_level`;
 create table price_level
