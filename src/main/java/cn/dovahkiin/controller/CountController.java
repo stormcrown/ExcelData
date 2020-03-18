@@ -43,11 +43,6 @@ public class CountController extends BaseController {
     public String manager() {
         return "count/bar";
     }
-    @GetMapping("/eff")
-    @RequiresPermissions("/count/eff")
-    public String manager2() {
-        return "count/effect_con";
-    }
     private Map<String,Object> handleCondition(String recoredDateRange ,Integer type, VideoCost videoCost){
         Map<String,Object> map = new HashMap<>();
         ShiroUser user = getShiroUser();
@@ -93,30 +88,22 @@ public class CountController extends BaseController {
         Map map = handleCondition(recoredDateRange,type,videoCost);
         return JSON.toJSON(countService.count1(map));
     }
-    @PostMapping("/countByOptimizer")
+    @PostMapping("/countByModel")
     @RequiresPermissions("/count/bar")
     @ResponseBody
-    public Object line(String recoredDateRange, Integer type , VideoCost videoCost,Boolean countZero) {
+    public Object countByModel(String recoredDateRange, Integer type , VideoCost videoCost,Boolean countZero,String model) {
         Map map = handleCondition(recoredDateRange,type,videoCost);
         map.put("countZero",countZero);
-        return JSON.toJSON(countService.countByOptimizer(map));
-    }
-    @PostMapping("/countByTrueCustomer")
-    @RequiresPermissions("/count/bar")
-    @ResponseBody
-    public Object countByCustomer(String recoredDateRange, Integer type , VideoCost videoCost,Boolean countZero) {
-        Map map = handleCondition(recoredDateRange,type,videoCost);
-        map.put("countZero",countZero);
-        return JSON.toJSON(countService.countByCustomer(map));
+        map.put("model",model);
+        return JSON.toJSON(countService.countByModel(map));
     }
 
-    @PostMapping("/effBar")
-    @RequiresPermissions("/count/eff")
+    @PostMapping("/effTimeCount")
+    @RequiresPermissions("/count/bar")
     @ResponseBody
-    public Object effCount(String recoredDateRange, Integer type ,Integer effectDays,Double maxEffectCon, VideoCost videoCost) {
+    public Object effTimeCount(String recoredDateRange, Integer type , VideoCost videoCost,Boolean countZero) {
         Map<String,Object> map = handleCondition(recoredDateRange,type,videoCost);
-        map.put("effectDays",effectDays);
-        map.put("maxEffectCon",maxEffectCon);
+
         return JSON.toJSON(5);
     }
 

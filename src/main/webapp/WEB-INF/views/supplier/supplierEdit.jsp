@@ -37,7 +37,7 @@
                 </tr>
                 <tr>
                     <th>名称:</th>
-                    <td><input id="name" name="name" value="${supplier.name}" type="text" class="layui-input" /></td>
+                    <td><input id="name" name="name" value="${supplier.name}" type="text" class="layui-input" required="required" /></td>
                 </tr>
             </table>
         </form>

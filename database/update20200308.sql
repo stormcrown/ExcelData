@@ -18,7 +18,8 @@ alter table video_cost add index video_cost_customer_id(customer_id);
 -- 系统配置
 drop table if exists system_config;
 create table system_config (
-    id  bigint(19) primary key ,
+    id  bigint(19) primary key NOT NULL AUTO_INCREMENT ,
+    supplier_id bigint(19) unique  ,
     default_income_ratio double default 100  comment '收入比率，百分比。',
     default_max_effect_con double default 100 comment '默认最大有效消耗',
     default_max_effect_range int default 60 comment '默认生命周期',
@@ -58,7 +59,7 @@ create table video_version
     `delete_flag` int(1)      NOT NULL DEFAULT 0 COMMENT '是否删除'
 )ENGINE = InnoDB  CHARACTER SET = utf8 ;
 /* 将编号唯一，改为编号，版本Id，供应商Id 唯一 */
-alter table customer add column video_version_id bigint(19) , add index video_version_index (video_version_id) ,drop index uniqueCode ,add unique index code_version_supplier (code,video_version_id,supplier_id);
+alter table customer add column video_version_id bigint(19) , add index video_version_index (video_version_id) ,drop index uniqueCode ,add unique index code_version (code,video_version_id);
 -- 价格分级
 DROP TABLE IF EXISTS `price_level`;
 create table price_level

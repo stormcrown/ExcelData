@@ -444,7 +444,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
         List<Organization> organizations = iOrganizationService.selectList(un_delete);
         Set<String> newOrganizations = new HashSet<>();
         un_delete.eq("delete_flag", 0);
-        List<Customer> customers = customerService.selectUnDeleted(shiroUser.getSupplier());
+        List<Customer> customers = customerService.selectUnDeleted(null);
         Set<Map<String,Set<String>>> newCus = new HashSet<>();
         List<Editor> editors = editorService.selectList(un_delete);
         Set<String> newEditorNames = new HashSet<>();
@@ -576,8 +576,8 @@ public class VideoCostServiceImpl implements IVideoCostService {
             for(String str:newSupplierList){
                 if(StringUtils.isBlank(str))continue;
                 Supplier supplierN = Supplier.craateForInsert(str);
-                boolean b= iSupplierService.insert(supplierN);
-                if(b)supplierList.add(supplierN);
+                iSupplierService.insertWithConfig(supplierN,shiroUser.getId());
+                supplierList.add(supplierN);
             }
         }
 

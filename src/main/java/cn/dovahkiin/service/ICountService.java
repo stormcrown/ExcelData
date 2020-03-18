@@ -17,8 +17,9 @@ import java.util.Map;
  */
 public interface ICountService  {
     List<Map> count1(Map map);
-    List<Map> countByOptimizer(Map map);
-    List<Map> countByCustomer(Map map);
+    List<Map> countByModel(Map map);
+    List<Map> countEffConTimeCut(Map map);
+
 
 //    List<Map> effCount1(Map map, Integer effectDays, Double maxEffectCon, Date startDate,Date endDate);
     /** 第一个统计  */

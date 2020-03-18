@@ -48,6 +48,11 @@ public class SystemConfig extends Model<SystemConfig> {
 	@TableField("update_by")
 	private Long updateBy;
 
+	@TableField(exist = false)
+	private String updater;
+
+	@TableField(exist = false)
+	private Supplier supplier;
 
 	public Long getId() {
 		return id;
@@ -97,12 +102,28 @@ public class SystemConfig extends Model<SystemConfig> {
 		this.updateBy = updateBy;
 	}
 
+	public String getUpdater() {
+		return updater;
+	}
+
+	public void setUpdater(String updater) {
+		this.updater = updater;
+	}
+
 	public String getUpdateTimeStr() {
 		if(updateTime!=null)return DateTools.getDateTimeStr(updateTime);
 		return updateTimeStr;
 	}
 	public void setUpdateTimeStr(String updateTimeStr) {
 		this.updateTimeStr = updateTimeStr;
+	}
+
+	public Supplier getSupplier() {
+		return supplier;
+	}
+
+	public void setSupplier(Supplier supplier) {
+		this.supplier = supplier;
 	}
 
 	@Override

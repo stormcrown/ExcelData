@@ -21,7 +21,8 @@ import java.util.Map;
 public interface CountMapper  {
     List<Map<String,Object>> count1(Map<String,Object> map);
     List<Map<String,Object>> countByOptimizer(Map<String,Object> map);
-    List<Map<String,Object>> countByCustomer(Map<String,Object> map);
+    List<Map<String,Object>> countByModel(Map<String,Object> map);
+
     /**
      * 查找出有效期内，消耗大于最大消耗的素材
      * */

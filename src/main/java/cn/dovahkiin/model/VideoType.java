@@ -29,7 +29,7 @@ public class VideoType extends Model<VideoType> {
 				.append(StringUtils.getDateCode())
 				.append(this.hashCode())
 				;
-		if(this.code==null)this.code=newCode.toString();
+		this.code=newCode.toString();
 		return newCode.toString();
 	}
     /**

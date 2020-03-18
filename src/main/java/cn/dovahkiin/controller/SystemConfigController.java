@@ -4,7 +4,10 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
+
+import cn.dovahkiin.commons.shiro.ShiroUser;
 import cn.dovahkiin.commons.utils.StringUtils;
+import cn.dovahkiin.model.Supplier;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -45,11 +48,12 @@ public class SystemConfigController extends BaseController {
     @ResponseBody
     public PageInfo dataGrid(SystemConfig systemConfig, Integer page, Integer rows, String sort,String order) {
         PageInfo pageInfo = new PageInfo(page, rows, sort, order);
-        EntityWrapper<SystemConfig> ew = new EntityWrapper<SystemConfig>();
         Page<SystemConfig> pages = getPage(page, rows, sort, order);
-        pages = systemConfigService.selectPage(pages, ew);
-        pageInfo.setRows(pages.getRecords());
-        pageInfo.setTotal(pages.getTotal());
+        ShiroUser shiroUser = getShiroUser();
+        Supplier supplier = shiroUser.getSupplier();
+       Long supid= supplier!=null?supplier.getId():null;
+        pageInfo.setRows(systemConfigService.selectPageList(supid,sort,order,pages.getOffset(),pages.getLimit()));
+        pageInfo.setTotal(systemConfigService.selectTotal(supid));
         return pageInfo;
     }
     
@@ -81,7 +85,7 @@ public class SystemConfigController extends BaseController {
     @GetMapping("/editPage")
     @RequiresPermissions("/systemConfig/edit")
     public String editPage(Model model, Long id) {
-        SystemConfig systemConfig = systemConfigService.selectById(id);
+        SystemConfig systemConfig = systemConfigService.selectByPrimaryKey(id);
         model.addAttribute("systemConfig", systemConfig);
         model.addAttribute("method", "edit");
         return "systemConfig/systemConfigEdit";
@@ -95,11 +99,11 @@ public class SystemConfigController extends BaseController {
     @PostMapping("/edit")
     @RequiresPermissions("/systemConfig/edit")
     @ResponseBody
-    public Object edit(@Valid SystemConfig systemConfig) {
+    public Object edit(SystemConfig systemConfig) {
         systemConfig.setUpdateTime(new Date());
         systemConfig.setUpdateBy(getUserId());
-        boolean b = systemConfigService.updateById(systemConfig);
-        if (b) {
+        int b = systemConfigService.updateByPrimaryKey(systemConfig);
+        if (b==1) {
             return renderSuccess("编辑成功！");
         } else {
             return renderError("编辑失败！");

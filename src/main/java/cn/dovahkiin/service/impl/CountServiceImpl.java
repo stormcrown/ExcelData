@@ -5,6 +5,7 @@ import cn.dovahkiin.mapper.CustomerMapper;
 import cn.dovahkiin.mapper.EditorMapper;
 import cn.dovahkiin.model.Customer;
 import cn.dovahkiin.model.Editor;
+import cn.dovahkiin.model.TrueCustomer;
 import cn.dovahkiin.service.ICountService;
 import cn.dovahkiin.service.IEditorService;
 import com.alibaba.fastjson.JSON;
@@ -38,17 +39,20 @@ public class CountServiceImpl implements ICountService {
     public List<Map> count1(Map map) {
         return countMapper.count1(map);
     }
-
     @Override
-    public List<Map> countByOptimizer(Map map) {
-        return countMapper.countByOptimizer(map);
+    public List<Map> countByModel(Map map) {
+        return countMapper.countByModel(map);
     }
 
     @Override
-    public List<Map> countByCustomer(Map map) {
-        return countMapper.countByCustomer(map);
-    }
+    public List<Map> countEffConTimeCut(Map map) {
+        /* 查出所有在有效期内有消耗的素材 */
+        List<Customer> customers = customerMapper.selectSimpleListByVideoCost(map);
+        /* 查询所有 超了最大有效消耗的 */
+//        List<Map> largerCus = countMapper.effCount1();
 
+        return null;
+    }
 
 //    @Override
 //    public List<Map> effCount1(Map map,Integer effectDays, Double maxEffectCon) {

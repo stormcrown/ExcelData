@@ -21,13 +21,11 @@
         let recoredDateRange = $('#recoredDateRange_COUNT').val();
         if(recoredDateRange!=null && recoredDateRange!=='' ){
             return recoredDateRange.split("~");
-        }  else {
-            layer.msg('消耗日期必须有一个时间段', {
-                time: 20000, //20s后自动关闭
-                btn: ['哦']
-            });
+        }  else{
+            recoredDateRange= getThisMonth();
+            $('#recoredDateRange_COUNT').val( recoredDateRange[0] +" ~ " +recoredDateRange[1] )
+            return recoredDateRange;
         }
-        return false;
     }
     // 总消耗时间段统计
     function drawTotalConTimeLine() {
@@ -66,7 +64,24 @@
             complete:function(){}
         });
     }
-
+    // 分组统计
+    function drawTotalConModel() {
+        let dates = checkRecoredDateRange() ;
+        if(dates ===false)return ;
+        let formData = $("#barForm").serialize();
+        formData += ("&model="+$("#count_model").val());
+        let tName = $("#count_model option:selected").text();
+        $.ajax({
+            type:'post',
+            url:'${path}/count/countByModel',
+            data:formData,
+            dataType:'json',
+            success:function(data){
+                drawTable2( $("#chats_model_con"),'消耗量按'+tName+'统计图表', $("#chats_model_total"), '消耗记录数量按'+tName+'统计图表' ,  data)
+            },
+        });
+    }
+/*
     // 总消耗优化师统计
     function drawTotalConOptimizer() {
         $.ajax({
@@ -91,11 +106,11 @@
             },
         });
     }
+    */
 
     function  drawTable(){
         drawTotalConTimeLine();
-        drawTotalConOptimizer();
-        drawTotalConTrueCustomer();
+        drawTotalConModel();
     }
     function drawTable1(X_,Y_) {
         $("#chats1").html('');
@@ -138,7 +153,7 @@
         };
         // 使用刚指定的配置项和数据显示图表。
         chart.setOption(option);
-        var chats = document.getElementById("chats1");
+        let chats = document.getElementById("chats1");
         chats.appendChild(div);
     }
 
@@ -381,6 +396,41 @@
                             </div>
                         </div>
                         <div class="layui-colla-item">
+                            <h2 class="layui-colla-title">分组统计</h2>
+                            <div class="layui-colla-content layui-show">
+                                <div class="layui-card">
+                                    <div class="layui-card-header">
+                                        <table>
+                                            <tr style="height: 40px">
+                                                <td>
+                                                    <button type="button" class="layui-btn layui-btn-sm " onclick="drawTotalConModel()"><i class="layui-icon layui-icon-search"></i></button>
+                                                </td>
+                                                <td>&nbsp;&nbsp;&nbsp;</td>
+                                                <td>
+                                                    <select id="count_model"  style="width: 150px" class="layui-input"  >
+                                                        <option value="optimizer" SELECTED >优化师 </option>
+                                                        <option value="TrueCustomer" >客户</option>
+                                                        <option value="supplier" >供应商</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="layui-card-body">
+                                        <div class="layui-row">
+                                            <div class="layui-col-xs6"  >
+                                                <div id="chats_model_con" ></div>
+                                            </div>
+                                            <div class="layui-col-xs6">
+                                                <div id="chats_model_total" ></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--
+                        <div class="layui-colla-item">
                             <h2 class="layui-colla-title">优化师统计</h2>
                             <div class="layui-colla-content layui-show">
                                 <div class="layui-card">
@@ -433,6 +483,7 @@
 
                             </div>
                         </div>
+                        -->
                     </div>
                 </div>
             </div>

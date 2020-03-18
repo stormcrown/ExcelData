@@ -12,5 +12,6 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2020-03-10
  */
 public interface ISupplierService extends IService<Supplier> {
+    int insertWithConfig(Supplier supplier,Long userId);
 	
 }

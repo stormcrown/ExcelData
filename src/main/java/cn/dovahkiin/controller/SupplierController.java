@@ -97,7 +97,14 @@ public class SupplierController extends BaseController {
     @RequiresPermissions("/supplier/add")
     @ResponseBody
     public Object add(@Valid Supplier supplier) {
-        return super.add(supplier,supplierService);
+        if(supplier==null) return renderError("失败");
+        if(StringUtils.isBlank(supplier.getCode())) supplier.CreateCode();
+        supplier.setDeleteFlag(0);
+        supplier.setUpdateTime(new Date());
+        supplier.setCreateTime(new Date());
+
+        supplierService.insertWithConfig(supplier,getUserId());
+        return renderSuccess();
     }
     
     /**

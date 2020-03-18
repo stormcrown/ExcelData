@@ -183,9 +183,19 @@
 		ORDER BY total
 	</select>
 
-	<select id="countByCustomer" resultType="hashmap" >
+	<select id="countByModel" resultType="hashmap" >
 		SELECT
-		tcus.id,tcus.name,
+		       <choose>
+				   <when test="model=='optimizer' ">
+					   opt.id, opt.name,
+				   </when>
+		       		<when test="model=='TrueCustomer'">
+						tcus.id,tcus.name,
+					</when>
+		       		<when test="model=='supplier'">
+						sup.id,sup.name,
+					</when>
+			   </choose>
 		sum( vc.`consumption` ) consumption,
 		count(vc.id) total
 		FROM video_cost vc
@@ -202,6 +212,9 @@
 		LEFT JOIN performer per2 ON per2.id = cus.performer2_id
 		LEFT JOIN performer per3 ON per3.id = cus.performer3_id
 		LEFT JOIN true_customer tcus ON tcus.id = cus.true_customer_id
+		LEFT JOIN supplier sup ON sup.id = cus.supplier_id
+		LEFT JOIN video_version vve ON vve.id = cus.video_version_id
+		LEFT JOIN price_level ple ON ple.id = cus.price_level_id
 		<where>
 			vc.delete_flag = 0
 			and vc.recored_date BETWEEN #{recoredDate_start } and #{recoredDate_end  }
@@ -270,7 +283,18 @@
 				</if>
 			</if>
 		</where>
-		GROUP BY tcus.id
+		GROUP BY
+		<choose>
+			<when test="model=='optimizer' ">
+				vc.optimizer_id
+			</when>
+			<when test="model=='TrueCustomer'">
+				tcus.id
+			</when>
+			<when test="model=='supplier'">
+				sup.id
+			</when>
+		</choose>
 		ORDER BY total desc
 	</select>
 

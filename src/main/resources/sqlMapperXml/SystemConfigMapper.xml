@@ -8,6 +8,109 @@
 		<result column="default_income_ratio" property="defaultIncomeRatio" />
 		<result column="default_max_effect_con" property="defaultMaxEffectCon" />
 		<result column="default_max_effect_range" property="defaultMaxEffectRange" />
+		<result column="update_time" property="updateTime" />
+		<result column="update_by" property="updateBy" />
+		<result column="updater" property="updater" />
+		<association property="supplier" javaType="cn.dovahkiin.model.Supplier" columnPrefix="supplier_" resultMap="cn.dovahkiin.mapper.SupplierMapper.BaseResultMap" />
 	</resultMap>
+	<sql id="Base_Column_List">
+		id, supplier_id, default_income_ratio, default_max_effect_con, default_max_effect_range,
+    update_time, update_by
+	</sql>
+	<sql id="Base_Column_List_table_sc">
+		sc.id,
+		sc.supplier_id,
+		sc.default_income_ratio,
+		sc.default_max_effect_con,
+		sc.default_max_effect_range,
+    	sc.update_time,
+		sc.update_by
+	</sql>
+	<insert id="insertI" keyColumn="id" keyProperty="id" parameterType="cn.dovahkiin.model.SystemConfig" useGeneratedKeys="true">
+		insert into system_config (supplier_id, default_income_ratio, default_max_effect_con,
+								   default_max_effect_range, update_time, update_by
+		)
+		values (#{supplier.id,jdbcType=BIGINT}, #{defaultIncomeRatio,jdbcType=DOUBLE}, #{defaultMaxEffectCon,jdbcType=DOUBLE},
+				#{defaultMaxEffectRange,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT}
+			   )
+	</insert>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List_table_sc" />,
+		<include refid="cn.dovahkiin.mapper.SupplierMapper.Base_Column_List_table_sup_prefix_supplier_" />
+		from system_config sc
+		left join supplier sup on sc.supplier_id = sup.id
+		where sc.id = #{id,jdbcType=BIGINT}
+	</select>
+	<select id="selectBySupplierId" resultType="long" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List_table_sc" />,
+		<include refid="cn.dovahkiin.mapper.SupplierMapper.Base_Column_List_table_sup_prefix_supplier_" />
+		from system_config sc
+		left join supplier sup on sc.supplier_id = sup.id
+		where
+		<choose>
+			<when test="supplierId!=null">
+				sc.supplier_id = #{supplierId,jdbcType=BIGINT}
+			</when>
+			<otherwise>sc.supplier_id is null</otherwise>
+		</choose>
+		<if test="supplierId!=null">
+			sc.supplier_id = #{id,jdbcType=BIGINT}
+		</if>
+
+	</select>
+	<select id="selectPageList" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List_table_sc" />,
+		<include refid="cn.dovahkiin.mapper.SupplierMapper.Base_Column_List_table_sup_prefix_supplier_" />
+		       ,uu.name as updater
+		from system_config sc
+		left join supplier sup on sc.supplier_id = sup.id
+		    left join `user` uu on uu.id = sc.update_by
+		<where>
+			<if test="supplierId!=null">sc.supplier_id = #{supplierId}</if>
+		</where>
+		<if test="sort !=null and sort !='' and order!=null and order!='' ">
+			ORDER BY
+			<choose>
+				<when test="sort=='defaultIncomeRatio'">sc.`default_income_ratio`</when>
+				<when test="sort=='defaultMaxEffectCon'">sc.`default_max_effect_con`</when>
+				<when test="sort=='defaultMaxEffectRange'">sc.`default_max_effect_range`</when>
+				<when test="sort=='updateTime'">sc.`update_time`</when>
+				<when test="sort=='updateBy'">sc.`update_by`</when>
+				<otherwise>sc.update_time</otherwise>
+			</choose>
+			<choose>
+				<when test="order=='asc'">asc</when>
+				<otherwise>desc</otherwise>
+			</choose>
+		</if>
+		<if test="offset!=null and limit!=null">
+			LIMIT #{offset} , #{limit}
+		</if>
+
+	</select>
+
+	<select id="selectTotal" resultType="int" >
+		select
+		count(*)
+		from system_config sc
+		left join supplier sup on sc.supplier_id = sup.id
+		<where>
+			<if test="supplierId!=null">sc.supplier_id = #{supplierId}</if>
+		</where>
+	</select>
+
+	<update id="updateByPrimaryKey" parameterType="cn.dovahkiin.model.SystemConfig">
+		update system_config
+		set
+			default_income_ratio = #{defaultIncomeRatio,jdbcType=DOUBLE},
+			default_max_effect_con = #{defaultMaxEffectCon,jdbcType=DOUBLE},
+			default_max_effect_range = #{defaultMaxEffectRange,jdbcType=INTEGER},
+			update_time = #{updateTime,jdbcType=TIMESTAMP},
+			update_by = #{updateBy,jdbcType=BIGINT}
+		where id = #{id,jdbcType=BIGINT}
+	</update>
 
 </mapper>

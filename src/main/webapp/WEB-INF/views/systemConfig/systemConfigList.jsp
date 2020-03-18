@@ -54,18 +54,28 @@
             formatter: function (value, row, index) {return value;}
         },
             {
+                width: '200',
+                title: '供应商',
+                field: 'supplier',
+                sortable: true,
+                formatter: function (value, row, index) {
+                    if(row!=null &&   row.supplier  !=null)return row.supplier.name;
+                    return  redFont("全局默认");
+                }
+            },
+            {
                 width : '140',
                 title : '更新时间',
                 field : 'updateTime',
                 sortable : true,
                 formatter: function (value, row, index) {
-                    return getCommonDate(value);
+                    return getCommonDateTime(value);
                 }
             },
             {
                 width : '140',
                 title : '更新人',
-                field : 'updateBy',
+                field : 'updater',
                 sortable : true,
                 formatter: function (value, row, index) {
                     return value;
@@ -76,7 +86,7 @@
             title : '操作',
             width : 200,
             formatter : function(value, row, index) {
-                var str = '';
+                let str = '';
                 <shiro:hasPermission name="/systemConfig/edit">
                     str += $.formatString('<a href="javascript:void(0)" class="systemConfig-easyui-linkbutton-edit" data-options="plain:true,iconCls:\'glyphicon-pencil icon-blue\'" onclick="systemConfigEditFun(\'{0}\');" >编辑</a>', row.id);
                 </shiro:hasPermission>

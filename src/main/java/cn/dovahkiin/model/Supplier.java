@@ -6,6 +6,8 @@ import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
+
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -26,7 +28,7 @@ public class Supplier extends Model<Supplier> {
 				.append(StringUtils.getDateCode())
 				.append(this.hashCode())
 				;
-		if(this.code==null)this.code=newCode.toString();
+		this.code=newCode.toString();
 		return newCode.toString();
 	}
 	public static Supplier craateForInsert(String name){
@@ -46,6 +48,7 @@ public class Supplier extends Model<Supplier> {
     /**
      * 供应商名称
      */
+    @NotNull(message = "名称不能为空")
 	private String name;
     /**
      * 供应商编码

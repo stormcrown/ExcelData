@@ -16,7 +16,7 @@
 	</sql>
 	<sql id="Base_Column_List_table_sup_prefix_supplier_">
 		sup.id as supplier_id,
-		sup.`name` as supplier_`name`,
+		sup.`name` as supplier_name,
 		sup.code as supplier_code,
 		sup.update_time as supplier_update_time,
 		sup.create_time as supplier_create_time,
