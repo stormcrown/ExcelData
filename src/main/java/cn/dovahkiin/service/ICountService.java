@@ -1,6 +1,7 @@
 package cn.dovahkiin.service;
 
 import cn.dovahkiin.model.Editor;
+import cn.dovahkiin.model.dto.CustomerEffectDto;
 import com.baomidou.mybatisplus.service.IService;
 
 import java.util.Date;
@@ -18,7 +19,8 @@ import java.util.Map;
 public interface ICountService  {
     List<Map> count1(Map map);
     List<Map> countByModel(Map map);
-    List<Map> countEffConTimeCut(Map map);
+
+    List<CustomerEffectDto> countEffConTimeCut(Map map);
 
 
 //    List<Map> effCount1(Map map, Integer effectDays, Double maxEffectCon, Date startDate,Date endDate);

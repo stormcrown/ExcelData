@@ -1,7 +1,8 @@
 package cn.dovahkiin.mapper;
 
-import cn.dovahkiin.model.Editor;
-import com.baomidou.mybatisplus.mapper.BaseMapper;
+import cn.dovahkiin.model.dto.CustomerEffectDto;
+import cn.dovahkiin.model.dto.DayEffectDto;
+import cn.dovahkiin.model.dto.LastDayEffectDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -27,4 +28,11 @@ public interface CountMapper  {
      * 查找出有效期内，消耗大于最大消耗的素材
      * */
     List<Map> effCount1(@Param("effectDays")Integer effectDays ,@Param("maxEffectCon")Double maxEffectCon,@Param("startDate") Date startDate,@Param("endDate") Date endDate);
+
+    List<CustomerEffectDto> selectEffectCustomer(Map<String,Object> map);
+
+    LastDayEffectDto selectLastDay(Map<String,Object> map);
+
+    List<DayEffectDto> selectEveryDayCon(Map<String,Object> map);
+
 }

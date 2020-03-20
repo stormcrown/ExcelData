@@ -31,8 +31,7 @@ import java.util.*;
 public class CountController extends BaseController {
     public static final Log logger = LogFactory.getLog(CountController.class);
     private ICountService countService;
-    public static final String dateStart ="recoredDate_start";
-    public static final String dateEnd ="recoredDate_end";
+
     @Autowired
     public void setCountService(ICountService countService) {
         this.countService = countService;
@@ -56,18 +55,18 @@ public class CountController extends BaseController {
                 Date date1 = dateConverter.convert(da[0].replaceAll(" ",""));
                 Date date2 = dateConverter.convert(da[1].replaceAll(" ",""));
                 if(type!=null &&  type==1){
-                    map.put(dateStart, DateTools.firstDayD(date1));
-                    map.put(dateEnd,DateTools.lastDateD(date2));
+                    map.put(Const.RECORED_DATE_START, DateTools.firstDayD(date1));
+                    map.put(Const.RECORED_DATE_END,DateTools.lastDateD(date2));
                 }else{
-                    map.put(dateStart,date1);
-                    map.put(dateEnd,date2);
+                    map.put(Const.RECORED_DATE_START,date1);
+                    map.put(Const.RECORED_DATE_END,date2);
                 }
 
 //                map.put("recoredDates",DateTools.getBetweenDates(date1,date2));
             }
         }else{
-            map.put(dateStart,DateTools.firstDay());
-            map.put(dateEnd,DateTools.lastDate());
+            map.put(Const.RECORED_DATE_START,DateTools.firstDay());
+            map.put(Const.RECORED_DATE_END,DateTools.lastDate());
 //            map.put("recoredDates",DateTools.getBetweenDates(DateTools.firstDay(),DateTools.lastDate()));
         }
         map.put("type",type==null?0:type);
@@ -103,8 +102,8 @@ public class CountController extends BaseController {
     @ResponseBody
     public Object effTimeCount(String recoredDateRange, Integer type , VideoCost videoCost,Boolean countZero) {
         Map<String,Object> map = handleCondition(recoredDateRange,type,videoCost);
-
-        return JSON.toJSON(5);
+        map.put("countZero",countZero);
+        return countService.countEffConTimeCut(map);
     }
 
 }

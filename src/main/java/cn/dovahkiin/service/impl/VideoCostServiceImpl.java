@@ -464,7 +464,6 @@ public class VideoCostServiceImpl implements IVideoCostService {
         for (int i=1; i<excelDatas.size();i++){
             if(excelDatas.get(i)==null )continue;
               for(int j=0;j<Const.videoCostExcelHead.length;j++){
-
                   if(excelDatas.get(i).size()< j+1|| excelDatas.get(i).get(j)==null || "".equals(excelDatas.get(i).get(j)) )continue;
                   Object column =  excelDatas.get(i).get(j);
                   Const.VCostEnum vCostEnum = Const.VCostEnum.getByIndex(j);

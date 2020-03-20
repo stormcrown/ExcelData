@@ -11,15 +11,21 @@ public class Const {
     public static final String optimizerAdministorCN = "优化师管理员";
     public static final String optimizerStr = "optimizer";
     public static final String customerStr = "customer";
+    public static final String customerId = "customerId";
     public static final String supplierStr ="supplier";
     public static final String supplierName = "supplierName";
     public static final String supplierId = "supplierId";
     public static final String videoCostStr = "videoCost";
     public static final String completeDate = "completeDate";
     public static final String recoredDate = "recoredDate";
+    public static final String RECORED_DATE_START ="recoredDate_start";
+    public static final String RECORED_DATE_END ="recoredDate_end";
+    public static final String RECORED_DATE_Last ="recoredDate_last";
     public static final String consumption = "consumption"; // 当日消耗
     public static final String code = "code";
     public static final String name = "name";
+
+
     public static final SimpleDateFormat simDF = new SimpleDateFormat("yyyy-MM-dd") ;
     public static  Date date2010 = null;
     static {

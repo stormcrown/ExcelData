@@ -27,6 +27,10 @@
             return recoredDateRange;
         }
     }
+    function  drawTable(){
+        drawTotalConTimeLine();
+        drawTotalConModel();
+    }
     // 总消耗时间段统计
     function drawTotalConTimeLine() {
         let dates = checkRecoredDateRange() ;
@@ -81,37 +85,7 @@
             },
         });
     }
-/*
-    // 总消耗优化师统计
-    function drawTotalConOptimizer() {
-        $.ajax({
-            type: 'post',
-            url: '${path}/count/countByOptimizer',
-            data: $("#barForm").serialize(),
-            dataType: 'json',
-            success: function (data) {
-                drawTable2($("#chats2"), '消耗量按优化师统计图表', $("#chats3"), "消耗记录数量分优化师统计图表", data)
-            },
-        });
-    }
-    // 总消耗客户统计
-    function drawTotalConTrueCustomer() {
-        $.ajax({
-            type:'post',
-            url:'${path}/count/countByTrueCustomer',
-            data:$("#barForm").serialize(),
-            dataType:'json',
-            success:function(data){
-                drawTable2( $("#chats4"),'消耗量按客户统计图表', $("#chats5"), "消耗记录数量按客户统计图表" ,  data)
-            },
-        });
-    }
-    */
 
-    function  drawTable(){
-        drawTotalConTimeLine();
-        drawTotalConModel();
-    }
     function drawTable1(X_,Y_) {
         $("#chats1").html('');
         // 第二个参数可以指定前面引入的主题
@@ -132,7 +106,7 @@
             seriesO.type='line';
             seriesO.smooth=false;
         }
-        var option = {
+        let option = {
             title: {
                 text: '时间段消耗总计'
             },
@@ -156,7 +130,6 @@
         let chats = document.getElementById("chats1");
         chats.appendChild(div);
     }
-
     function drawTable2( dom1,title1, dom2,title2,  jsonData) {
         // $("#chats2").html('');
         // $("#chats3").html('');
@@ -259,6 +232,86 @@
         // chats2.appendChild(div2);
         dom2.append(div2);
     }
+    function getEffectCountData() {
+        let dates = checkRecoredDateRange() ;
+        if(dates ===false)return ;
+        let formData = $("#barForm").serialize();
+        $.ajax({
+            type:'post',
+            url:'${path}/count/effTimeCount',
+            data:formData,
+            dataType:'json',
+            success:function(data){
+
+                drawEffectCount(getAllDates( dates[0],dates[1] ),data);
+            },
+        });
+    }
+    function drawEffectCount(dates,dataAll) {
+        let cav_type  = $("#count1_c").val();
+        let smooth = false;
+        if(cav_type === "1" ) smooth=true;
+
+        $("#effAddon").html('');
+
+        // 第二个参数可以指定前面引入的主题
+        let div = document.createElement("div");
+        div.setAttribute("style","width:1700px;height:800px")
+        let chart = echarts.init(div, 'vintage');
+        // 指定图表的配置项和数据
+        let series =[];
+        let names =[];
+        for(let i=0;i<dataAll.length;i++){
+            let seriesO = {
+                type: 'line',smooth: smooth,
+                id:dataAll[i].id,name:dataAll[i].name,completeDate:dataAll[i].completeDate
+            };
+            names.push(dataAll[i].name);
+            if(dataAll[i].data==null || dataAll[i].data.length===0)continue;
+            let dataArr =[];
+            for(let k=0;k<dates.length;k++){
+                let got = false;
+                for (let j = 0; j < dataAll[i].data.length; j++) {
+                    if (dataAll[i].data[j] == null) continue;
+                    let recodedDate = getCommonDate(dataAll[i].data[j].recoredDate);
+                    let date_ = getCommonDate(dates[k]);
+                    if (recodedDate === date_ && dataAll[i].data[j].consumptionEffect != null) {
+                        dataArr.push(dataAll[i].data[j].consumptionEffect.toFixed(2));
+                        got = true;
+                    }
+                }
+                if(!got)dataArr.push(0);
+            }
+            seriesO.data = dataArr;
+            series.push(seriesO);
+        }
+        console.log(dataAll);
+        console.log(series);
+        let option = {
+            title: {
+                text: '时间段分素材有效消耗记录'
+            },
+            tooltip: {
+                formatter: function(data){
+                    return data.name+": ￥"+data.value;
+                }
+            },
+            toolbox:{},
+            legend: {
+                data:names
+            },
+            xAxis: {
+                data: dates
+            },
+            yAxis: {},
+            series: series
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        chart.setOption(option);
+        let chats = document.getElementById("effAddon");
+        chats.appendChild(div);
+    }
+
     function chearDraw(){
         $("#chats1,#chats2,#chats3,#chats4,#chats5").html('');
         $('#barForm input').val('');
@@ -357,7 +410,7 @@
 
             <div class="layui-colla-item">
                 <h2 class="layui-colla-title">总消耗统计</h2>
-                <div class="layui-colla-content" layui-show >
+                <div class="layui-colla-content layui-show"  >
                     <div class="layui-collapse" >
                         <div class="layui-colla-item">
                             <h2 class="layui-colla-title">时间段消耗统计</h2>
@@ -405,7 +458,7 @@
                                                 <td>
                                                     <button type="button" class="layui-btn layui-btn-sm " onclick="drawTotalConModel()"><i class="layui-icon layui-icon-search"></i></button>
                                                 </td>
-                                                <td>&nbsp;&nbsp;&nbsp;</td>
+                                                <td>&nbsp;&nbsp;</td>
                                                 <td>
                                                     <select id="count_model"  style="width: 150px" class="layui-input"  >
                                                         <option value="optimizer" SELECTED >优化师 </option>
@@ -429,93 +482,31 @@
                                 </div>
                             </div>
                         </div>
-                        <!--
-                        <div class="layui-colla-item">
-                            <h2 class="layui-colla-title">优化师统计</h2>
-                            <div class="layui-colla-content layui-show">
-                                <div class="layui-card">
-                                    <div class="layui-card-header">
-                                        <table>
-                                            <tr style="height: 40px">
-                                                <button type="button" class="layui-btn layui-btn-sm " onclick="drawTotalConOptimizer();"><i class="layui-icon layui-icon-search"></i></button>
-                                                <td></td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    <div class="layui-card-body">
-                                        <div class="layui-row">
-                                            <div class="layui-col-xs6">
-                                                <div id="chats2" ></div>
-                                            </div>
-                                            <div class="layui-col-xs6">
-                                                <div id="chats3" ></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                        <div class="layui-colla-item">
-                            <h2 class="layui-colla-title">客户统计</h2>
-                            <div class="layui-colla-content layui-show">
-                                <div class="layui-card">
-                                    <div class="layui-card-header">
-                                        <table>
-                                            <tr style="height: 40px">
-                                                <td>
-                                                    <button type="button" class="layui-btn layui-btn-sm " onclick="drawTotalConTrueCustomer();"><i class="layui-icon layui-icon-search"></i></button>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    <div class="layui-card-body">
-                                        <div class="layui-row">
-                                            <div class="layui-col-xs6"  >
-                                                <div id="chats4" ></div>
-                                            </div>
-                                            <div class="layui-col-xs6">
-                                                <div id="chats5" ></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                        -->
                     </div>
                 </div>
             </div>
-
             <div class="layui-colla-item">
-                <h2 class="layui-colla-title">文豪</h2>
+                <h2 class="layui-colla-title">有效消耗统计</h2>
                 <div class="layui-colla-content layui-show">
                     <div class="layui-collapse" >
                         <div class="layui-colla-item">
-                            <h2 class="layui-colla-title">唐代</h2>
+                            <h2 class="layui-colla-title">按时段图表</h2>
                             <div class="layui-colla-content layui-show">
                                 <div class="layui-collapse" >
-                                    <div class="layui-colla-item">
-                                        <h2 class="layui-colla-title">杜甫</h2>
-                                        <div class="layui-colla-content layui-show">
-                                            伟大的诗人
+                                    <div class="layui-card">
+                                        <div class="layui-card-header">
+                                            <table>
+                                                <tr style="height: 40px">
+                                                    <td>
+                                                        <button type="button" class="layui-btn layui-btn-sm " onclick="getEffectCountData()"><i class="layui-icon layui-icon-search"></i></button>
+                                                    </td>
+                                                    <td>分时段统计建议选择单一素材</td>
+                                                </tr>
+                                            </table>
                                         </div>
-                                    </div>
-                                    <div class="layui-colla-item">
-                                        <h2 class="layui-colla-title">李白</h2>
-                                        <div class="layui-colla-content">
-                                            <p>据说是韩国人</p>
-                                        </div>
-                                    </div>
-                                    <div class="layui-colla-item">
-                                        <h2 class="layui-colla-title">王勃</h2>
-                                        <div class="layui-colla-content">
-                                            <p>千古绝唱《滕王阁序》</p>
-                                        </div>
+                                        <div id="effAddon" class="layui-card-body">
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                         <div class="layui-colla-item">

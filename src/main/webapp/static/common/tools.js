@@ -11,7 +11,7 @@ function getCommonDate(value){
     }
 }
 function getCommonDateTime(value){
-    if(value !=null && value !=""){
+    if(value !=null && value !==""){
         try{
             let date = new Date(value);
             return date.getFullYear()+'-'+(date.getMonth()+1)+"-"+date.getDate()+" "+date.getHours()+":"+date.getMinutes()+":"+date.getSeconds();
@@ -111,5 +111,5 @@ function getThisMonth(){
     let dateNow = new Date();
     let start = new Date();
     start.setDate(1);
-    return [start.getFullYear()+"-"+(start.getMonth()+1)+"-"+start.getUTCDate(), dateNow.getFullYear()+"-"+(dateNow.getMonth() +1 )+"-"+dateNow.getUTCDate()];
+    return [start.getFullYear()+"-"+(start.getMonth()+1)+"-"+start.getDate(), dateNow.getFullYear()+"-"+(dateNow.getMonth() +1 )+"-"+dateNow.getDate()];
 }
