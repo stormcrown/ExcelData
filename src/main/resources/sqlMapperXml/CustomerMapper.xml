@@ -13,6 +13,7 @@
         <result column="complete_date" property="completeDate"/>
         <result column="max_effect_con" property="maxEffectCon" />
         <result column="income_ratio" property="inComeRatio" />
+        <result column="pay_ratio" property="payRatio" />
         <association property="editor" javaType="cn.dovahkiin.model.Editor" columnPrefix="editor_" resultMap="cn.dovahkiin.mapper.EditorMapper.BaseResultMap" />
         <association property="industry" javaType="cn.dovahkiin.model.Industry" columnPrefix="industry_" resultMap="cn.dovahkiin.mapper.IndustryMapper.BaseResultMap" />
         <association property="productType" javaType="cn.dovahkiin.model.ProductType" columnPrefix="product_type_" resultMap="cn.dovahkiin.mapper.ProductTypeMapper.BaseResultMap" />
@@ -48,7 +49,7 @@
     	code,
     	update_time,
     	create_time,
-    	delete_flag,supplier_id,video_version_id,price_level_id,max_effect_con,income_ratio
+    	delete_flag,supplier_id,video_version_id,price_level_id,max_effect_con,income_ratio,pay_ratio
   	</sql>
     <select id="selectByCode" resultMap="BaseResultMapWithCount">
          SELECT
@@ -76,6 +77,7 @@
         cus.true_customer_id,
         cus.max_effect_con,
         cus.income_ratio,
+        cus.pay_ratio,
         pty.`name` as product_type_name,
         pty.`code` as product_type_code,
         pty.update_time as product_type_update_time,
@@ -544,14 +546,14 @@
                               performer1_id, editor_id, photographer_id,
                               video_type_id, product_type_id, industry_id,
                               code, update_time, create_time,
-                              delete_flag, max_effect_con, income_ratio,
+                              delete_flag, max_effect_con, income_ratio,pay_ratio,
                               supplier_id, video_version_id, price_level_id)
         values (#{name,jdbcType=VARCHAR}, #{trueCustomer.id,jdbcType=BIGINT}, #{originality.id,jdbcType=BIGINT},
                 #{completeDate,jdbcType=DATE}, #{performer3.id,jdbcType=BIGINT}, #{performer2.id,jdbcType=BIGINT},
                 #{performer1.id,jdbcType=BIGINT}, #{editor.id,jdbcType=BIGINT}, #{photographer.id,jdbcType=BIGINT},
                 #{videoType.id,jdbcType=BIGINT}, #{productType.id,jdbcType=BIGINT}, #{industry.id,jdbcType=BIGINT},
                 #{code,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP},
-                #{deleteFlag,jdbcType=INTEGER}, #{maxEffectCon,jdbcType=DOUBLE}, #{inComeRatio,jdbcType=DOUBLE},
+                #{deleteFlag,jdbcType=INTEGER}, #{maxEffectCon,jdbcType=DOUBLE}, #{inComeRatio,jdbcType=DOUBLE},#{payRatio},
                 #{supplier.id,jdbcType=BIGINT}, #{videoVersion.id,jdbcType=BIGINT}, #{priceLevel.id,jdbcType=BIGINT})
   	</insert>
     <insert id="insertSelective" parameterType="cn.dovahkiin.model.Customer" useGeneratedKeys="true" keyProperty="id"
@@ -614,6 +616,9 @@
             </if>
             <if test="inComeRatio != null">
                 income_ratio,
+            </if>
+            <if test="payRatio != null ">
+                pay_ratio,
             </if>
             <if test="supplier!=null and supplier.id != null">
                 supplier_id,
@@ -683,6 +688,9 @@
             <if test="inComeRatio != null">
                 #{inComeRatio,jdbcType=DOUBLE},
             </if>
+            <if test="payRatio != null ">
+                #{payRatio},
+            </if>
             <if test="supplier!=null and supplier.id != null">
                 #{supplier.id,jdbcType=BIGINT},
             </if>
@@ -746,6 +754,9 @@
             <if test="inComeRatio != null">
                 income_ratio = #{inComeRatio,jdbcType=DOUBLE},
             </if>
+            <if test="payRatio != null ">
+                pay_ratio=#{payRatio},
+            </if>
             <if test="supplier!=null and supplier.id != null">
                 supplier_id = #{supplierId,jdbcType=BIGINT},
             </if>
@@ -775,7 +786,8 @@
             code             = #{code,jdbcType=VARCHAR},
             update_time      = #{updateTime,jdbcType=TIMESTAMP},
             max_effect_con   = #{maxEffectCon,jdbcType=DOUBLE},
-            income_ratio     = #{inComeRatio,jdbcType=DOUBLE},
+            income_ratio = #{inComeRatio,jdbcType=DOUBLE},
+            pay_ratio = #{payRatio},
             supplier_id      = #{supplier.id,jdbcType=BIGINT},
             video_version_id = #{videoVersion.id,jdbcType=BIGINT},
             price_level_id   = #{priceLevel.id,jdbcType=BIGINT}

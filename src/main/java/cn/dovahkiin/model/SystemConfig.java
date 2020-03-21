@@ -26,6 +26,8 @@ public class SystemConfig extends Model<SystemConfig> {
      */
 	@TableField("default_income_ratio")
 	private Double defaultIncomeRatio;
+	@TableField("default_pay_ratio")
+	private Double defaultPayRatio;
     /**
      * 默认最大有效消耗
      */
@@ -124,6 +126,14 @@ public class SystemConfig extends Model<SystemConfig> {
 
 	public void setSupplier(Supplier supplier) {
 		this.supplier = supplier;
+	}
+
+	public Double getDefaultPayRatio() {
+		return defaultPayRatio;
+	}
+
+	public void setDefaultPayRatio(Double defaultPayRatio) {
+		this.defaultPayRatio = defaultPayRatio;
 	}
 
 	@Override

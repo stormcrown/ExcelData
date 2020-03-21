@@ -6,6 +6,7 @@
 	<resultMap id="BaseResultMap" type="cn.dovahkiin.model.SystemConfig">
 		<id column="id" property="id" />
 		<result column="default_income_ratio" property="defaultIncomeRatio" />
+		<result column="default_pay_ratio" property="defaultPayRatio" />
 		<result column="default_max_effect_con" property="defaultMaxEffectCon" />
 		<result column="default_max_effect_range" property="defaultMaxEffectRange" />
 		<result column="update_time" property="updateTime" />
@@ -14,23 +15,24 @@
 		<association property="supplier" javaType="cn.dovahkiin.model.Supplier" columnPrefix="supplier_" resultMap="cn.dovahkiin.mapper.SupplierMapper.BaseResultMap" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, supplier_id, default_income_ratio, default_max_effect_con, default_max_effect_range,
+		id, supplier_id, default_income_ratio, default_pay_ratio,default_max_effect_con, default_max_effect_range,
     update_time, update_by
 	</sql>
 	<sql id="Base_Column_List_table_sc">
 		sc.id,
 		sc.supplier_id,
 		sc.default_income_ratio,
+		sc.default_pay_ratio,
 		sc.default_max_effect_con,
 		sc.default_max_effect_range,
     	sc.update_time,
 		sc.update_by
 	</sql>
 	<insert id="insertI" keyColumn="id" keyProperty="id" parameterType="cn.dovahkiin.model.SystemConfig" useGeneratedKeys="true">
-		insert into system_config (supplier_id, default_income_ratio, default_max_effect_con,
+		insert into system_config (supplier_id, default_income_ratio, default_pay_ratio,default_max_effect_con,
 								   default_max_effect_range, update_time, update_by
 		)
-		values (#{supplier.id,jdbcType=BIGINT}, #{defaultIncomeRatio,jdbcType=DOUBLE}, #{defaultMaxEffectCon,jdbcType=DOUBLE},
+		values (#{supplier.id,jdbcType=BIGINT}, #{defaultIncomeRatio,jdbcType=DOUBLE},#{defaultPayRatio,jdbcType=DOUBLE}, #{defaultMaxEffectCon,jdbcType=DOUBLE},
 				#{defaultMaxEffectRange,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT}
 			   )
 	</insert>
@@ -106,6 +108,7 @@
 		update system_config
 		set
 			default_income_ratio = #{defaultIncomeRatio,jdbcType=DOUBLE},
+			default_pay_ratio = #{defaultPayRatio,jdbcType=DOUBLE},
 			default_max_effect_con = #{defaultMaxEffectCon,jdbcType=DOUBLE},
 			default_max_effect_range = #{defaultMaxEffectRange,jdbcType=INTEGER},
 			update_time = #{updateTime,jdbcType=TIMESTAMP},

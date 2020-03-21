@@ -298,7 +298,7 @@
 		ORDER BY total desc
 	</select>
 
-	<!-- 此处将所有素材的有效期内的消耗统计起来，如果有大于最大消耗的数据，则进一步处理	-->
+	<!-- 此处将所有素材的有效期内的消耗统计起来，如果有大于最大消耗的数据，则进一步处理
 	<select id="effCount1" resultType="hashmap">
 		SELECT
 		sum( IF(vc.recored_date  &lt;= DATE_ADD(cus.complete_date, INTERVAL #{effectDays,jdbcType=INTEGER} day) and vc.recored_date >= cus.complete_date, consumption, 0) ) as sumEffCon,
@@ -311,16 +311,16 @@
 		GROUP BY cus.id,cus.`name`
 		having sumEffCon &gt; #{maxEffectCon,jdbcType=DOUBLE}
 	</select>
-
+-->
 	<select id="selectEffectCustomer"  resultType="cn.dovahkiin.model.dto.CustomerEffectDto" >
 		select
-		cus.id,cus.name,cus.complete_date as completeDate,ple.base_price as basePrice,
+		cus.id,cus.name,cus.complete_date as completeDate,ple.base_price as basePrice,ple.name as priceLevelName,
 		COALESCE(sc.default_max_effect_con,#{defaultConfig.defaultMaxEffectCon} ) as maxEffectOn,
 		COALESCE(sc.default_income_ratio,#{defaultConfig.defaultIncomeRatio} ) as incomeRadio,
-
+		COALESCE(sc.default_pay_ratio,#{defaultConfig.defaultPayRatio} ) as payRadio,
 		COALESCE(
 		DATE_ADD(cus.complete_date, INTERVAL sc.default_max_effect_range day),
-		DATE_ADD(cus.complete_date, INTERVAL #{defaultConfig.defaultMaxEffectRange}  day)
+		DATE_ADD(cus.complete_date, INTERVAL #{defaultConfig.defaultMaxEffectRange} day)
 		) as endDate,
 		sum( case when vc.recored_date &lt;= COALESCE(
 		DATE_ADD(cus.complete_date, INTERVAL sc.default_max_effect_range day),
@@ -412,7 +412,7 @@
 				</if>
 			</if>
 		</where>
-		GROUP BY cus.id,cus.name,cus.complete_date,sc.default_max_effect_con,sc.default_income_ratio
+		GROUP BY cus.id,cus.name,cus.complete_date,sc.default_max_effect_con,sc.default_income_ratio,sc.default_pay_ratio,ple.base_price
 		having
 		cus.complete_date &lt;= #{recoredDate_end  }
 		and endDate  &gt;=  #{recoredDate_start }

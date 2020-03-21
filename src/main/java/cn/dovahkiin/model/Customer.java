@@ -69,6 +69,8 @@ public class Customer extends Model<Customer> {
 	 */
 	@TableField("income_ratio")
 	private Double inComeRatio;
+	@TableField("pay_ratio")
+	private Double payRatio;
 
 	private Industry industry;
 
@@ -321,5 +323,13 @@ public class Customer extends Model<Customer> {
 
 	public void setPriceLevel(PriceLevel priceLevel) {
 		this.priceLevel = priceLevel;
+	}
+
+	public Double getPayRatio() {
+		return payRatio;
+	}
+
+	public void setPayRatio(Double payRatio) {
+		this.payRatio = payRatio;
 	}
 }

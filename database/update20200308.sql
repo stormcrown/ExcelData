@@ -2,6 +2,7 @@ select * from customer ;
 -- 素材的最大有效消耗
 alter table customer ADD column max_effect_con double NULL  comment '素材最大有效消耗，-1 表示使用默认系统配置值' ;
 alter table customer ADD column income_ratio double NULL  comment '收入比率，表示使用默认系统配置值' ;
+alter table customer ADD column pay_ratio double NULL  comment '支出比率，表示使用默认系统配置值' ;
 alter table customer add column supplier_id bigint comment '供应商外键' , add index supplier_id_index (supplier_id) ;
 alter table customer add index originality_id_index (originality_id) ;
 alter table customer add index performer1_id_index (performer1_id) ;
@@ -20,14 +21,16 @@ drop table if exists system_config;
 create table system_config (
     id  bigint(19) primary key NOT NULL AUTO_INCREMENT ,
     supplier_id bigint(19) unique  ,
-    default_income_ratio double default 100  comment '收入比率，百分比。',
+    default_income_ratio double default 100  comment '收入比率，百分比',
+    default_pay_ratio double default 10  comment '支出比率，百分比',
     default_max_effect_con double default 100 comment '默认最大有效消耗',
     default_max_effect_range int default 60 comment '默认生命周期',
     `update_time` datetime    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
     update_by  bigint(19) comment '更新人'
 );
-insert into system_config (id,default_income_ratio,default_max_effect_con ,default_max_effect_range ) value (1,100.00,100,60) ;
+insert into system_config (id,default_income_ratio,default_pay_ratio,default_max_effect_con ,default_max_effect_range ) value (1,100.00,10.00,100,60) ;
 select * from system_config ;
+
 
 -- 供应商
 DROP TABLE IF EXISTS `supplier`;

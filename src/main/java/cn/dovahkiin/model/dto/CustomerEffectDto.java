@@ -1,5 +1,6 @@
 package cn.dovahkiin.model.dto;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -12,9 +13,17 @@ public class CustomerEffectDto {
     private Date endDate;
     private Double maxEffectOn;
     private Double incomeRadio;
+    private Double payRadio;
+    private String priceLevelName;
     private Double sumCon ;
+    private Double sumIncome;
+    private Double sumPay;
 
     private List<DayEffectDto> data;
+    public void addData(DayEffectDto dayEffectDto){
+        if(data==null)data = new ArrayList<>();
+        data.add(dayEffectDto);
+    }
 
     public Long getId() {
         return id;
@@ -86,5 +95,37 @@ public class CustomerEffectDto {
 
     public void setData(List<DayEffectDto> data) {
         this.data = data;
+    }
+
+    public Double getSumIncome() {
+        return sumIncome;
+    }
+
+    public void setSumIncome(Double sumIncome) {
+        this.sumIncome = sumIncome;
+    }
+
+    public Double getPayRadio() {
+        return payRadio;
+    }
+
+    public void setPayRadio(Double payRadio) {
+        this.payRadio = payRadio;
+    }
+
+    public String getPriceLevelName() {
+        return priceLevelName;
+    }
+
+    public void setPriceLevelName(String priceLevelName) {
+        this.priceLevelName = priceLevelName;
+    }
+
+    public Double getSumPay() {
+        return sumPay;
+    }
+
+    public void setSumPay(Double sumPay) {
+        this.sumPay = sumPay;
     }
 }
