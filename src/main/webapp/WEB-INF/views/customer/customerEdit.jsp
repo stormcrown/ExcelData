@@ -73,6 +73,16 @@
                     </td>
                 </tr>
                 <tr>
+                    <td></td>
+                    <td   >
+                    </td>
+                    <td>支出比率(%)</td>
+                    <td  colspan="1"  >
+                        <input name="payRatio" type="text" class="easyui-numberbox"  data-options="width:200,min:0,precision:2,value:'${customer.payRatio}'">
+                    </td>
+                </tr>
+
+                <tr>
                     <td>客户</td>
                     <td  colspan="3" >
                         <input name="trueCustomer.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/trueCustomer/combobox',value:'${customer.trueCustomer.id}'" />

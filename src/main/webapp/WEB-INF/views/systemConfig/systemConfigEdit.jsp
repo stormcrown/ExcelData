@@ -33,7 +33,11 @@
             <table class="grid">
                 <tr>
                     <td>默认收入比率（%）:</td>
-                    <td><input id="defaultIncomeRatio" name="defaultIncomeRatio" value="${systemConfig.defaultIncomeRatio}" type="text" class="layui-input easyui-numberbox" data-options="width:200,height:40, required:true,missingMessage:'提供固定价格',min:0,precision:2" /></td>
+                    <td><input id="defaultIncomeRatio" name="defaultIncomeRatio" value="${systemConfig.defaultIncomeRatio}" type="text" class="layui-input easyui-numberbox" data-options="width:200,height:40, required:true,missingMessage:'默认收入比率',min:0,precision:2" /></td>
+                </tr>
+                <tr>
+                    <td>默认支出比率（%）:</td>
+                    <td><input id="defaultPayRatio" name="defaultPayRatio" value="${systemConfig.defaultPayRatio}" type="text" class="layui-input easyui-numberbox" data-options="width:200,height:40, required:true,missingMessage:'默认支出比率',min:0,precision:2" /></td>
                 </tr>
                 <tr>
                     <td>默认最大有效消耗:</td>

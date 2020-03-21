@@ -102,6 +102,17 @@
                 }
             },
             {
+                width: '120',
+                title: '有效收入比率',
+                field: 'payRatio',
+                sortable: true,
+                align:'right',
+                formatter: function (value, row, index) {
+                    if(value!=null) return value.toFixed(2);
+                    return "";
+                }
+            },
+            {
                 width: '80',
                 title: '实际累计消耗',
                 field: 'cumulativeConsumptionByPro',

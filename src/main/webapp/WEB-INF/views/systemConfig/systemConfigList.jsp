@@ -37,6 +37,15 @@
                 return value;
             }
         },
+            {
+                width : '200',
+                title : '默认支出比率（%）',
+                field : 'defaultPayRatio',
+                sortable : true,
+                formatter : function(value, row, index) {
+                    return value;
+                }
+            },
          {
             width : '200',
             title : '默认最大有效消耗',
