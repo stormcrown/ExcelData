@@ -35,7 +35,7 @@
     </Appenders>
 
     <Loggers>
-        <Logger name="cn.dovahkiin" level="info" />
+        <Logger name="cn.dovahkiin" level="error" />
         <Root level="INFO" additivity="false">
             <AppenderRef ref="Console" />
             <AppenderRef ref="RollingFile" />

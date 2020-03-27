@@ -67,14 +67,23 @@
                     <td  colspan="1" class="easyui-tooltip" title="不填表示使用系统默认配置" >
                         <input name="maxEffectCon" type="text" class="easyui-numberbox"  data-options="width:200,min:0,precision:2,value:'${customer.maxEffectCon}'">
                     </td>
+                    <td></td><td></td>
+
+                </tr>
+                <tr>
+                    <td >价格分级</td>
+                    <td>
+                        <input name="priceLevel.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/priceLevel/combobox',formatter: function(row){ return row['name']+': ￥'+row['basePrice'] },value:'${customer.priceLevel.id}'   " />
+                    </td>
                     <td>收入比率(%)</td>
                     <td  colspan="1" class="easyui-tooltip" title="不填表示使用系统默认配置" >
                         <input name="inComeRatio" type="text" class="easyui-numberbox"  data-options="width:200,min:0,precision:2,value:'${customer.inComeRatio}'">
                     </td>
                 </tr>
                 <tr>
-                    <td></td>
+                    <td>支出分级</td>
                     <td   >
+                        <input name="payLevel.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/payLevel/combobox',formatter: function(row){ return row['name']+': ￥'+row['basePay'] },value:'${customer.payLevel.id}'   " />
                     </td>
                     <td>支出比率(%)</td>
                     <td  colspan="1"  >
@@ -140,12 +149,9 @@
                         <input name="performer3.id"  class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/performer/combobox',value:'${customer.performer3.id}'" />
                     </td>
                 </tr>
-
                 <tr>
-                    <td >价格分级</td>
-                    <td>
-                        <input name="priceLevel.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/priceLevel/combobox',formatter: function(row){ return row['name']+': ￥'+row['basePrice'] },value:'${customer.priceLevel.id}'   " />
-                    </td>
+                    <td></td>
+                    <td></td>
                     <td >供应商</td>
                     <td>
                         <input name="supplier.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/supplier/combobox',value:'${customer.supplier.id}'" />

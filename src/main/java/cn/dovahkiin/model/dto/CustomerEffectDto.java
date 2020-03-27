@@ -9,12 +9,14 @@ public class CustomerEffectDto {
     private Long id;
     private String name;
     private Double basePrice;
+    private Double basePay;
     private Date completeDate;
     private Date endDate;
     private Double maxEffectOn;
     private Double incomeRadio;
     private Double payRadio;
     private String priceLevelName;
+    private String payLevelName;
     private Double sumCon ;
     private Double sumIncome;
     private Double sumPay;
@@ -127,5 +129,21 @@ public class CustomerEffectDto {
 
     public void setSumPay(Double sumPay) {
         this.sumPay = sumPay;
+    }
+
+    public Double getBasePay() {
+        return basePay;
+    }
+
+    public void setBasePay(Double basePay) {
+        this.basePay = basePay;
+    }
+
+    public String getPayLevelName() {
+        return payLevelName;
+    }
+
+    public void setPayLevelName(String payLevelName) {
+        this.payLevelName = payLevelName;
     }
 }

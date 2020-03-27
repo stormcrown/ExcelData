@@ -15,6 +15,7 @@ public class Result implements Serializable {
     private static final long serialVersionUID = 5576237395711742681L;
 
     private boolean success = false;
+    private String code="";
 
     private String msg = "";
 
@@ -26,6 +27,14 @@ public class Result implements Serializable {
 
     public void setSuccess(boolean success) {
         this.success = success;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getMsg() {

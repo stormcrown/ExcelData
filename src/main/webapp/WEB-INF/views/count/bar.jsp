@@ -91,7 +91,7 @@
         $("#chats1").html('');
         // 第二个参数可以指定前面引入的主题
         let div = document.createElement("div");
-        div.setAttribute("style","width:1700px;height:800px")
+        div.setAttribute("style","width:1200px;height:800px")
         let chart = echarts.init(div, 'vintage');
         // 指定图表的配置项和数据
         let seriesO = new Object();
@@ -138,7 +138,7 @@
         dom2.html('');
         // 第二个参数可以指定前面引入的主题
         let div = document.createElement("div");
-        div.setAttribute("style","width:850px;height:850px")
+        div.setAttribute("style","width:450px;height:450px")
         let chart = echarts.init(div, 'vintage');
         // 指定图表的配置项和数据
         if(jsonData==null)jsonData= [];
@@ -222,7 +222,7 @@
         // chats.appendChild(div);
         dom1.append(div);
         let div2 = document.createElement("div");
-        div2.setAttribute("style","width:800px;height:800px")
+        div2.setAttribute("style","width:450px;height:450px")
         let chart2 = echarts.init(div2, 'vintage');
         option.series[0].data = count_num.sort(function (a, b) { return a.value - b.value; }) ;
         // option.title.text = "消耗记录数量分优化师统计图表";
@@ -252,25 +252,30 @@
                 let totalSumPay = EffectCountData.totalSumPay;
                 if(totalSumPay!=null)totalSumPay=totalSumPay.toFixed(2);
 
-                $('#totalSumCon,#totalSumCon_th').html(totalSumCon);
-                $('#totalSumIncome,#totalSumIncome_th').html(totalSumIncome);
-                $('#totalSumPay,#totalSumPay_th').html(totalSumPay);
+                $('#totalSumCon').html(totalSumCon);
+                $('#totalSumIncome').html(totalSumIncome);
+                $('#totalSumPay').html(totalSumPay);
                 $('#totalCus').html(EffectCountData.totalCus);
 
                 handleTimeUnitEffect(getAllDates( dates[0],dates[1] ));
 
                 let dataAll = data.allPrimaryData;
-                $('#effectTable').html("");
+
                 let tableData =[];
 
                 for(let i=0;i<dataAll.length;i++){
                     let con = dataAll[i].sumCon ; if(con!=null)con=con.toFixed(2);
                     let inc = dataAll[i].sumIncome ; if(inc!=null)inc=inc.toFixed(2);
                     let pay = dataAll[i].sumPay ; if(pay!=null)pay=pay.toFixed(2);
+                    let pNPl = dataAll[i].priceLevelName+"：￥ "+dataAll[i].basePrice;
+                    if(dataAll[i].priceLevelName==null)pNPl ='';
+                    let payNPl = dataAll[i].payLevelName+"：￥ "+dataAll[i].basePay;
+                    if(dataAll[i].basePay==null)payNPl ='';
                     tableData.push({
                         name:dataAll[i].name,
                         completeData:getCommonDate(dataAll[i].completeDate),
-                        basePrice:dataAll[i].priceLevelName+"：￥ "+dataAll[i].basePrice,
+                        basePrice:pNPl,
+                        basePay:payNPl,
                         maxEffectOn:dataAll[i].maxEffectOn,
                         sumCon:con,
                         sumIncome:inc,
@@ -281,13 +286,9 @@
                         id:dataAll[i].id
                     });
                 }
-                layui.table.init('lay_eff',{
-                    cols: [
-
-                    ],
-                    data:tableData,limit:10,page:true
+                $('#effCountAll').datagrid({
+                    data: tableData
                 });
-
             },
         });
     }
@@ -401,7 +402,7 @@
 
         // 第二个参数可以指定前面引入的主题
         let div = document.createElement("div");
-        div.setAttribute("style","width:1700px;height:800px")
+        div.setAttribute("style","width:1200px;height:850px;")
         let chart = echarts.init(div, 'vintage');
         // 指定图表的配置项和数据
         let option = {
@@ -426,6 +427,7 @@
         let chats = document.getElementById("effAddon");
         chats.appendChild(div);
     }
+    /*
     function drawEffectCount(dates,dataAll) {
         let cav_type  = $("#count1_c").val();
         let smooth = false;
@@ -489,9 +491,9 @@
         let chats = document.getElementById("effAddon");
         chats.appendChild(div);
     }
-
+*/
     function chearDraw(){
-        $("#chats1,#chats2,#chats3,#chats4,#chats5,#effAddon,#effectTable").html('');
+        $("#chats1,#chats2,#chats3,#chats4,#chats5,#effAddon").html('');
         $('#barForm input').val('');
     }
 </script>
@@ -525,7 +527,7 @@
                 <tr  style="padding-bottom: 10px;" >
                     <th>需求部门</th>
                     <td>
-                        <select name="demandSector.id"  class="easyui-combotree"  data-options=" parentField : 'pid',width:200,height:40,panelHeight:300,editable:true,url:'${path}/organization/tree'"   ></select>
+                        <select name="demandSector.id"  class="easyui-combotree"  data-options=" parentField : 'pid',width:200,height:40,panelMaxHeight : '650',panelHeight:'auto',editable:true,url:'${path}/organization/tree'"   ></select>
                     </td>
                     <td>优化师</td>
                     <td   >
@@ -572,7 +574,7 @@
 <%--                    </td>--%>
                     <td >供应商</td>
                     <td>
-                        <input name="customer.supplier.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/supplier/combobox'" />
+                        <input name="supplierIds" class="easyui-combobox"  data-options="width:400,height:40,valueField:'id',textField:'name',url:'${path}/supplier/combobox',multiple:true," />
                     </td>
 <%--                    <td></td>--%>
 <%--                    <td></td>--%>
@@ -585,6 +587,73 @@
             <legend>统计查询：出于性能方面的考虑，不建议一次性生成所有图表</legend>
         </fieldset>
         <div class="layui-collapse" >
+            <div class="layui-colla-item">
+                <h2 class="layui-colla-title">有效消耗统计</h2>
+                <div class="layui-colla-content layui-show">
+                    <div class="layui-collapse" >
+                        <div class="layui-colla-item">
+                            <h2 class="layui-colla-title">按时段图表</h2>
+                            <div class="layui-colla-content layui-show">
+                                <div class="layui-collapse" >
+                                    <div class="layui-card">
+                                        <div class="layui-card-header">
+                                            <table>
+                                                <tr style="height: 40px">
+                                                    <td>
+                                                        <button type="button" class="layui-btn layui-btn-sm " onclick="getEffectCountData()"><i class="layui-icon layui-icon-search"></i></button>
+                                                    </td>
+                                                    <td>
+                                                        <select id="countEffType" name="type" style="width: 150px" class="layui-input"  >
+                                                            <option value="0" selected > 每日总和 </option>
+                                                            <option value="1" >单个素材</option>
+                                                        </select>
+                                                    </td>
+                                                    <td>有效消耗： <span id="totalSumCon" style="color:red" >0</span> ；收入：<span id="totalSumIncome" style="color:red"></span>；支出：<span id="totalSumPay" style="color: red" ></span>；素材数量：<span id="totalCus" style="color: red" ></span>； </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div id="effAddon"  class="layui-card-body" STYLE="width: 100%;height: 100%;margin: 0 auto;"  >
+                                        </div>
+                                    </div>
+                                    <div class="layui-card">
+                                        <div class="layui-card-header">
+                                            <H2>表格展示</H2>
+                                        </div>
+                                        <div  class="layui-card-body" style="font-family: 'Comic Sans MS';" >
+                                            <table  id="effCountAll" class="easyui-datagrid" title="详细" style="width:1200px;height:850px" data-options="singleSelect:true,collapsible:true,toolbar : '#effCountToolbar'">
+                                                <thead>
+                                                <tr>
+                                                    <th data-options="field:'name',  sort: true," >名称</th>
+                                                    <th data-options="field:'maxEffectOn',  sort: true,">封顶消耗</th>
+                                                    <th data-options="field:'sumCon',  sort: true">有效消耗</th>
+                                                    <th data-options="field:'sumIncome', sort: true">收入</th>
+                                                    <th data-options="field:'sumPay',  sort: true">支出（暂定）</th>
+                                                    <th data-options="field:'completeData',  sort: true">成片日期</th>
+                                                    <th data-options="field:'basePrice',  sort: true">固定收入</th>
+                                                    <th data-options="field:'basePay',  sort: true">固定支出</th>
+                                                    <th data-options="field:'incomeRadio',  sort: true">收入比率（%）</th>
+                                                    <th data-options="field:'payRadio',  sort: true">支出比率（%）</th>
+                                                    <th data-options="field:'endData',  sort: true">有效期截至（实际）</th>
+                                                </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!--
+                <div class="layui-colla-item">
+                    <h2 class="layui-colla-title">艺术家</h2>
+                    <div class="layui-colla-content">
+                        <p>浑身散发着艺术细胞</p>
+                    </div>
+                </div>
+                    -->
+            </div>
 
             <div class="layui-colla-item">
                 <h2 class="layui-colla-title">总消耗统计</h2>
@@ -616,7 +685,6 @@
                                             </tr>
                                         </table>
                                     </div>
-<%--                                    <div class="layui-card-body"></div>--%>
                                 </div>
 
                                 <div class="layui-card">
@@ -663,84 +731,6 @@
                     </div>
                 </div>
             </div>
-            <div class="layui-colla-item">
-                <h2 class="layui-colla-title">有效消耗统计</h2>
-                <div class="layui-colla-content layui-show">
-                    <div class="layui-collapse" >
-                        <div class="layui-colla-item">
-                            <h2 class="layui-colla-title">按时段图表</h2>
-                            <div class="layui-colla-content layui-show">
-                                <div class="layui-collapse" >
-                                    <div class="layui-card">
-                                        <div class="layui-card-header">
-                                            <table>
-                                                <tr style="height: 40px">
-                                                    <td>
-                                                        <button type="button" class="layui-btn layui-btn-sm " onclick="getEffectCountData()"><i class="layui-icon layui-icon-search"></i></button>
-                                                    </td>
-                                                    <td>
-                                                        <select id="countEffType" name="type" style="width: 150px" class="layui-input"  >
-                                                            <option value="0" selected > 每日总和 </option>
-                                                            <option value="1" >单个素材</option>
-                                                        </select>
-                                                    </td>
-                                                    <td>有效消耗： <span id="totalSumCon" style="color:red" >0</span> ；收入：<span id="totalSumIncome" style="color:red"></span>；支出：<span id="totalSumPay" style="color: red" ></span>；素材数量：<span id="totalCus" style="color: red" ></span>； </td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                        <div id="effAddon" class="layui-card-body"></div>
-                                </div>
-                                    <div class="layui-card">
-                                        <div class="layui-card-header">
-                                            <H2>表格展示,注意排序只排列当页数据</H2>
-                                        </div>
-                                        <div  class="layui-card-body" style="font-family: 'Comic Sans MS';" >
-                                            <table lay-filter="lay_eff" class="layui-table" >
-                                                <thead>
-                                                <tr>
-                                                    <th lay-data="{field:'name',  sort: true,}" >名称</th>
-                                                    <th lay-data="{field:'maxEffectOn',  sort: true,}">封顶消耗</th>
-                                                    <th lay-data="{field:'sumCon',  sort: true}">有效消耗</th>
-                                                    <th lay-data="{field:'sumIncome', sort: true}">收入</th>
-                                                    <th lay-data="{field:'sumPay',  sort: true}">支出（暂定）</th>
-                                                    <th lay-data="{field:'completeData',  sort: true}">成片日期</th>
-                                                    <th lay-data="{field:'basePrice',  sort: true}">固定价格</th>
-                                                    <th lay-data="{field:'incomeRadio',  sort: true}">收入比率（%）</th>
-                                                    <th lay-data="{field:'payRadio',  sort: true}">支出比率（%）</th>
-                                                    <th lay-data="{field:'endData',  sort: true}">有效期截至（实际）</th>
-                                                </tr>
-                                                <tr  >
-                                                    <th>总计</th>
-                                                    <th >封顶消耗</th>
-                                                    <th  id="totalSumCon_th" >有效消耗</th>
-                                                    <th  id="totalSumIncome_th" >收入</th>
-                                                    <th id="totalSumPay_th">支出</th>
-                                                    <th ></th>
-                                                    <th ></th>
-                                                    <th ></th>
-                                                    <th ></th>
-                                                    <th ></th>
-                                                </tr>
-                                                </thead>
-                                                <tbody id="effectTable" ></tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            <!--
-            <div class="layui-colla-item">
-                <h2 class="layui-colla-title">艺术家</h2>
-                <div class="layui-colla-content">
-                    <p>浑身散发着艺术细胞</p>
-                </div>
-            </div>
-                -->
-        </div>
 
         <div class="layui-card">
             <div class="layui-card-header">
@@ -754,68 +744,14 @@
             </div>
         </div>
 
-<%--        <div class="layui-collapse" >--%>
-<%--            <div class="layui-colla-item">--%>
-<%--                <h2 class="layui-colla-title">时间段消耗统计</h2>--%>
-<%--                <div class="layui-colla-content layui-show">--%>
-<%--                    <div class="layui-card">--%>
-<%--                        <div class="layui-card-header">时间段消耗统计图表</div>--%>
-<%--                        <div id="chats1" class="layui-card-body">--%>
-<%--                        </div>--%>
-<%--                    </div>--%>
-<%--                </div>--%>
-<%--            </div>--%>
-<%--            <div class="layui-colla-item">--%>
-<%--                <h2 class="layui-colla-title">优化师统计</h2>--%>
-<%--                <div class="layui-colla-content layui-show">--%>
-<%--                    <div class="layui-row">--%>
-<%--                        <div class="layui-col-xs6">--%>
-<%--&lt;%&ndash;                            <div class="layui-card">&ndash;%&gt;--%>
-<%--&lt;%&ndash;                                <div class="layui-card-header">消耗量分优化师统计图表</div>&ndash;%&gt;--%>
-<%--&lt;%&ndash;                                <div class="layui-card-body">&ndash;%&gt;--%>
-<%--                                    <div id="chats2" >--%>
-<%--                                    </div>--%>
-<%--&lt;%&ndash;                                </div>&ndash;%&gt;--%>
-<%--&lt;%&ndash;                            </div>&ndash;%&gt;--%>
-<%--                        </div>--%>
-<%--                        <div class="layui-col-xs6">--%>
-<%--&lt;%&ndash;                            <div class="layui-card">&ndash;%&gt;--%>
-<%--&lt;%&ndash;                                <div class="layui-card-header">消耗记录数量分优化师统计图表</div>&ndash;%&gt;--%>
-<%--&lt;%&ndash;                                <div class="layui-card-body">&ndash;%&gt;--%>
-<%--                                    <div id="chats3" >--%>
-<%--                                    </div>--%>
-<%--&lt;%&ndash;                                </div>&ndash;%&gt;--%>
-<%--&lt;%&ndash;                            </div>&ndash;%&gt;--%>
-<%--                        </div>--%>
-<%--                    </div>--%>
-<%--                </div>--%>
-<%--            </div>--%>
-<%--            <div class="layui-colla-item">--%>
-<%--                <h2 class="layui-colla-title">客户统计</h2>--%>
-<%--                <div class="layui-colla-content layui-show">--%>
-<%--                    <div class="layui-row">--%>
-<%--                        <div class="layui-col-xs6"  >--%>
-<%--&lt;%&ndash;                            <div class="layui-card">&ndash;%&gt;--%>
-<%--&lt;%&ndash;                                <div class="layui-card-header">消耗量按客户统计图表</div>&ndash;%&gt;--%>
-<%--&lt;%&ndash;                                <div class="layui-card-body">&ndash;%&gt;--%>
-<%--                                    <div id="chats4" >--%>
-<%--                                    </div>--%>
-<%--&lt;%&ndash;                                </div>&ndash;%&gt;--%>
-<%--&lt;%&ndash;                            </div>&ndash;%&gt;--%>
-<%--                        </div>--%>
-<%--                        <div class="layui-col-xs6">--%>
-<%--&lt;%&ndash;                            <div class="layui-card">&ndash;%&gt;--%>
-<%--&lt;%&ndash;                                <div class="layui-card-header">消耗记录数量按客户统计图表</div>&ndash;%&gt;--%>
-<%--&lt;%&ndash;                                <div class="layui-card-body">&ndash;%&gt;--%>
-<%--                                    <div id="chats5" >--%>
-<%--                                    </div>--%>
-<%--&lt;%&ndash;                                </div>&ndash;%&gt;--%>
-<%--&lt;%&ndash;                            </div>&ndash;%&gt;--%>
-<%--                        </div>--%>
-<%--                    </div>--%>
-<%--                </div>--%>
-<%--            </div>--%>
-<%--        </div>--%>
+        </div>
 
     </div>
+</div>
+
+<div id="effCountToolbar" style="display: none;">
+    <a onclick="exportFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-plus  icon-green'">导出</a>
+    <shiro:hasPermission name="/customer/add">
+
+    </shiro:hasPermission>
 </div>

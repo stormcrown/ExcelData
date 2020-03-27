@@ -103,7 +103,7 @@
             }
         } ] ],
         onLoadSuccess:function(data){
-
+            $('.systemConfig-easyui-linkbutton-edit').linkbutton({text:'编辑'});
         },
         toolbar : '#systemConfigToolbar'
     });

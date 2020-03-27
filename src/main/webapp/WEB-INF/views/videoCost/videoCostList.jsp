@@ -214,6 +214,24 @@
                     }
                 },
                 {
+                    width: '120',
+                    title: '支出分类',
+                    field: 'payLevel',
+                    sortable: true,
+                    align:'right',
+                    formatter: function (value, row, index) {
+                        let plrl = '';
+                        if(row!=null && row.customer!=null && row.customer.payLevel!=null ){
+                            let baseP = row.customer.payLevel.basePay;
+                            if(baseP!=null)baseP = " ￥:"+baseP.toFixed(2);
+                            let priceLN = row.customer.payLevel.name;
+                            if(priceLN!=null)priceLN =  commonForm(priceLN,$("#KeyWord").val().trim())
+                            plrl = (priceLN==null?'':priceLN) + (baseP==null?'':baseP );
+                        }
+                        return plrl;
+                    }
+                },
+                {
                     width: '60',
                     title: '供应商',
                     field: 'supplier',
@@ -599,6 +617,10 @@
                         <option value="photographerName">摄像</option>
                         <option value="editorName">剪辑</option>
                         <option value="performerName">演员</option>
+                        <option value="supplierName">供应商</option>
+                        <option value="videoVersionName">视频版本</option>
+                        <option value="priceLevel">价格分级</option>
+                        <option value="payLevel">支出分级</option>
                     </select>
                 </td>
                 <th>消耗日期</th>

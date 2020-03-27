@@ -18,10 +18,10 @@ import java.io.Serializable;
  * </p>
  *
  * @author lzt
- * @since 2020-03-10
+ * @since 2020-03-27
  */
-@TableName("price_level")
-public class PriceLevel extends Model<PriceLevel> {
+@TableName("pay_level")
+public class PayLevel extends Model<PayLevel> {
 
     private static final long serialVersionUID = 1L;
 	private static final String codePrex="PLE";
@@ -34,16 +34,16 @@ public class PriceLevel extends Model<PriceLevel> {
 		if(this.code==null)this.code=newCode.toString();
 		return newCode.toString();
 	}
-	public static PriceLevel craateForInsert(String name ,Long updateBy,Long createBy){
-		PriceLevel priceLevel = new PriceLevel();
-		priceLevel.name = name;
-		priceLevel.CreateCode();
-		priceLevel.createTime = new Date();
-		priceLevel.updateTime = new Date();
-		priceLevel.deleteFlag = 0;
-		priceLevel.createBy=createBy;
-		priceLevel.updateBy=updateBy;
-		return priceLevel;
+	public static PayLevel craateForInsert(String name ,Long updateBy,Long createBy){
+		PayLevel payLevel = new PayLevel();
+		payLevel.name = name;
+		payLevel.CreateCode();
+		payLevel.createTime = new Date();
+		payLevel.updateTime = new Date();
+		payLevel.deleteFlag = 0;
+		payLevel.createBy=createBy;
+		payLevel.updateBy=updateBy;
+		return payLevel;
 	}
     /**
      * 主键id
@@ -53,7 +53,7 @@ public class PriceLevel extends Model<PriceLevel> {
     /**
      * 分级名称
      */
-	@NotNull(message = "名称不能为空！")
+    @NotNull(message = "名称不能为空！")
 	@NotBlank(message = "名称不能为空！")
 	private String name;
     /**
@@ -61,10 +61,10 @@ public class PriceLevel extends Model<PriceLevel> {
      */
 	private String code;
     /**
-     * 固定价格
+     * 固定支出
      */
-	@TableField("base_price")
-	private Double basePrice;
+	@TableField("base_pay")
+	private Double basePay;
     /**
      * 更新时间
      */
@@ -85,6 +85,8 @@ public class PriceLevel extends Model<PriceLevel> {
      */
 	@TableField("create_by")
 	private Long createBy;
+	@TableField(exist = false)
+	private String creater;
     /**
      * 是否删除
      */
@@ -116,12 +118,12 @@ public class PriceLevel extends Model<PriceLevel> {
 		this.code = code;
 	}
 
-	public Double getBasePrice() {
-		return basePrice;
+	public Double getBasePay() {
+		return basePay;
 	}
 
-	public void setBasePrice(Double basePrice) {
-		this.basePrice = basePrice;
+	public void setBasePay(Double basePay) {
+		this.basePay = basePay;
 	}
 
 	public Date getUpdateTime() {
@@ -154,6 +156,14 @@ public class PriceLevel extends Model<PriceLevel> {
 
 	public void setCreateBy(Long createBy) {
 		this.createBy = createBy;
+	}
+
+	public String getCreater() {
+		return creater;
+	}
+
+	public void setCreater(String creater) {
+		this.creater = creater;
 	}
 
 	public Integer getDeleteFlag() {

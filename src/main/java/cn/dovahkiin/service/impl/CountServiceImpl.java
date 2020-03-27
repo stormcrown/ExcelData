@@ -84,7 +84,6 @@ public class CountServiceImpl implements ICountService {
             }
             else {
                 /* 没溢出的 */
-
                 dayEffectDtos = countMapper.selectEveryDayCon(map);
             }
 
@@ -100,16 +99,17 @@ public class CountServiceImpl implements ICountService {
             dto.getData().parallelStream().forEach(dayEffectDto -> {
                  dayEffectDto.setIncome( dayEffectDto.getConsumptionEffect() * dto.getIncomeRadio()/100d);
                  dayEffectDto.setPay(dayEffectDto.getConsumptionEffect() * dto.getPayRadio()/100d);
-                 /*TODO 目前没有固定支出的功能*/
-                 if(dto.getCompleteDate().equals(dayEffectDto.getRecoredDate())){
-                     dayEffectDto.setIncome(dto.getBasePrice() );
+
+                 if(dto.getCompleteDate().equals(dayEffectDto.getRecoredDate()) ){
+                     if(dto.getBasePrice() !=null ) dayEffectDto.setIncome(dto.getBasePrice() +dayEffectDto.getIncome()  );else dayEffectDto.setIncome(0d );
+                     if(dto.getBasePay()!=null)dayEffectDto.setPay(dto.getBasePay() +dayEffectDto.getPay() );else dayEffectDto.setPay(0d);
                      addPrice.set(true);
                  }
             });
             if(!addPrice.get()){
                 // 没有成片日期那天的数据，新增一个
                 /* 收入统计加上固定价格 */
-                DayEffectDto dayEffectDto = new DayEffectDto(dto.getId(),dto.getCompleteDate(),dto.getBasePrice());
+                DayEffectDto dayEffectDto = new DayEffectDto(dto.getId(),dto.getCompleteDate(),dto.getBasePrice(),dto.getBasePay());
                 dto.addData(dayEffectDto);
             }
         }));

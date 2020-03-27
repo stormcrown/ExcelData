@@ -81,7 +81,25 @@
             },
             {
                 width: '120',
-                title: '最大累计消耗',
+                title: '支出分级',
+                field: 'payLevel',
+                sortable: true,
+                align:'right',
+                formatter: function (value, row, index) {
+                    let plrl = '';
+                    if(value!=null){
+                        let baseP = value.basePay;
+                        if(baseP!=null)baseP = " ￥:"+baseP.toFixed(2);
+                        let priceLN = value.name;
+                        if(priceLN!=null)priceLN =  commonForm(priceLN,$("#KeyWord_customList").val().trim())
+                        plrl = (priceLN==null?'':priceLN) + (baseP==null?'':baseP );
+                    }
+                    return plrl;
+                }
+            },
+            {
+                width: '120',
+                title: '封顶有效消耗',
                 field: 'maxEffectCon',
                 sortable: true,
                 align:'right',
@@ -293,8 +311,8 @@
 
         $('#organizationAddPid_cus').combotree({
             url : '${path }/organization/tree',
-            parentField : 'pid',
-            panelHeight : 300,editable:true,
+            parentField : 'pid',panelMaxHeight : '650',
+            panelHeight : 'auto',editable:true,
             width:200
         });
 
@@ -460,8 +478,8 @@ function customerSearchFun() {
         <form id="customerSearchForm">
             <table>
                 <tr>
-                    <td>关键字:</td>
-                    <td title="英文逗号“,”分隔多个关键字，检测除日期，累计消耗及排名以外的列。" class="easyui-tooltip" >
+                    <td>关键字</td>
+                    <td title="英文逗号“,”分隔多个关键字，检测除日期，累计消耗及排名以外的列。" class="easyui-tooltip" colspan="3" >
                         <input id="KeyWord_customList" name="KeyWord" placeholder="关键字" type="text"  class="layui-input" />
                     </td>
                     <td>
@@ -485,12 +503,14 @@ function customerSearchFun() {
                             <option value="supplierName">供应商</option>
                             <option value="videoVersionName">视频版本</option>
                             <option value="priceLevel">价格分级</option>
+                            <option value="payLevel">支出分级</option>
                         </select>
                     </td>
-                    <td>成片日期:</td>
+                    <th>客户</th>
                     <td>
-                        <input id="completeDateRange_custom" name="completeDateRange" type="text" class="layui-input"    />
+                        <input name="trueCustomer.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/trueCustomer/combobox'" />
                     </td>
+
                     <td>是否删除:&nbsp;</td>
                     <td>
                         <select id="deleteFlag" name="deleteFlag" class="layui-input" style="width: 100px;" >
@@ -499,18 +519,12 @@ function customerSearchFun() {
                             <option value="" class="layui-input" >全部</option>
                         </select>
                     </td>
-                    <td width="50px;" ></td>
-                    <td>
-                        <button type="button" class="layui-btn layui-btn-radius layui-btn-normal" onclick="customerSearchFun();">查询</button>
 
-                     </td>
-                    <td width="50px;" ></td>
-                    <td  ><button type="button" class="layui-btn layui-btn-radius layui-btn-danger" onclick="customerCleanFun();" >清空</button></td>
                 </tr>
                 <tr  >
-                    <th>客户</th>
-                    <td>
-                        <input name="trueCustomer.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/trueCustomer/combobox'" />
+                    <td>成片日期:</td>
+                    <td colspan="3">
+                        <input id="completeDateRange_custom" name="completeDateRange" type="text" class="layui-input"    />
                     </td>
                     <th>演员</th>
                     <td  >
@@ -527,6 +541,10 @@ function customerSearchFun() {
                     <td></td><td></td>
                 </tr>
                 <tr  >
+                    <td >供应商</td>
+                    <td colspan="3">
+                        <input name="supplierIds" class="easyui-combobox"  data-options="width:400,height:40,valueField:'id',textField:'name',url:'${path}/supplier/combobox',multiple:true," />
+                    </td>
                     <td >创意</td>
                     <td>
                         <input name="originality.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/originality/combobox'" />
@@ -535,34 +553,36 @@ function customerSearchFun() {
                     <td>
                         <input name="industry.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/industry/combobox'" />
                     </td>
-                    <td ><%--产品类型--%></td>
+                    <%--<td >产品类型</td>
                     <td>
-<%--                        <input name="productType.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'$ {path}/productType/combobox'" />--%>
+     <input name="productType.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'$ {path}/productType/combobox'" />--%>
+                    </td>
+                </tr>
+                <tr  >
+                    <td>
+                        <button type="button" class="layui-btn layui-btn-radius layui-btn-normal" onclick="customerSearchFun();">查询</button>
+                    </td>
+                    <td  ><button type="button" class="layui-btn layui-btn-radius layui-btn-danger" onclick="customerCleanFun();" >清空</button></td>
+                    <td>价格分级</td>
+                    <td>
+                        <input name="priceLevel.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/priceLevel/combobox',formatter: function(row){ return row['name']+': ￥'+row['basePrice'] }   " />
+                    </td>
+                    <td >支出分级</td>
+                    <td>
+                        <input name="payLevel.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/payLevel/combobox',formatter: function(row){ return row['name']+': ￥'+row['basePay'] }   " />
+                    </td>
+                    <td >视频版本</td>
+                    <td>
+                        <input name="videoVersion.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/videoVersion/combobox'" />
                     </td>
                     <td >视频类型</td>
                     <td>
                         <input name="videoType.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/videoType/combobox'" />
                     </td>
                     <td></td><td></td>
-                </tr>
-                <tr  >
-                    <td >价格分级</td>
-                    <td>
-                        <input name="priceLevel.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/priceLevel/combobox',formatter: function(row){ return row['name']+': ￥'+row['basePrice'] }   " />
-                    </td>
-                    <td >供应商</td>
-                    <td>
-                        <input name="supplier.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/supplier/combobox'" />
-                    </td>
-                    <td >视频版本</td>
-                    <td>
-                        <input name="videoVersion.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/videoVersion/combobox'" />
-                    </td>
                     <td ></td>
                     <td>
-
                     </td>
-                    <td></td><td></td>
                 </tr>
             </table>
         </form>

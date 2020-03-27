@@ -16,6 +16,9 @@ public class CommonReadListenter extends AnalysisEventListener {
 
     @Override
     public void invoke(Object o, AnalysisContext analysisContext) {
+        ((ArrayList<String>)o).parallelStream().forEach(str->
+        {if(str!=null) str.trim(); }
+        );
         data.add((ArrayList)o);
     }
     @Override

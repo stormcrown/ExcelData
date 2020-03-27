@@ -5,16 +5,18 @@
         $('#userEditorganizationId').combotree({
             url : '${path }/organization/tree',
             parentField : 'pid',
-            panelHeight : 'auto',
+            panelHeight : 'auto',editable:true,
+            panelMaxHeight : '650',
             value : '${user.organizationId}'
         });
         $('#userEditRoleIds').combotree({
             url : '${path }/role/tree',
             parentField : 'pid',
             panelHeight : 'auto',
+            panelMaxHeight : '650',
             multiple : true,
             required : true,
-            cascadeCheck : false,
+            cascadeCheck : false,editable:true,
             value : ${roleIds }
         });
         let mm = '${method}';

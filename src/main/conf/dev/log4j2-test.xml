@@ -30,9 +30,9 @@
         <logger name="cn.dovahkiin.commons.shiro.cache" level="WARN"/>
         
         <!-- 业务debug日志 -->
-        <logger name="cn.dovahkiin" level="INFO"/>
+        <logger name="cn.dovahkiin" level="error"/>
         
-        <Root level="INFO">
+        <Root level="error">
             <AppenderRef ref="Console" />
         </Root>
     </Loggers>

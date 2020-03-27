@@ -79,7 +79,7 @@
             let customerName = $('#customer').combobox('getText');
             checkRecordCountOnNameAndDate(newValue,customerId,customerName);
         }
-        if('${method}'=='edit'  )opti.value = "${videoCost.recoredDateStr}"; else if('${method}'=='add'  )opti.value = getCommonDate(new Date());
+        if('${method}'=='edit'  )opti.value = "${videoCost.recoredDateStr}"; else if('${method}'==='add'  )opti.value = getCommonDate(new Date());
         $('#recoredDate').datebox(opti);
         checkRecordCountOnNameAndDate($('#recoredDate').datebox("getValue"),$('#customer').combobox('getValue'),$('#customer').combobox('getText'))
     });
@@ -149,16 +149,28 @@
                             <td id = "maxEffectConTD" >
                                 ${videoCost.customer.maxEffectCon}
                             </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>价格分级</td>
+                            <td id="priceLevelTD" >${videoCost.customer.priceLevel.name} ￥:${videoCost.customer.priceLevel.basePrice}</td>
                             <td>收入比率（%）</td>
                             <td id = "inComeRatioTD" >
                                 ${videoCost.customer.inComeRatio}
                             </td>
                         </tr>
                         <tr>
-                            <td>价格分级</td>
-                            <td id="priceLevelTD" >${videoCost.customer.priceLevel.name} ￥:${videoCost.customer.priceLevel.basePrice}</td>
+                            <td>收入分级</td>
+                            <td id="payLevelTD" >${videoCost.customer.payLevel.name} ￥:${videoCost.customer.payLevel.basePay}</td>
+                            <td>支出比率（%）</td>
+                            <td id="payRatioTD">${videoCost.customer.payRatio}</td>
+                        </tr>
+                        <tr>
                             <td>客户</td>
                             <td id="trueCustomerTD" >${videoCost.customer.trueCustomer.name}</td>
+                            <td></td>
+                            <td></td>
                         </tr>
                         <tr>
                             <td>产品类型</td>

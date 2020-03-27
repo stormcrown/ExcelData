@@ -42,7 +42,7 @@ public class CountController extends BaseController {
     public String manager() {
         return "count/bar";
     }
-    private Map<String,Object> handleCondition(String recoredDateRange ,Integer type, VideoCost videoCost){
+    private Map<String,Object> handleCondition(String recoredDateRange ,Integer type, VideoCost videoCost,String[] supplierIds){
         Map<String,Object> map = new HashMap<>();
         ShiroUser user = getShiroUser();
         Set<String> roles = user.getRoles();
@@ -77,31 +77,32 @@ public class CountController extends BaseController {
             videoCost.getCustomer().setSupplier(user.getSupplier());
         }
         map.put("videoCost",videoCost);
+        if(supplierIds!=null && supplierIds.length>0) map.put("supplierIds",supplierIds);
 
         return map;
     }
     @PostMapping("/bar")
     @RequiresPermissions("/count/bar")
     @ResponseBody
-    public Object count1(String recoredDateRange, Integer type , VideoCost videoCost) {
-        Map map = handleCondition(recoredDateRange,type,videoCost);
-        return JSON.toJSON(countService.count1(map));
+    public Object count1(String recoredDateRange, Integer type , VideoCost videoCost ,String[] supplierIds) {
+        Map map = handleCondition(recoredDateRange,type,videoCost,supplierIds);
+        return countService.count1(map);
     }
     @PostMapping("/countByModel")
     @RequiresPermissions("/count/bar")
     @ResponseBody
-    public Object countByModel(String recoredDateRange, Integer type , VideoCost videoCost,Boolean countZero,String model) {
-        Map map = handleCondition(recoredDateRange,type,videoCost);
+    public Object countByModel(String recoredDateRange, Integer type , VideoCost videoCost,Boolean countZero,String model,String[] supplierIds) {
+        Map map = handleCondition(recoredDateRange,type,videoCost,supplierIds);
         map.put("countZero",countZero);
         map.put("model",model);
-        return JSON.toJSON(countService.countByModel(map));
+        return countService.countByModel(map);
     }
 
     @PostMapping("/effTimeCount")
     @RequiresPermissions("/count/bar")
     @ResponseBody
-    public Object effTimeCount(String recoredDateRange, Integer type , VideoCost videoCost,Boolean countZero) {
-        Map<String,Object> map = handleCondition(recoredDateRange,type,videoCost);
+    public Object effTimeCount(String recoredDateRange, Integer type , VideoCost videoCost,Boolean countZero,String[] supplierIds) {
+        Map<String,Object> map = handleCondition(recoredDateRange,type,videoCost,supplierIds);
         map.put("countZero",countZero);
         return countService.countEffConTimeCut(map);
     }

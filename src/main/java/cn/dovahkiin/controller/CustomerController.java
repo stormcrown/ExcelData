@@ -90,7 +90,7 @@ public class CustomerController extends BaseController {
     @PostMapping("/dataGrid")
     @RequiresPermissions(value = {"/customer/dataGrid" },logical = Logical.OR)
     @ResponseBody
-    public PageInfo dataGrid(Customer customer, Integer page, Integer rows, String sort,String order, String KeyWord,String keyWordType, String completeDateRange) {
+    public PageInfo dataGrid(Customer customer, Integer page, Integer rows, String sort,String order, String KeyWord,String keyWordType, String completeDateRange,String[] supplierIds) {
         PageInfo pageInfo = new PageInfo(page, rows, sort, order);
         EntityWrapper<Customer> ew = new EntityWrapper<Customer>();
         if(customer!=null && StringUtils.hasText(customer.getCode()))ew.like("code","%"+customer.getCode().trim()+"%");
@@ -100,6 +100,7 @@ public class CustomerController extends BaseController {
         Map map = handle(customer,page,rows,sort,order,KeyWord,keyWordType,completeDateRange);
         map.put("offset",pages.getOffset());
         map.put("limit",pages.getLimit());
+        if(supplierIds!=null&&supplierIds.length>0)map.put("supplierIds",supplierIds);
 
         pages = customerService.selectPage(pages, map);
         pageInfo.setRows(pages.getRecords());

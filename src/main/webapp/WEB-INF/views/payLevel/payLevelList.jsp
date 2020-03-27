@@ -1,10 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/commons/global.jsp" %>
 <script type="text/javascript">
-    var priceLevelDataGrid;
+    var payLevelDataGrid;
     $(function() {
-        priceLevelDataGrid = $('#priceLevelDataGrid').datagrid({
-        url : '${path}/priceLevel/dataGrid',
+        payLevelDataGrid = $('#payLevelDataGrid').datagrid({
+        url : '${path}/payLevel/dataGrid',
         striped : true,
         rownumbers : true,
         pagination : true,
@@ -17,10 +17,10 @@
             deleteFlag:0
         },
         onBeforeLoad:function(param){
-            $('#priceLevelDataGrid').datagrid('clearChecked').datagrid('clearSelections');
+            $('#payLevelDataGrid').datagrid('clearChecked').datagrid('clearSelections');
         },
         onLoadSuccess:function(data){
-            $('#priceLevelDataGrid').datagrid('clearChecked').datagrid('clearSelections');
+            $('#payLevelDataGrid').datagrid('clearChecked').datagrid('clearSelections');
         },
         pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500],
         frozenColumns : [ [ {
@@ -39,15 +39,6 @@
                 return value;
             }
         },
-            {
-                width : '200',
-                title : '固定价格(￥)',
-                field : 'basePrice',
-                sortable : true,
-                formatter : function(value, row, index) {
-                    return value;
-                }
-            },
          {
             width : '200',
             title : '编码',
@@ -57,6 +48,15 @@
                 return value;
             }
         },
+            {
+                width : '200',
+                title : '固定支出(￥)',
+                field : 'basePay',
+                sortable : true,
+                formatter : function(value, row, index) {
+                    return value;
+                }
+            },
          {
             width : '140',
             title : '创建时间',
@@ -71,21 +71,21 @@
             width : 200,
             formatter : function(value, row, index) {
                 var str = '';
-                <shiro:hasPermission name="/priceLevel/edit">
-                    str += $.formatString('<a href="javascript:void(0)" class="priceLevel-easyui-linkbutton-edit" data-options="plain:true,iconCls:\'glyphicon-pencil icon-blue\'" onclick="priceLevelEditFun(\'{0}\');" >编辑</a>', row.id);
+                <shiro:hasPermission name="/payLevel/edit">
+                    str += $.formatString('<a href="javascript:void(0)" class="payLevel-easyui-linkbutton-edit" data-options="plain:true,iconCls:\'glyphicon-pencil icon-blue\'" onclick="payLevelEditFun(\'{0}\');" >编辑</a>', row.id);
                 </shiro:hasPermission>
-                <shiro:hasPermission name="/priceLevel/delete">
+                <shiro:hasPermission name="/payLevel/delete">
                     str += '&nbsp;&nbsp;|&nbsp;&nbsp;';
-                    str += $.formatString('<a href="javascript:void(0)" class="priceLevel-easyui-linkbutton-del" data-options="plain:true,iconCls:\'glyphicon-trash icon-red\'" onclick="priceLevelDeleteFun(\'{0}\');" >删除</a>', row.id);
+                    str += $.formatString('<a href="javascript:void(0)" class="payLevel-easyui-linkbutton-del" data-options="plain:true,iconCls:\'glyphicon-trash icon-red\'" onclick="payLevelDeleteFun(\'{0}\');" >删除</a>', row.id);
                 </shiro:hasPermission>
                 return str;
             }
         } ] ],
         onLoadSuccess:function(data){
-            $('.priceLevel-easyui-linkbutton-edit').linkbutton({text:'编辑'});
-            $('.priceLevel-easyui-linkbutton-del').linkbutton({text:'删除'});
+            $('.payLevel-easyui-linkbutton-edit').linkbutton({text:'编辑'});
+            $('.payLevel-easyui-linkbutton-del').linkbutton({text:'删除'});
         },
-        toolbar : '#priceLevelToolbar'
+        toolbar : '#payLevelToolbar'
     });
 });
 
@@ -93,24 +93,24 @@
  * 添加框
  * @param url
  */
-function priceLevelAddFun() {
-        let id = "";
-        let checks = $('#priceLevelDataGrid').datagrid('getChecked');
+function payLevelAddFun() {
+        var id = "";
+        var checks = $('#payLevelDataGrid').datagrid('getChecked');
         if( checks != null && checks.length==1){
             id = checks[0].id;
         }else{
-            $('#priceLevelDataGrid').datagrid('clearChecked').datagrid('clearSelections');
+            $('#videoCostDataGrid').datagrid('clearChecked').datagrid('clearSelections');
         }
     parent.$.modalDialog({
         title : '添加',
         width : 500,
         height : 420,
-        href : '${path}/priceLevel/addPage?id='+id,
+        href : '${path}/payLevel/addPage?id='+id,
         buttons : [ {
             text : '确定',
             handler : function() {
-                parent.$.modalDialog.openner_dataGrid = priceLevelDataGrid;//因为添加成功之后，需要刷新这个treeGrid，所以先预定义好
-                let f = parent.$.modalDialog.handler.find('#priceLevelEditForm');
+                parent.$.modalDialog.openner_dataGrid = payLevelDataGrid;//因为添加成功之后，需要刷新这个treeGrid，所以先预定义好
+                var f = parent.$.modalDialog.handler.find('#payLevelEditForm');
                 f.submit();
             }
         } ]
@@ -121,12 +121,12 @@ function priceLevelAddFun() {
 /**
  * 编辑
  */
-function priceLevelEditFun(id) {
+function payLevelEditFun(id) {
      if (id == undefined) {
-            var rows = priceLevelDataGrid.datagrid('getSelections');
+            var rows = payLevelDataGrid.datagrid('getSelections');
             if(rows!=null && rows.length==1) id = rows[0].id;
             else {
-                $('#priceLevelDataGrid').datagrid('clearChecked').datagrid('clearSelections');
+                $('#payLevelDataGrid').datagrid('clearChecked').datagrid('clearSelections');
                 layer.msg('选择一个待修改的行', {
                     time: 20000, //20s后自动关闭
                     btn: ['哦']
@@ -138,12 +138,12 @@ function priceLevelEditFun(id) {
             title : '编辑',
             width : 500,
             height : 420,
-            href :  '${path}/priceLevel/editPage?id=' + id,
+            href :  '${path}/payLevel/editPage?id=' + id,
             buttons : [ {
                 text : '确定',
                 handler : function() {
-                    parent.$.modalDialog.openner_dataGrid = priceLevelDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
-                    var f = parent.$.modalDialog.handler.find('#priceLevelEditForm');
+                    parent.$.modalDialog.openner_dataGrid = payLevelDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                    var f = parent.$.modalDialog.handler.find('#payLevelEditForm');
                     f.submit();
                 }
             } ]
@@ -155,11 +155,11 @@ function priceLevelEditFun(id) {
 /**
  * 删除
  */
- function priceLevelDeleteFun(id) {
+ function payLevelDeleteFun(id) {
      var tip="";
         if (id == undefined) {
             id="";
-            var rows = priceLevelDataGrid.datagrid('getSelections');
+            var rows = payLevelDataGrid.datagrid('getSelections');
             for(var i=0;i<rows.length;i++){
                 id+=(rows[i].id+",");
                 tip+=( "<br/>名称："+ redFont(rows[i].name) +" 编码："+ redFont(rows[i].code)+" ；");
@@ -169,12 +169,12 @@ function priceLevelEditFun(id) {
         parent.$.messager.confirm('询问', '您是否要删除当前角色？'+tip, function(b) {
             if (b) {
                 progressLoad();
-                $.post('${path}/priceLevel/delete', {
+                $.post('${path}/payLevel/delete', {
                     ids : id
                 }, function(result) {
                     if (result.success) {
                         parent.$.messager.alert('提示', result.msg, 'info');
-                        priceLevelDataGrid.datagrid('reload');
+                        payLevelDataGrid.datagrid('reload');
                     }
                     progressClose();
                 }, 'JSON');
@@ -186,11 +186,11 @@ function priceLevelEditFun(id) {
 /**
  * 恢复
  */
- function priceLevelRollbackFun(id) {
+ function payLevelRollbackFun(id) {
      var tip="";
         if (id == undefined) {
             id="";
-            var rows = priceLevelDataGrid.datagrid('getSelections');
+            var rows = payLevelDataGrid.datagrid('getSelections');
             for(var i=0;i<rows.length;i++){
                 id+=(rows[i].id+",");
                 tip+=( "<br/>名称："+ redFont(rows[i].name) +" 编码："+ redFont(rows[i].code)+" ；");
@@ -200,12 +200,12 @@ function priceLevelEditFun(id) {
         parent.$.messager.confirm('询问', '您是否要恢复当前数据？'+tip, function(b) {
             if (b) {
                 progressLoad();
-                $.post('${path}/priceLevel/rollback', {
+                $.post('${path}/payLevel/rollback', {
                     ids : id
                 }, function(result) {
                     if (result.success) {
                         parent.$.messager.alert('提示', result.msg, 'info');
-                        priceLevelDataGrid.datagrid('reload');
+                        payLevelDataGrid.datagrid('reload');
                     }
                     progressClose();
                 }, 'JSON');
@@ -218,21 +218,21 @@ function priceLevelEditFun(id) {
 /**
  * 清除
  */
-function priceLevelCleanFun() {
-    $('#priceLevelSearchForm input').val('');
-    priceLevelDataGrid.datagrid('load', {});
+function payLevelCleanFun() {
+    $('#payLevelSearchForm input').val('');
+    payLevelDataGrid.datagrid('load', {});
 }
 /**
  * 搜索
  */
-function priceLevelSearchFun() {
-     priceLevelDataGrid.datagrid('load', $.serializeObject($('#priceLevelSearchForm')));
+function payLevelSearchFun() {
+     payLevelDataGrid.datagrid('load', $.serializeObject($('#payLevelSearchForm')));
 }
 </script>
 
 <div class="easyui-layout" data-options="fit:true,border:false">
     <div data-options="region:'north',border:false" style="margin: 5px; overflow: hidden;background-color: #fff">
-        <form id="priceLevelSearchForm">
+        <form id="payLevelSearchForm">
             <table>
                 <tr>
                     <th>编码:&nbsp;</th>
@@ -249,8 +249,8 @@ function priceLevelSearchFun() {
                     </td>
                     <td width="50px;" ></td>
                     <td>
-                        <button type="button" class="layui-btn layui-btn-radius layui-btn-normal" onclick="priceLevelSearchFun();">查询</button>
-                        <button type="button" class="layui-btn layui-btn-radius layui-btn-danger" onclick="priceLevelCleanFun();" >清空</button>
+                        <button type="button" class="layui-btn layui-btn-radius layui-btn-normal" onclick="payLevelSearchFun();">查询</button>
+                        <button type="button" class="layui-btn layui-btn-radius layui-btn-danger" onclick="payLevelCleanFun();" >清空</button>
                      </td>
                 </tr>
             </table>
@@ -258,20 +258,20 @@ function priceLevelSearchFun() {
      </div>
  
     <div data-options="region:'center',border:false">
-        <table id="priceLevelDataGrid" data-options="fit:true,border:false"></table>
+        <table id="payLevelDataGrid" data-options="fit:true,border:false"></table>
     </div>
 </div>
-<div id="priceLevelToolbar" style="display: none;">
-    <shiro:hasPermission name="/priceLevel/add">
-        <a onclick="priceLevelAddFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-plus  icon-green'">添加</a>
+<div id="payLevelToolbar" style="display: none;">
+    <shiro:hasPermission name="/payLevel/add">
+        <a onclick="payLevelAddFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-plus  icon-green'">添加</a>
     </shiro:hasPermission>
-    <shiro:hasPermission name="/priceLevel/edit">
-        <a onclick="priceLevelEditFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-edit  icon-blue'">修改</a>
+    <shiro:hasPermission name="/payLevel/edit">
+        <a onclick="payLevelEditFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-edit  icon-blue'">修改</a>
     </shiro:hasPermission>
-    <shiro:hasPermission name="/priceLevel/delete">
-        <a onclick="priceLevelDeleteFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-remove  icon-red'">删除</a>
+    <shiro:hasPermission name="/payLevel/delete">
+        <a onclick="payLevelDeleteFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-remove  icon-red'">删除</a>
     </shiro:hasPermission>
-    <shiro:hasPermission name="/priceLevel/add">
-        <a onclick="priceLevelRollbackFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-share-alt icon-green'">恢复</a>
+    <shiro:hasPermission name="/payLevel/add">
+        <a onclick="payLevelRollbackFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-share-alt icon-green'">恢复</a>
     </shiro:hasPermission>
 </div>

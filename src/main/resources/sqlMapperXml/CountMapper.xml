@@ -35,6 +35,13 @@
 				<when test="userId==null and optimizer != null and optimizer != ''" >and opt.name = #{optimizer} </when>
 				<when test="userId!=null and userId!='' and optimizer != null and optimizer != ''" >and ( opt.name = #{optimizer} or vc.created_by = #{userId} )  </when>
 			</choose>
+			<if test="supplierIds!=null">
+				and cus.supplier_id in(
+				<foreach collection="supplierIds" item="supplierId" separator=",">
+					#{supplierId}
+				</foreach>
+				)
+			</if>
 			<if test="videoCost!=null" >
 				<if test="videoCost.optimizer!=null and videoCost.optimizer.id!=null  " >
 					and vc.optimizer_id = #{videoCost.optimizer.id }
@@ -127,6 +134,13 @@
 				<when test="userId==null and optimizer != null and optimizer != ''" >and opt.name = #{optimizer} </when>
 				<when test="userId!=null and userId!='' and optimizer != null and optimizer != ''" >and ( opt.name = #{optimizer} or vc.created_by = #{userId} )  </when>
 			</choose>
+			<if test="supplierIds!=null">
+				and cus.supplier_id in(
+				<foreach collection="supplierIds" item="supplierId" separator=",">
+					#{supplierId}
+				</foreach>
+				)
+			</if>
 			<if test="videoCost!=null" >
 				<if test="videoCost.optimizer!=null and videoCost.optimizer.id!=null  " >
 					and vc.optimizer_id = #{videoCost.optimizer.id }
@@ -231,6 +245,13 @@
 				<when test="userId==null and optimizer != null and optimizer != ''" >and opt.name = #{optimizer} </when>
 				<when test="userId!=null and userId!='' and optimizer != null and optimizer != ''" >and ( opt.name = #{optimizer} or vc.created_by = #{userId} )  </when>
 			</choose>
+			<if test="supplierIds!=null">
+				and cus.supplier_id in(
+				<foreach collection="supplierIds" item="supplierId" separator=",">
+					#{supplierId}
+				</foreach>
+				)
+			</if>
 			<if test="videoCost!=null" >
 				<if test="videoCost.optimizer!=null and videoCost.optimizer.id!=null  " >
 					and vc.optimizer_id = #{videoCost.optimizer.id }
@@ -314,7 +335,10 @@
 -->
 	<select id="selectEffectCustomer"  resultType="cn.dovahkiin.model.dto.CustomerEffectDto" >
 		select
-		cus.id,cus.name,cus.complete_date as completeDate,ple.base_price as basePrice,ple.name as priceLevelName,
+		cus.id,cus.name,
+		cus.complete_date as completeDate,
+		ple.base_price as basePrice,ple.name as priceLevelName,
+		pal.base_pay as basePay,pal.name as payLevelName,
 		COALESCE(  cus.max_effect_con ,sc.default_max_effect_con,#{defaultConfig.defaultMaxEffectCon} ) as maxEffectOn,
 		COALESCE(cus.income_ratio, sc.default_income_ratio,#{defaultConfig.defaultIncomeRatio} ) as incomeRadio,
 		COALESCE(cus.pay_ratio , sc.default_pay_ratio,#{defaultConfig.defaultPayRatio} ) as payRadio,
@@ -345,6 +369,7 @@
 		LEFT JOIN true_customer tcus ON tcus.id = cus.true_customer_id
 		LEFT JOIN video_version vve ON vve.id = cus.video_version_id
 		LEFT JOIN price_level ple ON ple.id = cus.price_level_id and ple.delete_flag = 0
+		LEFT JOIN pay_level pal ON pal.id = cus.price_level_id and pal.delete_flag = 0
 		<where>
 			   vc.delete_flag = 0
 			<choose>
@@ -360,6 +385,13 @@
 				<when test="userId==null and optimizer != null and optimizer != ''" >and opt.name = #{optimizer} </when>
 				<when test="userId!=null and userId!='' and optimizer != null and optimizer != ''" >and ( opt.name = #{optimizer} or vc.created_by = #{userId} )  </when>
 			</choose>
+			<if test="supplierIds!=null">
+				and cus.supplier_id in(
+				<foreach collection="supplierIds" item="supplierId" separator=",">
+					#{supplierId}
+				</foreach>
+				)
+			</if>
 			<if test="videoCost!=null" >
 				<if test="videoCost.optimizer!=null and videoCost.optimizer.id!=null  " >
 					and vc.optimizer_id = #{videoCost.optimizer.id }
@@ -466,6 +498,13 @@
 				<when test="userId==null and optimizer != null and optimizer != ''" >and opt.name = #{optimizer} </when>
 				<when test="userId!=null and userId!='' and optimizer != null and optimizer != ''" >and ( opt.name = #{optimizer} or vc.created_by = #{userId} )  </when>
 			</choose>
+			<if test="supplierIds!=null">
+				and cus.supplier_id in(
+				<foreach collection="supplierIds" item="supplierId" separator=",">
+					#{supplierId}
+				</foreach>
+				)
+			</if>
 			<if test="videoCost!=null" >
 				<if test="videoCost.optimizer!=null and videoCost.optimizer.id!=null  " >
 					and vc.optimizer_id = #{videoCost.optimizer.id }
@@ -570,6 +609,13 @@
 				<when test="userId==null and optimizer != null and optimizer != ''" >and opt.name = #{optimizer} </when>
 				<when test="userId!=null and userId!='' and optimizer != null and optimizer != ''" >and ( opt.name = #{optimizer} or vc.created_by = #{userId} )  </when>
 			</choose>
+			<if test="supplierIds!=null">
+				and cus.supplier_id in(
+				<foreach collection="supplierIds" item="supplierId" separator=",">
+					#{supplierId}
+				</foreach>
+				)
+			</if>
 			<if test="videoCost!=null" >
 				<if test="videoCost.optimizer!=null and videoCost.optimizer.id!=null  " >
 					and vc.optimizer_id = #{videoCost.optimizer.id }

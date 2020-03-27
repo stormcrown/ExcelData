@@ -18,10 +18,11 @@ public class DayEffectDto {
         this.income=0d;
     }
 
-    public DayEffectDto(Long customerId, Date recoredDate, Double income) {
+    public DayEffectDto(Long customerId, Date recoredDate, Double income,Double pay) {
         this.customerId = customerId;
         this.recoredDate = recoredDate;
         this.income = income;
+        this.pay=pay;
         this.consumptionEffect=0d;
     }
 

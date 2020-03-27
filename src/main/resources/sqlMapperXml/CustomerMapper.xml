@@ -27,6 +27,7 @@
         <association property="supplier" javaType="cn.dovahkiin.model.Supplier" columnPrefix="supplier_" resultMap="cn.dovahkiin.mapper.SupplierMapper.BaseResultMap" />
         <association property="videoVersion" javaType="cn.dovahkiin.model.VideoVersion" columnPrefix="video_version_" resultMap="cn.dovahkiin.mapper.VideoVersionMapper.BaseResultMap" />
         <association property="priceLevel" javaType="cn.dovahkiin.model.PriceLevel" columnPrefix="price_level_" resultMap="cn.dovahkiin.mapper.PriceLevelMapper.BaseResultMap" />
+        <association property="payLevel" javaType="cn.dovahkiin.model.PayLevel" columnPrefix="pay_level_" resultMap="cn.dovahkiin.mapper.PayLevelMapper.BaseResultMap" />
 
     </resultMap>
     <resultMap id="BaseResultMapWithCount" type="cn.dovahkiin.model.Customer" extends="BaseResultMap">
@@ -49,7 +50,12 @@
     	code,
     	update_time,
     	create_time,
-    	delete_flag,supplier_id,video_version_id,price_level_id,max_effect_con,income_ratio,pay_ratio
+    	delete_flag,supplier_id,video_version_id,
+        price_level_id,
+        pay_level_id,
+        max_effect_con,
+        income_ratio,
+        pay_ratio
   	</sql>
     <select id="selectByCode" resultMap="BaseResultMapWithCount">
          SELECT
@@ -150,6 +156,15 @@
         ple.create_time as price_level_create_time,
         ple.create_by as price_level_create_by,
         ple.delete_flag as price_level_delete_flag,
+        pal.id as pay_level_id,
+        pal.`name` as pay_level_name,
+        pal.code as pay_level_code,
+        pal.base_pay as pay_level_base_pay,
+        pal.update_time as pay_level_update_time,
+        pal.update_by as pay_level_update_by,
+        pal.create_time as pay_level_create_time,
+        pal.create_by as pay_level_create_by,
+        pal.delete_flag as pay_level_delete_flag,
         pm.cumulativeConsumptionByPro,
         pm.cumulativeConsumptionRankingByProglam
         from customer cus
@@ -166,6 +181,7 @@
         LEFT JOIN supplier sup ON sup.id = cus.supplier_id
         LEFT JOIN video_version vve ON vve.id = cus.video_version_id
         LEFT JOIN price_level ple ON ple.id = cus.price_level_id
+        LEFT JOIN pay_level pal ON pal.id = cus.pay_level_id
         left join (
         SELECT
         customer_id,cumulativeConsumptionByPro,@rownum :=@rownum + 1 AS cumulativeConsumptionRankingByProglam
@@ -226,9 +242,19 @@
                 <if test="customer.priceLevel!=null and customer.priceLevel.id!=null" >
                     and cus.price_level_id = #{customer.priceLevel.id}
                 </if>
+                <if test="customer.payLevel!=null and customer.payLevel.id!=null" >
+                    and cus.pay_level_id = #{customer.payLevel.id}
+                </if>
                 <if test="customer.videoVersion!=null and customer.videoVersion.id!=null" >
                     and cus.video_version_id = #{customer.videoVersion.id}
                 </if>
+            </if>
+            <if test="supplierIds!=null">
+                and cus.supplier_id in(
+                <foreach collection="supplierIds" item="supplierId" separator=",">
+                    #{supplierId}
+                </foreach>
+                )
             </if>
             <if test="KeyWord !=null">
                 <foreach collection="KeyWord" item="keyW">
@@ -268,6 +294,7 @@
                     <if test="all!=null or supplierName!=null ">or sup.name like #{keyW}</if>
                     <if test="all!=null or videoVersionName!=null ">or vve.name like #{keyW}</if>
                     <if test="all!=null or priceLevel!=null ">or ple.name like #{keyW}</if>
+                    <if test="all!=null or payLevel!=null ">or pal.name like #{keyW}</if>
                     )
                 </foreach>
             </if>
@@ -296,6 +323,7 @@
                 <when test="sort=='supplier'">sup.`name`</when>
                 <when test="sort=='videoVersion'">vve.`name`</when>
                 <when test="sort=='priceLevel'">ple.`base_Price`</when>
+                <when test="sort=='payLevel'">pal.`base_Pay`</when>
                 <when test="sort=='inComeRatio'">cus.`income_ratio`</when>
                 <when test="sort=='maxEffectCon'">cus.`max_effect_con`</when>
                 <otherwise>pm.cumulativeConsumptionByPro</otherwise>
@@ -324,99 +352,6 @@
                 <if test="supplierId!=null">and cus.supplier_id =#{supplierId}</if>
         </where>
     </select>
-    <select id="selectSimpleListByVideoCost" resultMap="BaseResultMap">
-        select DISTINCT
-        cus.id ,cus.name,cus.code,
-        cus.update_time,
-        cus.create_time ,
-        cus.delete_flag,
-        vve.id as video_version_id,
-        vve.`name` as video_version_name,
-        vve.code as video_version_code,
-        vve.update_time as video_version_update_time,
-        vve.create_time as video_version_create_time,
-        vve.delete_flag  as video_version_delete_flag
-        from video_cost vc
-        left join optimizer opt on opt.id = vc.optimizer_id
-        left join organization dem on dem.id = vc.demand_sector_id
-        left join customer cus on cus.id = vc.customer_id
-        left join product_type pty on pty.id = cus.product_type_id
-        left join industry ind on ind.id = cus.industry_id
-        left join video_type vdt on vdt.id = cus.video_type_id
-        left join originality ori on ori.id = cus.originality_id
-        left join photographer pho on pho.id = cus.photographer_id
-        left join editor edi on edi.id = cus.editor_id
-        LEFT JOIN performer per1 ON per1.id = cus.performer1_id
-        LEFT JOIN performer per2 ON per2.id = cus.performer2_id
-        LEFT JOIN performer per3 ON per3.id = cus.performer3_id
-        LEFT JOIN true_customer tcus ON tcus.id = cus.true_customer_id
-        LEFT JOIN supplier sup ON sup.id = cus.supplier_id
-        LEFT JOIN video_version vve ON vve.id = cus.video_version_id
-        LEFT JOIN price_level ple ON ple.id = cus.price_level_id
-        <where>
-            vc.`consumption` >0 and vc.delete_flag = 0
-            and vc.recored_date BETWEEN #{recoredDate_start } and #{recoredDate_end  }
-            <choose>
-                <when test="userId!=null and userId!='' and optimizer == null ">and vc.created_by = #{userId}</when>
-                <when test="userId==null and optimizer != null and optimizer != ''" >and opt.name = #{optimizer} </when>
-                <when test="userId!=null and userId!='' and optimizer != null and optimizer != ''" >and ( opt.name = #{optimizer} or vc.created_by = #{userId} )  </when>
-            </choose>
-            <if test="videoCost!=null" >
-                <if test="videoCost.optimizer!=null and videoCost.optimizer.id!=null  " >
-                    and vc.optimizer_id = #{videoCost.optimizer.id }
-                </if>
-                <if test="videoCost.demandSector!=null and videoCost.demandSector.id!=null ">
-                    and vc.demand_sector_id =#{ videoCost.demandSector.id }
-                </if>
-                <if test="videoCost.customer!=null" >
-                    <if test="videoCost.customer.id!=null" >
-                        and vc.customer_id = #{videoCost.customer.id}
-                    </if>
-                    <if test="videoCost.customer.trueCustomer != null and videoCost.customer.trueCustomer.id != null  ">
-                        and cus.true_customer_id = #{videoCost.customer.trueCustomer.id }
-                    </if>
-                    <if test="videoCost.customer.originality !=null and videoCost.customer.originality.id !=null ">
-                        and cus.originality_id = #{ videoCost.customer.originality.id }
-                    </if>
-                    <if test="videoCost.customer.performer1!=null and videoCost.customer.performer1.id != null " >
-                        and (
-                        cus.performer1_id = #{ videoCost.customer.performer1.id }
-                        or cus.performer2_id = #{ videoCost.customer.performer1.id }
-                        or cus.performer3_id = #{ videoCost.customer.performer1.id }
-                        )
-                    </if>
-                    <if test="videoCost.customer.photographer !=null and videoCost.customer.photographer.id !=null  ">
-                        and cus.photographer_id = #{ videoCost.customer.photographer.id }
-                    </if>
-                    <if test="videoCost.customer.editor !=null and videoCost.customer.editor.id != null  " >
-                        and cus.editor_id = #{ videoCost.customer.editor.id }
-                    </if>
-
-                    <if test="videoCost.customer.industry !=null and videoCost.customer.industry.id != null  ">
-                        and cus.industry_id = #{ videoCost.customer.industry.id }
-                    </if>
-                    <if test="videoCost.customer.productType !=null and videoCost.customer.productType.id != null  ">
-                        and cus.product_type_id = #{ videoCost.customer.productType.id }
-                    </if>
-                    <if test="videoCost.customer.videoType !=null and videoCost.customer.videoType.id != null  ">
-                        and cus.video_type_id = #{ videoCost.customer.videoType.id }
-                    </if>
-                    <if test="customer.supplier!=null and customer.supplier.id!=null">
-                        and cus.supplier_id = #{customer.supplier.id}
-                    </if>
-                    <if test="customer.priceLevel!=null and customer.priceLevel.id!=null" >
-                        and cus.price_level_id = #{customer.priceLevel.id}
-                    </if>
-                    <if test="customer.videoVersion!=null and customer.videoVersion.id!=null" >
-                        and cus.video_version_id = #{customer.videoVersion.id}
-                    </if>
-                </if>
-            </if>
-
-        </where>
-    </select>
-
-
 
     <select id="selectTotal" resultType="java.lang.Integer">
         SELECT
@@ -435,6 +370,7 @@
         LEFT JOIN supplier sup ON sup.id = cus.supplier_id
         LEFT JOIN video_version vve ON vve.id = cus.video_version_id
         LEFT JOIN price_level ple ON ple.id = cus.price_level_id
+        LEFT JOIN pay_level pal ON pal.id = cus.pay_level_id
         <where>
             <if test="customer!=null">
                 <if test="customer.deleteFlag!=null">
@@ -480,9 +416,19 @@
                 <if test="customer.priceLevel!=null and customer.priceLevel.id!=null" >
                     and cus.price_level_id = #{customer.priceLevel.id}
                 </if>
+                <if test="customer.payLevel!=null and customer.payLevel.id!=null" >
+                    and cus.pay_level_id = #{customer.payLevel.id}
+                </if>
                 <if test="customer.videoVersion!=null and customer.videoVersion.id!=null" >
                     and cus.video_version_id = #{customer.videoVersion.id}
                 </if>
+            </if>
+            <if test="supplierIds!=null">
+                and cus.supplier_id in(
+                <foreach collection="supplierIds" item="supplierId" separator=",">
+                    #{supplierId}
+                </foreach>
+                )
             </if>
             <if test="KeyWord !=null">
                 <foreach collection="KeyWord" item="keyW">
@@ -520,6 +466,7 @@
                     <if test="all!=null or supplierName!=null ">or sup.name like #{keyW}</if>
                     <if test="all!=null or videoVersionName!=null ">or vve.name like #{keyW}</if>
                     <if test="all!=null or priceLevel!=null ">or ple.name like #{keyW}</if>
+                    <if test="all!=null or payLevel!=null ">or pal.name like #{keyW}</if>
                     )
                 </foreach>
             </if>
@@ -527,8 +474,6 @@
                 and ( cus.complete_date between #{completeDate_start} and #{completeDate_end} )
             </if>
         </where>
-
-
     </select>
 
     <select id="countForCheck" resultType="int" >
@@ -547,14 +492,14 @@
                               video_type_id, product_type_id, industry_id,
                               code, update_time, create_time,
                               delete_flag, max_effect_con, income_ratio,pay_ratio,
-                              supplier_id, video_version_id, price_level_id)
+                              supplier_id, video_version_id, price_level_id, pay_level_id)
         values (#{name,jdbcType=VARCHAR}, #{trueCustomer.id,jdbcType=BIGINT}, #{originality.id,jdbcType=BIGINT},
                 #{completeDate,jdbcType=DATE}, #{performer3.id,jdbcType=BIGINT}, #{performer2.id,jdbcType=BIGINT},
                 #{performer1.id,jdbcType=BIGINT}, #{editor.id,jdbcType=BIGINT}, #{photographer.id,jdbcType=BIGINT},
                 #{videoType.id,jdbcType=BIGINT}, #{productType.id,jdbcType=BIGINT}, #{industry.id,jdbcType=BIGINT},
                 #{code,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP},
                 #{deleteFlag,jdbcType=INTEGER}, #{maxEffectCon,jdbcType=DOUBLE}, #{inComeRatio,jdbcType=DOUBLE},#{payRatio},
-                #{supplier.id,jdbcType=BIGINT}, #{videoVersion.id,jdbcType=BIGINT}, #{priceLevel.id,jdbcType=BIGINT})
+                #{supplier.id,jdbcType=BIGINT}, #{videoVersion.id,jdbcType=BIGINT}, #{priceLevel.id,jdbcType=BIGINT}, #{payLevel.id,jdbcType=BIGINT})
   	</insert>
     <insert id="insertSelective" parameterType="cn.dovahkiin.model.Customer" useGeneratedKeys="true" keyProperty="id"
             keyColumn="id">
@@ -629,6 +574,9 @@
             <if test="priceLevel !=null and priceLevel.id != null">
                 price_level_id,
             </if>
+            <if test="payLevel !=null and payLevel.id != null">
+                pay_level_id,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -700,6 +648,9 @@
             <if test="priceLevel!=null and priceLevel.id != null">
                 #{priceLevel.id,jdbcType=BIGINT},
             </if>
+            <if test="payLevel!=null and payLevel.id != null">
+                #{payLevel.id,jdbcType=BIGINT},
+            </if>
         </trim>
     </insert>
 
@@ -766,6 +717,10 @@
             <if test="priceLevel!=null and priceLevel.id != null">
                 price_level_id = #{priceLevel.id,jdbcType=BIGINT},
             </if>
+            <if test="payLevel!=null and payLevel.id != null">
+                pay_level_id = #{payLevel.id,jdbcType=BIGINT},
+            </if>
+
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
@@ -790,7 +745,8 @@
             pay_ratio = #{payRatio},
             supplier_id      = #{supplier.id,jdbcType=BIGINT},
             video_version_id = #{videoVersion.id,jdbcType=BIGINT},
-            price_level_id   = #{priceLevel.id,jdbcType=BIGINT}
+            price_level_id   = #{priceLevel.id,jdbcType=BIGINT},
+            pay_level_id   = #{payLevel.id,jdbcType=BIGINT}
         where id = #{id,jdbcType=BIGINT}
   </update>
     <update id="deleteMany">

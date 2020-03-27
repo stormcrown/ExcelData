@@ -636,12 +636,13 @@ public class VideoCostServiceImpl implements IVideoCostService {
             for(Customer customer1:customers){
                 if(customer1.getCode().equals(customer.getCode()) ){
                     if(customer1.getName()!=null && customer1.getName().equals(customer.getName())){
-                        boolean vvEq = Boolean.FALSE ;
-                        if(customer.getVideoVersion() == null && customer1.getVideoVersion()==null)vvEq=Boolean.TRUE;
-                        else if(customer.getVideoVersion()!=null && customer1.getVideoVersion()!=null && customer.getVideoVersion().getId().equals(customer1.getVideoVersion().getId()))vvEq=Boolean.TRUE;
-                        if(vvEq){
+                        if(customer.getVideoVersion() == null && customer1.getVideoVersion()==null){
                             isOldCustom=Boolean.TRUE;
-                            break ;
+                            break 检测素材;
+                        }
+                        else if(customer.getVideoVersion()!=null && customer1.getVideoVersion()!=null && customer1.getVideoVersion().getId().equals(customer.getVideoVersion().getId())){
+                            isOldCustom=Boolean.TRUE;
+                            break 检测素材;
                         }
                     }else{
                         StringBuilder stringBuilder = new StringBuilder("第");

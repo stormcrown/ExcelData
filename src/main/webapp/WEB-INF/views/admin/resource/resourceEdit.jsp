@@ -4,7 +4,7 @@
     $(function() {
         $('#resourceEditPid').combotree({
             url : '${path }/resource/tree',
-            parentField : 'pid',
+            parentField : 'pid',panelMaxHeight : '650',editable:true,
             panelHeight : 'auto',
             value : '${resource.pid}'
         });

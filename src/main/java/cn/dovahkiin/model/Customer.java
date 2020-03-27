@@ -98,6 +98,8 @@ public class Customer extends Model<Customer> {
 
 	private PriceLevel priceLevel;
 
+	private PayLevel payLevel;
+
 	@TableField(exist = false)
 	private Double cumulativeConsumptionByPro;
 	@TableField(exist = false)
@@ -323,6 +325,14 @@ public class Customer extends Model<Customer> {
 
 	public void setPriceLevel(PriceLevel priceLevel) {
 		this.priceLevel = priceLevel;
+	}
+
+	public PayLevel getPayLevel() {
+		return payLevel;
+	}
+
+	public void setPayLevel(PayLevel payLevel) {
+		this.payLevel = payLevel;
 	}
 
 	public Double getPayRatio() {
