@@ -114,8 +114,8 @@ public class CountServiceImpl implements ICountService {
                  dayEffectDto.setIncome( dayEffectDto.getConsumptionEffect() * dto.getIncomeRadio()/100d);
                  dayEffectDto.setPay(dayEffectDto.getConsumptionEffect() * dto.getPayRadio()/100d);
                  if(dto.getCompleteDate().equals(dayEffectDto.getRecoredDate()) ){
-                     if(dto.getBasePrice() !=null ) dayEffectDto.setIncome(dto.getBasePrice() +dayEffectDto.getIncome()  );else dayEffectDto.setIncome(0d );
-                     if(dto.getBasePay()!=null)dayEffectDto.setPay(dto.getBasePay() +dayEffectDto.getPay() );else dayEffectDto.setPay(0d);
+                     if(dto.getBasePrice() !=null ) dayEffectDto.setIncome(dto.getBasePrice() +dayEffectDto.getIncome()  );
+                     if(dto.getBasePay()!=null)dayEffectDto.setPay(dto.getBasePay() +dayEffectDto.getPay() );
                      addPrice.set(true);
                  }
             });
@@ -182,7 +182,7 @@ public class CountServiceImpl implements ICountService {
         Workbook workbook= new XSSFWorkbook();
         if(effectCountDto==null || effectCountDto.getAllPrimaryData()==null || effectCountDto.getAllPrimaryData().size()==0)return workbook;
         NumberFormat nf = NumberFormat.getNumberInstance();
-        nf.setMaximumFractionDigits(3);
+        nf.setMaximumFractionDigits(2);
         Sheet sheetCus = workbook.createSheet("素材");
         String [] headCus = new String[]{ "名称","编号","封顶消耗","有效消耗", "收入","支出", "固定收入","固定支出","收入比率(%)","支出比率(%)","成片日期","有效期至（实际）" };
         Row headRowCus = sheetCus.createRow(0);
@@ -196,14 +196,36 @@ public class CountServiceImpl implements ICountService {
         sheetCus.setColumnWidth(11, 6000);
 
         List<CustomerEffectDto> customerEffectDtos=effectCountDto.getAllPrimaryData();
-        AtomicInteger index= new AtomicInteger(0);
-        customerEffectDtos.forEach(dto->{
-            if(dto==null)return;
-            int m = index.get();
-            index.getAndIncrement();
+
+        for(int m=0;m<customerEffectDtos.size();m++){
+            CustomerEffectDto dto = customerEffectDtos.get(m);
+            if(dto==null)continue;
             Row row= sheetCus.createRow(m+1);
             for(int i=0;i<headCus.length;i++){
                 Cell cell = row.createCell(i);
+                if(i==0) cell.setCellValue(dto.getName());
+                else if(i==1) cell.setCellValue(dto.getCode());
+                else if(i==2) cell.setCellValue(dto.getMaxEffectOn());
+                else if(i==3) cell.setCellValue(nf.format(dto.getSumCon()) );
+                else if(i==4) cell.setCellValue(nf.format(dto.getSumIncome()) );
+                else if(i==5) cell.setCellValue(nf.format(dto.getSumPay()));
+                else if(i==6){
+                    if(dto.getPriceLevelName()!=null) cell.setCellValue( dto.getPriceLevelName()+" ￥ "+  dto.getBasePrice());
+                }
+                else if(i==7){
+                    if(dto.getPayLevelName()!=null) cell.setCellValue( dto.getPayLevelName()+" ￥ "+  dto.getBasePay());
+                }
+                else if(i==8) cell.setCellValue(dto.getIncomeRadio());
+                else if(i==9) cell.setCellValue(dto.getPayRadio());
+                else if(i==10){
+                    cell.setCellStyle(ExcelConst.getDateCellStyle(sheetCus));
+                    cell.setCellValue(dto.getCompleteDate());
+                }
+                else if(i==11){
+                    cell.setCellStyle(ExcelConst.getDateCellStyle(sheetCus));
+                    cell.setCellValue(dto.getEndDate());
+                }
+                /*
                 switch (i){
                     case 0:cell.setCellValue(dto.getName());break;
                     case 1:cell.setCellValue(dto.getCode());break;
@@ -225,23 +247,13 @@ public class CountServiceImpl implements ICountService {
                         cell.setCellStyle(ExcelConst.getDateCellStyle(sheetCus));
                         cell.setCellValue(dto.getEndDate());
                         break;
+                    default:
+                        cell.setCellValue("");
+                        break;
                 }
-            }
-        });
-
-/*
-        for(int m=0;m<customerEffectDtos.size();m++){
-            Row row= sheetCus.createRow(m+1);
-            CustomerEffectDto customerEffectDto = customerEffectDtos.get(m);
-            for(int i=0;i<headCus.length;i++){
-                Cell cell = row.createCell(i);
-                switch (i){
-                    case 0:cell.setCellValue(customerEffectDto.getName());break;
-                    case 1:cell.setCellValue(customerEffectDto.getCode());break;
-                }
-            }
+                */
         }
-*/
+        }
         return workbook;
     }
 }

@@ -634,7 +634,7 @@
                                                         <button type="button" class="layui-btn layui-btn-sm " onclick="getEffectCountData()"><i class="layui-icon layui-icon-search"></i></button>
                                                     </td>
                                                     <td>&nbsp;&nbsp;&nbsp;</td>
-                                                    <td>
+                                                    <td title="导出" class="easyui-tooltip" >
                                                         <button type="button" class="layui-btn layui-btn-sm " onclick="exportFun()"><i class="layui-icon layui-icon-triangle-d"></i></button>
                                                     </td>
                                                     <td>
@@ -655,7 +655,7 @@
                                             <H2>表格展示</H2>
                                         </div>
                                         <div  class="layui-card-body" style="font-family: 'Comic Sans MS';" >
-                                            <table  id="effCountAll" class="easyui-datagrid" title="详细" style="width:1200px;height:850px" data-options="singleSelect:true,collapsible:true,toolbar : '#effCountToolbar'">
+                                            <table  id="effCountAll" class="easyui-datagrid" title="详细"  data-options="singleSelect:true,collapsible:true,toolbar : '#effCountToolbar'">
                                                 <thead>
                                                 <tr>
                                                     <th data-options="field:'code',  sort: true," >编号</th>
