@@ -68,6 +68,8 @@ public class VideoCostServiceImpl implements IVideoCostService {
     @Autowired
     private IPriceLevelService iPriceLevelService;
     @Autowired
+    private IPayLevelService iPayLevelService;
+    @Autowired
     private DateConverter dateConverter;
 
 
@@ -458,6 +460,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
         List<TrueCustomer> trueCustomers = trueCustomerService.selectList(un_delete);Set<String> newTrueCustomers = new HashSet<>();
         List<VideoVersion> videoVersionList = iVideoVersionService.selectList(un_delete);Set<String> newVideoVersionList = new HashSet<>();
         List<PriceLevel> priceLevelList = iPriceLevelService.selectList(un_delete);Set<String> newPriceLevelList = new HashSet<>();
+        List<PayLevel> payLevelList = iPayLevelService.selectList(un_delete);Set<String> newPayLevelList = new HashSet<>();
         List<Supplier> supplierList =  iSupplierService.selectList(un_delete);Set<String> newSupplierList = new HashSet<>();
 
         // 检测新增的普通字典类
@@ -494,6 +497,8 @@ public class VideoCostServiceImpl implements IVideoCostService {
                       newPerformers.add(checkNameForNew(performers,(String)column));
                   else if(vCostEnum.getTypee() == PriceLevel.class)
                       newPriceLevelList.add(checkNameForNew(priceLevelList,(String)column));
+                  else if(vCostEnum.getTypee() == PayLevel.class)
+                      newPayLevelList.add(checkNameForNew(payLevelList,(String)column));
                   else if(vCostEnum.getTypee() == VideoVersion.class)
                       newVideoVersionList.add(checkNameForNew(videoVersionList,(String)column));
                   else if(vCostEnum.getTypee() == Supplier.class && supplier==null )
@@ -571,6 +576,12 @@ public class VideoCostServiceImpl implements IVideoCostService {
             boolean b= iPriceLevelService.insert(priceLevel);
             if(b)priceLevelList.add(priceLevel);
         }
+        for(String str:newPayLevelList){
+            if(StringUtils.isBlank(str))continue;
+            PayLevel payLevel = PayLevel.craateForInsert(str,shiroUser.getId(),shiroUser.getId());
+            boolean b= iPayLevelService.insert(payLevel);
+            if(b)payLevelList.add(payLevel);
+        }
         if(supplier==null){
             for(String str:newSupplierList){
                 if(StringUtils.isBlank(str))continue;
@@ -605,6 +616,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
 //                else if(vCostEnum.getTypee() == Performer.class && vCostEnum.getExcelIndex() == 13 )customer.setPerformer2(checkName(performers,(String)column));
 //                else if(vCostEnum.getTypee() == Performer.class && vCostEnum.getExcelIndex() == 14 )customer.setPerformer3(checkName(performers,(String)column));
                 else if(vCostEnum.getTypee() == PriceLevel.class)customer.setPriceLevel(checkName(priceLevelList,(String)column));
+                else if(vCostEnum.getTypee() == PayLevel.class)customer.setPayLevel(checkName(payLevelList,(String)column));
                 else if(vCostEnum.getTypee() == VideoVersion.class)customer.setVideoVersion(checkName(videoVersionList,(String)column));
                 else if(vCostEnum.getTypee() == Supplier.class  ){
                     if(supplier==null) customer.setSupplier(checkName(supplierList,(String)column));
@@ -733,7 +745,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
     public Workbook exportData(Map map, Workbook workbook) {
 
         Sheet sheet = workbook.createSheet();
-        sheet.addMergedRegion(new CellRangeAddress(1, 1, 0, 18));
+        sheet.addMergedRegion(new CellRangeAddress(1, 1, 0, 19));
         Row title = sheet.createRow(1);
         title.setHeight((short) 760);
         Cell title_cell = title.createCell(0);
@@ -756,7 +768,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
         font_title.setColor(IndexedColors.ROYAL_BLUE.index);
         cellStyle_title.setFont(font_title);
         title_cell.setCellStyle(cellStyle_title);
-        for (int i = 1; i < 19; i++) {
+        for (int i = 1; i < 20; i++) {
             Cell x = title.createCell(i);
             x.setCellStyle(cellStyle_title);
         }
@@ -815,27 +827,33 @@ public class VideoCostServiceImpl implements IVideoCostService {
         Cell cell_2_13 = ttile_row.createCell(13);
         cell_2_13.setCellValue("价格分类");
         cell_2_13.setCellStyle(border_title);
-        Cell cell_2_VVE = ttile_row.createCell(14);
+
+        Cell cell_2_pay = ttile_row.createCell(14);
+        cell_2_pay.setCellValue("支出分类");
+        cell_2_pay.setCellStyle(border_title);
+
+
+        Cell cell_2_VVE = ttile_row.createCell(15);
         cell_2_VVE.setCellValue("视频版本");
         cell_2_VVE.setCellStyle(border_title);
-        Cell cell_2_SUP = ttile_row.createCell(15);
+        Cell cell_2_SUP = ttile_row.createCell(16);
         cell_2_SUP.setCellValue("供应商");
         cell_2_SUP.setCellStyle(border_title);
 //        Cell cell_2_14 = ttile_row.createCell(14);
 //        cell_2_14.setCellValue("演员3");
 //        cell_2_14.setCellStyle(border_title);
 
-        Cell cell_2_15 = ttile_row.createCell(16);
+        Cell cell_2_15 = ttile_row.createCell(17);
         cell_2_15.setCellValue("当日消耗");
         cell_2_15.setCellStyle(border_title);
 
-        Cell cell_2_16 = ttile_row.createCell(17);
+        Cell cell_2_16 = ttile_row.createCell(18);
         cell_2_16.setCellValue("累计消耗");
         cell_2_16.setCellStyle(border_title);
 //        Cell cell_2_17 = ttile_row.createCell(17);
 //        cell_2_17.setCellValue("累计排名");
 //        cell_2_17.setCellStyle(border_title);
-        Cell cell_2_18 = ttile_row.createCell(18);
+        Cell cell_2_18 = ttile_row.createCell(19);
         cell_2_18.setCellValue("消耗日期");
         cell_2_18.setCellStyle(border_title);
         List<VideoCost> videoCosts = videoCostMapper.selectWithCount(map);
@@ -843,10 +861,11 @@ public class VideoCostServiceImpl implements IVideoCostService {
             sheet.setColumnWidth(2, 4000);
             sheet.setColumnWidth(3, 2*4000);
             sheet.setColumnWidth(8, 4000);
-            sheet.setColumnWidth(14, 4000);
             sheet.setColumnWidth(15, 4000);
             sheet.setColumnWidth(16, 4000);
+            sheet.setColumnWidth(17, 4000);
             sheet.setColumnWidth(18, 4000);
+            sheet.setColumnWidth(19, 4000);
 
 
             CellStyle cellStyle_date = sheet.getWorkbook().createCellStyle();
@@ -921,16 +940,19 @@ public class VideoCostServiceImpl implements IVideoCostService {
                 cell_i_12.setCellStyle(border);
                 Cell cell_i_13 = data_row.createCell(13);
                 cell_i_13.setCellStyle(border);
-                Cell cell_i_vve = data_row.createCell(14);
+                Cell cell_i_pay = data_row.createCell(14);
+                cell_i_pay.setCellStyle(border);
+
+                Cell cell_i_vve = data_row.createCell(15);
                 cell_i_vve.setCellStyle(border);
-                Cell cell_i_sup = data_row.createCell(15);
+                Cell cell_i_sup = data_row.createCell(16);
                 cell_i_sup.setCellStyle(border);
 
-                Cell cell_i_14 = data_row.createCell(16);
+                Cell cell_i_14 = data_row.createCell(17);
                 cell_i_14.setCellStyle(cellStyle_money);
-                Cell cell_i_15 = data_row.createCell(17);
+                Cell cell_i_15 = data_row.createCell(18);
                 cell_i_15.setCellStyle(cellStyle_money);
-                Cell cell_i_16 = data_row.createCell(18);
+                Cell cell_i_16 = data_row.createCell(19);
                 cell_i_16.setCellStyle(cellStyle_date);
 //                Cell cell_i_17 = data_row.createCell(17);
 //                cell_i_17.setCellStyle(border);
@@ -951,6 +973,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
                 if (videoCost.getCustomer() != null && videoCost.getCustomer().getEditor() != null) cell_i_11.setCellValue(videoCost.getCustomer().getEditor().getName());
                 if (videoCost.getCustomer() != null && videoCost.getCustomer().getPerformer1() != null) cell_i_12.setCellValue(videoCost.getCustomer().getPerformer1().getName());
                 if (videoCost.getCustomer() != null && videoCost.getCustomer().getPriceLevel() != null) cell_i_13.setCellValue(videoCost.getCustomer().getPriceLevel().getName());
+                if (videoCost.getCustomer() != null && videoCost.getCustomer().getPayLevel() != null) cell_i_pay.setCellValue(videoCost.getCustomer().getPayLevel().getName());
                 if (videoCost.getCustomer() != null && videoCost.getCustomer().getVideoVersion()!= null) cell_i_vve.setCellValue(videoCost.getCustomer().getVideoVersion().getName());
                 if (videoCost.getCustomer() != null && videoCost.getCustomer().getSupplier() != null) cell_i_sup.setCellValue(videoCost.getCustomer().getSupplier().getName());
 //                if (videoCost.getCustomer() != null && videoCost.getCustomer().getPerformer3() != null) cell_i_14.setCellValue(videoCost.getCustomer().getPerformer3().getName());

@@ -116,7 +116,11 @@
                     return data.name+": ￥"+data.value;
                 }
             },
-            toolbox:{},
+            toolbox:{
+                feature: {
+                    saveAsImage:{type:'png'}
+                }
+            },
             legend: {
                 data:['消耗']
             },
@@ -168,6 +172,11 @@
             tooltip : {
                 trigger: 'item',
                 formatter: "{a} <br/>{b} :消耗量 {c} ({d}%)"
+            },
+            toolbox:{
+                feature: {
+                    saveAsImage:{type:'png'}
+                }
             },
             // visualMap: {
             //     show: true,
@@ -272,6 +281,7 @@
                     let payNPl = dataAll[i].payLevelName+"：￥ "+dataAll[i].basePay;
                     if(dataAll[i].basePay==null)payNPl ='';
                     tableData.push({
+                        code:dataAll[i].code,
                         name:dataAll[i].name,
                         completeData:getCommonDate(dataAll[i].completeDate),
                         basePrice:pNPl,
@@ -282,8 +292,8 @@
                         incomeRadio:dataAll[i].incomeRadio,
                         sumPay:pay,
                         payRadio:dataAll[i].payRadio,
-                        endData:getCommonDate(dataAll[i].endDate),
-                        id:dataAll[i].id
+                        endData:getCommonDate(dataAll[i].endDate)
+
                     });
                 }
                 $('#effCountAll').datagrid({
@@ -349,15 +359,15 @@
                 names.push(dataAll[i].name+"——支出");
                 let seriesO = {
                     type: 'line',smooth: false,
-                    id:dataAll[i].id+"con",name:dataAll[i].name+"——有效消耗",completeDate:dataAll[i].completeDate
+                    id:dataAll[i].code+"con",name:dataAll[i].name+"——有效消耗",completeDate:dataAll[i].completeDate
                 };
                 let seriesO_income = {
                     type: 'line',smooth: false,
-                    id:dataAll[i].id+"inc",name:dataAll[i].name+"——收入",completeDate:dataAll[i].completeDate
+                    id:dataAll[i].code+"inc",name:dataAll[i].name+"——收入",completeDate:dataAll[i].completeDate
                 };
                 let seriesO_pay = {
                     type: 'line',smooth: false,
-                    id:dataAll[i].id+"pay",name:dataAll[i].name+"——收入",completeDate:dataAll[i].completeDate
+                    id:dataAll[i].code+"pay",name:dataAll[i].name+"——收入",completeDate:dataAll[i].completeDate
                 };
                 let dataArr =[];
                 let dataArr_income =[];
@@ -412,7 +422,11 @@
                     return  data.seriesName+"<br>" +data.name+": ￥"+data.value;
                 }
             },
-            toolbox:{},
+            toolbox:{
+                feature: {
+                    saveAsImage:{type:'png'}
+                }
+            },
             legend: {
                 data:names
             },
@@ -427,6 +441,22 @@
         let chats = document.getElementById("effAddon");
         chats.appendChild(div);
     }
+
+    function exportFun() {
+
+        //创建form表单
+        // var temp_form = document.createElement("form");
+        let temp_form = document.getElementById("barForm");
+        temp_form.action = "${path}/count/exportEffTimeCount";
+        //如需打开新窗口，form的target属性要设置为'_blank'
+        // temp_form.target = "_self";
+        temp_form.target = "_blank";
+        temp_form.method = "post";
+        //提交数据
+        temp_form.submit();
+
+    }
+
     /*
     function drawEffectCount(dates,dataAll) {
         let cav_type  = $("#count1_c").val();
@@ -492,6 +522,7 @@
         chats.appendChild(div);
     }
 */
+
     function chearDraw(){
         $("#chats1,#chats2,#chats3,#chats4,#chats5,#effAddon").html('');
         $('#barForm input').val('');
@@ -602,6 +633,10 @@
                                                     <td>
                                                         <button type="button" class="layui-btn layui-btn-sm " onclick="getEffectCountData()"><i class="layui-icon layui-icon-search"></i></button>
                                                     </td>
+                                                    <td>&nbsp;&nbsp;&nbsp;</td>
+                                                    <td>
+                                                        <button type="button" class="layui-btn layui-btn-sm " onclick="exportFun()"><i class="layui-icon layui-icon-triangle-d"></i></button>
+                                                    </td>
                                                     <td>
                                                         <select id="countEffType" name="type" style="width: 150px" class="layui-input"  >
                                                             <option value="0" selected > 每日总和 </option>
@@ -623,16 +658,17 @@
                                             <table  id="effCountAll" class="easyui-datagrid" title="详细" style="width:1200px;height:850px" data-options="singleSelect:true,collapsible:true,toolbar : '#effCountToolbar'">
                                                 <thead>
                                                 <tr>
+                                                    <th data-options="field:'code',  sort: true," >编号</th>
                                                     <th data-options="field:'name',  sort: true," >名称</th>
                                                     <th data-options="field:'maxEffectOn',  sort: true,">封顶消耗</th>
                                                     <th data-options="field:'sumCon',  sort: true">有效消耗</th>
                                                     <th data-options="field:'sumIncome', sort: true">收入</th>
                                                     <th data-options="field:'sumPay',  sort: true">支出（暂定）</th>
-                                                    <th data-options="field:'completeData',  sort: true">成片日期</th>
                                                     <th data-options="field:'basePrice',  sort: true">固定收入</th>
                                                     <th data-options="field:'basePay',  sort: true">固定支出</th>
                                                     <th data-options="field:'incomeRadio',  sort: true">收入比率（%）</th>
                                                     <th data-options="field:'payRadio',  sort: true">支出比率（%）</th>
+                                                    <th data-options="field:'completeData',  sort: true">成片日期</th>
                                                     <th data-options="field:'endData',  sort: true">有效期截至（实际）</th>
                                                 </tr>
                                                 </thead>
@@ -743,15 +779,10 @@
             <div class="layui-card-body">
             </div>
         </div>
-
         </div>
 
     </div>
 </div>
 
 <div id="effCountToolbar" style="display: none;">
-    <a onclick="exportFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-plus  icon-green'">导出</a>
-    <shiro:hasPermission name="/customer/add">
-
-    </shiro:hasPermission>
 </div>

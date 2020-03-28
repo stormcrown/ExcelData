@@ -3,18 +3,17 @@ package cn.dovahkiin.model.dto;
 import java.util.Date;
 
 public class LastDayEffectDto {
-    private Long customerId;
+    private String  code;
     private Date recoredDate;
     private Double maxEffectOn;
     private Double sumCon;
 
-
-    public Long getCustomerId() {
-        return customerId;
+    public String getCode() {
+        return code;
     }
 
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public Date getRecoredDate() {

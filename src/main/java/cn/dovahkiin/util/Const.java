@@ -1,17 +1,21 @@
 package cn.dovahkiin.util;
 
 import cn.dovahkiin.model.*;
+import org.apache.poi.ss.usermodel.CellStyle;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Const {
+
+
     public static final String Administor_Role_Name = "admin";
     public static final String optimizerCN = "优化师";
     public static final String optimizerAdministorCN = "优化师管理员";
     public static final String optimizerStr = "optimizer";
     public static final String customerStr = "customer";
     public static final String customerId = "customerId";
+    public static final String customerCode = "customerCode";
     public static final String supplierStr ="supplier";
     public static final String supplierName = "supplierName";
     public static final String supplierId = "supplierId";
@@ -34,8 +38,7 @@ public class Const {
         } catch (Exception ignored){}
     }
 
-//    public static final String [] videoCostExcelHead  =new String[] { "排名","编号","客户名","视频名称","行业","需求部门","优化师","视频类型","成片日期","创意","摄像","剪辑",	"演员",	"","","价格分级","视频版本",	"供应商","","当日消耗", 	"消耗日期"};
-    public static final String [] videoCostExcelHead  =new String[] { "排名","编号","客户名","视频名称","行业","需求部门","优化师","视频类型","成片日期","创意","摄像","剪辑",	"演员",	"价格分类","视频版本",	"供应商","当日消耗", 	"消耗日期"};
+    public static final String [] videoCostExcelHead  =new String[] { "排名","编号","客户名","视频名称","行业","需求部门","优化师","视频类型","成片日期","创意","摄像","剪辑",	"演员",	"价格分类",	"支出分类","视频版本",	"供应商","当日消耗", 	"消耗日期"};
     public enum VCostEnum{
         CustomerCode(1,String.class,code),
         TrueCustomName(2, TrueCustomer.class,"customer.trueCustomer"),
@@ -52,11 +55,12 @@ public class Const {
 //        Performer2Name(13,Performer.class,""),
 //        Performer3Name(14,Performer.class,""),
         PriceLevelName(13,PriceLevel.class,""),
-        VideoVersionName(14,VideoVersion.class,""),
-        SupplierName(15,Supplier.class,""),
+        PayLevelName(14,PayLevel.class,""),
+        VideoVersionName(15,VideoVersion.class,""),
+        SupplierName(16,Supplier.class,""),
 
-        ConsumptionName(16,Double.class,consumption),
-        ReCoredDateName(17,Date.class,recoredDate),
+        ConsumptionName(17,Double.class,consumption),
+        ReCoredDateName(18,Date.class,recoredDate),
 
         ;
         private int excelIndex;
@@ -89,10 +93,11 @@ public class Const {
 //                case 13:return VCostEnum.Performer2Name;
 //                case 14:return VCostEnum.Performer3Name;
                 case 13:return VCostEnum.PriceLevelName;
-                case 14:return VCostEnum.VideoVersionName;
-                case 15:return VCostEnum.SupplierName;
-                case 16:return VCostEnum.ConsumptionName;
-                case 17:return VCostEnum.ReCoredDateName;
+                case 14:return VCostEnum.PayLevelName;
+                case 15:return VCostEnum.VideoVersionName;
+                case 16:return VCostEnum.SupplierName;
+                case 17:return VCostEnum.ConsumptionName;
+                case 18:return VCostEnum.ReCoredDateName;
 
                 default:return null;
             }

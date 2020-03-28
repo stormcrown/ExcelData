@@ -10,11 +10,18 @@ import cn.dovahkiin.model.dto.EffectCountDto;
 import cn.dovahkiin.model.dto.LastDayEffectDto;
 import cn.dovahkiin.service.ICountService;
 import cn.dovahkiin.util.Const;
+import cn.dovahkiin.util.excel.ExcelConst;
 import com.alibaba.fastjson.JSON;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.NumberFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -58,27 +65,34 @@ public class CountServiceImpl implements ICountService {
         EffectCountDto countDto = new EffectCountDto();
         SystemConfig defaultConfig = systemConfigMapper.selectBySupplierId(null);
         map.put("defaultConfig",defaultConfig);
-
+        Date end =  (Date)map.get(Const.RECORED_DATE_END);
         /* 查出所有在有效期内有消耗的素材 */
         List<CustomerEffectDto> customerEffectOnes_all = countMapper.selectEffectCustomer(map);
         /*获得所有数据*/
         for(CustomerEffectDto effectDto:customerEffectOnes_all){
-            map.put(Const.customerId,effectDto.getId());
+            map.put(Const.customerCode,effectDto.getCode());
             map.put(Const.RECORED_DATE_Last, effectDto.getEndDate());
             List<DayEffectDto> dayEffectDtos ;
             /* 有溢出的 */
-            if(effectDto.getSumCon() > effectDto.getMaxEffectOn() ){
+            if(effectDto.getSumCon() > effectDto.getMaxEffectOn()   ){
                 /* 找出最后一天的溢出了多少 */
                 LastDayEffectDto lastDayEffectDto = countMapper.selectLastDay(map);
+
                 // 最后一天的溢出
-                Double out = lastDayEffectDto.getSumCon() - lastDayEffectDto.getMaxEffectOn();
-                map.put(Const.RECORED_DATE_Last,lastDayEffectDto.getRecoredDate());
+                Double out = 0d;
+                if(lastDayEffectDto!=null && lastDayEffectDto.getSumCon()!=null && lastDayEffectDto.getMaxEffectOn()!=null  )out=lastDayEffectDto.getSumCon() - lastDayEffectDto.getMaxEffectOn();
+                if(lastDayEffectDto!=null){
+                    map.put(Const.RECORED_DATE_Last, lastDayEffectDto.getRecoredDate());
+                    effectDto.setEndDate(lastDayEffectDto.getRecoredDate());
+                }
                 dayEffectDtos = countMapper.selectEveryDayCon(map);
-                for(DayEffectDto dayEffectDto:dayEffectDtos){
-                    // 减去最后一天的溢出
-                    if(dayEffectDto.getRecoredDate().equals(lastDayEffectDto.getRecoredDate())){
-                        dayEffectDto.setConsumptionEffect(dayEffectDto.getConsumptionEffect()-out);
-                        break;
+                if(lastDayEffectDto!=null){
+                    for(DayEffectDto dayEffectDto:dayEffectDtos){
+                        // 减去最后一天的溢出
+                        if(dayEffectDto.getRecoredDate().equals(lastDayEffectDto.getRecoredDate())){
+                            dayEffectDto.setConsumptionEffect(dayEffectDto.getConsumptionEffect()-out);
+                            break;
+                        }
                     }
                 }
             }
@@ -99,7 +113,6 @@ public class CountServiceImpl implements ICountService {
             dto.getData().parallelStream().forEach(dayEffectDto -> {
                  dayEffectDto.setIncome( dayEffectDto.getConsumptionEffect() * dto.getIncomeRadio()/100d);
                  dayEffectDto.setPay(dayEffectDto.getConsumptionEffect() * dto.getPayRadio()/100d);
-
                  if(dto.getCompleteDate().equals(dayEffectDto.getRecoredDate()) ){
                      if(dto.getBasePrice() !=null ) dayEffectDto.setIncome(dto.getBasePrice() +dayEffectDto.getIncome()  );else dayEffectDto.setIncome(0d );
                      if(dto.getBasePay()!=null)dayEffectDto.setPay(dto.getBasePay() +dayEffectDto.getPay() );else dayEffectDto.setPay(0d);
@@ -109,7 +122,7 @@ public class CountServiceImpl implements ICountService {
             if(!addPrice.get()){
                 // 没有成片日期那天的数据，新增一个
                 /* 收入统计加上固定价格 */
-                DayEffectDto dayEffectDto = new DayEffectDto(dto.getId(),dto.getCompleteDate(),dto.getBasePrice(),dto.getBasePay());
+                DayEffectDto dayEffectDto = new DayEffectDto(dto.getCode(),dto.getCompleteDate(),dto.getBasePrice(),dto.getBasePay());
                 dto.addData(dayEffectDto);
             }
         }));
@@ -120,8 +133,8 @@ public class CountServiceImpl implements ICountService {
             AtomicReference<Double> sumIncome = new AtomicReference<>(0d);
             AtomicReference<Double> sumPay = new AtomicReference<>(0d);
             dto.getData().forEach(dayEffectDto ->{
-                sumIncome.updateAndGet(v -> v + dayEffectDto.getIncome());
-                sumPay.updateAndGet(v -> v + dayEffectDto.getPay());
+                sumIncome.updateAndGet(v -> v + (dayEffectDto.getIncome()==null?0d: dayEffectDto.getIncome())   );
+                sumPay.updateAndGet(v -> v + (dayEffectDto.getPay()==null?0d:dayEffectDto.getPay()));
             } );
             dto.setSumIncome(sumIncome.get());
             dto.setSumPay(sumPay.get());
@@ -148,6 +161,7 @@ public class CountServiceImpl implements ICountService {
                 effectDto.setConsumptionEffect(effectDto.getConsumptionEffect() + dayEffectDto.getConsumptionEffect());
                 effectDto.setIncome(effectDto.getIncome() + dayEffectDto.getIncome());
                 effectDto.setPay(effectDto.getPay() + dayEffectDto.getPay());
+                effectDto.setCode(dto.getCode());
                 dayEffectDtoMap.put(effectDto.getRecoredDate().getTime(),effectDto);
             });
         });
@@ -163,6 +177,71 @@ public class CountServiceImpl implements ICountService {
         return countDto;
     }
 
+    @Override
+    public Workbook handleEffConTimeToExcel(EffectCountDto effectCountDto) {
+        Workbook workbook= new XSSFWorkbook();
+        if(effectCountDto==null || effectCountDto.getAllPrimaryData()==null || effectCountDto.getAllPrimaryData().size()==0)return workbook;
+        NumberFormat nf = NumberFormat.getNumberInstance();
+        nf.setMaximumFractionDigits(3);
+        Sheet sheetCus = workbook.createSheet("素材");
+        String [] headCus = new String[]{ "名称","编号","封顶消耗","有效消耗", "收入","支出", "固定收入","固定支出","收入比率(%)","支出比率(%)","成片日期","有效期至（实际）" };
+        Row headRowCus = sheetCus.createRow(0);
+        for(int i=0;i<headCus.length;i++){
+            Cell cell = headRowCus.createCell(i);
+            cell.setCellValue(headCus[i]);
+            sheetCus.setColumnWidth(i, 4000);
+        }
+        sheetCus.setColumnWidth(0, 12000);
+        sheetCus.setColumnWidth(10, 6000);
+        sheetCus.setColumnWidth(11, 6000);
 
+        List<CustomerEffectDto> customerEffectDtos=effectCountDto.getAllPrimaryData();
+        AtomicInteger index= new AtomicInteger(0);
+        customerEffectDtos.forEach(dto->{
+            if(dto==null)return;
+            int m = index.get();
+            index.getAndIncrement();
+            Row row= sheetCus.createRow(m+1);
+            for(int i=0;i<headCus.length;i++){
+                Cell cell = row.createCell(i);
+                switch (i){
+                    case 0:cell.setCellValue(dto.getName());break;
+                    case 1:cell.setCellValue(dto.getCode());break;
+                    case 2:cell.setCellValue(dto.getMaxEffectOn());break;
+                    case 3:cell.setCellValue(dto.getSumCon());break;
+                    case 4:cell.setCellValue(dto.getSumIncome());break;
+                    case 5:cell.setCellValue(dto.getSumPay());break;
+                    case 6: if(dto.getPriceLevelName()!=null) cell.setCellValue( dto.getPriceLevelName()+" ￥ "+  dto.getBasePrice());
+                    break;
+                    case 7: if(dto.getPayLevelName()!=null) cell.setCellValue( dto.getPayLevelName()+" ￥ "+  dto.getBasePay());
+                    break;
+                    case 8:cell.setCellValue(dto.getIncomeRadio());break;
+                    case 9:cell.setCellValue(dto.getPayRadio());break;
+                    case 10:
+                        cell.setCellStyle(ExcelConst.getDateCellStyle(sheetCus));
+                        cell.setCellValue(dto.getCompleteDate());
+                        break;
+                    case 11:
+                        cell.setCellStyle(ExcelConst.getDateCellStyle(sheetCus));
+                        cell.setCellValue(dto.getEndDate());
+                        break;
+                }
+            }
+        });
 
+/*
+        for(int m=0;m<customerEffectDtos.size();m++){
+            Row row= sheetCus.createRow(m+1);
+            CustomerEffectDto customerEffectDto = customerEffectDtos.get(m);
+            for(int i=0;i<headCus.length;i++){
+                Cell cell = row.createCell(i);
+                switch (i){
+                    case 0:cell.setCellValue(customerEffectDto.getName());break;
+                    case 1:cell.setCellValue(customerEffectDto.getCode());break;
+                }
+            }
+        }
+*/
+        return workbook;
+    }
 }

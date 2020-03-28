@@ -3,7 +3,7 @@ package cn.dovahkiin.model.dto;
 import java.util.Date;
 
 public class DayEffectDto {
-    private Long customerId;
+    private String code;
     private Date recoredDate;
     private Double consumptionEffect;
     private Double income;
@@ -16,22 +16,25 @@ public class DayEffectDto {
         this.recoredDate = recoredDate;
         this.consumptionEffect=0d;
         this.income=0d;
+        this.pay=0d;
     }
 
-    public DayEffectDto(Long customerId, Date recoredDate, Double income,Double pay) {
-        this.customerId = customerId;
+    public DayEffectDto(String code, Date recoredDate, Double income,Double pay) {
+        this.code = code;
         this.recoredDate = recoredDate;
         this.income = income;
         this.pay=pay;
+        if(this.income==null)this.income=0d;
+        if(this.pay==null)this.pay=0d;
         this.consumptionEffect=0d;
     }
 
-    public Long getCustomerId() {
-        return customerId;
+    public String getCode() {
+        return code;
     }
 
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public Date getRecoredDate() {

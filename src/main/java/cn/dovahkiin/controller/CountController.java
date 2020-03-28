@@ -3,13 +3,17 @@ package cn.dovahkiin.controller;
 import cn.dovahkiin.commons.base.BaseController;
 import cn.dovahkiin.commons.shiro.ShiroUser;
 import cn.dovahkiin.commons.utils.DateTools;
+import cn.dovahkiin.commons.utils.StringUtils;
 import cn.dovahkiin.model.Customer;
 import cn.dovahkiin.model.VideoCost;
+import cn.dovahkiin.model.dto.EffectCountDto;
 import cn.dovahkiin.service.ICountService;
 import cn.dovahkiin.util.Const;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,6 +22,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.*;
 
 /**
@@ -106,5 +113,20 @@ public class CountController extends BaseController {
         map.put("countZero",countZero);
         return countService.countEffConTimeCut(map);
     }
-
+    @PostMapping("/exportEffTimeCount")
+    @RequiresPermissions("/count/bar")
+    @ResponseBody
+    public Object exportEffTimeCount(HttpServletResponse response,String recoredDateRange, Integer type , VideoCost videoCost, Boolean countZero, String[] supplierIds) throws IOException {
+        Map<String,Object> map = handleCondition(recoredDateRange,type,videoCost,supplierIds);
+        map.put("countZero",countZero);
+        response.setContentType("application/x-msdownload;");
+        response.setHeader("Content-disposition", "attachment; filename=" + new String(("收入支出统计"+ StringUtils.getDateCode()+".xlsx").getBytes("utf-8"), "ISO8859-1"));
+        EffectCountDto effectCountDto =countService.countEffConTimeCut(map) ;
+        OutputStream outputStream = response.getOutputStream();
+        Workbook workbook= countService.handleEffConTimeToExcel(effectCountDto);
+        workbook.write(outputStream);
+        outputStream.flush();
+        outputStream.close();
+        return renderSuccess();
+    }
 }

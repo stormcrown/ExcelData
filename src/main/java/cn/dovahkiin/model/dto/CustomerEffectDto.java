@@ -6,8 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 public class CustomerEffectDto {
-    private Long id;
+
     private String name;
+    private String code;
     private Double basePrice;
     private Double basePay;
     private Date completeDate;
@@ -25,14 +26,6 @@ public class CustomerEffectDto {
     public void addData(DayEffectDto dayEffectDto){
         if(data==null)data = new ArrayList<>();
         data.add(dayEffectDto);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -145,5 +138,13 @@ public class CustomerEffectDto {
 
     public void setPayLevelName(String payLevelName) {
         this.payLevelName = payLevelName;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }
