@@ -9,20 +9,37 @@
     <script type="text/javascript" src="${staticPath }/static/js/main.js?v=${version}"></script>
     <script type="text/javascript" src="${staticPath }/static/common/tools.js?v=${version}"></script>
     <script type="text/javascript" src="${staticPath }/static/common/default_method.js?v=${version}"></script>
-
+    <script type="text/javascript">
+        $(function() {
+            //注意：折叠面板 依赖 element 模块，否则无法进行功能性操作
+            layui.use(['laydate','slider','layer','table','element'], function(){
+                var laydate = layui.laydate,slider = layui.slider,table=layui.table;
+                var element = layui.element;
+            });
+        });
+    </script>
 </head>
 <body>
     <div id="loading" style="position: fixed;top: -50%;left: -50%;width: 200%;height: 200%;background: #fff;z-index: 100;overflow: hidden;">
         <img src="${staticPath }/static/style/images/ajax-loader.gif" style="position: absolute;top: 0;left: 0;right: 0;bottom: 0;margin: auto;"/>
     </div>
+    <ul class="layui-nav layui-bg-green">
+        <li class="layui-nav-item" lay-unselect="">
+            <a href="javascript:;"><img src="${staticPath }/static/images/head.jpg" class="layui-nav-img">欢迎！${supplierName} &nbsp;&nbsp;&nbsp; ${name}!</a>
+            <dl class="layui-nav-child">
+                <dd><a href="javascript:editUserPwd();">修改密码</a></dd>
+                <dd><a href="javascript:logout();">退了</a></dd>
+            </dl>
+        </li>
+    </ul>
     <div id="mainLayout" class="easyui-layout" data-options="fit:true, border:false">
-        <div data-options="region:'north',border:false, collapsedSize:0" style="height:100px;">
+        <%--
+        <div data-options="region:'north',border:false, collapsedSize:0" >
             <div class="head">
                 <table>
                     <tr>
-                        <td width="50%" style="font-size: 24px;"></td>
-                        <td width="50%" align="right" style="font-size: 24px;">
-                            <div class="easyui-panel rtool" data-options="border:false" style="text-align: right; background: cornflowerblue; color: cornflowerblue; margin-top: -1px;">
+                        <td width="50%" align="left" style="font-size: 24px;">
+                            <div class="easyui-panel rtool" data-options="border:false" style="text-align: left; background: cornflowerblue; color: cornflowerblue; margin-top: -1px;">
                                 <a href="#" class="easyui-menubutton" data-options="menu:'#mm1'" style="font-family: 'Comic Sans MS',楷体,monospace;font-size: medium;">
                                    欢迎！${supplierName} &nbsp;&nbsp;&nbsp; ${name}!
                                 </a>
@@ -33,16 +50,12 @@
                                 <div data-options="iconCls:'glyphicon-log-out'" onclick="logout()">退出</div>
                             </div>
                         </td>
+                        <td width="50%" style="font-size: 24px;"></td>
                     </tr>
                 </table>
             </div>
         </div>
-        <%--<div id="west" class="scrollbar" data-options="region:'west',split:true, border:false,collapsible:true," style="width:200px;background-color: #424f63;color:white">--%>
-            <%--<div class="west_menu">--%>
-                <%--<div class="menu_head">菜单导航</div>--%>
-                <%--<ul id="layout_west_tree" class="easyui-tree"></ul>--%>
-            <%--</div>--%>
-        <%--</div>--%>
+--%>
         <div data-options="region:'west',split:true" title="菜单" style="width: 200px; overflow: hidden;overflow-y:auto; padding:0px">
             <div class="well well-small" style="padding: 5px 5px 5px 5px;">
                 <ul id="layout_west_tree"></ul>

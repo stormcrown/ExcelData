@@ -654,8 +654,8 @@
                                         <div class="layui-card-header">
                                             <H2>表格展示</H2>
                                         </div>
-                                        <div  class="layui-card-body" style="font-family: 'Comic Sans MS';" >
-                                            <table  id="effCountAll" class="easyui-datagrid" title="详细"  data-options="singleSelect:true,collapsible:true,toolbar : '#effCountToolbar'">
+                                        <div  class="layui-card-body" style="font-family: 'Comic Sans MS',serif;" >
+                                            <table  id="effCountAll" class="easyui-datagrid" title="详细"  data-options="singleSelect:true,collapsible:true,toolbar : '#effCountToolbar',pagination:true,">
                                                 <thead>
                                                 <tr>
                                                     <th data-options="field:'code',  sort: true," >编号</th>
