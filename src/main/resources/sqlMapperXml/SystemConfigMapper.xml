@@ -12,11 +12,12 @@
 		<result column="update_time" property="updateTime" />
 		<result column="update_by" property="updateBy" />
 		<result column="updater" property="updater" />
+		<result column="delete_flag" property="deleteFlag" />
 		<association property="supplier" javaType="cn.dovahkiin.model.Supplier" columnPrefix="supplier_" resultMap="cn.dovahkiin.mapper.SupplierMapper.BaseResultMap" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		id, supplier_id, default_income_ratio, default_pay_ratio,default_max_effect_con, default_max_effect_range,
-    update_time, update_by
+    update_time, update_by, delete_flag
 	</sql>
 	<sql id="Base_Column_List_table_sc">
 		sc.id,
@@ -26,14 +27,14 @@
 		sc.default_max_effect_con,
 		sc.default_max_effect_range,
     	sc.update_time,
-		sc.update_by
+		sc.update_by, sc.delete_flag
 	</sql>
 	<insert id="insertI" keyColumn="id" keyProperty="id" parameterType="cn.dovahkiin.model.SystemConfig" useGeneratedKeys="true">
 		insert into system_config (supplier_id, default_income_ratio, default_pay_ratio,default_max_effect_con,
-								   default_max_effect_range, update_time, update_by
+								   default_max_effect_range, update_time, update_by, delete_flag
 		)
 		values (#{supplier.id,jdbcType=BIGINT}, #{defaultIncomeRatio,jdbcType=DOUBLE},#{defaultPayRatio,jdbcType=DOUBLE}, #{defaultMaxEffectCon,jdbcType=DOUBLE},
-				#{defaultMaxEffectRange,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT}
+				#{defaultMaxEffectRange,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT},#{deleteFlag}
 			   )
 	</insert>
 	<select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -71,7 +72,12 @@
 		left join supplier sup on sc.supplier_id = sup.id
 		    left join `user` uu on uu.id = sc.update_by
 		<where>
-			<if test="supplierId!=null">sc.supplier_id = #{supplierId}</if>
+			<if test="systemConfig!=null">
+				<if test="systemConfig.deleteFlag!=null">
+					sc.delete_flag = #{systemConfig.deleteFlag}
+				</if>
+			</if>
+			<if test="supplierId!=null">and sc.supplier_id = #{supplierId}</if>
 		</where>
 		<if test="sort !=null and sort !='' and order!=null and order!='' ">
 			ORDER BY
@@ -100,7 +106,12 @@
 		from system_config sc
 		left join supplier sup on sc.supplier_id = sup.id
 		<where>
-			<if test="supplierId!=null">sc.supplier_id = #{supplierId}</if>
+			<if test="systemConfig!=null">
+				<if test="systemConfig.deleteFlag!=null">
+					sc.delete_flag = #{systemConfig.deleteFlag}
+				</if>
+			</if>
+			<if test="supplierId!=null">and sc.supplier_id = #{supplierId}</if>
 		</where>
 	</select>
 
@@ -115,5 +126,23 @@
 			update_by = #{updateBy,jdbcType=BIGINT}
 		where id = #{id,jdbcType=BIGINT}
 	</update>
-
+	<update id="toggleBySupplierIds" >
+		update system_config
+		set
+			delete_flag=#{deleteFlag},
+			update_time = current_time(),
+			update_by = #{userId}
+		where
+			supplier_id in (
+			    <foreach collection="supplierIds" separator="," item="supId">#{supId}</foreach>
+				)
+		and supplier_id is not null
+	</update>
+	<select id="selectSupplierIds" resultType="java.lang.Long">
+		select distinct supplier_id from system_config
+		where id in (
+		<foreach collection="ids" separator="," item="id">#{id}</foreach>
+			)
+		and supplier_id is not null
+	</select>
 </mapper>

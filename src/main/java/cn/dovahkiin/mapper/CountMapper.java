@@ -3,6 +3,7 @@ package cn.dovahkiin.mapper;
 import cn.dovahkiin.model.dto.CustomerEffectDto;
 import cn.dovahkiin.model.dto.DayEffectDto;
 import cn.dovahkiin.model.dto.LastDayEffectDto;
+import cn.dovahkiin.model.dto.ModelCountDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -22,7 +23,7 @@ import java.util.Map;
 public interface CountMapper  {
     List<Map<String,Object>> count1(Map<String,Object> map);
     List<Map<String,Object>> countByOptimizer(Map<String,Object> map);
-    List<Map<String,Object>> countByModel(Map<String,Object> map);
+    List<ModelCountDto> countByModel(Map<String,Object> map);
 
     /**
      * 查找出有效期内，消耗大于最大消耗的素材

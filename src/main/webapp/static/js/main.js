@@ -16,7 +16,7 @@ $(function() {
     mainTabs = $('#mainTabs').tabs({
         fit : true,
         border : false,
-        tools : "#tabTools",
+
         onContextMenu : function(e, title) {
             e.preventDefault();
             indexTabsMenu.menu('show', {
@@ -61,7 +61,10 @@ $(function() {
     layoutWestTree = $('#layout_west_tree').tree({
         url : basePath + '/resource/tree',
         parentField : 'pid',
+        animate:true,
         onClick : function(node) {
+            let nodeDom = $('#layout_west_tree').tree('find', node.id);
+            $('#layout_west_tree').tree('toggle',nodeDom.target);
             var opts = {
                 title : node.text,
                 border : false,
@@ -70,10 +73,10 @@ $(function() {
                 iconCls : node.iconCls
             };
             var url = node.attributes;
-            if (url && url.indexOf("http") == -1) {
+            if (url && url.indexOf("http") === -1) {
                 url = basePath + url;
             }
-            if (node.openMode == 'iframe') {
+            if (node.openMode === 'iframe') {
                 opts.content = '<iframe src="' + url + '" frameborder="0" style="border:0;width:100%;height:99.5%;"></iframe>';
                 addTab(opts);
             } else if (url) {
@@ -156,6 +159,30 @@ function closeTab() {
     if (tab.panel('options').closable) {
         mainTabs.tabs('close', index);
     }
+}
+function closeOtherTabs() {
+    let tab = mainTabs.tabs('getSelected');
+    let options = tab.panel('options');
+    let allTabs = mainTabs.tabs('tabs');
+    let closeTabsTitle = [];
+    $.each(allTabs, function () {
+        let opt = $(this).panel('options');
+        debugger;
+        if (opt.closable && opt.title !== options.title) {
+            closeTabsTitle.push(opt.title);
+        }
+    });
+    for (let i = 0; i < closeTabsTitle.length; i++) mainTabs.tabs('close', closeTabsTitle[i]);
+    mainTabs.tabs('select', options.title);
+}
+function closeAllTabs() {
+    let allTabs = mainTabs.tabs('tabs');
+    let closeTabsTitle = [];
+    $.each(allTabs, function () {
+        let opt = $(this).panel('options');
+        if (opt.closable)  closeTabsTitle.push(opt.title);
+    });
+    for (let i = 0; i < closeTabsTitle.length; i++) mainTabs.tabs('close', closeTabsTitle[i]);
 }
 
 /**

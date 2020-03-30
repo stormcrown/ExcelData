@@ -2,6 +2,9 @@ package cn.dovahkiin.mapper;
 
 import cn.dovahkiin.model.Supplier;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -21,4 +24,6 @@ public interface SupplierMapper extends BaseMapper<Supplier> {
     int updateByPrimaryKeySelective(Supplier record);
 
     int updateByPrimaryKey(Supplier record);
+
+    int toggleByIds(@Param("ids") List<Long> ids, @Param("deleteFlag") int deleteFlag);
 }

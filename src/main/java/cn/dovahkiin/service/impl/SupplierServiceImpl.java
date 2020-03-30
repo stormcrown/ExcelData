@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -35,6 +36,13 @@ public class SupplierServiceImpl extends ServiceImpl<SupplierMapper, Supplier> i
          systemConfigMapper.insertI(systemConfig);
         return insertSelective;
     }
+
+    @Override @Transactional
+    public int toggleBySystemConfigIds(List<Long> systemConfigIds, int deleteFlag) {
+        List<Long> supplierIds = systemConfigMapper.selectSupplierIds(systemConfigIds);
+        return supplierMapper.toggleByIds(supplierIds,deleteFlag);
+    }
+
     @Autowired public void setSupplierMapper(SupplierMapper supplierMapper) { this.supplierMapper = supplierMapper; }
     @Autowired public void setSystemConfigMapper(SystemConfigMapper systemConfigMapper) { this.systemConfigMapper = systemConfigMapper; }
 }

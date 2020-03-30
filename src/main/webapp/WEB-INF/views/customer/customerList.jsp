@@ -63,7 +63,7 @@
         },
             {
                 width: '120',
-                title: '价格分类',
+                title: '收入价格分级',
                 field: 'priceLevel',
                 sortable: true,
                 align:'right',
@@ -81,7 +81,7 @@
             },
             {
                 width: '120',
-                title: '支出分级',
+                title: '支出价格分级',
                 field: 'payLevel',
                 sortable: true,
                 align:'right',
@@ -502,8 +502,8 @@ function customerSearchFun() {
                             <option value="performerName">演员</option>
                             <option value="supplierName">供应商</option>
                             <option value="videoVersionName">视频版本</option>
-                            <option value="priceLevel">价格分级</option>
-                            <option value="payLevel">支出分级</option>
+                            <option value="priceLevel">收入价格分级</option>
+                            <option value="payLevel">支出价格分级</option>
                         </select>
                     </td>
                     <th>客户</th>
@@ -563,11 +563,11 @@ function customerSearchFun() {
                         <button type="button" class="layui-btn layui-btn-radius layui-btn-normal" onclick="customerSearchFun();">查询</button>
                     </td>
                     <td  ><button type="button" class="layui-btn layui-btn-radius layui-btn-danger" onclick="customerCleanFun();" >清空</button></td>
-                    <td>价格分级</td>
+                    <td>收入价格分级</td>
                     <td>
                         <input name="priceLevel.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/priceLevel/combobox',formatter: function(row){ return row['name']+': ￥'+row['basePrice'] }   " />
                     </td>
-                    <td >支出分级</td>
+                    <td >支出价格分级</td>
                     <td>
                         <input name="payLevel.id" class="easyui-combobox"  data-options="width:200,height:40,valueField:'id',textField:'name',url:'${path}/payLevel/combobox',formatter: function(row){ return row['name']+': ￥'+row['basePay'] }   " />
                     </td>

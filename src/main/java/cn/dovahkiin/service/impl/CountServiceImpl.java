@@ -1,13 +1,11 @@
 package cn.dovahkiin.service.impl;
 
+import cn.dovahkiin.commons.utils.StringUtils;
 import cn.dovahkiin.mapper.CountMapper;
 import cn.dovahkiin.mapper.CustomerMapper;
 import cn.dovahkiin.mapper.SystemConfigMapper;
 import cn.dovahkiin.model.SystemConfig;
-import cn.dovahkiin.model.dto.CustomerEffectDto;
-import cn.dovahkiin.model.dto.DayEffectDto;
-import cn.dovahkiin.model.dto.EffectCountDto;
-import cn.dovahkiin.model.dto.LastDayEffectDto;
+import cn.dovahkiin.model.dto.*;
 import cn.dovahkiin.service.ICountService;
 import cn.dovahkiin.util.Const;
 import cn.dovahkiin.util.excel.ExcelConst;
@@ -56,8 +54,56 @@ public class CountServiceImpl implements ICountService {
         return countMapper.count1(map);
     }
     @Override
-    public List<Map> countByModel(Map map) {
+    public List<ModelCountDto> countByModel(Map map) {
         return countMapper.countByModel(map);
+    }
+
+    @Override
+    public Workbook handleModelCountToExcel(List<ModelCountDto> modelCountDtoList, String sort, String order) {
+        Workbook workbook= new XSSFWorkbook();
+        if(modelCountDtoList==null || modelCountDtoList.size()==0)return workbook;
+        NumberFormat nf = NumberFormat.getNumberInstance();
+        nf.setMaximumFractionDigits(2);
+        Sheet sheetCus = workbook.createSheet("分组统计");
+        String [] headCus = new String[]{ "名称","编号","消耗", "记录数"};
+        Row headRowCus = sheetCus.createRow(0);
+        for(int i=0;i<headCus.length;i++){
+            Cell cell = headRowCus.createCell(i);
+            cell.setCellValue(headCus[i]);
+            sheetCus.setColumnWidth(i, 4000);
+        }
+        sheetCus.setColumnWidth(1, 12000);
+
+        modelCountDtoList.sort((dto1,dto2)->{
+            int end = 0;
+            if(sort==null)return end;
+            switch (sort){
+                case "consumption":end = (int) ((dto1.getConsumption() - dto2.getConsumption())*1000D);break;
+                case "code":
+                    if(dto1.getCode()!=null && dto2.getCode()!=null) end = dto1.getCode().compareTo(dto2.getCode());
+                    break;
+                case "name":
+                    if(dto1.getName()!=null && dto2.getName()!=null) end = dto1.getName().compareTo(dto2.getName());
+                    break;
+                case "total":
+                    end = dto1.getTotal()-dto2.getTotal();
+            }
+            if("desc".equals(order))end = -end;
+            return end;
+        });
+        for(int i=0;i<modelCountDtoList.size();i++){
+            Row row = sheetCus.createRow(i+1);
+            ModelCountDto modelCountDto = modelCountDtoList.get(i);
+            if(modelCountDto==null)continue;
+            for(int j=0;j<headCus.length;j++){
+                Cell cell = row .createCell(j);
+                if(j==0)cell.setCellValue(modelCountDto.getName());
+                else if(j==1)cell.setCellValue(modelCountDto.getCode());
+                else if(j==2)cell.setCellValue(nf.format(modelCountDto.getConsumption()));
+                else if(j==3)cell.setCellValue(modelCountDto.getTotal());
+            }
+        }
+        return workbook;
     }
 
     @Override
@@ -178,7 +224,7 @@ public class CountServiceImpl implements ICountService {
     }
 
     @Override
-    public Workbook handleEffConTimeToExcel(EffectCountDto effectCountDto) {
+    public Workbook handleEffConTimeToExcel(EffectCountDto effectCountDto,String sort,String order) {
         Workbook workbook= new XSSFWorkbook();
         if(effectCountDto==null || effectCountDto.getAllPrimaryData()==null || effectCountDto.getAllPrimaryData().size()==0)return workbook;
         NumberFormat nf = NumberFormat.getNumberInstance();
@@ -196,6 +242,24 @@ public class CountServiceImpl implements ICountService {
         sheetCus.setColumnWidth(11, 6000);
 
         List<CustomerEffectDto> customerEffectDtos=effectCountDto.getAllPrimaryData();
+
+        customerEffectDtos.sort((dto1,dto2)->{
+            int end = 0;
+            if(sort==null)return end;
+            //TODO 只做了三个排序
+            switch (sort){
+                case "sumCon":end = (int) ((dto1.getSumCon() - dto2.getSumCon())*1000D);break;
+                case "code":
+                    if(dto1.getCode()!=null && dto2.getCode()!=null) end = dto1.getCode().compareTo(dto2.getCode());
+                    break;
+                case "name":
+                    if(dto1.getName()!=null && dto2.getName()!=null) end = dto1.getName().compareTo(dto2.getName());
+                    break;
+            }
+
+            if("desc".equals(order))end = -end;
+            return end;
+        });
 
         for(int m=0;m<customerEffectDtos.size();m++){
             CustomerEffectDto dto = customerEffectDtos.get(m);
@@ -225,33 +289,6 @@ public class CountServiceImpl implements ICountService {
                     cell.setCellStyle(ExcelConst.getDateCellStyle(sheetCus));
                     cell.setCellValue(dto.getEndDate());
                 }
-                /*
-                switch (i){
-                    case 0:cell.setCellValue(dto.getName());break;
-                    case 1:cell.setCellValue(dto.getCode());break;
-                    case 2:cell.setCellValue(dto.getMaxEffectOn());break;
-                    case 3:cell.setCellValue(dto.getSumCon());break;
-                    case 4:cell.setCellValue(dto.getSumIncome());break;
-                    case 5:cell.setCellValue(dto.getSumPay());break;
-                    case 6: if(dto.getPriceLevelName()!=null) cell.setCellValue( dto.getPriceLevelName()+" ￥ "+  dto.getBasePrice());
-                    break;
-                    case 7: if(dto.getPayLevelName()!=null) cell.setCellValue( dto.getPayLevelName()+" ￥ "+  dto.getBasePay());
-                    break;
-                    case 8:cell.setCellValue(dto.getIncomeRadio());break;
-                    case 9:cell.setCellValue(dto.getPayRadio());break;
-                    case 10:
-                        cell.setCellStyle(ExcelConst.getDateCellStyle(sheetCus));
-                        cell.setCellValue(dto.getCompleteDate());
-                        break;
-                    case 11:
-                        cell.setCellStyle(ExcelConst.getDateCellStyle(sheetCus));
-                        cell.setCellValue(dto.getEndDate());
-                        break;
-                    default:
-                        cell.setCellValue("");
-                        break;
-                }
-                */
         }
         }
         return workbook;

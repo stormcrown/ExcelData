@@ -153,7 +153,7 @@
                             <td></td>
                         </tr>
                         <tr>
-                            <td>价格分级</td>
+                            <td>收入价格分级</td>
                             <td id="priceLevelTD" >${videoCost.customer.priceLevel.name} ￥:${videoCost.customer.priceLevel.basePrice}</td>
                             <td>收入比率（%）</td>
                             <td id = "inComeRatioTD" >

@@ -19,9 +19,17 @@ import java.util.Date;
 public class SystemConfig extends Model<SystemConfig> {
 
     private static final long serialVersionUID = 1L;
-	public static final Long ID = 1L; // 默认的ID ，现在配置只有一套
-	private Long id = ID;
-    /**
+	public static final long ID = 1L;
+	private Long id ;
+
+	public SystemConfig() {
+	}
+	public SystemConfig(Long id, Integer deleteFlag) {
+		this.id = id;
+		this.deleteFlag = deleteFlag;
+	}
+
+	/**
      * 收入比率，百分比。
      */
 	@TableField("default_income_ratio")
@@ -49,7 +57,11 @@ public class SystemConfig extends Model<SystemConfig> {
 
 	@TableField("update_by")
 	private Long updateBy;
-
+	/**
+	 * 是否删除
+	 */
+	@TableField("delete_flag")
+	private Integer deleteFlag;
 	@TableField(exist = false)
 	private String updater;
 
@@ -134,6 +146,14 @@ public class SystemConfig extends Model<SystemConfig> {
 
 	public void setDefaultPayRatio(Double defaultPayRatio) {
 		this.defaultPayRatio = defaultPayRatio;
+	}
+
+	public Integer getDeleteFlag() {
+		return deleteFlag;
+	}
+
+	public void setDeleteFlag(Integer deleteFlag) {
+		this.deleteFlag = deleteFlag;
 	}
 
 	@Override

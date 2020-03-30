@@ -7,6 +7,7 @@ import java.util.Date;
 
 import cn.dovahkiin.commons.shiro.ShiroUser;
 import cn.dovahkiin.commons.utils.StringUtils;
+import cn.dovahkiin.service.ISystemConfigService;
 import com.alibaba.fastjson.JSON;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -36,8 +37,9 @@ import cn.dovahkiin.commons.base.BaseController;
 @RequestMapping("/supplier")
 public class SupplierController extends BaseController {
     private ISupplierService supplierService;
-    @Autowired
-    public void setSupplierService(ISupplierService supplierService) { this.supplierService = supplierService; }
+    private ISystemConfigService iSystemConfigService;
+    @Autowired public void setSupplierService(ISupplierService supplierService) { this.supplierService = supplierService; }
+    @Autowired public void setiSystemConfigService(ISystemConfigService iSystemConfigService) { this.iSystemConfigService = iSystemConfigService; }
 
     @GetMapping("/manager")
     @RequiresPermissions("/supplier/manager")
@@ -119,17 +121,19 @@ public class SupplierController extends BaseController {
         if(ids!=null){
             String[] idss = ids.split(",");
             List<Supplier> list = new ArrayList<Supplier>();
+            List<Long> supperIds = new ArrayList<>();
             for(String str:idss){
                 if(StringUtils.hasText(str) && StringUtils.isInteger(str) ){
-                    Supplier supplier = new Supplier();
-                    supplier.setId(Long.valueOf(str));
-                    supplier.setDeleteFlag(1);
-                    list.add(supplier);
+                    list.add(new Supplier(Long.valueOf(str),1));
+                    supperIds.add(Long.valueOf(str));
                 }
             }
             if(list.size()>0){
                 boolean suc = supplierService.updateBatchById(list);
-                if(suc)return renderSuccess("删除成功！");
+                if(suc){
+                    iSystemConfigService.toggleBySupplierIds(supperIds,1,getUserId()  );
+                    return renderSuccess("删除成功！");
+                }
             }
         }
 
@@ -148,17 +152,20 @@ public Object rollback(String ids) {
         if(ids!=null){
             String[] idss = ids.split(",");
             List<Supplier> list = new ArrayList<Supplier>();
+            List<Long> supperIds = new ArrayList<>();
             for(String str:idss){
                 if(StringUtils.hasText(str) && StringUtils.isInteger(str) ){
-                    Supplier supplier = new Supplier();
-                    supplier.setId(Long.valueOf(str));
-                    supplier.setDeleteFlag(0);
-                    list.add(supplier);
+                    list.add(new Supplier(Long.valueOf(str),0));
+                    supperIds.add(Long.valueOf(str));
                 }
             }
             if(list.size()>0){
+
                 boolean suc = supplierService.updateBatchById(list);
-                if(suc)return renderSuccess("恢复成功！");
+                if(suc){
+                    iSystemConfigService.toggleBySupplierIds(supperIds,0,getUserId()  );
+                    return renderSuccess("恢复成功！");
+                }
             }
         }
             return renderError("恢复失败！");

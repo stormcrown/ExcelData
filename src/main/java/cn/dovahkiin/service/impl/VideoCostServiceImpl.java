@@ -825,11 +825,11 @@ public class VideoCostServiceImpl implements IVideoCostService {
         cell_2_12.setCellValue("演员");
         cell_2_12.setCellStyle(border_title);
         Cell cell_2_13 = ttile_row.createCell(13);
-        cell_2_13.setCellValue("价格分类");
+        cell_2_13.setCellValue("收入价格分级");
         cell_2_13.setCellStyle(border_title);
 
         Cell cell_2_pay = ttile_row.createCell(14);
-        cell_2_pay.setCellValue("支出分类");
+        cell_2_pay.setCellValue("支出价格分级");
         cell_2_pay.setCellStyle(border_title);
 
 
@@ -1193,7 +1193,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
         String inj_str = "'|and|exec|insert|select|delete|update|count|*|%|chr|mid|master|truncate|char|declare|;|or|-|+|,";
         String inj_stra[] = StringUtils.split(inj_str, "|");
         for (int i = 0; i < inj_stra.length; i++) {
-            if (str.indexOf(inj_stra[i]) >= 0) {
+            if (str.contains(inj_stra[i])) {
                 return true;
             }
         }

@@ -71,7 +71,7 @@
 
                 </tr>
                 <tr>
-                    <td >价格分级</td>
+                    <td >收入价格分级</td>
                     <td>
                         <input name="priceLevel.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/priceLevel/combobox',formatter: function(row){ return row['name']+': ￥'+row['basePrice'] },value:'${customer.priceLevel.id}'   " />
                     </td>
@@ -81,7 +81,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>支出分级</td>
+                    <td>支出价格分级</td>
                     <td   >
                         <input name="payLevel.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/payLevel/combobox',formatter: function(row){ return row['name']+': ￥'+row['basePay'] },value:'${customer.payLevel.id}'   " />
                     </td>

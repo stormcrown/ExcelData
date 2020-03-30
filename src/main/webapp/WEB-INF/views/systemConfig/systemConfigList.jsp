@@ -12,7 +12,7 @@
         idField : 'id',
         pageSize : 100,
         queryParams :{
-
+            deleteFlag:0
         },
         onBeforeLoad:function(param){
             $('#systemConfigDataGrid').datagrid('clearChecked').datagrid('clearSelections');
@@ -176,17 +176,19 @@ function systemConfigEditFun(id) {
  * 删除
  */
  function systemConfigDeleteFun(id) {
-     var tip="";
-        if (id == undefined) {
+     let tip="";
+        if (id === undefined) {
             id="";
-            var rows = systemConfigDataGrid.datagrid('getSelections');
-            for(var i=0;i<rows.length;i++){
+            let rows = systemConfigDataGrid.datagrid('getSelections');
+            for(let i=0;i<rows.length;i++){
                 id+=(rows[i].id+",");
-                tip+=( "<br/>名称："+ redFont(rows[i].name) +" 编码："+ redFont(rows[i].code)+" ；");
+                let name ='';
+                if(rows[i]!=null &&   rows[i].supplier  !=null)name = rows[i].supplier.name;
+                tip+=( "<br/>"+ redFont(name) );
             }
         }
-     if(id!=undefined && id!=null && id!='' ){
-        parent.$.messager.confirm('询问', '您是否要删除当前角色？'+tip, function(b) {
+     if(id!==undefined && id!=null && id!=='' ){
+        parent.$.messager.confirm('询问', '您是否要删除当前配置及对应供应商？'+tip, function(b) {
             if (b) {
                 progressLoad();
                 $.post('${path}/systemConfig/delete', {
@@ -210,13 +212,15 @@ function systemConfigEditFun(id) {
      var tip="";
         if (id == undefined) {
             id="";
-            var rows = systemConfigDataGrid.datagrid('getSelections');
-            for(var i=0;i<rows.length;i++){
+            let rows = systemConfigDataGrid.datagrid('getSelections');
+            for(let i=0;i<rows.length;i++){
                 id+=(rows[i].id+",");
-                tip+=( "<br/>名称："+ redFont(rows[i].name) +" 编码："+ redFont(rows[i].code)+" ；");
+                let name ='';
+                if(rows[i]!=null &&   rows[i].supplier  !=null)name = rows[i].supplier.name;
+                tip+=( "<br/>"+ redFont(name) );
             }
         }
-     if(id!=undefined && id!=null && id!='' ){
+     if(id!==undefined && id!=null && id!=='' ){
         parent.$.messager.confirm('询问', '您是否要恢复当前数据？'+tip, function(b) {
             if (b) {
                 progressLoad();
@@ -259,14 +263,14 @@ function systemConfigSearchFun() {
 <%--                    <td><input id="code" name="code" type="text" class="layui-input" /></td>--%>
 <%--                    <th>名称:&nbsp;</th>--%>
 <%--                    <td><input id="name" name="name" type="text" class="layui-input" /></td>--%>
-<%--                    <th>是否删除:&nbsp;</th>--%>
-<%--                    <td>--%>
-<%--                        <select id="deleteFlag" name="deleteFlag" class="layui-input" style="width: 100px;" >--%>
-<%--                            <option value="0" selected class="layui-input" style="color: green">通常</option>--%>
-<%--                            <option value="1" class="layui-input" style="color: red;">已删除</option>--%>
-<%--                            <option value="" class="layui-input" >全部</option>--%>
-<%--                        </select>--%>
-<%--                    </td>--%>
+                    <th>是否删除:&nbsp;</th>
+                    <td>
+                        <select id="deleteFlag" name="deleteFlag" class="layui-input" style="width: 100px;" >
+                            <option value="0" selected class="layui-input" style="color: green">通常</option>
+                            <option value="1" class="layui-input" style="color: red;">已删除</option>
+                            <option value="" class="layui-input" >全部</option>
+                        </select>
+                    </td>
                     <td width="50px;" ></td>
                     <td>
                         <button type="button" class="layui-btn layui-btn-radius layui-btn-normal" onclick="systemConfigSearchFun();">查询</button>
@@ -292,7 +296,7 @@ function systemConfigSearchFun() {
     <shiro:hasPermission name="/systemConfig/delete">
         <a onclick="systemConfigDeleteFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-remove  icon-red'">删除</a>
     </shiro:hasPermission>
-    <shiro:hasPermission name="/systemConfig/add">
+    <shiro:hasPermission name="/systemConfig/rollback">
         <a onclick="systemConfigRollbackFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-share-alt icon-green'">恢复</a>
     </shiro:hasPermission>
 </div>

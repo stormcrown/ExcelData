@@ -122,7 +122,6 @@
             <result column="create_time" property="createTime"/>
             <result column="delete_flag" property="deleteFlag"/>
         </association>
-
     </resultMap>
     <resultMap id="BaseResultMapWithCount" type="cn.dovahkiin.model.VideoCost" extends="BaseResultMap">
         <result column="cumulativeConsumptionByPro" property="cumulativeConsumptionByPro"/>
@@ -342,6 +341,9 @@
         FROM video_cost vc
         LEFT JOIN optimizer op on vc.optimizer_id = op.id
         WHERE vc.consumption > 0 and vc.delete_flag = 0
+        <if test="recoredDate_start!=null and recoredDate_end!=null">
+            and ( vc.recored_date between #{recoredDate_start} and #{recoredDate_end} )
+        </if>
         <choose>
             <when test="userId!=null and userId!='' and optimizer == null ">and vc.created_by = #{userId}</when>
             <when test="userId==null and optimizer != null and optimizer != ''" >and op.name = #{optimizer} </when>
@@ -539,27 +541,6 @@
         SELECT
         count(vc.id)
         FROM video_cost vc
-        left join (
-        SELECT
-        customer_id,cumulativeConsumptionByPro,@rownum :=@rownum + 1 AS cumulativeConsumptionRankingByProglam
-        FROM
-        (
-        SELECT
-        vc.customer_id,
-        SUM(vc.consumption) AS cumulativeConsumptionByPro
-        FROM video_cost vc
-        LEFT JOIN optimizer op on vc.optimizer_id = op.id
-        WHERE consumption > 0 and vc.delete_flag = 0
-        <choose>
-            <when test="userId!=null and userId!='' and optimizer == null ">and vc.created_by = #{userId}</when>
-            <when test="userId==null and optimizer != null and optimizer != ''" >and op.name = #{optimizer} </when>
-            <when test="userId!=null and userId!='' and optimizer != null and optimizer != ''" >and ( op.name = #{optimizer} or vc.created_by = #{userId} )  </when>
-        </choose>
-        GROUP BY vc.customer_id
-        ORDER BY cumulativeConsumptionByPro DESC
-        ) t1,
-        (SELECT @rownum := 0) rownum
-        ) pm on vc.customer_id = pm.customer_id
         left join customer cus on cus.id = vc.customer_id
         left join optimizer opt on opt.id = vc.optimizer_id
         left join organization dem on dem.id = vc.demand_sector_id
@@ -719,28 +700,6 @@
         SELECT
           sum(vc.consumption)
         FROM video_cost vc
-        left join (
-        SELECT
-        customer_id,cumulativeConsumptionByPro,@rownum :=@rownum + 1 AS cumulativeConsumptionRankingByProglam
-        FROM
-        (
-        SELECT
-        vc.customer_id,
-        SUM(vc.consumption) AS cumulativeConsumptionByPro
-        FROM video_cost vc
-        LEFT JOIN optimizer op on vc.optimizer_id = op.id
-        WHERE vc.consumption > 0 and vc.delete_flag = 0
-        <choose>
-            <when test="userId!=null and userId!='' and optimizer == null ">and vc.created_by = #{userId}</when>
-            <when test="userId==null and optimizer != null and optimizer != ''" >and op.name = #{optimizer} </when>
-            <when test="userId!=null and userId!='' and optimizer != null and optimizer != ''" >and ( op.name = #{optimizer} or vc.created_by = #{userId} )  </when>
-        </choose>
-        GROUP BY vc.customer_id
-        ORDER BY cumulativeConsumptionByPro DESC
-        ) t1,
-        (SELECT @rownum := 0) rownum
-        ) pm on vc.customer_id = pm.customer_id
-
         left join optimizer opt on opt.id = vc.optimizer_id
         left join organization dem on dem.id = vc.demand_sector_id
         left join customer cus on cus.id = vc.customer_id
@@ -890,28 +849,6 @@
         SELECT
         sum(vc.consumption) `sum`,count(vc.id) `total`,COUNT(DISTINCT cus.id) `cus` ,COUNT(DISTINCT tcus.id) `tcus`
         FROM video_cost vc
-        left join (
-        SELECT
-        customer_id,cumulativeConsumptionByPro,@rownum :=@rownum + 1 AS cumulativeConsumptionRankingByProglam
-        FROM
-        (
-        SELECT
-        vc.customer_id,
-        SUM(vc.consumption) AS cumulativeConsumptionByPro
-        FROM video_cost vc
-        LEFT JOIN optimizer op on vc.optimizer_id = op.id
-        WHERE vc.consumption > 0 and vc.delete_flag = 0
-        <choose>
-            <when test="userId!=null and userId!='' and optimizer == null ">and vc.created_by = #{userId}</when>
-            <when test="userId==null and optimizer != null and optimizer != ''" >and op.name = #{optimizer} </when>
-            <when test="userId!=null and userId!='' and optimizer != null and optimizer != ''" >and ( op.name = #{optimizer} or vc.created_by = #{userId} )  </when>
-        </choose>
-        GROUP BY vc.customer_id
-        ORDER BY cumulativeConsumptionByPro DESC
-        ) t1,
-        (SELECT @rownum := 0) rownum
-        ) pm on vc.customer_id = pm.customer_id
-
         left join optimizer opt on opt.id = vc.optimizer_id
         left join organization dem on dem.id = vc.demand_sector_id
         left join customer cus on cus.id = vc.customer_id

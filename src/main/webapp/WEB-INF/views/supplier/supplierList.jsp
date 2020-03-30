@@ -150,8 +150,8 @@ function supplierEditFun(id) {
      var tip="";
         if (id == undefined) {
             id="";
-            var rows = supplierDataGrid.datagrid('getSelections');
-            for(var i=0;i<rows.length;i++){
+            let rows = supplierDataGrid.datagrid('getSelections');
+            for(let i=0;i<rows.length;i++){
                 id+=(rows[i].id+",");
                 tip+=( "<br/>名称："+ redFont(rows[i].name) +" 编码："+ redFont(rows[i].code)+" ；");
             }
@@ -179,7 +179,7 @@ function supplierEditFun(id) {
  */
  function supplierRollbackFun(id) {
      var tip="";
-        if (id == undefined) {
+        if (id === undefined) {
             id="";
             var rows = supplierDataGrid.datagrid('getSelections');
             for(var i=0;i<rows.length;i++){

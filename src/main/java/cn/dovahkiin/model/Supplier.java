@@ -40,7 +40,15 @@ public class Supplier extends Model<Supplier> {
 		supplier.deleteFlag = 0;
 		return supplier;
 	}
-    /**
+
+	public Supplier() {
+	}
+	public Supplier(Long id, Integer deleteFlag) {
+		this.id = id;
+		this.deleteFlag = deleteFlag;
+	}
+
+	/**
      * 主键id
      */
 	@TableId(value="id", type= IdType.AUTO)

@@ -64,7 +64,7 @@ create table video_version
 /* 将编号唯一，改为编号，版本Id，供应商Id 唯一 */
 alter table customer add column video_version_id bigint(19) , add index video_version_index (video_version_id) ,add unique index code_version (code,video_version_id);
 
--- 价格分级
+-- 收入价格分级
 DROP TABLE IF EXISTS `price_level`;
 create table price_level
 (
@@ -78,13 +78,13 @@ create table price_level
     `create_by` bigint    NOT NULL  COMMENT '创建人',
     `delete_flag` int(1)      NOT NULL DEFAULT 0 COMMENT '是否删除'
 )ENGINE = InnoDB  CHARACTER SET = utf8 ;
-alter table customer add column price_level_id bigint comment '价格分级外键' , add index price_level_id_index (price_level_id) ;
+alter table customer add column price_level_id bigint comment '收入价格分级外键' , add index price_level_id_index (price_level_id) ;
 ALTER TABLE `shiro`.`resource`
     MODIFY COLUMN `icon` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '资源图标' AFTER `description`;
 
 
 
--- 支出分级
+-- 支出价格分级
 DROP TABLE IF EXISTS `pay_level`;
 create table pay_level
 (
@@ -98,5 +98,7 @@ create table pay_level
     `create_by` bigint    NOT NULL  COMMENT '创建人',
     `delete_flag` int(1)      NOT NULL DEFAULT 0 COMMENT '是否删除'
 )ENGINE = InnoDB  CHARACTER SET = utf8 ;
-alter table customer add column pay_level_id bigint comment '支出分级外键' , add index pay_level_id_index (pay_level_id) ;
+alter table customer add column pay_level_id bigint comment '支出价格分级外键' , add index pay_level_id_index (pay_level_id) ;
+
+alter table system_config add delete_flag int(1) NOT NULL DEFAULT 0 COMMENT '是否删除';
 

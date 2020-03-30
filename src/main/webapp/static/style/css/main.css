@@ -5,7 +5,7 @@
 .head .rtool a.l-btn-plain:hover{color: black;}
 .head .rtool a.l-btn-plain.m-btn-plain-active{color: black;}
 
-.easyui-tabs .tabs{border-color: #A5C4EF;}
+.easyui-tabs .tabs{border-color: #f5f5f500;}
 .easyui-tabs .tabs li a.tabs-inner{border-radius: 2px 2px 0 0;}
 
 .tree-node {padding: 8px 0px;}

@@ -7,6 +7,7 @@ import cn.dovahkiin.commons.utils.StringUtils;
 import cn.dovahkiin.model.Customer;
 import cn.dovahkiin.model.VideoCost;
 import cn.dovahkiin.model.dto.EffectCountDto;
+import cn.dovahkiin.model.dto.ModelCountDto;
 import cn.dovahkiin.service.ICountService;
 import cn.dovahkiin.util.Const;
 import com.alibaba.fastjson.JSON;
@@ -104,6 +105,24 @@ public class CountController extends BaseController {
         map.put("model",model);
         return countService.countByModel(map);
     }
+    @PostMapping("/exportCountByModel")
+    @RequiresPermissions("/count/bar")
+    @ResponseBody
+    public Object exportCountByModel(HttpServletResponse response,String recoredDateRange, Integer type , VideoCost videoCost, Boolean countZero,String model, String[] supplierIds ,String sort,String order) throws IOException {
+        Map map = handleCondition(recoredDateRange,type,videoCost,supplierIds);
+        map.put("countZero",countZero);
+        map.put("model",model);
+        response.setContentType("application/x-msdownload;");
+        response.setHeader("Content-disposition", "attachment; filename=" + new String(("分组统计"+ StringUtils.getDateCode()+".xlsx").getBytes("utf-8"), "ISO8859-1"));
+        List<ModelCountDto> datas=countService.countByModel(map);
+        OutputStream outputStream = response.getOutputStream();
+        Workbook workbook= countService.handleModelCountToExcel(datas,sort,order);
+        workbook.write(outputStream);
+        outputStream.flush();
+        outputStream.close();
+        return renderSuccess();
+    }
+
 
     @PostMapping("/effTimeCount")
     @RequiresPermissions("/count/bar")
@@ -116,14 +135,14 @@ public class CountController extends BaseController {
     @PostMapping("/exportEffTimeCount")
     @RequiresPermissions("/count/bar")
     @ResponseBody
-    public Object exportEffTimeCount(HttpServletResponse response,String recoredDateRange, Integer type , VideoCost videoCost, Boolean countZero, String[] supplierIds) throws IOException {
+    public Object exportEffTimeCount(HttpServletResponse response,String recoredDateRange, Integer type , VideoCost videoCost, Boolean countZero, String[] supplierIds ,String sort,String order) throws IOException {
         Map<String,Object> map = handleCondition(recoredDateRange,type,videoCost,supplierIds);
         map.put("countZero",countZero);
         response.setContentType("application/x-msdownload;");
         response.setHeader("Content-disposition", "attachment; filename=" + new String(("收入支出统计"+ StringUtils.getDateCode()+".xlsx").getBytes("utf-8"), "ISO8859-1"));
         EffectCountDto effectCountDto =countService.countEffConTimeCut(map) ;
         OutputStream outputStream = response.getOutputStream();
-        Workbook workbook= countService.handleEffConTimeToExcel(effectCountDto);
+        Workbook workbook= countService.handleEffConTimeToExcel(effectCountDto,sort,order);
         workbook.write(outputStream);
         outputStream.flush();
         outputStream.close();

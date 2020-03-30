@@ -1,10 +1,10 @@
 <%--标签 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ include file="/commons/global.jsp" %>
-<c:set var="version" value="20200301902" />
+<c:set var="version" value="20200338944516" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="edge" />
-<link rel="shortcut icon" href="${staticPath }/static/style/images/favicon.ico" />
+<link rel="shortcut icon" href="${staticPath }/static/images/favicon.ico" />
 <%-- [EasyUI] --%>
 <link rel="stylesheet" type="text/css" href="${staticPath }/static/js/jquery-easyui/themes/bootstrap/easyui.css">
 <link rel="stylesheet" type="text/css" href="${staticPath }/static/js/jquery-easyui/themes/icon.css">

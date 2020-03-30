@@ -38,7 +38,7 @@ public class Const {
         } catch (Exception ignored){}
     }
 
-    public static final String [] videoCostExcelHead  =new String[] { "排名","编号","客户名","视频名称","行业","需求部门","优化师","视频类型","成片日期","创意","摄像","剪辑",	"演员",	"价格分类",	"支出分类","视频版本",	"供应商","当日消耗", 	"消耗日期"};
+    public static final String [] videoCostExcelHead  =new String[] { "排名","编号","客户名","视频名称","行业","需求部门","优化师","视频类型","成片日期","创意","摄像","剪辑",	"演员",	"收入价格分级",	"支出价格分级","视频版本",	"供应商","当日消耗", 	"消耗日期"};
     public enum VCostEnum{
         CustomerCode(1,String.class,code),
         TrueCustomName(2, TrueCustomer.class,"customer.trueCustomer"),

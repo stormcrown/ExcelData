@@ -197,7 +197,7 @@
                 },
                 {
                     width: '120',
-                    title: '价格分类',
+                    title: '收入价格分级',
                     field: 'priceLevel',
                     sortable: true,
                     align:'right',
@@ -215,7 +215,7 @@
                 },
                 {
                     width: '120',
-                    title: '支出分类',
+                    title: '支出价格分级',
                     field: 'payLevel',
                     sortable: true,
                     align:'right',
@@ -441,21 +441,15 @@
         sortOrder.name = "order";
         sortOrder.value = options.sortOrder;
         temp_form.appendChild(sortOrder);
-
-
         var sortName = document.createElement("input");
         sortName.type = "hidden";
         sortName.name = "sort";
         sortName.value = options.sortName;
         temp_form.appendChild(sortName);
-
-
         //提交数据
         temp_form.submit();
-
         temp_form.removeChild(sortOrder);
         temp_form.removeChild(sortName);
-
     }
 
     /**
@@ -619,8 +613,8 @@
                         <option value="performerName">演员</option>
                         <option value="supplierName">供应商</option>
                         <option value="videoVersionName">视频版本</option>
-                        <option value="priceLevel">价格分级</option>
-                        <option value="payLevel">支出分级</option>
+                        <option value="priceLevel">收入价格分级</option>
+                        <option value="payLevel">支出价格分级</option>
                     </select>
                 </td>
                 <th>消耗日期</th>

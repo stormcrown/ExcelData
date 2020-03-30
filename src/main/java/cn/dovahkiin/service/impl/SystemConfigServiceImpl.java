@@ -41,17 +41,22 @@ public class SystemConfigServiceImpl extends ServiceImpl<SystemConfigMapper, Sys
     }
 
     @Override
-    public List<SystemConfig> selectPageList(Long supplierId, String sort, String orderby, Integer offset, Integer limit) {
-        return systemConfigMapper.selectPageList(supplierId, sort, orderby, offset, limit);
+    public List<SystemConfig> selectPageList(SystemConfig systemConfig,Long supplierId, String sort, String orderby, Integer offset, Integer limit) {
+        return systemConfigMapper.selectPageList(systemConfig, supplierId, sort, orderby, offset, limit);
     }
 
     @Override
-    public int selectTotal(Long supplierId) {
-        return systemConfigMapper.selectTotal(supplierId);
+    public int selectTotal(SystemConfig systemConfig,Long supplierId) {
+        return systemConfigMapper.selectTotal(systemConfig, supplierId);
     }
 
     @Override
     public int updateByPrimaryKey(SystemConfig systemConfig) {
         return systemConfigMapper.updateByPrimaryKey(systemConfig);
+    }
+
+    @Override
+    public int toggleBySupplierIds(List<Long> supplierIds, int deleteFlag, Long userId) {
+        return systemConfigMapper.toggleBySupplierIds(supplierIds,deleteFlag,userId);
     }
 }

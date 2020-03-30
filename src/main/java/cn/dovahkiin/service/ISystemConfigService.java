@@ -2,7 +2,6 @@ package cn.dovahkiin.service;
 
 import cn.dovahkiin.model.SystemConfig;
 import com.baomidou.mybatisplus.service.IService;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -18,8 +17,9 @@ public interface ISystemConfigService extends IService<SystemConfig> {
     int insertI(SystemConfig systemConfig);
     SystemConfig selectByPrimaryKey(Long id);
     SystemConfig selectBySupplierId(Long id);
-    List<SystemConfig> selectPageList(@Param("supplierId")Long supplierId, @Param("sort")String sort, @Param("order")String orderby, @Param("offset")Integer offset, @Param("limit")Integer limit );
-    int selectTotal(@Param("supplierId")Long supplierId);
+    List<SystemConfig> selectPageList(SystemConfig systemConfig,Long supplierId, String sort, String orderby, Integer offset, Integer limit );
+    int selectTotal(SystemConfig systemConfig,Long supplierId);
 
     int updateByPrimaryKey(SystemConfig systemConfig);
+    int toggleBySupplierIds(List<Long> supplierIds,int deleteFlag ,Long userId);
 }

@@ -46,7 +46,7 @@ public class DaoTest  extends BaseTest{
     public void testSelectSy(){
         SystemConfig systemConfig = systemConfigMapper.selectByPrimaryKey(2L);
         logger.info(JSON.toJSONString(systemConfig));
-        List<SystemConfig> systemConfigList = systemConfigMapper.selectPageList(null,"","",0,10);
+        List<SystemConfig> systemConfigList = systemConfigMapper.selectPageList(systemConfig,   null,"","",0,10);
         logger.info(JSON.toJSONString(systemConfigList));
     }
 }

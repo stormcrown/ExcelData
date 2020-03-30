@@ -94,9 +94,19 @@
 		update supplier
 		set `name` = #{name,jdbcType=VARCHAR},
 			code = #{code,jdbcType=VARCHAR},
-			update_time = #{updateTime,jdbcType=TIMESTAMP},
-			create_time = #{createTime,jdbcType=TIMESTAMP},
+			update_time = current_time(),
+
 			delete_flag = #{deleteFlag,jdbcType=INTEGER}
 		where id = #{id,jdbcType=BIGINT}
 	</update>
+	<update id="toggleByIds" >
+		update supplier
+		set
+			update_time = current_time(),
+			delete_flag = #{deleteFlag,jdbcType=INTEGER}
+		where id in (
+		    <foreach collection="ids" separator="," item="id">#{id,jdbcType=BIGINT}</foreach>
+			)
+	</update>
+
 </mapper>

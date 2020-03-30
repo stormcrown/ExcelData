@@ -8,6 +8,7 @@ import java.util.Date;
 import cn.dovahkiin.commons.shiro.ShiroUser;
 import cn.dovahkiin.commons.utils.StringUtils;
 import cn.dovahkiin.model.Supplier;
+import cn.dovahkiin.service.ISupplierService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,9 +35,8 @@ import cn.dovahkiin.commons.base.BaseController;
 @Controller
 @RequestMapping("/systemConfig")
 public class SystemConfigController extends BaseController {
-
-    @Autowired private ISystemConfigService systemConfigService;
-    
+    private ISystemConfigService systemConfigService;
+    private ISupplierService iSupplierService;
     @GetMapping("/manager")
     @RequiresPermissions("/systemConfig/manager")
     public String manager() {
@@ -52,8 +52,8 @@ public class SystemConfigController extends BaseController {
         ShiroUser shiroUser = getShiroUser();
         Supplier supplier = shiroUser.getSupplier();
        Long supid= supplier!=null?supplier.getId():null;
-        pageInfo.setRows(systemConfigService.selectPageList(supid,sort,order,pages.getOffset(),pages.getLimit()));
-        pageInfo.setTotal(systemConfigService.selectTotal(supid));
+        pageInfo.setRows(systemConfigService.selectPageList(systemConfig,supid,sort,order,pages.getOffset(),pages.getLimit()));
+        pageInfo.setTotal(systemConfigService.selectTotal(  systemConfig, supid));
         return pageInfo;
     }
     
@@ -75,7 +75,68 @@ public class SystemConfigController extends BaseController {
 //        }
 //        return "systemConfig/systemConfigEdit";
 //    }
+    /**
+     * 删除
+     * @param ids
+     * @return
+     */
+    @PostMapping("/delete")
+    @RequiresPermissions("/systemConfig/delete")
+    @ResponseBody
+    public Object delete(String ids) {
+        if(ids!=null){
+            String[] idss = ids.split(",");
+            List<SystemConfig> list = new ArrayList<SystemConfig>();
+            List<Long> scIds = new ArrayList<>();
+            for(String str:idss){
+                if(StringUtils.hasText(str) && StringUtils.isInteger(str) ) {
+                    Long id = Long.valueOf(str);
+                    if(id.equals(SystemConfig.ID))return renderError("全局配置不能删除");
+                    list.add(new SystemConfig(id,1));
+                    scIds.add(id);
+                }
+            }
+            if(list.size()>0){
+                boolean suc = systemConfigService.updateBatchById(list);
+                if(suc){
+                    iSupplierService.toggleBySystemConfigIds(scIds,1);
+                    return renderSuccess("删除成功！");
+                }
+            }
+        }
 
+        return renderError("删除失败！");
+
+    }
+    /**
+     * 恢复
+     * @param ids
+     * @return
+     */
+    @PostMapping("/rollback")
+    @RequiresPermissions("/systemConfig/rollback")
+    @ResponseBody
+    public Object rollback(String ids) {
+        if(ids!=null){
+            String[] idss = ids.split(",");
+            List<SystemConfig> list = new ArrayList<SystemConfig>();
+            List<Long> scIds = new ArrayList<>();
+            for(String str:idss){
+                if(StringUtils.hasText(str) && StringUtils.isInteger(str) ) {
+                    list.add(new SystemConfig(Long.valueOf(str),0));
+                    scIds.add(Long.valueOf(str));
+                }
+            }
+            if(list.size()>0){
+                boolean suc = systemConfigService.updateBatchById(list);
+                if(suc){
+                    iSupplierService.toggleBySystemConfigIds(scIds,0);
+                    return renderSuccess("恢复成功！");
+                }
+            }
+        }
+        return renderError("恢复失败！");
+    }
     /**
      * 编辑
      * @param model
@@ -109,4 +170,9 @@ public class SystemConfigController extends BaseController {
             return renderError("编辑失败！");
         }
     }
+
+    @Autowired
+    public void setSystemConfigService(ISystemConfigService systemConfigService) { this.systemConfigService = systemConfigService; }
+    @Autowired
+    public void setiSupplierService(ISupplierService iSupplierService) { this.iSupplierService = iSupplierService; }
 }
