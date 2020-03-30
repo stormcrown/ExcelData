@@ -15,13 +15,8 @@
 
   </script>
 <style>
-  .layui-logo{
-    background-image:url('${staticPath }/static/images/logo.png');
-    background-position: center;
-    background-repeat: no-repeat;
-  }
   #layout_west_tree, .layui-nav{
-    font-family: 楷体, monospace;
+    font-family: 微软雅黑, monospace;
     font-size: 24px;
   }
 </style>
@@ -33,7 +28,7 @@
 
 <div class="layui-layout layui-layout-admin">
   <div class="layui-header">
-    <div class="layui-logo" ></div>
+    <div class="layui-logo" ><img src="${staticPath }/static/images/logoX.png" style="width: 100%;height: 100%;"></div>
     <ul class="layui-nav layui-layout-left layui-bg-black">
       <li class="layui-nav-item" lay-unselect="">
         <a href="javascript:;"><img src="${staticPath }/static/images/head.jpg" class="layui-nav-img">欢迎！${supplierName} &nbsp;&nbsp;&nbsp; ${name}!</a>
