@@ -294,7 +294,7 @@ public class CountServiceImpl implements ICountService {
 
         List<DayEffectDto> dayEffectDtoList = new ArrayList<>(dayEffectDtoMap.size());
         dayEffectDtoList.addAll(dayEffectDtoMap.values());
-        return new EffectCountDto(customerEffectOnes_all,dayEffectDtoList,totalCon.get(),totalSumCon.get(),totalSumPayCon.get(),totalCus.get(),totalSumIncome.get(),totalSumPay.get());
+        return new EffectCountDto(customerEffectOnes_all,dayEffectDtoList,totalSumCon.get(),totalSumPayCon.get(),totalCus.get(),totalSumIncome.get(),totalSumPay.get());
     }
 
     @Override

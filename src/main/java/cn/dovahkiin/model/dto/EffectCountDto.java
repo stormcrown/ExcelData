@@ -21,10 +21,9 @@ public class EffectCountDto {
     public EffectCountDto() {
     }
 
-    public EffectCountDto(List<CustomerEffectDto> allPrimaryData, List<DayEffectDto> totalDailSumCon, Double totalCon, Double totalSumCon, Double totalSumPayCon, int totalCus, Double totalSumIncome, Double totalSumPay) {
+    public EffectCountDto(List<CustomerEffectDto> allPrimaryData, List<DayEffectDto> totalDailSumCon, Double totalSumCon, Double totalSumPayCon, int totalCus, Double totalSumIncome, Double totalSumPay) {
         this.allPrimaryData = allPrimaryData;
         this.totalDailSumCon = totalDailSumCon;
-        this.totalCon = totalCon;
         this.totalSumCon = totalSumCon;
         this.totalSumPayCon = totalSumPayCon;
         this.totalCus = totalCus;

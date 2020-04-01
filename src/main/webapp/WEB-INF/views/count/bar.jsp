@@ -421,7 +421,7 @@
                 if(totalSumIncome!=null)totalSumIncome=totalSumIncome.toFixed(2);
                 let totalSumPay = data.totalSumPay;
                 if(totalSumPay!=null)totalSumPay=totalSumPay.toFixed(2);
-                $('#totalCon').html(data.totalCon==null?0:data.totalCon.toFixed(2));
+
                 $('#totalSumCon').html(totalSumCon);
                 $('#totalSumPayCon').html(data.totalSumPayCon==null?0:data.totalSumPayCon.toFixed(2));
                 $('#totalSumIncome').html(totalSumIncome);
@@ -802,7 +802,7 @@
                                                         <option value="1" >单个素材</option>
                                                     </select>
                                                 </td>
-                                                <td>消耗： <span id="totalCon" style="color:red" >0</span> ；收入有效消耗： <span id="totalSumCon" style="color:red" >0</span> ；支出有效消耗： <span id="totalSumPayCon" style="color:red" >0</span> ；收入：<span id="totalSumIncome" style="color:red"></span>；支出：<span id="totalSumPay" style="color: red" ></span>；素材数量：<span id="totalCus" style="color: red" ></span>； </td>
+                                                <td>收入有效消耗： <span id="totalSumCon" style="color:red" >0</span> ；支出有效消耗： <span id="totalSumPayCon" style="color:red" >0</span> ；收入：<span id="totalSumIncome" style="color:red"></span>；支出：<span id="totalSumPay" style="color: red" ></span>；素材数量：<span id="totalCus" style="color: red" ></span>； </td>
                                             </tr>
                                         </table>
                                         <div class="layui-collapse" >
