@@ -8,6 +8,7 @@
 		<result column="default_income_ratio" property="defaultIncomeRatio" />
 		<result column="default_pay_ratio" property="defaultPayRatio" />
 		<result column="default_max_effect_con" property="defaultMaxEffectCon" />
+		<result column="default_pay_max_effect_con" property="defaultPayMaxEffectCon" />
 		<result column="default_max_effect_range" property="defaultMaxEffectRange" />
 		<result column="update_time" property="updateTime" />
 		<result column="update_by" property="updateBy" />
@@ -16,7 +17,7 @@
 		<association property="supplier" javaType="cn.dovahkiin.model.Supplier" columnPrefix="supplier_" resultMap="cn.dovahkiin.mapper.SupplierMapper.BaseResultMap" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, supplier_id, default_income_ratio, default_pay_ratio,default_max_effect_con, default_max_effect_range,
+		id, supplier_id, default_income_ratio, default_pay_ratio,default_max_effect_con,default_pay_max_effect_con, default_max_effect_range,
     update_time, update_by, delete_flag
 	</sql>
 	<sql id="Base_Column_List_table_sc">
@@ -25,15 +26,16 @@
 		sc.default_income_ratio,
 		sc.default_pay_ratio,
 		sc.default_max_effect_con,
+		sc.default_pay_max_effect_con,
 		sc.default_max_effect_range,
     	sc.update_time,
 		sc.update_by, sc.delete_flag
 	</sql>
 	<insert id="insertI" keyColumn="id" keyProperty="id" parameterType="cn.dovahkiin.model.SystemConfig" useGeneratedKeys="true">
-		insert into system_config (supplier_id, default_income_ratio, default_pay_ratio,default_max_effect_con,
+		insert into system_config (supplier_id, default_income_ratio, default_pay_ratio,default_max_effect_con,default_pay_max_effect_con,
 								   default_max_effect_range, update_time, update_by, delete_flag
 		)
-		values (#{supplier.id,jdbcType=BIGINT}, #{defaultIncomeRatio,jdbcType=DOUBLE},#{defaultPayRatio,jdbcType=DOUBLE}, #{defaultMaxEffectCon,jdbcType=DOUBLE},
+		values (#{supplier.id,jdbcType=BIGINT}, #{defaultIncomeRatio,jdbcType=DOUBLE},#{defaultPayRatio,jdbcType=DOUBLE}, #{defaultMaxEffectCon,jdbcType=DOUBLE},#{defaultPayMaxEffectCon,jdbcType=DOUBLE},
 				#{defaultMaxEffectRange,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT},#{deleteFlag}
 			   )
 	</insert>
@@ -84,6 +86,7 @@
 			<choose>
 				<when test="sort=='defaultIncomeRatio'">sc.`default_income_ratio`</when>
 				<when test="sort=='defaultMaxEffectCon'">sc.`default_max_effect_con`</when>
+				<when test="sort=='defaultPayMaxEffectCon'">sc.`default_pay_max_effect_con`</when>
 				<when test="sort=='defaultMaxEffectRange'">sc.`default_max_effect_range`</when>
 				<when test="sort=='updateTime'">sc.`update_time`</when>
 				<when test="sort=='updateBy'">sc.`update_by`</when>
@@ -121,6 +124,7 @@
 			default_income_ratio = #{defaultIncomeRatio,jdbcType=DOUBLE},
 			default_pay_ratio = #{defaultPayRatio,jdbcType=DOUBLE},
 			default_max_effect_con = #{defaultMaxEffectCon,jdbcType=DOUBLE},
+			default_pay_max_effect_con = #{defaultPayMaxEffectCon,jdbcType=DOUBLE},
 			default_max_effect_range = #{defaultMaxEffectRange,jdbcType=INTEGER},
 			update_time = #{updateTime,jdbcType=TIMESTAMP},
 			update_by = #{updateBy,jdbcType=BIGINT}

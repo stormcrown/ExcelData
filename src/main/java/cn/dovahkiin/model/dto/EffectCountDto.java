@@ -8,14 +8,29 @@ public class EffectCountDto {
     private List<CustomerEffectDto> allPrimaryData;
     /**每日总和*/
     private List<DayEffectDto> totalDailSumCon;
+    private Double totalCon;
     /**总有效消耗求和*/
     private Double totalSumCon;
+    private Double totalSumPayCon;
     /**总素材数量*/
     private int totalCus;
     /**总收入求和*/
     private Double totalSumIncome;
     private Double totalSumPay;
 
+    public EffectCountDto() {
+    }
+
+    public EffectCountDto(List<CustomerEffectDto> allPrimaryData, List<DayEffectDto> totalDailSumCon, Double totalCon, Double totalSumCon, Double totalSumPayCon, int totalCus, Double totalSumIncome, Double totalSumPay) {
+        this.allPrimaryData = allPrimaryData;
+        this.totalDailSumCon = totalDailSumCon;
+        this.totalCon = totalCon;
+        this.totalSumCon = totalSumCon;
+        this.totalSumPayCon = totalSumPayCon;
+        this.totalCus = totalCus;
+        this.totalSumIncome = totalSumIncome;
+        this.totalSumPay = totalSumPay;
+    }
 
     public List<CustomerEffectDto> getAllPrimaryData() {
         return allPrimaryData;
@@ -63,5 +78,21 @@ public class EffectCountDto {
 
     public void setTotalSumPay(Double totalSumPay) {
         this.totalSumPay = totalSumPay;
+    }
+
+    public Double getTotalSumPayCon() {
+        return totalSumPayCon;
+    }
+
+    public void setTotalSumPayCon(Double totalSumPayCon) {
+        this.totalSumPayCon = totalSumPayCon;
+    }
+
+    public Double getTotalCon() {
+        return totalCon;
+    }
+
+    public void setTotalCon(Double totalCon) {
+        this.totalCon = totalCon;
     }
 }

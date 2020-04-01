@@ -67,8 +67,10 @@
                     <td  colspan="1" class="easyui-tooltip" title="不填表示使用系统默认配置" >
                         <input name="maxEffectCon" type="text" class="easyui-numberbox"  data-options="width:200,min:0,precision:2,value:'${customer.maxEffectCon}'">
                     </td>
-                    <td></td><td></td>
-
+                    <td>支出最大有效消耗</td>
+                    <td  colspan="1" class="easyui-tooltip" title="不填表示使用系统默认配置" >
+                        <input name="payMaxEffectCon" type="text" class="easyui-numberbox"  data-options="width:200,min:0,precision:2,value:'${customer.payMaxEffectCon}'">
+                    </td>
                 </tr>
                 <tr>
                     <td >收入价格分级</td>
@@ -85,7 +87,7 @@
                     <td   >
                         <input name="payLevel.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/payLevel/combobox',formatter: function(row){ return row['name']+': ￥'+row['basePay'] },value:'${customer.payLevel.id}'   " />
                     </td>
-                    <td>支出比率(%)</td>
+                    <td class="easyui-tooltip" title="不填表示使用系统默认配置" >支出比率(%)</td>
                     <td  colspan="1"  >
                         <input name="payRatio" type="text" class="easyui-numberbox"  data-options="width:200,min:0,precision:2,value:'${customer.payRatio}'">
                     </td>

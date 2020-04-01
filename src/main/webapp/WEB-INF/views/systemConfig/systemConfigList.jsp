@@ -55,6 +55,15 @@
                 return value;
             }
         },
+            {
+                width : '200',
+                title : '默认支出最大有效消耗',
+                field : 'defaultPayMaxEffectCon',
+                sortable : true,
+                formatter : function(value, row, index) {
+                    return value;
+                }
+            },
          {
             width : '140',
             title : '默认素材有效时长（日）',

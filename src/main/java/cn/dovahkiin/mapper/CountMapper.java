@@ -25,7 +25,7 @@ public interface CountMapper  {
     List<Map<String,Object>> countByOptimizer(Map<String,Object> map);
     List<ModelCountDto> countByModel(Map<String,Object> map);
 
-    /**
+    /* *
      * 查找出有效期内，消耗大于最大消耗的素材
      * */
 //    List<Map> effCount1(@Param("effectDays")Integer effectDays ,@Param("maxEffectCon")Double maxEffectCon,@Param("startDate") Date startDate,@Param("endDate") Date endDate);

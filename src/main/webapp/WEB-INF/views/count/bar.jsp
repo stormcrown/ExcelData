@@ -36,8 +36,8 @@
             idField:'id',
             height:'auto',
             width:'auto',
-            pageSize:3,
-            pageList: [3,15, 20, 30, 40, 50, 100, 200, 300, 400, 500,1000],
+            pageSize:10,
+            pageList: [10,15, 20, 30, 40, 50, 100, 200, 300, 400, 500,1000],
             columns: [[
                 {field:'id',  sortable: true, title:'id',  },
                 {field:'name',  sortable: true, title:'名称',  },
@@ -86,11 +86,12 @@
                     let value1 = d1[sort];
                     let value2 = d2[sort];
                     let end = 0;
+                    let hou = 1000*60*60;
                     if(value1!=null && value2!=null  && value1!==''&&value2!==''){
-                        if(sort ==='completeData' ||sort ==='endData'){
+                        if(sort ==='completeData' ||sort ==='endDate'  || sort ==='payEndDate' ){
                             value1 =  new Date(value1);
                             value2 =  new Date(value2);
-                            end =  value1.getTime()- value2.getTime();
+                            end =  value1.getTime()/hou- value2.getTime()/hou;
                         }else if( sort ==='name' || sort ==='code' || sort ==='basePrice' || sort ==='basePay' ){
                             end = value1.localeCompare(value2);
                         }
@@ -106,8 +107,11 @@
             columns: [[
                 {field:'code', width:120,  sortable: true, title:'编号',  },
                 {field:'name',  sortable: true, title:'名称',  },
-                {field:'maxEffectOn',width:100,  sortable: true, title:'封顶消耗',  },
-                {field:'sumCon', width:100, sortable: true, title:'有效消耗',  },
+                {field:'maxEffectOn',width:100,  sortable: true, title:'收入封顶消耗',  },
+                {field:'payMaxEffectOn',width:100,  sortable: true, title:'支出封顶消耗',  },
+                {field:'sumCon', width:100, sortable: true, title:'总消耗',  },
+                {field:'sumEffCon', width:100, sortable: true, title:'收入有效消耗',  },
+                {field:'sumEffPayCon', width:100, sortable: true, title:'支出有效消耗',  },
                 {field:'sumPay', width:100, sortable: true, title:'支出',  },
                 {field:'sumIncome', width:100, sortable: true, title:'收入',  },
                 {field:'basePrice',width:100,  sortable: true, title:'固定收入',  },
@@ -115,7 +119,8 @@
                 {field:'incomeRadio', width:80, sortable: true, title:'收入比率（%）',  },
                 {field:'payRadio', width:80, sortable: true, title:'支出比率（%）',  },
                 {field:'completeData', width:100, sortable: true, title:'成片日期',  },
-                {field:'endData',width:120,  sortable: true, title:'有效期截至（实际）',  },
+                {field:'endDate',width:120,  sortable: true, title:'有效期截至（实际）(收入)',  },
+                {field:'payEndDate',width:120,  sortable: true, title:'有效期截至（实际）（支出）',  },
             ]],
             multiSort:false
         });
@@ -131,7 +136,7 @@
             height:'auto',
             width:'auto',
             pageSize:10,
-            pageList: [10,15, 20, 31, 93],
+            pageList: [10,12,15, 20, 28,29,30,31, 93,365],
             columns: [[
                 {field:'timed',  sortable: true, title:'时间',  },
                 {field:'consumption',  sortable: true, title:'消耗',  },
@@ -416,8 +421,9 @@
                 if(totalSumIncome!=null)totalSumIncome=totalSumIncome.toFixed(2);
                 let totalSumPay = data.totalSumPay;
                 if(totalSumPay!=null)totalSumPay=totalSumPay.toFixed(2);
-
+                $('#totalCon').html(data.totalCon==null?0:data.totalCon.toFixed(2));
                 $('#totalSumCon').html(totalSumCon);
+                $('#totalSumPayCon').html(data.totalSumPayCon==null?0:data.totalSumPayCon.toFixed(2));
                 $('#totalSumIncome').html(totalSumIncome);
                 $('#totalSumPay').html(totalSumPay);
                 $('#totalCus').html(data.totalCus);
@@ -438,13 +444,17 @@
                         completeData:getCommonDate(dataAll[i].completeDate),
                         basePrice:pNPl,
                         basePay:payNPl,
-                        maxEffectOn:dataAll[i].maxEffectOn,
-                        sumCon:con,
-                        sumIncome:inc,
+                        maxEffectOn:dataAll[i].maxEffectOn==null?"":dataAll[i].maxEffectOn.toFixed(2),
+                        payMaxEffectOn:dataAll[i].payMaxEffectOn==null?"":dataAll[i].payMaxEffectOn.toFixed(2),
+                        sumCon:dataAll[i].sumCon==null?"":dataAll[i].sumCon.toFixed(2),
+                        sumEffCon:dataAll[i].sumEffCon==null?"":dataAll[i].sumEffCon.toFixed(2),
+                        sumEffPayCon:dataAll[i].sumEffPayCon==null?"":dataAll[i].sumEffPayCon.toFixed(2),
+                        sumIncome:dataAll[i].sumIncome==null?"":dataAll[i].sumIncome.toFixed(2),
                         incomeRadio:dataAll[i].incomeRadio,
-                        sumPay:pay,
+                        sumPay:dataAll[i].sumPay==null?"":dataAll[i].sumPay.toFixed(2),
                         payRadio:dataAll[i].payRadio,
-                        endData:getCommonDate(dataAll[i].endDate)
+                        endDate:getCommonDate(dataAll[i].endDate),
+                        payEndDate:getCommonDate(dataAll[i].payEndDate),
                     });
                 }
                 setPage(   $("#effCountAll") ,listData,1);
@@ -475,17 +485,21 @@
         let countType = $('#countEffType').val();
         if(countType==='0'){
             dataAll =totalDailSumCon;
-            names.push('有效消耗');
+            names.push('收入有效消耗');
+            names.push('支出有效消耗');
             names.push('收入');
             names.push('支出');
-            let seriesO = {type: 'line', name:'有效消耗',};
+            let seriesO = {type: 'line', name:'收入有效消耗',};
+            let seriesO_payEff ={type: 'line', name:'支出有效消耗',};
             let seriesO_income = {type: 'line', name:'收入',};
             let seriesO_pay = {type: 'line', name:'支出',};
             let dataArr =[];
+            let dataArrPayEff =[];
             let dataArr_income =[];
             let dataArr_pay =[];
             for(let k=0;k<dates.length;k++){
                 let got = false;
+                let gotPayEff = false;
                 let got_income = false;
                 let got_pay = false;
                 for (let j = 0; j < dataAll.length; j++) {
@@ -496,6 +510,11 @@
                         if(dataAll[j].consumptionEffect != null){
                             dataArr.push(dataAll[j].consumptionEffect.toFixed(2));
                             got = true;
+                        }
+
+                        if(dataAll[j].payConsumptionEffect != null){
+                            dataArrPayEff.push(dataAll[j].payConsumptionEffect.toFixed(2));
+                            gotPayEff = true;
                         }
                         if(dataAll[j].income != null){
                             dataArr_income.push(dataAll[j].income.toFixed(2));
@@ -508,38 +527,48 @@
                     }
                 }
                 if(!got)dataArr.push(0);
+                if(!gotPayEff)dataArrPayEff.push(0);
                 if(!got_income)dataArr_income.push(0);
                 if(!got_pay)dataArr_pay.push(0);
             }
             seriesO.data = dataArr;
+            seriesO_payEff.data = dataArrPayEff;
             seriesO_income.data = dataArr_income;
             seriesO_pay.data = dataArr_pay;
             series.push(seriesO);
+            series.push(seriesO_payEff);
             series.push(seriesO_income);
             series.push(seriesO_pay);
         }else{
             for(let i=0;i<dataAll.length;i++){
                 if(dataAll[i].data==null || dataAll[i].data.length===0)continue;
-                names.push(dataAll[i].name+"——有效消耗");
-                names.push(dataAll[i].name+"——收入");
-                names.push(dataAll[i].name+"——支出");
+                names.push(dataAll[i].name+"—收入有效消耗");
+                names.push(dataAll[i].name+"—支出有效消耗");
+                names.push(dataAll[i].name+"—收入");
+                names.push(dataAll[i].name+"—支出");
                 let seriesO = {
                     type: 'line',smooth: false,
-                    id:dataAll[i].code+"con",name:dataAll[i].name+"——有效消耗",completeDate:dataAll[i].completeDate
+                    id:dataAll[i].code+"con",name:dataAll[i].name+"—收入有效消耗",completeDate:dataAll[i].completeDate
+                };
+                let seriesO_payEff = {
+                    type: 'line',smooth: false,
+                    id:dataAll[i].code+"payCon",name:dataAll[i].name+"—支出有效消耗",completeDate:dataAll[i].completeDate
                 };
                 let seriesO_income = {
                     type: 'line',smooth: false,
-                    id:dataAll[i].code+"inc",name:dataAll[i].name+"——收入",completeDate:dataAll[i].completeDate
+                    id:dataAll[i].code+"inc",name:dataAll[i].name+"—收入",completeDate:dataAll[i].completeDate
                 };
                 let seriesO_pay = {
                     type: 'line',smooth: false,
-                    id:dataAll[i].code+"pay",name:dataAll[i].name+"——收入",completeDate:dataAll[i].completeDate
+                    id:dataAll[i].code+"pay",name:dataAll[i].name+"—支出",completeDate:dataAll[i].completeDate
                 };
                 let dataArr =[];
+                let dataArrPayEff =[];
                 let dataArr_income =[];
                 let dataArr_pay =[];
                 for(let k=0;k<dates.length;k++){
                     let got = false;
+                    let gotPayEff = false;
                     let got_income = false;
                     let got_pay = false;
                     for (let j = 0; j < dataAll[i].data.length; j++) {
@@ -550,6 +579,10 @@
                             if(dataAll[i].data[j].consumptionEffect != null){
                                 dataArr.push(dataAll[i].data[j].consumptionEffect.toFixed(2));
                                 got = true;
+                            }
+                            if(dataAll[i].data[j].payConsumptionEffect != null){
+                                dataArrPayEff.push(dataAll[i].data[j].payConsumptionEffect.toFixed(2));
+                                gotPayEff = true;
                             }
                             if(dataAll[i].data[j].income != null){
                                 dataArr_income.push(dataAll[i].data[j].income.toFixed(2));
@@ -562,13 +595,16 @@
                         }
                     }
                     if(!got)dataArr.push(0);
+                    if(!gotPayEff)dataArrPayEff.push(0);
                     if(!got_income)dataArr_income.push(0);
                     if(!got_pay)dataArr_pay.push(0);
                 }
                 seriesO.data = dataArr;
+                seriesO_payEff.data = dataArrPayEff;
                 seriesO_income.data = dataArr_income;
                 seriesO_pay.data = dataArr_pay;
                 series.push(seriesO);
+                series.push(seriesO_payEff);
                 series.push(seriesO_income);
                 series.push(seriesO_pay);
             }
@@ -766,7 +802,7 @@
                                                         <option value="1" >单个素材</option>
                                                     </select>
                                                 </td>
-                                                <td>有效消耗： <span id="totalSumCon" style="color:red" >0</span> ；收入：<span id="totalSumIncome" style="color:red"></span>；支出：<span id="totalSumPay" style="color: red" ></span>；素材数量：<span id="totalCus" style="color: red" ></span>； </td>
+                                                <td>消耗： <span id="totalCon" style="color:red" >0</span> ；收入有效消耗： <span id="totalSumCon" style="color:red" >0</span> ；支出有效消耗： <span id="totalSumPayCon" style="color:red" >0</span> ；收入：<span id="totalSumIncome" style="color:red"></span>；支出：<span id="totalSumPay" style="color: red" ></span>；素材数量：<span id="totalCus" style="color: red" ></span>； </td>
                                             </tr>
                                         </table>
                                         <div class="layui-collapse" >

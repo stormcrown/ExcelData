@@ -1,20 +1,27 @@
 package cn.dovahkiin.model.dto;
 
+import java.io.*;
 import java.util.Date;
 
-public class DayEffectDto {
+public class DayEffectDto implements Serializable {
+
+
     private String code;
     private Date recoredDate;
     private Double consumptionEffect;
+    private Double payConsumptionEffect;
     private Double income;
     private Double pay=0d;
-
+    public void toPay(){
+        if(consumptionEffect!=null)payConsumptionEffect = consumptionEffect;
+    }
     public DayEffectDto() {
     }
 
     public DayEffectDto(Date recoredDate) {
         this.recoredDate = recoredDate;
         this.consumptionEffect=0d;
+        this.payConsumptionEffect=0d;
         this.income=0d;
         this.pay=0d;
     }
@@ -27,6 +34,7 @@ public class DayEffectDto {
         if(this.income==null)this.income=0d;
         if(this.pay==null)this.pay=0d;
         this.consumptionEffect=0d;
+        this.payConsumptionEffect=0d;
     }
 
     public String getCode() {
@@ -51,6 +59,14 @@ public class DayEffectDto {
 
     public void setConsumptionEffect(Double consumptionEffect) {
         this.consumptionEffect = consumptionEffect;
+    }
+
+    public Double getPayConsumptionEffect() {
+        return payConsumptionEffect;
+    }
+
+    public void setPayConsumptionEffect(Double payConsumptionEffect) {
+        this.payConsumptionEffect = payConsumptionEffect;
     }
 
     public Double getIncome() {

@@ -444,7 +444,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
         Supplier supplier = shiroUser.getSupplier();
         EntityWrapper un_delete = new EntityWrapper();
         List<Organization> organizations = iOrganizationService.selectList(un_delete);
-        Set<String> newOrganizations = new HashSet<>();
+//        Set<String> newOrganizations = new HashSet<>();
         un_delete.eq("delete_flag", 0);
         List<Customer> customers = customerService.selectUnDeleted(null);
         Set<Map<String,Set<String>>> newCus = new HashSet<>();
@@ -473,10 +473,11 @@ public class VideoCostServiceImpl implements IVideoCostService {
                   if(vCostEnum==null)continue;;
                   // 组织
                   if( vCostEnum.getTypee() == Organization.class ){
-                      Organization organization = checkSimpleName(organizations, (String)column);
-                      if (organization == null) organization = checkName(organizations, (String)column);
+//                      Organization organization = checkSimpleName(organizations, (String)column);
+                      Organization organization  = checkName(organizations, (String)column);
                       if (organization == null) {
-                          newOrganizations.add((String)column);
+                          throw new RuntimeException("部门不存在："+(String)column);
+//                          newOrganizations.add((String)column);
                       }
                   }
                    else if(vCostEnum.getTypee() == Industry.class)
@@ -510,12 +511,12 @@ public class VideoCostServiceImpl implements IVideoCostService {
 
         }
 
-        for(String str:newOrganizations){
-            if(StringUtils.isBlank(str))continue;
-            Organization organization =Organization.craateForInsert(str);
-            boolean b =  iOrganizationService.insert(organization);
-            if(b)organizations.add(organization);
-        }
+//        for(String str:newOrganizations){
+//            if(StringUtils.isBlank(str))continue;
+//            Organization organization =Organization.craateForInsert(str);
+//            boolean b =  iOrganizationService.insert(organization);
+//            if(b)organizations.add(organization);
+//        }
         for(String str:newEditorNames){
             if(StringUtils.isBlank(str))continue;
             Editor editor = Editor.craateForInsert(str);

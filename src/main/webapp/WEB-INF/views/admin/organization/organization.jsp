@@ -20,10 +20,14 @@
             columns : [ [ {
                 field : 'code',
                 title : '编号',
-                width : 40
+                width : 80
             },{
                 field : 'name',
                 title : '部门名称',
+                width : 180
+            },{
+                field : 'simpleNames',
+                title : '部门简称',
                 width : 180
             },
                 {

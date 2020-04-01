@@ -41,6 +41,8 @@ public class SystemConfig extends Model<SystemConfig> {
      */
 	@TableField("default_max_effect_con")
 	private Double defaultMaxEffectCon;
+	@TableField("default_pay_max_effect_con")
+	private Double defaultPayMaxEffectCon;
     /**
      * 默认生命周期
      */
@@ -90,6 +92,14 @@ public class SystemConfig extends Model<SystemConfig> {
 
 	public void setDefaultMaxEffectCon(Double defaultMaxEffectCon) {
 		this.defaultMaxEffectCon = defaultMaxEffectCon;
+	}
+
+	public Double getDefaultPayMaxEffectCon() {
+		return defaultPayMaxEffectCon;
+	}
+
+	public void setDefaultPayMaxEffectCon(Double defaultPayMaxEffectCon) {
+		this.defaultPayMaxEffectCon = defaultPayMaxEffectCon;
 	}
 
 	public Integer getDefaultMaxEffectRange() {

@@ -404,6 +404,7 @@
 		pal.base_pay as basePay,pal.name as payLevelName,
 		min( cus.complete_date) as completeDate,
 		COALESCE(  cus.max_effect_con ,sc.default_max_effect_con,#{defaultConfig.defaultMaxEffectCon} ) as maxEffectOn,
+		COALESCE(  cus.pay_max_effect_con ,sc.default_pay_max_effect_con,#{defaultConfig.defaultPayMaxEffectCon} ) as payMaxEffectOn,
 		COALESCE(cus.income_ratio, sc.default_income_ratio,#{defaultConfig.defaultIncomeRatio} ) as incomeRadio,
 		COALESCE(cus.pay_ratio , sc.default_pay_ratio,#{defaultConfig.defaultPayRatio} ) as payRadio,
 		COALESCE(
@@ -414,7 +415,6 @@
 		DATE_ADD(cus.complete_date, INTERVAL sc.default_max_effect_range day),
 		DATE_ADD(cus.complete_date, INTERVAL #{defaultConfig.defaultMaxEffectRange} day)
 		) and vc.recored_date >= cus.complete_date THEN consumption ELSE 0 end ) sumCon
-
 		from video_cost vc
 		LEFT JOIN  customer cus on vc.customer_id = cus.id and  cus.delete_flag = 0
 		LEFT JOIN supplier sup on sup.id = cus.supplier_id and sup.delete_flag = 0
@@ -518,17 +518,17 @@
 	<select id="selectLastDay"  resultType="cn.dovahkiin.model.dto.LastDayEffectDto" >
 		select
 		code,
-		recoredDate , default_max_effect_con as maxEffectOn,
+		recoredDate ,
 		@lei_jia := @lei_jia +  consumption  as sumCon
 		from	(
 		select
-			cus.code as code, COALESCE( cus.max_effect_con  ,sc.default_max_effect_con,#{defaultConfig.defaultMaxEffectCon} ) as default_max_effect_con,
+			cus.code as code,
 			recored_date as recoredDate	,SUM( consumption) AS consumption
 		FROM
 		  (
 		select tx.* from   video_cost tx
 		LEFT JOIN customer ty on tx.customer_id = ty.id and ty.delete_flag = 0
-		where tx.delete_flag = 0 and ty.code =  #{customerCode}
+		where tx.delete_flag = 0 and ty.code =  #{customerCode} and tx.recored_date >= #{completeDateLimit}
 		ORDER BY recored_date -- 先排好序
 		)
 		  vc
@@ -629,7 +629,7 @@
 		) t1 ,
 		(SELECT @lei_jia := 0) lei_jia
 		GROUP BY recoredDate
-		HAVING sumCon &gt; maxEffectOn
+		HAVING sumCon &gt; #{maxValue}
 		LIMIT 1
 	</select>
 
@@ -659,7 +659,7 @@
 										LEFT JOIN pay_level pal ON pal.id = cus.pay_level_id and pal.delete_flag = 0
 
 		<where>
-			vc.delete_flag = 0 and cus.code = #{customerCode}
+			vc.delete_flag = 0 and cus.code = #{customerCode} and vc.recored_date>=#{completeDateLimit}
 			and vc.recored_date BETWEEN #{recoredDate_start } and #{recoredDate_end  }
 			<if test="recoredDate_last!=null" >
 				and vc.recored_date &lt;=#{recoredDate_last}

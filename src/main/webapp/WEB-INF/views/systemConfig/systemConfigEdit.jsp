@@ -44,6 +44,10 @@
                     <td><input id="defaultMaxEffectCon" name="defaultMaxEffectCon" value="${systemConfig.defaultMaxEffectCon}" type="text" class="layui-input easyui-numberbox" data-options="width:200,height:40, required:true,min:0,precision:2" /></td>
                 </tr>
                 <tr>
+                    <td>默认支出最大有效消耗:</td>
+                    <td><input id="defaultPayMaxEffectCon" name="defaultPayMaxEffectCon" value="${systemConfig.defaultPayMaxEffectCon}" type="text" class="layui-input easyui-numberbox" data-options="width:200,height:40, required:true,min:0,precision:2" /></td>
+                </tr>
+                <tr>
                     <td>默认素材有效时长（日）:</td>
                     <td><input id="defaultMaxEffectRange" name="defaultMaxEffectRange" value="${systemConfig.defaultMaxEffectRange}" type="text" class="layui-input easyui-numberbox" data-options="width:200,height:40, required:true,min:0,precision:0" /></td>
                 </tr>

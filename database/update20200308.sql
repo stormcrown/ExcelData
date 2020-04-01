@@ -29,7 +29,7 @@ create table system_config (
     update_by  bigint(19) comment '更新人'
 );
 insert into system_config (id,default_income_ratio,default_pay_ratio,default_max_effect_con ,default_max_effect_range ) value (1,100.00,10.00,100,60) ;
-select * from system_config ;
+
 
 
 -- 供应商
@@ -102,3 +102,6 @@ alter table customer add column pay_level_id bigint comment '支出价格分级�
 
 alter table system_config add delete_flag int(1) NOT NULL DEFAULT 0 COMMENT '是否删除';
 
+alter table system_config add column default_pay_max_effect_con double default 100 comment '默认支出最大有效消耗';
+
+alter table customer add column pay_max_effect_con double comment '支出最大有效消耗';

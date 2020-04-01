@@ -64,6 +64,8 @@ public class Customer extends Model<Customer> {
 	 */
 	@TableField("max_effect_con")
 	private Double maxEffectCon;
+	@TableField("pay_max_effect_con")
+	private Double payMaxEffectCon;
 	/**
 	 * 收入比率 ， 收入 =  固定价格 + 有效消耗 * 收入比率
 	 */
@@ -309,6 +311,14 @@ public class Customer extends Model<Customer> {
 
 	public void setMaxEffectCon(Double maxEffectCon) {
 		this.maxEffectCon = maxEffectCon;
+	}
+
+	public Double getPayMaxEffectCon() {
+		return payMaxEffectCon;
+	}
+
+	public void setPayMaxEffectCon(Double payMaxEffectCon) {
+		this.payMaxEffectCon = payMaxEffectCon;
 	}
 
 	public Double getInComeRatio() {

@@ -21,6 +21,7 @@ public class Const {
     public static final String supplierId = "supplierId";
     public static final String videoCostStr = "videoCost";
     public static final String completeDate = "completeDate";
+    public static final String completeDateLimit = "completeDateLimit";
     public static final String recoredDate = "recoredDate";
     public static final String RECORED_DATE_START ="recoredDate_start";
     public static final String RECORED_DATE_END ="recoredDate_end";

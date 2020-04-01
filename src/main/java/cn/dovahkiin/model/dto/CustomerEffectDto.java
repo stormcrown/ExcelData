@@ -13,12 +13,16 @@ public class CustomerEffectDto {
     private Double basePay;
     private Date completeDate;
     private Date endDate;
+    private Date payEndDate;
     private Double maxEffectOn;
+    private Double payMaxEffectOn;
     private Double incomeRadio;
     private Double payRadio;
     private String priceLevelName;
     private String payLevelName;
     private Double sumCon ;
+    private Double sumEffCon ;
+    private Double sumEffPayCon ;
     private Double sumIncome;
     private Double sumPay;
 
@@ -116,6 +120,22 @@ public class CustomerEffectDto {
         this.priceLevelName = priceLevelName;
     }
 
+    public Double getSumEffCon() {
+        return sumEffCon;
+    }
+
+    public void setSumEffCon(Double sumEffCon) {
+        this.sumEffCon = sumEffCon;
+    }
+
+    public Double getSumEffPayCon() {
+        return sumEffPayCon;
+    }
+
+    public void setSumEffPayCon(Double sumEffPayCon) {
+        this.sumEffPayCon = sumEffPayCon;
+    }
+
     public Double getSumPay() {
         return sumPay;
     }
@@ -146,5 +166,21 @@ public class CustomerEffectDto {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public Double getPayMaxEffectOn() {
+        return payMaxEffectOn;
+    }
+
+    public void setPayMaxEffectOn(Double payMaxEffectOn) {
+        this.payMaxEffectOn = payMaxEffectOn;
+    }
+
+    public Date getPayEndDate() {
+        return payEndDate;
+    }
+
+    public void setPayEndDate(Date payEndDate) {
+        this.payEndDate = payEndDate;
     }
 }
