@@ -1,7 +1,7 @@
 <%--标签 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ include file="/commons/global.jsp" %>
-<c:set var="version" value="20200338944516" />
+<c:set var="version" value="2020040107w9d1d7w" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="edge" />
 <link rel="shortcut icon" href="${staticPath }/static/images/favicon.ico" />
@@ -15,6 +15,7 @@
 <script type="text/javascript" src="${staticPath }/static/js/My97DatePicker/WdatePicker.js"></script>
 <script type="text/javascript" src="${staticPath }/static/js/jquery-easyui/jquery.min.js"></script>
 <script type="text/javascript" src="${staticPath }/static/js/jquery-easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="${staticPath }/static/js/jquery-easyui/datagrid-detailview.js"></script>
 <script type="text/javascript" src="${staticPath }/static/js/jquery-easyui/locale/easyui-lang-zh_CN.js"></script>
 <%-- [echatrs] --%>
 <script type="text/javascript" src="${staticPath }/static/echarts/echarts.js"></script>

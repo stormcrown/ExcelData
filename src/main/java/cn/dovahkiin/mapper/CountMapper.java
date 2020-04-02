@@ -22,7 +22,6 @@ import java.util.Map;
 @Mapper
 public interface CountMapper  {
     List<Map<String,Object>> count1(Map<String,Object> map);
-    List<Map<String,Object>> countByOptimizer(Map<String,Object> map);
     List<ModelCountDto> countByModel(Map<String,Object> map);
 
     /* *

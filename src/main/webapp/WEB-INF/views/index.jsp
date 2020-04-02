@@ -10,6 +10,7 @@
   <link rel="stylesheet" type="text/css" href="${staticPath }/static/style/css/main.css?v=${version}">
   <script type="text/javascript" src="${staticPath }/static/js/main.js?v=${version}"></script>
   <script type="text/javascript" src="${staticPath }/static/common/tools.js?v=${version}"></script>
+  <script type="text/javascript" src="${staticPath }/static/common/countTool.js?v=${version}"></script>
   <script type="text/javascript" src="${staticPath }/static/common/default_method.js?v=${version}"></script>
   <script type="text/javascript">
 

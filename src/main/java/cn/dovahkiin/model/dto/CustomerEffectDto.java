@@ -3,7 +3,6 @@ package cn.dovahkiin.model.dto;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 public class CustomerEffectDto {
 
@@ -13,6 +12,7 @@ public class CustomerEffectDto {
     private Double basePay;
     private Date completeDate;
     private Date endDate;
+    private Date incomeEndDate;
     private Date payEndDate;
     private Double maxEffectOn;
     private Double payMaxEffectOn;
@@ -20,9 +20,10 @@ public class CustomerEffectDto {
     private Double payRadio;
     private String priceLevelName;
     private String payLevelName;
-    private Double sumCon ;
-    private Double sumEffCon ;
-    private Double sumEffPayCon ;
+    private Double sumAllEffCon;  // 总生命周期内消耗
+    private Double sumAllCon; // 查询区间内消耗
+    private Double sumEffCon ; // 总 查询区间内 内收入有效消耗
+    private Double sumEffPayCon ; // 总 查询区间内 内支出有效消耗
     private Double sumIncome;
     private Double sumPay;
 
@@ -40,6 +41,14 @@ public class CustomerEffectDto {
         this.name = name;
     }
 
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
     public Date getCompleteDate() {
         return completeDate;
     }
@@ -48,12 +57,12 @@ public class CustomerEffectDto {
         this.completeDate = completeDate;
     }
 
-    public Date getEndDate() {
-        return endDate;
+    public Date getIncomeEndDate() {
+        return incomeEndDate;
     }
 
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
+    public void setIncomeEndDate(Date incomeEndDate) {
+        this.incomeEndDate = incomeEndDate;
     }
 
     public Double getMaxEffectOn() {
@@ -72,12 +81,12 @@ public class CustomerEffectDto {
         this.incomeRadio = incomeRadio;
     }
 
-    public Double getSumCon() {
-        return sumCon;
+    public Double getSumAllEffCon() {
+        return sumAllEffCon;
     }
 
-    public void setSumCon(Double sumCon) {
-        this.sumCon = sumCon;
+    public void setSumAllEffCon(Double sumAllEffCon) {
+        this.sumAllEffCon = sumAllEffCon;
     }
 
     public Double getBasePrice() {
@@ -174,6 +183,14 @@ public class CustomerEffectDto {
 
     public void setPayMaxEffectOn(Double payMaxEffectOn) {
         this.payMaxEffectOn = payMaxEffectOn;
+    }
+
+    public Double getSumAllCon() {
+        return sumAllCon;
+    }
+
+    public void setSumAllCon(Double sumAllCon) {
+        this.sumAllCon = sumAllCon;
     }
 
     public Date getPayEndDate() {

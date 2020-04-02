@@ -26,6 +26,7 @@ public interface ICustomerService {
     List<Customer> selectByCode(String code);
     List<Customer> selectUnDeleted(Supplier supplier);
     List<Customer> selectForCombobox(Long supplierId);
+    List<Customer> selectForComboboxCode(Long supplierId);
     List<Customer> selectList(Map map);
     int countAll(Customer customer);
     int countFrCheckCodeVersion(String code ,Long versionId,Long selfId);

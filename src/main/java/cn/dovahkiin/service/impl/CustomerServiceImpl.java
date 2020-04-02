@@ -65,6 +65,11 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
     @Override
+    public List<Customer> selectForComboboxCode(Long supplierId) {
+        return customerMapper.selectSimpleListComboxCode(supplierId);
+    }
+
+    @Override
     public List<Customer> selectList(Map map) {
         return customerMapper.selectList(map);
     }

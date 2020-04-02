@@ -22,6 +22,7 @@ public interface CustomerMapper  {
     List<Customer> selectByCode(String code);
     List<Customer> selectList(Map map);
     List<Customer> selectSimpleList(@Param("supplierId")Long supplierId);
+    List<Customer> selectSimpleListComboxCode(@Param("supplierId")Long supplierId);
 
     int selectTotal(Map map);
     int countForCheck(@Param("code")String code,@Param("videoVersionId")Long videoVersionId,@Param("selfId")Long selfId);

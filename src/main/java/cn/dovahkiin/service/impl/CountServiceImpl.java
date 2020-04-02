@@ -111,7 +111,9 @@ public class CountServiceImpl implements ICountService {
 //        EffectCountDto countDto = new EffectCountDto();
         SystemConfig defaultConfig = systemConfigMapper.selectBySupplierId(null);
         map.put("defaultConfig",defaultConfig);
+        String maxValue = "maxValue";
         Date end =  (Date)map.get(Const.RECORED_DATE_END);
+        Date start =  (Date)map.get(Const.RECORED_DATE_START);
         /* 查出所有在有效期内有消耗的素材 */
         List<CustomerEffectDto> customerEffectOnes_all = countMapper.selectEffectCustomer(map);
         /*获得所有数据*/
@@ -120,35 +122,35 @@ public class CountServiceImpl implements ICountService {
             map.put(Const.customerCode,effectDto.getCode());
             map.put(Const.RECORED_DATE_Last, effectDto.getEndDate());
             effectDto.setPayEndDate(effectDto.getEndDate());
+            effectDto.setIncomeEndDate(effectDto.getEndDate());
             List<DayEffectDto> dayEffectDtos = null;
             /* 有溢出的 */
-            if(effectDto.getSumCon() > effectDto.getMaxEffectOn() || effectDto.getSumCon()>effectDto.getPayMaxEffectOn()  ){
+            if(effectDto.getSumAllEffCon() > effectDto.getMaxEffectOn() || effectDto.getSumAllEffCon()>effectDto.getPayMaxEffectOn()  ){
                 /* 找出最后一天的溢出了多少 */
-                String maxValue = "maxValue";
+
                 List<DayEffectDto> dayEffectDtos_income = new Vector<DayEffectDto>();
                 List<DayEffectDto> dayEffectDtos_pay = new Vector<DayEffectDto>();
                 List<DayEffectDto> dayEffectDtos_pay_temp= new Vector<DayEffectDto>();
                 Double out = 0d,outPay=0d;
                 /** import 重要 ，如果收入，支出的结束在同一天，查询数据每日消耗返回的数据 可能是同一个对象 ！！！！同一个对象 ！！！！同一个对象 ！！！！同一个对象 ！！！！  */
                 // 收入
-                if(effectDto.getSumCon() > effectDto.getMaxEffectOn() ){
+                if(effectDto.getSumAllEffCon() > effectDto.getMaxEffectOn() ){
                     map.put(maxValue,effectDto.getMaxEffectOn());
                     LastDayEffectDto lastDayEffectDto = countMapper.selectLastDay(map);
                     // 最后一天的溢出
-
                     if(lastDayEffectDto!=null && lastDayEffectDto.getSumCon()!=null &&effectDto.getMaxEffectOn()!=null  )out=lastDayEffectDto.getSumCon() - effectDto.getMaxEffectOn();
                     if(lastDayEffectDto!=null){
                         map.put(Const.RECORED_DATE_Last, lastDayEffectDto.getRecoredDate());
-                        effectDto.setEndDate(lastDayEffectDto.getRecoredDate());
+                        effectDto.setIncomeEndDate(lastDayEffectDto.getRecoredDate());
                     }
                     dayEffectDtos_income .addAll(countMapper.selectEveryDayCon(map)) ;
                 }else{
-                    map.put(Const.RECORED_DATE_Last, effectDto.getEndDate());
+                    map.put(Const.RECORED_DATE_Last, effectDto.getIncomeEndDate());
                     dayEffectDtos_income .addAll(countMapper.selectEveryDayCon(map)) ;
                 }
                 map.remove(maxValue);
                 //支出
-                if(effectDto.getSumCon()>effectDto.getPayMaxEffectOn() ){
+                if(effectDto.getSumAllEffCon()>effectDto.getPayMaxEffectOn() ){
                     map.put(maxValue,effectDto.getPayMaxEffectOn());
                     LastDayEffectDto lastDayEffectDtoPay = countMapper.selectLastDay(map);
                     if(lastDayEffectDtoPay!=null && lastDayEffectDtoPay.getSumCon()!=null && effectDto.getPayMaxEffectOn()!=null  )outPay=lastDayEffectDtoPay.getSumCon() - effectDto.getPayMaxEffectOn();
@@ -161,7 +163,6 @@ public class CountServiceImpl implements ICountService {
                 else{
                     map.put(maxValue,effectDto.getPayMaxEffectOn());
                     map.put(Const.RECORED_DATE_Last, effectDto.getPayEndDate());
-                    effectDto.setPayEndDate(effectDto.getPayEndDate());
                     dayEffectDtos_pay_temp .addAll(countMapper.selectEveryDayCon(map)) ;
                 }
                 map.remove(maxValue);
@@ -176,7 +177,6 @@ public class CountServiceImpl implements ICountService {
                     } catch (InvocationTargetException e) {
                         e.printStackTrace();
                     }
-
                 });
                 Double finalOutPay = outPay;
                 dayEffectDtos_pay.parallelStream().forEach(dayEffectDto -> {
@@ -186,7 +186,7 @@ public class CountServiceImpl implements ICountService {
                 });
                 Double finalOut = out;
                 dayEffectDtos_income.parallelStream().forEach(dayEffectDto -> {
-                    if(dayEffectDto.getRecoredDate().equals(effectDto.getEndDate())){
+                    if(dayEffectDto.getRecoredDate().equals(effectDto.getIncomeEndDate())){
                         dayEffectDto.setConsumptionEffect(dayEffectDto.getConsumptionEffect() - finalOut);
                     }
                 });
@@ -238,7 +238,9 @@ public class CountServiceImpl implements ICountService {
             });
             // 没有成片日期那天的数据，新增一个
             /* 收入统计加上固定价格 */
-            if(!addPrice.get()) dto.addData(new DayEffectDto(dto.getCode(),dto.getCompleteDate(),dto.getBasePrice(),dto.getBasePay()));
+            if(!addPrice.get()  &&  (  dto.getCompleteDate().equals(start) ||  dto.getCompleteDate().equals(end)  || (  dto.getCompleteDate().after(start) && dto.getCompleteDate().before(end)    )   )  ){
+                dto.addData(new DayEffectDto(dto.getCode(),dto.getCompleteDate(),dto.getBasePrice(),dto.getBasePay()));
+            }
         }));
         /*统计素材的收入和&支出和*/
         customerEffectOnes_all.parallelStream().forEach(dto->{
@@ -274,7 +276,7 @@ public class CountServiceImpl implements ICountService {
         Map<Long ,DayEffectDto> dayEffectDtoMap = new ConcurrentHashMap<>();
         customerEffectOnes_all.forEach(dto -> {
             totalCus.getAndIncrement();
-            totalCon.updateAndGet(v -> v + dto.getSumCon());
+            totalCon.updateAndGet(v -> v + dto.getSumAllEffCon());
             dto.getData().forEach(dayEffectDto -> {
                 totalSumIncome.updateAndGet(v -> v + dayEffectDto.getIncome());
                 totalSumPay.updateAndGet(v -> v + dayEffectDto.getPay());
@@ -304,7 +306,7 @@ public class CountServiceImpl implements ICountService {
         NumberFormat nf = NumberFormat.getNumberInstance();
         nf.setMaximumFractionDigits(2);
         Sheet sheetCus = workbook.createSheet("素材");
-        String [] headCus = new String[]{ "编号","名称","收入封顶消耗", "支出封顶消耗", "消耗" ,"收入有效消耗", "支出有效消耗", "收入","支出", "固定收入","固定支出","收入比率(%)","支出比率(%)","成片日期","收入有效期至（实际）","支出有效期至（实际）" };
+        String [] headCus = new String[]{ "编号","名称","收入封顶消耗", "支出封顶消耗", "生命周期内总消耗", "查询区间内总消耗" ,"收入有效消耗", "支出有效消耗", "收入","支出", "固定收入","固定支出","收入比率(%)","支出比率(%)","成片日期","生命周期至（配置）","收入有效期至（实际）","支出有效期至（实际）" };
         Row headRowCus = sheetCus.createRow(0);
         for(int i=0;i<headCus.length;i++){
             Cell cell = headRowCus.createCell(i);
@@ -324,7 +326,8 @@ public class CountServiceImpl implements ICountService {
             if(sort==null)return end;
             //TODO 只做了三个排序
             switch (sort){
-                case "sumCon":end = (int) ((dto1.getSumCon() - dto2.getSumCon())*1000D);break;
+                case "sumAllEffCon":end = (int) ((dto1.getSumAllEffCon() - dto2.getSumAllEffCon())*1000D);break;
+                case "sumAllCon":end = (int) ((dto1.getSumAllCon() - dto2.getSumAllCon())*1000D);break;
                 case "sumEffCon":end = (int) ((dto1.getSumEffCon() - dto2.getSumEffCon())*1000D);break;
                 case "sumEffPayCon":end = (int) ((dto1.getSumEffPayCon() - dto2.getSumEffPayCon())*1000D);break;
                 case "code":
@@ -348,28 +351,33 @@ public class CountServiceImpl implements ICountService {
                 else if(i==1) cell.setCellValue(dto.getName());
                 else if(i==2) cell.setCellValue(dto.getMaxEffectOn());
                 else if(i==3) cell.setCellValue(dto.getPayMaxEffectOn());
-                else if(i==4) cell.setCellValue(nf.format(dto.getSumCon()) );
-                else if(i==5) cell.setCellValue(nf.format(dto.getSumEffCon()) );
-                else if(i==6) cell.setCellValue(nf.format(dto.getSumEffPayCon()) );
-                else if(i==7) cell.setCellValue(nf.format(dto.getSumIncome()) );
-                else if(i==8) cell.setCellValue(nf.format(dto.getSumPay()));
-                else if(i==9){
+                else if(i==4) cell.setCellValue(nf.format(dto.getSumAllEffCon()) );
+                else if(i==5) cell.setCellValue(nf.format(dto.getSumAllCon()) );
+                else if(i==6) cell.setCellValue(nf.format(dto.getSumEffCon()) );
+                else if(i==7) cell.setCellValue(nf.format(dto.getSumEffPayCon()) );
+                else if(i==8) cell.setCellValue(nf.format(dto.getSumIncome()) );
+                else if(i==9) cell.setCellValue(nf.format(dto.getSumPay()));
+                else if(i==10){
                     if(dto.getPriceLevelName()!=null) cell.setCellValue( dto.getPriceLevelName()+" ￥ "+  dto.getBasePrice());
                 }
-                else if(i==10){
+                else if(i==11){
                     if(dto.getPayLevelName()!=null) cell.setCellValue( dto.getPayLevelName()+" ￥ "+  dto.getBasePay());
                 }
-                else if(i==11) cell.setCellValue(dto.getIncomeRadio());
-                else if(i==12) cell.setCellValue(dto.getPayRadio());
-                else if(i==13){
+                else if(i==12) cell.setCellValue(dto.getIncomeRadio());
+                else if(i==13) cell.setCellValue(dto.getPayRadio());
+                else if(i==14){
                     cell.setCellStyle(ExcelConst.getDateCellStyle(sheetCus));
                     cell.setCellValue(dto.getCompleteDate());
                 }
-                else if(i==14){
+                else if(i==15){
                     cell.setCellStyle(ExcelConst.getDateCellStyle(sheetCus));
                     cell.setCellValue(dto.getEndDate());
                 }
-                else if(i==15){
+                else if(i==16){
+                    cell.setCellStyle(ExcelConst.getDateCellStyle(sheetCus));
+                    cell.setCellValue(dto.getIncomeEndDate());
+                }
+                else if(i==17){
                     cell.setCellStyle(ExcelConst.getDateCellStyle(sheetCus));
                     cell.setCellValue(dto.getPayEndDate());
                 }

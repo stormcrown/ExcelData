@@ -356,6 +356,14 @@
                 <if test="supplierId!=null">and cus.supplier_id =#{supplierId}</if>
         </where>
     </select>
+    <select id="selectSimpleListComboxCode" resultMap="BaseResultMap">
+        select `code` , `name` from customer
+        <where>
+            delete_flag = 0
+            <if test="supplierId!=null">and supplier_id =#{supplierId}</if>
+        </where>
+        GROUP BY `code`
+    </select>
 
     <select id="selectTotal" resultType="java.lang.Integer">
         SELECT

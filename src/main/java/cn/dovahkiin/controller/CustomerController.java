@@ -114,7 +114,16 @@ public class CustomerController extends BaseController {
         ShiroUser shiroUser = getShiroUser();
         Long supplierId = null;
         if(shiroUser.getSupplier()!=null)supplierId = shiroUser.getSupplier().getId();
-        return JSON.toJSON(customerService.selectForCombobox(supplierId));
+        return  customerService.selectForCombobox(supplierId);
+    }
+    @PostMapping("/comboboxCode")
+    @ResponseBody
+    @RequiresPermissions(value = {"/videoCost/dataGrid","/customer/*","/count/effConCount" },logical = Logical.OR)
+    public Object comboboxCode() {
+        ShiroUser shiroUser = getShiroUser();
+        Long supplierId = null;
+        if(shiroUser.getSupplier()!=null)supplierId = shiroUser.getSupplier().getId();
+        return customerService.selectForComboboxCode(supplierId);
     }
     /**
      * 添加页面

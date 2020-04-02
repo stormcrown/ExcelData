@@ -50,6 +50,11 @@ public class CountController extends BaseController {
     public String manager() {
         return "count/bar";
     }
+    @GetMapping("/effConCount")
+    @RequiresPermissions("/count/effConCount")
+    public String managerEffConCount() {
+        return "count/effConCount";
+    }
     private Map<String,Object> handleCondition(String recoredDateRange ,Integer type, VideoCost videoCost,String[] supplierIds){
         Map<String,Object> map = new HashMap<>();
         ShiroUser user = getShiroUser();
@@ -96,6 +101,7 @@ public class CountController extends BaseController {
         Map map = handleCondition(recoredDateRange,type,videoCost,supplierIds);
         return countService.count1(map);
     }
+
     @PostMapping("/countByModel")
     @RequiresPermissions("/count/bar")
     @ResponseBody
@@ -125,7 +131,7 @@ public class CountController extends BaseController {
 
 
     @PostMapping("/effTimeCount")
-    @RequiresPermissions("/count/bar")
+    @RequiresPermissions("/count/effConCount")
     @ResponseBody
     public Object effTimeCount(String recoredDateRange, Integer type , VideoCost videoCost,Boolean countZero,String[] supplierIds) {
         Map<String,Object> map = handleCondition(recoredDateRange,type,videoCost,supplierIds);
@@ -133,7 +139,7 @@ public class CountController extends BaseController {
         return countService.countEffConTimeCut(map);
     }
     @PostMapping("/exportEffTimeCount")
-    @RequiresPermissions("/count/bar")
+    @RequiresPermissions("/count/effConCount")
     @ResponseBody
     public Object exportEffTimeCount(HttpServletResponse response,String recoredDateRange, Integer type , VideoCost videoCost, Boolean countZero, String[] supplierIds ,String sort,String order) throws IOException {
         Map<String,Object> map = handleCondition(recoredDateRange,type,videoCost,supplierIds);

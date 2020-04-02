@@ -97,106 +97,6 @@
 		GROUP BY days
 	</select>
 
-
-	<select id="countByOptimizer" resultType="hashmap" >
-		SELECT
-		opt.id, opt.name,
-		sum( vc.`consumption` ) consumption,
-		count(vc.id) total
-		FROM video_cost vc
-		left join optimizer opt on opt.id = vc.optimizer_id
-		left join organization dem on dem.id = vc.demand_sector_id
-		left join customer cus on cus.id = vc.customer_id
-		left join product_type pty on pty.id = cus.product_type_id
-		left join industry ind on ind.id = cus.industry_id
-		left join video_type vdt on vdt.id = cus.video_type_id
-		left join originality ori on ori.id = cus.originality_id
-		left join photographer pho on pho.id = cus.photographer_id
-		left join editor edi on edi.id = cus.editor_id
-		LEFT JOIN performer per1 ON per1.id = cus.performer1_id
-		LEFT JOIN performer per2 ON per2.id = cus.performer2_id
-		LEFT JOIN performer per3 ON per3.id = cus.performer3_id
-		LEFT JOIN true_customer tcus ON tcus.id = cus.true_customer_id
-		<where>
-			vc.delete_flag = 0
-			and vc.recored_date BETWEEN #{recoredDate_start } and #{recoredDate_end  }
-			<choose>
-				<when test="countZero!=null and countZero==true ">
-					and vc.`consumption` >=0
-				</when>
-				<otherwise>
-					and vc.`consumption` >0
-				</otherwise>
-			</choose>
-
-			<choose>
-				<when test="userId!=null and userId!='' and optimizer == null ">and vc.created_by = #{userId}</when>
-				<when test="userId==null and optimizer != null and optimizer != ''" >and opt.name = #{optimizer} </when>
-				<when test="userId!=null and userId!='' and optimizer != null and optimizer != ''" >and ( opt.name = #{optimizer} or vc.created_by = #{userId} )  </when>
-			</choose>
-			<if test="supplierIds!=null">
-				and cus.supplier_id in(
-				<foreach collection="supplierIds" item="supplierId" separator=",">
-					#{supplierId}
-				</foreach>
-				)
-			</if>
-			<if test="videoCost!=null" >
-				<if test="videoCost.optimizer!=null and videoCost.optimizer.id!=null  " >
-					and vc.optimizer_id = #{videoCost.optimizer.id }
-				</if>
-				<if test="videoCost.demandSector!=null and videoCost.demandSector.id!=null ">
-					and vc.demand_sector_id =#{ videoCost.demandSector.id }
-				</if>
-				<if test="videoCost.customer!=null" >
-					<if test="videoCost.customer.id!=null" >
-						and vc.customer_id = #{videoCost.customer.id}
-					</if>
-					<if test="videoCost.customer.trueCustomer != null and videoCost.customer.trueCustomer.id != null  ">
-						and cus.true_customer_id = #{videoCost.customer.trueCustomer.id }
-					</if>
-					<if test="videoCost.customer.originality !=null and videoCost.customer.originality.id !=null ">
-						and cus.originality_id = #{ videoCost.customer.originality.id }
-					</if>
-					<if test="videoCost.customer.performer1!=null and videoCost.customer.performer1.id != null " >
-						and (
-						cus.performer1_id = #{ videoCost.customer.performer1.id }
-						or cus.performer2_id = #{ videoCost.customer.performer1.id }
-						or cus.performer3_id = #{ videoCost.customer.performer1.id }
-						)
-					</if>
-					<if test="videoCost.customer.photographer !=null and videoCost.customer.photographer.id !=null  ">
-						and cus.photographer_id = #{ videoCost.customer.photographer.id }
-					</if>
-					<if test="videoCost.customer.editor !=null and videoCost.customer.editor.id != null  " >
-						and cus.editor_id = #{ videoCost.customer.editor.id }
-					</if>
-
-					<if test="videoCost.customer.industry !=null and videoCost.customer.industry.id != null  ">
-						and cus.industry_id = #{ videoCost.customer.industry.id }
-					</if>
-					<if test="videoCost.customer.productType !=null and videoCost.customer.productType.id != null  ">
-						and cus.product_type_id = #{ videoCost.customer.productType.id }
-					</if>
-					<if test="videoCost.customer.videoType !=null and videoCost.customer.videoType.id != null  ">
-						and cus.video_type_id = #{ videoCost.customer.videoType.id }
-					</if>
-					<if test="videoCost.customer.priceLevel!=null and videoCost.customer.priceLevel.id!=null" >
-						and cus.price_level_id = #{videoCost.customer.priceLevel.id}
-					</if>
-					<if test="videoCost.customer.videoVersion!=null and videoCost.customer.videoVersion.id!=null" >
-						and cus.video_version_id = #{videoCost.customer.videoVersion.id}
-					</if>
-					<if test="videoCost.customer.supplier !=null and videoCost.customer.supplier.id != null  ">
-						and cus.supplier_id = #{ videoCost.customer.supplier.id }
-					</if>
-				</if>
-			</if>
-		</where>
-		GROUP BY vc.optimizer_id
-		ORDER BY total
-	</select>
-
 	<select id="countByModel" resultType="cn.dovahkiin.model.dto.ModelCountDto" >
 		SELECT
 		       <choose>
@@ -414,7 +314,10 @@
 		sum( case when vc.recored_date &lt;= COALESCE(
 		DATE_ADD(cus.complete_date, INTERVAL sc.default_max_effect_range day),
 		DATE_ADD(cus.complete_date, INTERVAL #{defaultConfig.defaultMaxEffectRange} day)
-		) and vc.recored_date >= cus.complete_date THEN consumption ELSE 0 end ) sumCon
+		) and vc.recored_date >= cus.complete_date THEN consumption ELSE 0 end ) sumAllEffCon,  --  总生命周期内消耗
+
+		sum( case when vc.recored_date &lt;= #{recoredDate_end}  and vc.recored_date >= #{recoredDate_start} THEN consumption ELSE 0 end ) sumAllCon  -- 查询区间内消耗
+
 		from video_cost vc
 		LEFT JOIN  customer cus on vc.customer_id = cus.id and  cus.delete_flag = 0
 		LEFT JOIN supplier sup on sup.id = cus.supplier_id and sup.delete_flag = 0
@@ -435,75 +338,11 @@
 		LEFT JOIN price_level ple ON ple.id = cus.price_level_id and ple.delete_flag = 0
 		LEFT JOIN pay_level pal ON pal.id = cus.pay_level_id and pal.delete_flag = 0
 		<where>
-			vc.delete_flag = 0
-			<choose>
-				<when test="countZero!=null and countZero==true ">
-					and vc.`consumption` >=0
-				</when>
-				<otherwise>
-					and vc.`consumption` >0
-				</otherwise>
-			</choose>
-			<choose>
-				<when test="userId!=null and userId!='' and optimizer == null ">and vc.created_by = #{userId}</when>
-				<when test="userId==null and optimizer != null and optimizer != ''" >and opt.name = #{optimizer} </when>
-				<when test="userId!=null and userId!='' and optimizer != null and optimizer != ''" >and ( opt.name = #{optimizer} or vc.created_by = #{userId} )  </when>
-			</choose>
-			<if test="supplierIds!=null">
-				and cus.supplier_id in(
-				<foreach collection="supplierIds" item="supplierId" separator=",">
-					#{supplierId}
-				</foreach>
-				)
-			</if>
+			vc.delete_flag = 0 and vc.`consumption` >0
 			<if test="videoCost!=null" >
-				<if test="videoCost.optimizer!=null and videoCost.optimizer.id!=null  " >
-					and vc.optimizer_id = #{videoCost.optimizer.id }
-				</if>
-				<if test="videoCost.demandSector!=null and videoCost.demandSector.id!=null ">
-					and vc.demand_sector_id =#{ videoCost.demandSector.id }
-				</if>
 				<if test="videoCost.customer!=null" >
-					<if test="videoCost.customer.id!=null" >
-						and vc.customer_id = #{videoCost.customer.id}
-					</if>
-					<if test="videoCost.customer.trueCustomer != null and videoCost.customer.trueCustomer.id != null  ">
-						and cus.true_customer_id = #{videoCost.customer.trueCustomer.id }
-					</if>
-					<if test="videoCost.customer.originality !=null and videoCost.customer.originality.id !=null ">
-						and cus.originality_id = #{ videoCost.customer.originality.id }
-					</if>
-					<if test="videoCost.customer.performer1!=null and videoCost.customer.performer1.id != null " >
-						and (
-						cus.performer1_id = #{ videoCost.customer.performer1.id }
-						or cus.performer2_id = #{ videoCost.customer.performer1.id }
-						or cus.performer3_id = #{ videoCost.customer.performer1.id }
-						)
-					</if>
-					<if test="videoCost.customer.photographer !=null and videoCost.customer.photographer.id !=null  ">
-						and cus.photographer_id = #{ videoCost.customer.photographer.id }
-					</if>
-					<if test="videoCost.customer.editor !=null and videoCost.customer.editor.id != null  " >
-						and cus.editor_id = #{ videoCost.customer.editor.id }
-					</if>
-
-					<if test="videoCost.customer.industry !=null and videoCost.customer.industry.id != null  ">
-						and cus.industry_id = #{ videoCost.customer.industry.id }
-					</if>
-					<if test="videoCost.customer.productType !=null and videoCost.customer.productType.id != null  ">
-						and cus.product_type_id = #{ videoCost.customer.productType.id }
-					</if>
-					<if test="videoCost.customer.videoType !=null and videoCost.customer.videoType.id != null  ">
-						and cus.video_type_id = #{ videoCost.customer.videoType.id }
-					</if>
-					<if test="videoCost.customer.priceLevel!=null and videoCost.customer.priceLevel.id!=null" >
-						and cus.price_level_id = #{videoCost.customer.priceLevel.id}
-					</if>
-					<if test="videoCost.customer.videoVersion!=null and videoCost.customer.videoVersion.id!=null" >
-						and cus.video_version_id = #{videoCost.customer.videoVersion.id}
-					</if>
-					<if test="videoCost.customer.supplier !=null and videoCost.customer.supplier.id != null  ">
-						and cus.supplier_id = #{ videoCost.customer.supplier.id }
+					<if test="videoCost.customer.code!=null and videoCost.customer.code!='' " >
+						and cus.code = #{videoCost.customer.code}
 					</if>
 				</if>
 			</if>
@@ -512,7 +351,7 @@
 		having
 		completeDate &lt;= #{recoredDate_end  }
 		and endDate  &gt;=  #{recoredDate_start }
-		and sumCon >0
+		and sumAllCon >0
 	</select>
 
 	<select id="selectLastDay"  resultType="cn.dovahkiin.model.dto.LastDayEffectDto" >
@@ -551,78 +390,7 @@
 				 LEFT JOIN price_level ple ON ple.id = cus.price_level_id and ple.delete_flag = 0
 				LEFT JOIN pay_level pal ON pal.id = cus.pay_level_id and pal.delete_flag = 0
 		<where>
-			vc.delete_flag = 0 and  cus.code = #{customerCode}
-			<choose>
-				<when test="countZero!=null and countZero==true ">
-					and vc.`consumption` >=0
-				</when>
-				<otherwise>
-					and vc.`consumption` >0
-				</otherwise>
-			</choose>
-			<choose>
-				<when test="userId!=null and userId!='' and optimizer == null ">and vc.created_by = #{userId}</when>
-				<when test="userId==null and optimizer != null and optimizer != ''" >and opt.name = #{optimizer} </when>
-				<when test="userId!=null and userId!='' and optimizer != null and optimizer != ''" >and ( opt.name = #{optimizer} or vc.created_by = #{userId} )  </when>
-			</choose>
-			<if test="supplierIds!=null">
-				and cus.supplier_id in(
-				<foreach collection="supplierIds" item="supplierId" separator=",">
-					#{supplierId}
-				</foreach>
-				)
-			</if>
-			<if test="videoCost!=null" >
-				<if test="videoCost.optimizer!=null and videoCost.optimizer.id!=null  " >
-					and vc.optimizer_id = #{videoCost.optimizer.id }
-				</if>
-				<if test="videoCost.demandSector!=null and videoCost.demandSector.id!=null ">
-					and vc.demand_sector_id =#{ videoCost.demandSector.id }
-				</if>
-				<if test="videoCost.customer!=null" >
-					<if test="videoCost.customer.id!=null" >
-						and vc.customer_id = #{videoCost.customer.id}
-					</if>
-					<if test="videoCost.customer.trueCustomer != null and videoCost.customer.trueCustomer.id != null  ">
-						and cus.true_customer_id = #{videoCost.customer.trueCustomer.id }
-					</if>
-					<if test="videoCost.customer.originality !=null and videoCost.customer.originality.id !=null ">
-						and cus.originality_id = #{ videoCost.customer.originality.id }
-					</if>
-					<if test="videoCost.customer.performer1!=null and videoCost.customer.performer1.id != null " >
-						and (
-						cus.performer1_id = #{ videoCost.customer.performer1.id }
-						or cus.performer2_id = #{ videoCost.customer.performer1.id }
-						or cus.performer3_id = #{ videoCost.customer.performer1.id }
-						)
-					</if>
-					<if test="videoCost.customer.photographer !=null and videoCost.customer.photographer.id !=null  ">
-						and cus.photographer_id = #{ videoCost.customer.photographer.id }
-					</if>
-					<if test="videoCost.customer.editor !=null and videoCost.customer.editor.id != null  " >
-						and cus.editor_id = #{ videoCost.customer.editor.id }
-					</if>
-
-					<if test="videoCost.customer.industry !=null and videoCost.customer.industry.id != null  ">
-						and cus.industry_id = #{ videoCost.customer.industry.id }
-					</if>
-					<if test="videoCost.customer.productType !=null and videoCost.customer.productType.id != null  ">
-						and cus.product_type_id = #{ videoCost.customer.productType.id }
-					</if>
-					<if test="videoCost.customer.videoType !=null and videoCost.customer.videoType.id != null  ">
-						and cus.video_type_id = #{ videoCost.customer.videoType.id }
-					</if>
-					<if test="videoCost.customer.priceLevel!=null and videoCost.customer.priceLevel.id!=null" >
-						and cus.price_level_id = #{videoCost.customer.priceLevel.id}
-					</if>
-					<if test="videoCost.customer.videoVersion!=null and videoCost.customer.videoVersion.id!=null" >
-						and cus.video_version_id = #{videoCost.customer.videoVersion.id}
-					</if>
-					<if test="videoCost.customer.supplier !=null and videoCost.customer.supplier.id != null  ">
-						and cus.supplier_id = #{ videoCost.customer.supplier.id }
-					</if>
-				</if>
-			</if>
+			vc.delete_flag = 0 and  cus.code = #{customerCode} and vc.`consumption` >0
 		</where>
 		GROUP BY recored_date
 		ORDER BY recored_date
@@ -657,83 +425,11 @@
 									   LEFT JOIN video_version vve ON vve.id = cus.video_version_id
 									   LEFT JOIN price_level ple ON ple.id = cus.price_level_id and ple.delete_flag = 0
 										LEFT JOIN pay_level pal ON pal.id = cus.pay_level_id and pal.delete_flag = 0
-
 		<where>
-			vc.delete_flag = 0 and cus.code = #{customerCode} and vc.recored_date>=#{completeDateLimit}
+			vc.delete_flag = 0 and cus.code = #{customerCode} and vc.recored_date>=#{completeDateLimit} 	and vc.`consumption` >0
 			and vc.recored_date BETWEEN #{recoredDate_start } and #{recoredDate_end  }
 			<if test="recoredDate_last!=null" >
 				and vc.recored_date &lt;=#{recoredDate_last}
-			</if>
-			<choose>
-				<when test="countZero!=null and countZero==true ">
-					and vc.`consumption` >=0
-				</when>
-				<otherwise>
-					and vc.`consumption` >0
-				</otherwise>
-			</choose>
-			<choose>
-				<when test="userId!=null and userId!='' and optimizer == null ">and vc.created_by = #{userId}</when>
-				<when test="userId==null and optimizer != null and optimizer != ''" >and opt.name = #{optimizer} </when>
-				<when test="userId!=null and userId!='' and optimizer != null and optimizer != ''" >and ( opt.name = #{optimizer} or vc.created_by = #{userId} )  </when>
-			</choose>
-			<if test="supplierIds!=null">
-				and cus.supplier_id in(
-				<foreach collection="supplierIds" item="supplierId" separator=",">
-					#{supplierId}
-				</foreach>
-				)
-			</if>
-			<if test="videoCost!=null" >
-				<if test="videoCost.optimizer!=null and videoCost.optimizer.id!=null  " >
-					and vc.optimizer_id = #{videoCost.optimizer.id }
-				</if>
-				<if test="videoCost.demandSector!=null and videoCost.demandSector.id!=null ">
-					and vc.demand_sector_id =#{ videoCost.demandSector.id }
-				</if>
-				<if test="videoCost.customer!=null" >
-					<if test="videoCost.customer.id!=null" >
-						and vc.customer_id = #{videoCost.customer.id}
-					</if>
-					<if test="videoCost.customer.trueCustomer != null and videoCost.customer.trueCustomer.id != null  ">
-						and cus.true_customer_id = #{videoCost.customer.trueCustomer.id }
-					</if>
-					<if test="videoCost.customer.originality !=null and videoCost.customer.originality.id !=null ">
-						and cus.originality_id = #{ videoCost.customer.originality.id }
-					</if>
-					<if test="videoCost.customer.performer1!=null and videoCost.customer.performer1.id != null " >
-						and (
-						cus.performer1_id = #{ videoCost.customer.performer1.id }
-						or cus.performer2_id = #{ videoCost.customer.performer1.id }
-						or cus.performer3_id = #{ videoCost.customer.performer1.id }
-						)
-					</if>
-					<if test="videoCost.customer.photographer !=null and videoCost.customer.photographer.id !=null  ">
-						and cus.photographer_id = #{ videoCost.customer.photographer.id }
-					</if>
-					<if test="videoCost.customer.editor !=null and videoCost.customer.editor.id != null  " >
-						and cus.editor_id = #{ videoCost.customer.editor.id }
-					</if>
-
-					<if test="videoCost.customer.industry !=null and videoCost.customer.industry.id != null  ">
-						and cus.industry_id = #{ videoCost.customer.industry.id }
-					</if>
-					<if test="videoCost.customer.productType !=null and videoCost.customer.productType.id != null  ">
-						and cus.product_type_id = #{ videoCost.customer.productType.id }
-					</if>
-					<if test="videoCost.customer.videoType !=null and videoCost.customer.videoType.id != null  ">
-						and cus.video_type_id = #{ videoCost.customer.videoType.id }
-					</if>
-					<if test="videoCost.customer.priceLevel!=null and videoCost.customer.priceLevel.id!=null" >
-						and cus.price_level_id = #{videoCost.customer.priceLevel.id}
-					</if>
-					<if test="videoCost.customer.videoVersion!=null and videoCost.customer.videoVersion.id!=null" >
-						and cus.video_version_id = #{videoCost.customer.videoVersion.id}
-					</if>
-					<if test="videoCost.customer.supplier !=null and videoCost.customer.supplier.id != null  ">
-						and cus.supplier_id = #{ videoCost.customer.supplier.id }
-					</if>
-				</if>
 			</if>
 		</where>
 		GROUP BY cus.code,vc.recored_date

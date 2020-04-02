@@ -22,6 +22,10 @@ function getCommonDateTime(value){
         return "";
     }
 }
+function moneyFormter(money){
+    if(money == null || money==='')return 0.00;
+    else return money.toFixed(2);
+}
 function redFont(str) {
     if( str!=undefined && str!=null && str.trim()!=''){
         return "<span style='color:red;'>"+str+"</span>"
@@ -88,7 +92,7 @@ function getAllDates(begin, end) {
 }
 //------[获取两个日期中所有的月份中]
 function getMonthBetween(start,end){
-    if(start ==undefined || end ==undefined ) return undefined;
+    if(start ===undefined || end ===undefined ) return undefined;
     let result = [];
     let s = start.split("-");
     let e = end.split("-");
@@ -96,7 +100,6 @@ function getMonthBetween(start,end){
     let max = new Date();
     min.setFullYear(s[0],s[1]-1);
     max.setFullYear(e[0],e[1]-1);
-    console.log(min,max);
     let curr = min;
     while(curr <= max){
         let month = curr.getMonth();

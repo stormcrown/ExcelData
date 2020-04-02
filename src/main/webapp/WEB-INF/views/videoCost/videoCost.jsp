@@ -35,9 +35,6 @@
                 width: 200,
             };
             opt.data = organizations;
-            opt.formatter = function (row) {
-                if (row.simpleNames != null) return row.name + "_" + row.simpleNames; else return row.name
-            }
             $("#demandSector").combobox(opt);
             opt.data = optimizers;
             $('#optimizer').combobox(opt);
@@ -139,8 +136,7 @@
                         <tr>
                             <td>素材</td>
                             <td  colspan="3" >
-                                <select id="customer" name="customer.id" class="easyui-combobox" data-options="value:'${videoCost.customer.id}'">
-                                </select>
+                                <select id="customer" name="customer.id" class="easyui-combobox" data-options="value:'${videoCost.customer.id}'"></select>
                                 <%--<input name="customer.id" class="easyui-combobox"  data-options="width:200,valueField:'id',textField:'name',url:'${path}/customer/combobox',value:'${videoCost.customer.id}'" />--%>
                             </td>
                         </tr>
