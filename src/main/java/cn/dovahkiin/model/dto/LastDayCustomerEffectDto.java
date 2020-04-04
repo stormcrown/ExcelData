@@ -1,0 +1,61 @@
+package cn.dovahkiin.model.dto;
+
+import java.util.Date;
+
+public class LastDayCustomerEffectDto {
+    private String orgName;
+    private String orgCode;
+    private String cusName;
+    private String cusCode;
+    private Double sumCon; // 查询区间内消耗
+    private Date recordDate;
+
+
+    public String getOrgName() {
+        return orgName;
+    }
+
+    public void setOrgName(String orgName) {
+        this.orgName = orgName;
+    }
+
+    public String getOrgCode() {
+        return orgCode;
+    }
+
+    public void setOrgCode(String orgCode) {
+        this.orgCode = orgCode;
+    }
+
+    public String getCusName() {
+        return cusName;
+    }
+
+    public void setCusName(String cusName) {
+        this.cusName = cusName;
+    }
+
+    public String getCusCode() {
+        return cusCode;
+    }
+
+    public void setCusCode(String cusCode) {
+        this.cusCode = cusCode;
+    }
+
+    public Double getSumCon() {
+        return sumCon;
+    }
+
+    public void setSumCon(Double sumCon) {
+        this.sumCon = sumCon;
+    }
+
+    public Date getRecordDate() {
+        return recordDate;
+    }
+
+    public void setRecordDate(Date recordDate) {
+        this.recordDate = recordDate;
+    }
+}

@@ -1,5 +1,6 @@
 package cn.dovahkiin.service.impl;
 
+import cn.dovahkiin.commons.utils.StringUtils;
 import cn.dovahkiin.mapper.CountMapper;
 import cn.dovahkiin.mapper.CustomerMapper;
 import cn.dovahkiin.mapper.SystemConfigMapper;
@@ -8,6 +9,7 @@ import cn.dovahkiin.model.dto.*;
 import cn.dovahkiin.service.ICountService;
 import cn.dovahkiin.util.Const;
 import cn.dovahkiin.util.excel.ExcelConst;
+import com.alibaba.fastjson.JSON;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -134,6 +136,7 @@ public class CountServiceImpl implements ICountService {
                 /** import 重要 ，如果收入，支出的结束在同一天，查询数据每日消耗返回的数据 可能是同一个对象 ！！！！同一个对象 ！！！！同一个对象 ！！！！同一个对象 ！！！！  */
                 // 收入
                 if(effectDto.getSumAllEffCon() > effectDto.getMaxEffectOn() ){
+                    effectDto.setIncomeOverflow(Boolean.TRUE);
                     map.put(maxValue,effectDto.getMaxEffectOn());
                     LastDayEffectDto lastDayEffectDto = countMapper.selectLastDay(map);
                     // 最后一天的溢出
@@ -150,6 +153,7 @@ public class CountServiceImpl implements ICountService {
                 map.remove(maxValue);
                 //支出
                 if(effectDto.getSumAllEffCon()>effectDto.getPayMaxEffectOn() ){
+                    effectDto.setPayOverflow(Boolean.TRUE);
                     map.put(maxValue,effectDto.getPayMaxEffectOn());
                     LastDayEffectDto lastDayEffectDtoPay = countMapper.selectLastDay(map);
                     if(lastDayEffectDtoPay!=null && lastDayEffectDtoPay.getSumCon()!=null && effectDto.getPayMaxEffectOn()!=null  )outPay=lastDayEffectDtoPay.getSumCon() - effectDto.getPayMaxEffectOn();
@@ -189,6 +193,8 @@ public class CountServiceImpl implements ICountService {
                         dayEffectDto.setConsumptionEffect(dayEffectDto.getConsumptionEffect() - finalOut);
                     }
                 });
+                effectDto.setLastDayIncomeOver(out);
+                effectDto.setLastDayPayOver(outPay);
                 // 合并 同一天的收入支出有效消耗
                 dayEffectDtos_pay.forEach(DayEffectDto::toPay);
                 dayEffectDtos_pay.parallelStream().forEach(dto->{dto.setConsumptionEffect(0d);});
@@ -216,9 +222,79 @@ public class CountServiceImpl implements ICountService {
             }
             effectDto.setData(dayEffectDtos);
         }
-            // TODO
-        /* 每个素材的部门有效消耗数据，在有效消耗计算完成了之后再算   */
 
+
+/// ################# 部门 数据获取
+
+        /* 每个素材的部门有效消耗数据，在有效消耗计算完成了之后再算   */
+        customerEffectOnes_all.parallelStream().forEach(customerEffect->{
+            customerEffect.setCusOrgEffDtos(countMapper.selectEffectCustomerByDem(defaultConfig, start, end, customerEffect.getCompleteDate(), customerEffect.getIncomeEndDate(), customerEffect.getPayEndDate(), customerEffect.getCode()));
+            if(customerEffect.getCusOrgEffDtos()==null || customerEffect.getCusOrgEffDtos().size()==0)return;
+            // 如果都没有溢出，直接结束
+            if( (customerEffect.getLastDayIncomeOver() ==null || customerEffect.getLastDayIncomeOver()==0)  && ( customerEffect.getLastDayPayOver() ==null || customerEffect.getLastDayPayOver()==0 )  )return;
+
+            // 如果只有一个部门，减去总溢出值
+            if(customerEffect.getCusOrgEffDtos().size()==1){
+                if( customerEffect.getLastDayIncomeOver() !=null && customerEffect.getLastDayIncomeOver()>0 )customerEffect.getCusOrgEffDtos().get(0).setSumEffCon(customerEffect.getCusOrgEffDtos().get(0).getSumEffCon()-customerEffect.getLastDayIncomeOver());
+                if(  customerEffect.getLastDayPayOver() !=null && customerEffect.getLastDayPayOver() > 0 )customerEffect.getCusOrgEffDtos().get(0).setSumEffPayCon(customerEffect.getCusOrgEffDtos().get(0).getSumEffPayCon()-customerEffect.getLastDayPayOver());
+                return;
+            }
+            // 查询对应的最后一天的各部门消耗
+            // 收入消耗溢出
+            if( customerEffect.getLastDayIncomeOver() !=null && customerEffect.getLastDayIncomeOver()>0 ){
+                List<LastDayCustomerEffectDto> lastDayCustomerEffectDtos = countMapper.selectallConByCusDemInSpecialDay(customerEffect.getIncomeEndDate(),customerEffect.getCode());
+                // 刚好结束日期那天，如果只有一个部门有消耗，那么就修正数据为最大值
+                if(lastDayCustomerEffectDtos!=null &&  lastDayCustomerEffectDtos.size()==1){
+                    customerEffect.getCusOrgEffDtos().parallelStream().forEach(cusOrgEffDto -> {
+                        if(StringUtils.isBlank(cusOrgEffDto.getOrgCode()) || StringUtils.isBlank(lastDayCustomerEffectDtos.get(0).getOrgCode())  )return;
+                        if( !cusOrgEffDto.getOrgCode().equals(lastDayCustomerEffectDtos.get(0).getOrgCode()  ) ) return;
+                        cusOrgEffDto.setSumEffCon(lastDayCustomerEffectDtos.get(0).getSumCon()  - customerEffect.getLastDayIncomeOver() );
+                    });
+                }else if(lastDayCustomerEffectDtos!=null &&  lastDayCustomerEffectDtos.size()>1){
+                    // 刚好结束日期那天，如果有多个部门有消耗，那么就只提示冲突，不修正
+                    List<String> incomeConflicOrgName = new Vector<>();
+                    lastDayCustomerEffectDtos.parallelStream().forEach(lastDto->incomeConflicOrgName.add(lastDto.getOrgName()));
+                    for(CusOrgEffDto cusOrgEffDto:customerEffect.getCusOrgEffDtos()){
+                        cusOrgEffDto.setIncomeConflictOrgNames(incomeConflicOrgName);
+                        if( StringUtils.isBlank(cusOrgEffDto.getOrgCode()) )continue;
+                        lastDayCustomerEffectDtos.forEach(lastDayCustomerEffectDto -> {
+                            if(cusOrgEffDto.getOrgCode().equals(lastDayCustomerEffectDto.getOrgCode()) ){
+                                cusOrgEffDto.setIncomeConflict(Boolean.TRUE);
+                                cusOrgEffDto.setIncomeLastDay(lastDayCustomerEffectDto);
+                            }
+                        });
+                    }
+                }
+            }
+            // 支出消耗溢出
+            if( customerEffect.getLastDayPayOver() !=null && customerEffect.getLastDayPayOver() > 0 ){
+                List<LastDayCustomerEffectDto> lastDayCustomerEffectDtos = countMapper.selectallConByCusDemInSpecialDay(customerEffect.getPayEndDate(),customerEffect.getCode());
+                // 刚好结束日期那天，如果只有一个部门有消耗，那么就修正数据
+                if(lastDayCustomerEffectDtos!=null &&  lastDayCustomerEffectDtos.size()==1){
+                    customerEffect.getCusOrgEffDtos().parallelStream().forEach(cusOrgEffDto -> {
+                        if(StringUtils.isBlank(cusOrgEffDto.getOrgCode()) || StringUtils.isBlank(lastDayCustomerEffectDtos.get(0).getOrgCode())  )return;
+                        if( !cusOrgEffDto.getOrgCode().equals(lastDayCustomerEffectDtos.get(0).getOrgCode()  ) ) return;
+                        cusOrgEffDto.setSumEffPayCon(lastDayCustomerEffectDtos.get(0).getSumCon() - customerEffect.getLastDayPayOver() );
+                    });
+                }else if(lastDayCustomerEffectDtos!=null &&  lastDayCustomerEffectDtos.size()>1){
+                    List<String> payConflicOrgName = new Vector<>();
+                    lastDayCustomerEffectDtos.parallelStream().forEach(lastDto->payConflicOrgName.add(lastDto.getOrgName()));
+                    // 刚好结束日期那天，如果有多个部门有消耗，那么就只提示冲突，不修正
+                    for(CusOrgEffDto cusOrgEffDto:customerEffect.getCusOrgEffDtos()){
+                        cusOrgEffDto.setPayConflictOrgNames(payConflicOrgName);
+                        if( StringUtils.isBlank(cusOrgEffDto.getOrgCode()) )continue;
+                        lastDayCustomerEffectDtos.forEach(lastDayCustomerEffectDto -> {
+                            if(cusOrgEffDto.getOrgCode().equals(lastDayCustomerEffectDto.getOrgCode()) ){
+                                cusOrgEffDto.setPayConflict(Boolean.TRUE);
+                                cusOrgEffDto.setPayLastDay(lastDayCustomerEffectDto);
+                            }
+                        });
+                    }
+                }
+            }
+
+        });
+/// ################# 部门
 
         /*并行 处理收入&支出，每个素材可单独并行处理*/
         customerEffectOnes_all.parallelStream().forEach((dto -> {

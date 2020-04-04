@@ -1,5 +1,5 @@
 function getCommonDate(value){
-    if(value !=null && value !=""){
+    if(value !=null && value !==""){
         try{
             let date = new Date(value);
             return date.getFullYear()+'-'+(date.getMonth()+1)+"-"+date.getDate();
@@ -32,10 +32,16 @@ function redFont(str) {
     }
     else return'';
 }
+function pinkFont(str) {
+    if( str!=undefined && str!=null && str.trim()!='') return "<span style='color:#e10888;'>"+str+"</span>"
+    else return'';
+}
+function orangeFont(str) {
+    if( str!=undefined && str!=null && str.trim()!='') return "<span style='color:#f38709;'>"+str+"</span>"
+    else return'';
+}
 function greenFont(str) {
-    if( str!=undefined && str!=null && str.trim()!=''){
-        return "<span style='color:green;'>"+str+"</span>"
-    }
+    if( str!=undefined && str!=null && str.trim()!='') return "<span style='color:green;'>"+str+"</span>"
     else return'';
 }
 function getCookie(c_name)

@@ -302,7 +302,7 @@
 		sum( IF(vc.recored_date &lt;= COALESCE(
 		DATE_ADD( cus.complete_date, INTERVAL sc.default_max_effect_range day),
 		DATE_ADD( cus.complete_date, INTERVAL #{defaultConfig.defaultMaxEffectRange} day)
-		) and vc.recored_date >= cus.complete_date, consumption, 0) ) sumAllEffCon, -- 总生命周期内消耗
+		) and vc.recored_date >= cus.complete_date, consumption, 0) ) sumAllEffCon, -- 总生命周期内消耗，
 
 		sum( IF(vc.recored_date &lt;= #{recoredDate_end} and vc.recored_date >= #{recoredDate_start}, consumption, 0) ) sumAllCon -- 查询区间内消耗
 
@@ -353,19 +353,24 @@
 	</select>
 
 	<select id="selectEffectCustomerByDem" resultType="cn.dovahkiin.model.dto.CusOrgEffDto" >
-		select
-		       dem.code oriCode,
-			   dem.name  demName,
-			   cus.code cusCode,
-			   cus.name cusName,
+		select dem.code                                                                orgCode,
+			   dem.name                                                                orgName,
+			   cus.code                                                                cusCode,
+			   cus.name                                                                cusName,
 			   sum(IF(vc.recored_date &lt;=
-			          COALESCE(
-					   DATE_ADD(cus.complete_date, INTERVAL sc.default_max_effect_range day),
-					   DATE_ADD(cus.complete_date, INTERVAL  #{defaultConfig.defaultMaxEffectRange} day)
-				   ) and vc.recored_date >= cus.complete_date, consumption, 0)) sumAllEffCon, --  总生命周期内消耗
-			   sum(IF(vc.recored_date &lt;= #{recoredDate_end} and vc.recored_date >= #{recoredDate_start}, consumption, 0)) sumAllCon   ,  -- 查询区间内消耗
-			sum(IF(vc.recored_date &lt;= #{endDate} and vc.recored_date >= #{completeDate}, consumption, 0)) sumEffCon,
-		sum(IF(vc.recored_date &lt;= #{payEndDate} and vc.recored_date >= #{completeDate}, consumption, 0)) sumEffPayCon
+					  COALESCE(
+							  DATE_ADD(cus.complete_date, INTERVAL sc.default_max_effect_range day),
+							  DATE_ADD(cus.complete_date, INTERVAL #{defaultConfig.defaultMaxEffectRange} day)
+						  ) and vc.recored_date >= cus.complete_date, consumption, 0))
+			       sumAllEffCon, --  总生命周期内消耗
+			   sum(IF(vc.recored_date &lt;= #{recoredDate_end} and vc.recored_date >= #{recoredDate_start}, consumption,
+					  0))                                                              sumAllCon,    -- 查询区间内消耗
+			   sum(IF(vc.recored_date &lt;= #{incomeEndDate} and vc.recored_date &lt;= #{recoredDate_end} and
+					  vc.recored_date >= #{recoredDate_start} and vc.recored_date >= #{completeDate}, consumption,
+					  0))                                                              sumEffCon,    --  总 查询区间内，实际结束日期之前 内收入有效消耗
+			   sum(IF(vc.recored_date &lt;= #{payEndDate} and vc.recored_date >= #{completeDate} and
+					  vc.recored_date &lt;= #{recoredDate_end} and vc.recored_date >= #{recoredDate_start}, consumption,
+					  0))                                                              sumEffPayCon  --  总 查询区间内，实际结束日期之前 内支出有效消耗
 		from video_cost vc
 				 LEFT JOIN customer cus on vc.customer_id = cus.id and cus.delete_flag = 0
 				 LEFT JOIN price_level ple ON ple.id = cus.price_level_id and ple.delete_flag = 0
@@ -378,6 +383,27 @@
 		having sumAllCon > 0
 		order by cus.code, dem.code
 	</select>
+
+	<select id="selectallConByCusDemInSpecialDay" resultType="cn.dovahkiin.model.dto.LastDayCustomerEffectDto" >
+		select
+		       dem.code as orgCode,
+			   dem.name as orgName,
+			   cus.code as cusCode,
+			   cus.name as cusName,#{specialDay} as recordDate,
+			   sum(IF(vc.recored_date = #{specialDay}, consumption, 0)) as sumCon -- 查询区间内消耗
+		from video_cost vc
+				 LEFT JOIN customer cus on vc.customer_id = cus.id and cus.delete_flag = 0
+				 LEFT JOIN price_level ple ON ple.id = cus.price_level_id and ple.delete_flag = 0
+				 LEFT JOIN pay_level pal ON pal.id = cus.pay_level_id and pal.delete_flag = 0
+				 LEFT JOIN supplier sup on sup.id = cus.supplier_id and sup.delete_flag = 0
+				 LEFT JOIN system_config sc on sc.supplier_id = sup.id and sc.delete_flag = 0
+				 left join organization dem on dem.id = vc.demand_sector_id
+		where cus.code = #{customerCode} and vc.recored_date = #{specialDay}
+		GROUP BY cus.code, dem.code
+		having sumCon > 0
+		order by cus.code, dem.code
+	</select>
+
 
 	<select id="selectLastDay"  resultType="cn.dovahkiin.model.dto.LastDayEffectDto" >
 		select

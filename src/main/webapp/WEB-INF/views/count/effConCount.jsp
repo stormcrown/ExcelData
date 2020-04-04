@@ -5,14 +5,21 @@
     var listData = [];
     var sortEffCountAll ='sumAllEffCon' ;
     var orderEffCountAll ='desc' ;
+    var carousel ;
     $(function() {
         //注意：折叠面板 依赖 element 模块，否则无法进行功能性操作
-        layui.use(['laydate','slider','layer','table'], function(){
+        layui.use(['laydate','slider','layer','table','carousel'], function(){
             var laydate = layui.laydate,slider = layui.slider,table=layui.table;
             laydate.render({
                 elem: '#recoredDateRange_count_eff'
                 ,range: '~' //或 range: '~' 来自定义分割字符
             });
+             carousel = layui.carousel
+
+            //常规轮播
+            //改变下时间间隔、动画类型、高度
+
+
         });
 
         $('#effCountAll').datagrid({
@@ -42,7 +49,7 @@
                     if (value2 === null || value2 === '' || value2 === undefined) value2 = '';
                      if (sort === 'name' || sort === 'code' || sort === 'supplierName' || sort === 'supplierCode' || sort === 'basePrice' || sort === 'basePay' ||value2 === '' ||value1 === ''   ) {
                         end = value1.localeCompare(value2, 'zh-CN');
-                    }else  if (sort === 'completeData' || sort === 'endDate' || sort === 'payEndDate') {
+                    }else  if (sort === 'completeData' || sort === 'endDate' || sort === 'payEndDate' || sort === 'incomeEndDate' ) {
                         value1 = new Date(value1);
                         value2 = new Date(value2);
                         end = value1.getTime() / hou - value2.getTime() / hou;
@@ -53,18 +60,18 @@
                 setPage($('#effCountAll'),listData,1);
             },
             frozenColumns: [[
-                {field:'code', width:120,  sortable: true, title:'编号',  },
+                {field:'code', width:120,  sortable: true, title:'素材编号',  },
             ]],
             columns: [[
-                {field:'name',  sortable: true, title:'名称',  },
+                {field:'name',  sortable: true, title:'素材名称',  },
                 {field:'supplierName',  sortable: true, title:'供应商名称',  },
                 {field:'supplierCode',  sortable: true, title:'供应商编号',  },
-                {field:'maxEffectOn',width:100,  sortable: true, title:'收入封顶消耗',  },
-                {field:'payMaxEffectOn',width:100,  sortable: true, title:'支出封顶消耗',  },
-                {field:'sumAllEffCon', width:100, sortable: true, title:'生命周期内总消耗',  },
+                {field:'maxEffectOn',width:100,  sortable: true, title:'收入封顶消耗', formatter: function (value, row, index) { return (row.incomeOverflow===true )? redFont(value): value; } },
+                {field:'payMaxEffectOn',width:100,  sortable: true, title:'支出封顶消耗', formatter: function (value, row, index) { return (row.payOverflow===true )? redFont(value): value; } },
+                {field:'sumAllEffCon', width:100, sortable: true, title:'生命周期内总消耗', formatter: function (value, row, index) { return (row.incomeOverflow===true && row.payOverflow===true )? pinkFont(value): value; } },
                 {field:'sumAllCon', width:100, sortable: true, title:'查询区间内总消耗',  },
-                {field:'sumEffCon', width:100, sortable: true, title:'收入有效消耗',  },
-                {field:'sumEffPayCon', width:100, sortable: true, title:'支出有效消耗',  },
+                {field:'sumEffCon', width:100, sortable: true, title:'收入有效消耗', formatter: function (value, row, index) { return value; } },
+                {field:'sumEffPayCon', width:100, sortable: true, title:'支出有效消耗', formatter: function (value, row, index) { return value; } },
                 {field:'sumPay', width:100, sortable: true, title:'支出',  },
                 {field:'sumIncome', width:100, sortable: true, title:'收入',  },
                 {field:'basePrice',width:100,  sortable: true, title:'固定收入',  },
@@ -72,25 +79,43 @@
                 {field:'incomeRadio', width:80, sortable: true, title:'收入比率（%）',  },
                 {field:'payRadio', width:80, sortable: true, title:'支出比率（%）',  },
                 {field:'completeData', width:100, sortable: true, title:'成片日期',  },
-                {field:'endDate',width:120,  sortable: true, title:'有效期截至（实际）(收入)',  },
+                {field:'endDate',width:120,  sortable: true, title:'有效期截至（配置)',  },
+                {field:'incomeEndDate',width:120,  sortable: true, title:'有效期截至（实际）(收入)',  },
                 {field:'payEndDate',width:120,  sortable: true, title:'有效期截至（实际）（支出）',  },
             ]],
             multiSort:false,
             view: detailview,
             detailFormatter:function(index,row){
-                return '<div class="easyui-panel" style="padding:5px;height: 500PX; width:AUTO;" data-options="border:false"><table id="ldg'+(row.code).trim()+'" style="border:1px solid #ccc;"></table></div>';
+                let html = '<div  id="tab'+(row.code).trim()+'" class="easyui-tabs lazyTab" style="width:1250px;height:650px;">' +
+                    '    <div title="每日消耗" style="padding:20px;display:none;">' +
+                    '<table id="ldg'+(row.code).trim()+'" style="border:1px solid #ccc;"></table>' +
+                    '    </div>' +
+                    '    <div title="部门明细" data-options="closable:false" style="overflow:auto;padding:20px;display:none;">\n' +
+                    '<table id="cusOrgDetail'+(row.code).trim()+'" style="border:1px solid #ccc;"></table>' +
+                    '    </div>' +
+                    '</div>';
+               let backUp= '<div  id="carouseldg'+(row.code).trim()+'" class="layui-carousel"  style="height: 650px; width:AUTO;"><div carousel-item=""><div><table id="ldg'+(row.code).trim()+'" style="border:1px solid #ccc;"></table></div><div><table id="cusOrgDetail'+(row.code).trim()+'" style="border:1px solid #ccc;"></table></div></div></div>';
+                return html;
             },
             onExpandRow: function(index,row){
                 if(row.code==null)return;
-                let tableId= '#ldg'+row.code;
-                tableId = tableId.trim();
+                let cusCode =(row.code).trim();
+                let lastDayIncomeOver = row.lastDayIncomeOver;
+                let lastDayPayOver = row.lastDayPayOver;
+                $('#tab'+(row.code).trim()).tabs({
+                    border:true,
+                    onSelect:function(title){
+                    }
+                });
+                let tableId= '#ldg'+row.code;tableId = tableId.trim();
                 let table = $(tableId);
                 let dataZB =row.dailData ;
-                if(dataZB===null || tableId===null || table===null || table===undefined )return;
                 try{
                     let d =  table.datagrid('options');
                     if(d != null)return;
                 }catch (e) {}
+                //改变下时间间隔、动画类型、高度
+                carousel.render({elem: '#carouseldg'+(row.code).trim(),interval: 1800,anim: 'fade',width:'100%',height:'600px',indicator:'outside',arrow:'none',autoplay:false });
                 dataZB.sort((d1,d2)=>{
                     let sort = 'recoredDate';
                     let value1 = d1[sort];
@@ -102,6 +127,7 @@
                     end =  value1.getTime()/hou- value2.getTime()/hou;
                     return end;
                 });
+
                 table.datagrid({
                     fit: true,
                     striped: true,
@@ -111,6 +137,7 @@
                     nowrap:true,
                     remoteSort:true,
                     loadMsg:"数据正在加载......",
+                    title:'每日消耗表',
                     idField:'code',
                     height:'auto',
                     width:'auto',
@@ -151,6 +178,142 @@
                     }
                 });
                 setPage( table ,dataZB,1);
+
+                let tableCusOrgId= '#cusOrgDetail'+row.code;tableCusOrgId = tableCusOrgId.trim();
+                let tableCusOrg = $(tableCusOrgId);
+                let dataCusOrg =row.cusOrgEffDtos ;
+
+                tableCusOrg.datagrid({
+                    fit: true,
+                    striped: true,
+                    singleSelect: true,
+                    pagination: true,
+                    rownumbers: true,
+                    nowrap:true,
+                    remoteSort:true,
+                    loadMsg:"数据正在加载......",
+                    title:'部门消耗明细',
+                    idField:'orgCode',
+                    height:'auto',
+                    width:'auto',
+                    pageSize:10,
+                    pageList: [10,15, 20, 30,  100],
+                    columns: [[
+                        {field:'orgCode', width:120,  sortable: true, title:'部门编号',  },
+                        {field:'orgName', width:120,  sortable: true, title:'部门名称',  },
+                        {field:'sumAllCon', width:100, sortable: true, title:'查询区间内总消耗',align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);} },
+                  /*      {field:'incomeConflict', width:100, sortable: true, title:'收入封顶冲突',align:'center',halign:'center',
+                            formatter: function (value, row, index) {
+                            if(value===true){
+                                let conflicTips ='';
+                                let lastDay ='';
+                                if(row.incomeLastDay!=null && row.incomeLastDay.recordDate!=null)lastDay = "于 "+ redFont(getCommonDate(row.incomeLastDay.recordDate)) ;
+                                if(row.incomeConflictOrgNames!=null){
+                                    for(let x=0;x<row.incomeConflictOrgNames.length;x++)conflicTips+=(row.incomeConflictOrgNames[x]+"、");
+                                    conflicTips=redFont(conflicTips);
+                                    conflicTips+=( lastDay+ "共同封顶有效收入，共溢出 "+redFont(lastDayIncomeOver));
+                                }
+                                return '<img  class="conflicTips'+cusCode+'"  title="'+conflicTips+'" src="'+basePath+'/static/images/attention.png"  style="hight:25px;width: 25px;" >'
+                            }
+                            return '';
+                        }
+                        },*/
+                        {field:'sumEffCon', width:100, sortable: true, title:'收入消耗',align:'right',halign:'center', formatter: function (value, row, index) {
+                                value = moneyFormter(value);
+                                return row.incomeConflict===true?orangeFont(value):value;
+                            }
+                        },
+                        /*{field:'payConflict', width:100, sortable: true, title:'支出封顶冲突',align:'center',halign:'center',
+                            formatter: function (value, row, index) {
+                                if(value===true){
+                                    let conflicTips ='';
+                                    let lastDay ='';
+                                    if(row.payLastDay!=null && row.payLastDay.recordDate!=null)lastDay = "于 "+ redFont(getCommonDate(row.payLastDay.recordDate)) ;
+                                    if(row.payConflictOrgNames!=null){
+                                        for(let x=0;x<row.payConflictOrgNames.length;x++)conflicTips+=(row.payConflictOrgNames[x]+"、");
+                                        conflicTips=redFont(conflicTips);
+                                        conflicTips+=( lastDay+ "共同封顶支出有效消耗，共溢出 "+redFont(lastDayPayOver));
+                                    }
+                                    return '<img  class="conflicTips'+cusCode+'"  title="'+conflicTips+'" src="'+basePath+'/static/images/attention.png"  style="hight:25px;width: 25px;" >'
+                                }
+                                return '';
+                            }
+                        },*/
+                        {field:'sumEffPayCon', width:100, sortable: true, title:'支出消耗',align:'right',halign:'center', formatter: function (value, row, index) {
+                                value = moneyFormter(value);
+                                return row.payConflict===true?     '<span  class="conflicTips'+cusCode+'" title="数据未减去溢出"  style="color: orangered;"    >'+orangeFont(value)+'</span>'  :value;
+                            } },
+                        {field:'incomeLastDay', sortable: true, title:'收入截止日消耗',align:'right',halign:'center', formatter: function (value, row, index) {
+                              if(value==null)return '';
+                              let imgTip = '';
+                                if(row.incomeConflict===true){
+                                    let conflicTips ='';
+                                    let lastDay ='';
+                                    if(row.incomeLastDay!=null && row.incomeLastDay.recordDate!=null)lastDay = "于 "+ redFont(getCommonDate(row.incomeLastDay.recordDate)) ;
+                                    if(row.incomeConflictOrgNames!=null){
+                                        for(let x=0;x<row.incomeConflictOrgNames.length;x++)conflicTips+=(row.incomeConflictOrgNames[x]+"、");
+                                        conflicTips=redFont(conflicTips);
+                                        conflicTips+=( lastDay+ "共同封顶有效收入，共溢出 "+redFont(lastDayIncomeOver));
+                                    }
+                                    imgTip = '<img  class="conflicTips'+cusCode+'"  title="'+conflicTips+'" src="'+basePath+'/static/images/attention.png"  style="hight:25px;width: 25px;" >'
+                                }
+                                let msg =("日期："+getCommonDate(value.recordDate)+" ；消耗：  " +(value.sumCon==null?0:value.sumCon.toFixed(2)) ) ;
+                              return imgTip+msg;
+                            } },
+                        {field:'payLastDay', sortable: true, title:'支出截止日消耗',align:'right',halign:'center', formatter: function (value, row, index) {
+                                let imgTip = '';
+                            if(value==null)return '';
+                            let dayStr ='';
+                                if(row.payConflict===true){
+                                    let conflicTips ='';
+                                    let lastDay ='';
+                                    if(row.payLastDay!=null && row.payLastDay.recordDate!=null){
+                                        dayStr = getCommonDate(row.payLastDay.recordDate);
+                                        lastDay = "于 "+ redFont(dayStr) ;
+                                    }
+                                    if(row.payConflictOrgNames!=null){
+                                        for(let x=0;x<row.payConflictOrgNames.length;x++)conflicTips+=(row.payConflictOrgNames[x]+"、");
+                                        conflicTips=redFont(conflicTips);
+                                        conflicTips+=( lastDay+ "共同封顶支出有效消耗，共溢出 "+redFont(lastDayPayOver));
+                                    }
+                                    imgTip = '<img  class="conflicTips'+cusCode+'"  title="'+conflicTips+'" src="'+basePath+'/static/images/attention.png"  style="height:25px;width: 25px;" >'
+                                }
+                                let msg =("日期："+dayStr+" ；消耗：  " +(value.sumCon==null?0:value.sumCon.toFixed(2)) ) ;
+                                return imgTip+msg;
+                            } },
+                    ]],
+                    onSortColumn: function (sort, order){
+                        dataCusOrg.sort((d1,d2)=>{
+                            let value1 = d1[sort];
+                            let value2 = d2[sort];
+                            let end = 0;
+                            if(sort==='orgCode' || sort==='orgName' ) end = value1.localeCompare(value2,'zh-CN');
+                            else end = value1 -value2;
+                            if('asc'===order) return end; else return  0-end;
+                        });
+                        setPage( tableCusOrg ,dataCusOrg,1);
+                    },
+                    onLoadSuccess: function (data) {
+                        $('.conflicTips'+cusCode).tooltip({
+                            position: 'right',
+                            onShow: function(){
+                                $(this).tooltip('tip').css({
+                                    backgroundColor: '#ffffff',
+                                    borderColor: '#666'
+                                });
+                            }
+                        });
+                    }
+                });
+                tableCusOrg.datagrid("getPager").pagination({
+                    onSelectPage:function(pageNumber, pageSize){
+                        let gridOpts = tableCusOrg.datagrid('options');
+                        gridOpts.pageNumber = pageNumber;
+                        gridOpts.pageSize = pageSize;
+                        setPage( tableCusOrg ,dataCusOrg,pageNumber);
+                    }
+                });
+               setPage( tableCusOrg ,dataCusOrg,1);
             }
         });
 
@@ -230,9 +393,15 @@
                         sumPay:dataAll[i].sumPay==null?"":dataAll[i].sumPay.toFixed(2),
                         payRadio:dataAll[i].payRadio,
                         endDate:getCommonDate(dataAll[i].endDate),
+                        incomeEndDate:getCommonDate(dataAll[i].incomeEndDate),
                         payEndDate:getCommonDate(dataAll[i].payEndDate),
                         dailData:dataAll[i].data,
-                        sumAllCon:moneyFormter(dataAll[i].sumAllCon)
+                        sumAllCon:moneyFormter(dataAll[i].sumAllCon),
+                        cusOrgEffDtos:dataAll[i].cusOrgEffDtos,
+                        incomeOverflow:dataAll[i].incomeOverflow,
+                        payOverflow:dataAll[i].payOverflow,
+                        lastDayIncomeOver:moneyFormter(dataAll[i].lastDayIncomeOver),
+                        lastDayPayOver:moneyFormter(dataAll[i].lastDayPayOver),
                     });
                 }
                 setPage(   $("#effCountAll") ,listData,1);
@@ -245,8 +414,8 @@
     function handleTimeUnitEffect(dates,dataAll,totalDailSumCon) {
         let series =[];
         let names =[];
-        let countType = $('#countEffType').val();
-        if(countType==='0'){
+
+
             dataAll =totalDailSumCon;
             names.push('收入有效消耗');
             names.push('支出有效消耗');
@@ -302,76 +471,7 @@
             series.push(seriesO_payEff);
             series.push(seriesO_income);
             series.push(seriesO_pay);
-        }else{
-            for(let i=0;i<dataAll.length;i++){
-                if(dataAll[i].data==null || dataAll[i].data.length===0)continue;
-                names.push(dataAll[i].name+"—收入有效消耗");
-                names.push(dataAll[i].name+"—支出有效消耗");
-                names.push(dataAll[i].name+"—收入");
-                names.push(dataAll[i].name+"—支出");
-                let seriesO = {
-                    type: 'line',smooth: false,
-                    id:dataAll[i].code+"con",name:dataAll[i].name+"—收入有效消耗",completeDate:dataAll[i].completeDate
-                };
-                let seriesO_payEff = {
-                    type: 'line',smooth: false,
-                    id:dataAll[i].code+"payCon",name:dataAll[i].name+"—支出有效消耗",completeDate:dataAll[i].completeDate
-                };
-                let seriesO_income = {
-                    type: 'line',smooth: false,
-                    id:dataAll[i].code+"inc",name:dataAll[i].name+"—收入",completeDate:dataAll[i].completeDate
-                };
-                let seriesO_pay = {
-                    type: 'line',smooth: false,
-                    id:dataAll[i].code+"pay",name:dataAll[i].name+"—支出",completeDate:dataAll[i].completeDate
-                };
-                let dataArr =[];
-                let dataArrPayEff =[];
-                let dataArr_income =[];
-                let dataArr_pay =[];
-                for(let k=0;k<dates.length;k++){
-                    let got = false;
-                    let gotPayEff = false;
-                    let got_income = false;
-                    let got_pay = false;
-                    for (let j = 0; j < dataAll[i].data.length; j++) {
-                        if (dataAll[i].data[j] == null) continue;
-                        let recodedDate = getCommonDate(dataAll[i].data[j].recoredDate);
-                        let date_ = getCommonDate(dates[k]);
-                        if (recodedDate === date_ ) {
-                            if(dataAll[i].data[j].consumptionEffect != null){
-                                dataArr.push(dataAll[i].data[j].consumptionEffect.toFixed(2));
-                                got = true;
-                            }
-                            if(dataAll[i].data[j].payConsumptionEffect != null){
-                                dataArrPayEff.push(dataAll[i].data[j].payConsumptionEffect.toFixed(2));
-                                gotPayEff = true;
-                            }
-                            if(dataAll[i].data[j].income != null){
-                                dataArr_income.push(dataAll[i].data[j].income.toFixed(2));
-                                got_income = true;
-                            }
-                            if(dataAll[i].data[j].pay != null){
-                                dataArr_pay.push(dataAll[i].data[j].pay.toFixed(2));
-                                got_pay = true;
-                            }
-                        }
-                    }
-                    if(!got)dataArr.push(0);
-                    if(!gotPayEff)dataArrPayEff.push(0);
-                    if(!got_income)dataArr_income.push(0);
-                    if(!got_pay)dataArr_pay.push(0);
-                }
-                seriesO.data = dataArr;
-                seriesO_payEff.data = dataArrPayEff;
-                seriesO_income.data = dataArr_income;
-                seriesO_pay.data = dataArr_pay;
-                series.push(seriesO);
-                series.push(seriesO_payEff);
-                series.push(seriesO_income);
-                series.push(seriesO_pay);
-            }
-        }
+
 
         $("#effAddon").html('');
 
@@ -484,10 +584,6 @@
                 <table>
                     <tr style="height: 40px">
                         <td>
-                            <select id="countEffType" name="type" style="width: 150px" class="layui-input"  >
-                                <option value="0" selected > 每日总和 </option>
-                                <option value="1" >单个素材</option>
-                            </select>
                         </td>
                     </tr></table>
                 <div id="effAddon"  STYLE="width: 100%;margin: 0 auto;"  ></div>

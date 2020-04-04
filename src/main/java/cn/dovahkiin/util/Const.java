@@ -29,6 +29,7 @@ public class Const {
     public static final String consumption = "consumption"; // 当日消耗
     public static final String code = "code";
     public static final String name = "name";
+    public static final String defaultConfig = "defaultConfig";
 
 
     public static final SimpleDateFormat simDF = new SimpleDateFormat("yyyy-MM-dd") ;
