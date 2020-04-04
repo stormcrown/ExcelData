@@ -8,6 +8,8 @@ public class CustomerEffectDto {
 
     private String name;
     private String code;
+    private String supplierName;
+    private String supplierCode;
     private Double basePrice;
     private Double basePay;
     private Date completeDate;
@@ -27,11 +29,15 @@ public class CustomerEffectDto {
     private Double sumIncome;
     private Double sumPay;
 
-    private List<DayEffectDto> data;
+    private List<DayEffectDto> data; // 素材的每日消耗
     public void addData(DayEffectDto dayEffectDto){
         if(data==null)data = new ArrayList<>();
         data.add(dayEffectDto);
     }
+
+
+
+
 
     public String getName() {
         return name;
@@ -199,5 +205,21 @@ public class CustomerEffectDto {
 
     public void setPayEndDate(Date payEndDate) {
         this.payEndDate = payEndDate;
+    }
+
+    public String getSupplierName() {
+        return supplierName;
+    }
+
+    public void setSupplierName(String supplierName) {
+        this.supplierName = supplierName;
+    }
+
+    public String getSupplierCode() {
+        return supplierCode;
+    }
+
+    public void setSupplierCode(String supplierCode) {
+        this.supplierCode = supplierCode;
     }
 }

@@ -38,15 +38,16 @@
                     let value2 = d2[sort];
                     let end = 0;
                     let hou = 1000 * 60 * 60;
-                    if (value1 === null || value1 === '' || value1 === undefined) value1 = '2001-05-06';
-                    if (value2 === null || value2 === '' || value2 === undefined) value2 = '2001-05-06';
-                    if (sort === 'completeData' || sort === 'endDate' || sort === 'payEndDate') {
+                    if (value1 === null || value1 === '' || value1 === undefined) value1 = '';
+                    if (value2 === null || value2 === '' || value2 === undefined) value2 = '';
+                     if (sort === 'name' || sort === 'code' || sort === 'supplierName' || sort === 'supplierCode' || sort === 'basePrice' || sort === 'basePay' ||value2 === '' ||value1 === ''   ) {
+                        end = value1.localeCompare(value2, 'zh-CN');
+                    }else  if (sort === 'completeData' || sort === 'endDate' || sort === 'payEndDate') {
                         value1 = new Date(value1);
                         value2 = new Date(value2);
                         end = value1.getTime() / hou - value2.getTime() / hou;
-                    } else if (sort === 'name' || sort === 'code' || sort === 'basePrice' || sort === 'basePay') {
-                        end = value1.localeCompare(value2, 'zh-CN');
-                    } else  end = value1 - value2;
+                    }
+                     else  end = value1 - value2;
                     if ('asc' === order) return end; else return 0 - end;
                 });
                 setPage($('#effCountAll'),listData,1);
@@ -56,6 +57,8 @@
             ]],
             columns: [[
                 {field:'name',  sortable: true, title:'名称',  },
+                {field:'supplierName',  sortable: true, title:'供应商名称',  },
+                {field:'supplierCode',  sortable: true, title:'供应商编号',  },
                 {field:'maxEffectOn',width:100,  sortable: true, title:'收入封顶消耗',  },
                 {field:'payMaxEffectOn',width:100,  sortable: true, title:'支出封顶消耗',  },
                 {field:'sumAllEffCon', width:100, sortable: true, title:'生命周期内总消耗',  },
@@ -116,10 +119,10 @@
                     columns: [[
                         {field:'code', width:120,  sortable: true, title:'编号',  },
                         {field:'recoredDate', width:100, sortable: true, title:'消耗日期', formatter: function (value, row, index) {return getCommonDate(value);} },
-                        {field:'consumptionEffect', width:100, sortable: true, title:'收入消耗', formatter: function (value, row, index) {return moneyFormter(value);} },
-                        {field:'payConsumptionEffect', width:100, sortable: true, title:'支出消耗', formatter: function (value, row, index) {return moneyFormter(value);} },
-                        {field:'income', width:100, sortable: true, title:'收入', formatter: function (value, row, index) {return moneyFormter(value);} },
-                        {field:'pay', width:100, sortable: true, title:'支出', formatter: function (value, row, index) {return moneyFormter(value);} },
+                        {field:'consumptionEffect', width:100, sortable: true, title:'收入消耗',align:'right',halign:'center',  formatter: function (value, row, index) {return moneyFormter(value);} },
+                        {field:'payConsumptionEffect', width:100, sortable: true, title:'支出消耗',align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);} },
+                        {field:'income', width:100, sortable: true, title:'收入',align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);} },
+                        {field:'pay', width:100, sortable: true, title:'支出',align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);} },
                     ]],
                     onSortColumn: function (sort, order){
                         dataZB.sort((d1,d2)=>{
@@ -192,6 +195,8 @@
                 if(totalSumPay!=null)totalSumPay=totalSumPay.toFixed(2);
 
                 $('#totalSumCon').html(totalSumCon);
+                $('#totalSumAllEffCon').html(data.totalSumAllEffCon==null?0:data.totalSumAllEffCon.toFixed(2));
+                $('#tatalSumAllCon').html(data.tatalSumAllCon==null?0:data.tatalSumAllCon.toFixed(2));
                 $('#totalSumPayCon').html(data.totalSumPayCon==null?0:data.totalSumPayCon.toFixed(2));
                 $('#totalSumIncome').html(totalSumIncome);
                 $('#totalSumPay').html(totalSumPay);
@@ -210,6 +215,8 @@
                     listData.push({
                         code:dataAll[i].code,
                         name:dataAll[i].name,
+                        supplierName:dataAll[i].supplierName,
+                        supplierCode:dataAll[i].supplierCode,
                         completeData:getCommonDate(dataAll[i].completeDate),
                         basePrice:pNPl,
                         basePay:payNPl,
@@ -427,12 +434,13 @@
                         <input id = 'recoredDateRange_count_eff' name="recoredDateRange" type="text" class="layui-input" >
                     </td>
                     <td>&nbsp;&nbsp;&nbsp;</td>
+
                     <td>
                         <button type="button" class="layui-btn layui-btn-sm " onclick="getEffectCountData()"><i class="layui-icon layui-icon-search"></i></button>
                     </td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td title="导出" class="easyui-tooltip" >
-                        <button type="button" class="layui-btn layui-btn-sm " onclick="exportEffectCount()"><i class="layui-icon layui-icon-triangle-d"></i></button>
+                        <button type="button" class="layui-btn layui-btn-sm " onclick="exportEffectCount()" >导出</button>
                     </td>
                     <td>&nbsp;&nbsp;&nbsp;</td>
                     <td>
@@ -447,8 +455,22 @@
                         <select id="customerCode"  name="customer.code" class="easyui-combobox" data-options="valueField:'code',textField:'code',url:basePath+'/customer/comboboxCode',width:600,height:39,formatter:function(row){  return row.code+' -> '+row.name ;    }"></select>
                     </td>
                 </tr>
+                <tr>
+                    <td >供应商</td>
+                    <td>
+                        <input name="supplierIds" class="easyui-combobox"  data-options="width:600,height:39,valueField:'id',textField:'name',url:'${path}/supplier/combobox',multiple:true," />
+                    </td>
+                </tr>
                 <tr style="height: 40px">
-                    <td COLSPAN="7" >收入有效消耗： <span id="totalSumCon" style="color:red" >0</span> ；支出有效消耗： <span id="totalSumPayCon" style="color:red" >0</span> ；收入：<span id="totalSumIncome" style="color:red"></span>；支出：<span id="totalSumPay" style="color: red" ></span>；素材数量：<span id="totalCus" style="color: red" ></span>； </td>
+                    <td COLSPAN="7" >
+                        全素材生命周期内总消耗： <span id="totalSumAllEffCon" style="color:red" >0</span> ；
+                        查询期限内内总消耗： <span id="tatalSumAllCon" style="color:red" >0</span> ；
+                        收入有效消耗： <span id="totalSumCon" style="color:red" >0</span> ；
+                        支出有效消耗： <span id="totalSumPayCon" style="color:red" >0</span> ；
+                        收入：<span id="totalSumIncome" style="color:red"></span>；
+                        支出：<span id="totalSumPay" style="color: red" ></span>；
+                        素材数量：<span id="totalCus" style="color: red" ></span>；
+                    </td>
                 </tr>
             </table>
         </form>

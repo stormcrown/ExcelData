@@ -283,43 +283,33 @@
 		ORDER BY total desc
 	</select>
 
-	<!-- 此处将所有素材的有效期内的消耗统计起来，如果有大于最大消耗的数据，则进一步处理
-	<select id="effCount1" resultType="hashmap">
-		SELECT
-		sum( IF(vc.recored_date  &lt;= DATE_ADD(cus.complete_date, INTERVAL #{effectDays,jdbcType=INTEGER} day) and vc.recored_date >= cus.complete_date, consumption, 0) ) as sumEffCon,
-		cus.`name` ,cus.id ,
-		min(IF(vc.recored_date &lt;= DATE_ADD(cus.complete_date, INTERVAL #{effectDays,jdbcType=INTEGER} day) and vc.recored_date >= cus.complete_date and consumption > 0, vc.recored_date, cus.complete_date)) as min_date,
-		max(IF(vc.recored_date &lt;= DATE_ADD(cus.complete_date, INTERVAL #{effectDays,jdbcType=INTEGER} day) and vc.recored_date >= cus.complete_date and consumption > 0, vc.recored_date, cus.complete_date)) as max_date
-		FROM video_cost vc
-		left join customer cus on cus.id = vc.customer_id
-		where    cus.complete_date &lt;= #{startDate} and DATE_ADD(cus.complete_date, INTERVAL 60 day) &gt;= #{endDate}
-		GROUP BY cus.id,cus.`name`
-		having sumEffCon &gt; #{maxEffectCon,jdbcType=DOUBLE}
-	</select>
--->
 	<select id="selectEffectCustomer"  resultType="cn.dovahkiin.model.dto.CustomerEffectDto" >
 		select
 		cus.code,cus.name,
 		ple.base_price as basePrice,ple.name as priceLevelName,
 		pal.base_pay as basePay,pal.name as payLevelName,
+		sup.name as supplierName, sup.code as supplierCode ,
 		min( cus.complete_date) as completeDate,
-		COALESCE(  cus.max_effect_con ,sc.default_max_effect_con,#{defaultConfig.defaultMaxEffectCon} ) as maxEffectOn,
-		COALESCE(  cus.pay_max_effect_con ,sc.default_pay_max_effect_con,#{defaultConfig.defaultPayMaxEffectCon} ) as payMaxEffectOn,
+		COALESCE( cus.max_effect_con ,sc.default_max_effect_con,#{defaultConfig.defaultMaxEffectCon} ) as maxEffectOn,
+		COALESCE( cus.pay_max_effect_con ,sc.default_pay_max_effect_con,#{defaultConfig.defaultPayMaxEffectCon} ) as
+		payMaxEffectOn,
 		COALESCE(cus.income_ratio, sc.default_income_ratio,#{defaultConfig.defaultIncomeRatio} ) as incomeRadio,
 		COALESCE(cus.pay_ratio , sc.default_pay_ratio,#{defaultConfig.defaultPayRatio} ) as payRadio,
 		COALESCE(
-		DATE_ADD(cus.complete_date, INTERVAL sc.default_max_effect_range day),
-		DATE_ADD(cus.complete_date, INTERVAL #{defaultConfig.defaultMaxEffectRange} day)
+		DATE_ADD(min( cus.complete_date), INTERVAL sc.default_max_effect_range day),
+		DATE_ADD(min( cus.complete_date), INTERVAL #{defaultConfig.defaultMaxEffectRange} day)
 		) as endDate,
-		sum( case when vc.recored_date &lt;= COALESCE(
-		DATE_ADD(cus.complete_date, INTERVAL sc.default_max_effect_range day),
-		DATE_ADD(cus.complete_date, INTERVAL #{defaultConfig.defaultMaxEffectRange} day)
-		) and vc.recored_date >= cus.complete_date THEN consumption ELSE 0 end ) sumAllEffCon,  --  总生命周期内消耗
+		sum( IF(vc.recored_date &lt;= COALESCE(
+		DATE_ADD( cus.complete_date, INTERVAL sc.default_max_effect_range day),
+		DATE_ADD( cus.complete_date, INTERVAL #{defaultConfig.defaultMaxEffectRange} day)
+		) and vc.recored_date >= cus.complete_date, consumption, 0) ) sumAllEffCon, -- 总生命周期内消耗
 
-		sum( case when vc.recored_date &lt;= #{recoredDate_end}  and vc.recored_date >= #{recoredDate_start} THEN consumption ELSE 0 end ) sumAllCon  -- 查询区间内消耗
+		sum( IF(vc.recored_date &lt;= #{recoredDate_end} and vc.recored_date >= #{recoredDate_start}, consumption, 0) ) sumAllCon -- 查询区间内消耗
 
 		from video_cost vc
-		LEFT JOIN  customer cus on vc.customer_id = cus.id and  cus.delete_flag = 0
+		LEFT JOIN customer cus on vc.customer_id = cus.id and cus.delete_flag = 0
+		LEFT JOIN price_level ple ON ple.id = cus.price_level_id and ple.delete_flag = 0
+		LEFT JOIN pay_level pal ON pal.id = cus.pay_level_id and pal.delete_flag = 0
 		LEFT JOIN supplier sup on sup.id = cus.supplier_id and sup.delete_flag = 0
 		LEFT JOIN system_config sc on sc.supplier_id = sup.id
 		left join optimizer opt on opt.id = vc.optimizer_id
@@ -335,14 +325,22 @@
 		LEFT JOIN performer per3 ON per3.id = cus.performer3_id
 		LEFT JOIN true_customer tcus ON tcus.id = cus.true_customer_id
 		LEFT JOIN video_version vve ON vve.id = cus.video_version_id
-		LEFT JOIN price_level ple ON ple.id = cus.price_level_id and ple.delete_flag = 0
-		LEFT JOIN pay_level pal ON pal.id = cus.pay_level_id and pal.delete_flag = 0
 		<where>
 			vc.delete_flag = 0 and vc.`consumption` >0
 			<if test="videoCost!=null" >
 				<if test="videoCost.customer!=null" >
 					<if test="videoCost.customer.code!=null and videoCost.customer.code!='' " >
 						and cus.code = #{videoCost.customer.code}
+					</if>
+					<if test="supplierIds!=null">
+						and cus.supplier_id in(
+						<foreach collection="supplierIds" item="supplierId" separator=",">
+							#{supplierId}
+						</foreach>
+						)
+					</if>
+					<if test="videoCost.customer.supplier !=null and videoCost.customer.supplier.id != null  ">
+						and cus.supplier_id = #{ videoCost.customer.supplier.id }
 					</if>
 				</if>
 			</if>
@@ -352,6 +350,33 @@
 		completeDate &lt;= #{recoredDate_end  }
 		and endDate  &gt;=  #{recoredDate_start }
 		and sumAllCon >0
+	</select>
+
+	<select id="selectEffectCustomerByDem" resultType="cn.dovahkiin.model.dto.CusOrgEffDto" >
+		select
+		       dem.code oriCode,
+			   dem.name  demName,
+			   cus.code cusCode,
+			   cus.name cusName,
+			   sum(IF(vc.recored_date &lt;=
+			          COALESCE(
+					   DATE_ADD(cus.complete_date, INTERVAL sc.default_max_effect_range day),
+					   DATE_ADD(cus.complete_date, INTERVAL  #{defaultConfig.defaultMaxEffectRange} day)
+				   ) and vc.recored_date >= cus.complete_date, consumption, 0)) sumAllEffCon, --  总生命周期内消耗
+			   sum(IF(vc.recored_date &lt;= #{recoredDate_end} and vc.recored_date >= #{recoredDate_start}, consumption, 0)) sumAllCon   ,  -- 查询区间内消耗
+			sum(IF(vc.recored_date &lt;= #{endDate} and vc.recored_date >= #{completeDate}, consumption, 0)) sumEffCon,
+		sum(IF(vc.recored_date &lt;= #{payEndDate} and vc.recored_date >= #{completeDate}, consumption, 0)) sumEffPayCon
+		from video_cost vc
+				 LEFT JOIN customer cus on vc.customer_id = cus.id and cus.delete_flag = 0
+				 LEFT JOIN price_level ple ON ple.id = cus.price_level_id and ple.delete_flag = 0
+				 LEFT JOIN pay_level pal ON pal.id = cus.pay_level_id and pal.delete_flag = 0
+				 LEFT JOIN supplier sup on sup.id = cus.supplier_id and sup.delete_flag = 0
+				 LEFT JOIN system_config sc on sc.supplier_id = sup.id and sc.delete_flag = 0
+				 left join organization dem on dem.id = vc.demand_sector_id
+		where cus.code = #{customerCode}
+		GROUP BY cus.code, dem.code
+		having sumAllCon > 0
+		order by cus.code, dem.code
 	</select>
 
 	<select id="selectLastDay"  resultType="cn.dovahkiin.model.dto.LastDayEffectDto" >

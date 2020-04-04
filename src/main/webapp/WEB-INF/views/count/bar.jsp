@@ -36,8 +36,8 @@
                 {field:'id',  sortable: true, title:'id',  },
                 {field:'name',  sortable: true, title:'名称',  },
                 {field:'code', sortable: true, title:'编号',  },
-                {field:'consumption',  sortable: true, title:'消耗',  },
-                {field:'total', sortable: true, title:'总记录数',  },
+                {field:'consumption',  sortable: true, title:'消耗', align:'right',halign:'center',formatter: function (value, row, index) {return moneyFormter(value);} },
+                {field:'total', sortable: true, title:'总记录数', align:'right',halign:'center', },
             ]],
             onSortColumn: function (sort, order) {
                 sortModelCount =sort;
@@ -71,7 +71,7 @@
             pageList: [10,12,15, 20, 28,29,30,31, 93,365],
             columns: [[
                 {field:'timed',  sortable: true, title:'时间',  },
-                {field:'consumption',  sortable: true, title:'消耗',  },
+                {field:'consumption',  sortable: true, title:'消耗',align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);}  },
             ]],
             onSortColumn: function (sort, order) {
                 allTimeUnitCountListData.sort((d1,d2) => {

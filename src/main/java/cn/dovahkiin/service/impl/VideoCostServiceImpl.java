@@ -98,345 +98,12 @@ public class VideoCostServiceImpl implements IVideoCostService {
         if(unDeleted==0) return videoCostMapper.deleteManyForever(ids);
         else throw new RuntimeException("请先删除数据，再执行永久删除");
     }
-//
-//    @Override
-//    @Transactional
-//    public int saveExcel(Sheet sheet, Date recoredDate, DateConverter dateConverter, ShiroUser user) {
-//        EntityWrapper un_delete = new EntityWrapper();
-//        List<Organization> organizations = iOrganizationService.selectList(un_delete);
-//        un_delete.eq("delete_flag", 0);
-//        List<Customer> customers = customerService.selectUnDeleted(user.getSupplier());
-//        List<Editor> editors = editorService.selectList(un_delete);
-//        List<Industry> industries = iIndustryService.selectList(un_delete);
-//        List<Optimizer> optimizers = iOptimizerService.selectList(un_delete);
-//        List<Originality> originalities = iOriginalityService.selectList(un_delete);
-//        List<Performer> performers = performerService.selectList(un_delete);
-//        List<Photographer> photographers = iPhotographerService.selectList(un_delete);
-//      //  List<ProductType> productTypes = iProductTypeService.selectList(un_delete);
-//        List<VideoType> videoTypes = videoTypeService.selectList(un_delete);
-//        List<TrueCustomer> trueCustomers = trueCustomerService.selectList(un_delete);
-//        List<Supplier> supplierList = iSupplierService.selectList(un_delete);
-//        List<VideoVersion> videoVersionList = iVideoVersionService.selectList(un_delete);
-//        List<PriceLevel> priceLevelList = iPriceLevelService.selectList(un_delete);
-//        int first = sheet.getFirstRowNum();
-//        int last = sheet.getLastRowNum();
-//        logger.info("first=" + first + "\tlast=" + last + "\trecoredDate=" + recoredDate);
-//        List<VideoCost> videoCosts = new ArrayList();
-//
-//        for (int i = first; i < last + 1; i++) {
-//            Row row = sheet.getRow(i);
-//            if (row != null) {
-//                    Cell cell=row.getCell(0);
-//                    Object value = getCellValue(cell);
-//                    if(value!=null && "排名".equals(value)){
-//                          first = i;
-//                          break ;
-//                    }
-//
-//            }
-//        }
-//        first++;
-//        Date now = new Date();
-//        /*  被合并的单元格  */
-//        Map<String, String> mergeDatas = new HashMap<>((last - first) * 2);
-//        /*  被合并的单元格 */
-//        List<CellRangeAddress> merges = sheet.getMergedRegions();
-//        for (CellRangeAddress cell_mege : merges) {
-//            int f_row = cell_mege.getFirstRow();
-//            int l_row = cell_mege.getLastRow();
-//            int f_colum = cell_mege.getFirstColumn();
-//            int l_colum = cell_mege.getLastColumn();
-//            if (l_row - f_row > 1 || f_colum - l_colum > 1) {
-//                for (int r = f_row; r < l_row + 1; r++) {
-//                    for (int col = f_colum; col < l_colum + 1; col++) {
-//                        mergeDatas.put(r + "_" + col, f_row + "_" + f_colum);
-//                    }
-//                }
-//            }
-//        }
-//        Calendar date2010 = Calendar.getInstance();
-//        date2010.set(Calendar.YEAR,2010);
-//        date2010.set(Calendar.MONTH,9);
-//        Date date_2010 = date2010.getTime();
-//        行:
-//        for (int i = first; i < last + 1; i++) {
-//            Row row = sheet.getRow(i);
-//            if (row != null) {
-//                VideoCost videoCost = new VideoCost(user.getId() ,now,user.getId(), now, 0, recoredDate);
-//                videoCost.setBusinessDepartment(new Organization());
-//                Customer customer_1 = new Customer(null, null, now, 0);
-//                Object codeC = getCellValue(row.getCell(1)) ; ;
-//                String code ="";
-//                if(codeC!=null)code=codeC.toString();
-//                if(!StringUtils.hasText(code))code=null;
-//                格:
-//                for (int j = 0; j < 17; j++) {
-//                    Cell cell = row.getCell(j);
-//                    if (cell != null) {
-//                        CellType cellType = cell.getCellTypeEnum();
-//                        Object value = null;
-//                        switch (cellType) {
-//                            case BLANK://被合并了，或者是空格,查找被合并的里有没有。
-//                                String location = mergeDatas.get(i + "_" + j);
-//                                if (cn.dovahkiin.commons.utils.StringUtils.isNotBlank(location) && location.indexOf("_") > 0) {
-//                                    String[] locations = location.split("_");
-//                                    if (locations.length == 2 && cn.dovahkiin.commons.utils.StringUtils.isInteger(locations[0]) && cn.dovahkiin.commons.utils.StringUtils.isInteger(locations[1])) {
-//                                        Row loac_row = sheet.getRow(Integer.parseInt(locations[0]));
-//                                        Cell loac_cell = loac_row.getCell(Integer.parseInt(locations[1]));
-//                                        value = getCellValue(loac_cell);
-//                                    }
-//                                }
-//                                break;
-//                            case ERROR:
-//                                continue 格;//错误格 ，继续下一格
-//                            default:
-//                                value = getCellValue(cell);
-//
-//                        }
-//                        if (value != null  ) {
-//                            String valueStr = value.toString().replaceAll(" ","");
-//                            if(!StringUtils.hasText(valueStr))continue 格;
-//                            if ("——".equals(valueStr.replaceAll(" ", ""))) continue 格;
-//                            ;
-//                            switch (j) {
-//
-//                                case 1:
-//                                    synchronized (customers ) {
-//                                        customer_1.setCode(valueStr);
-//                                        code=valueStr;
-//                                    }
-//                                    break;
-//                                case 2:
-//                                    synchronized (trueCustomers){
-//                                        TrueCustomer trueCustomer = checkName(trueCustomers,valueStr);
-//                                        if(trueCustomer==null){
-//                                            trueCustomer = new TrueCustomer(valueStr,now,now,0);
-//                                            trueCustomer.CreateCode();
-//                                            trueCustomerService.insert(trueCustomer);
-//                                            trueCustomers.add(trueCustomer);
-//                                        }
-//                                        customer_1.setTrueCustomer(trueCustomer);
-//
-//                                        break ;
-//                                    }
-//
-//                                case 3:
-//                                    synchronized (customers ) {
-//                                        customer_1.setName(valueStr);
-//                                        //customer_1.setCode(code);
-//                                        Customer     customer = checkCodeOrName(customers,customer_1.getCode(),customer_1.getName());
-//                                        if (customer == null) {
-//                                            if (!cn.dovahkiin.commons.utils.StringUtils.hasText(customer_1.getCode())) customer_1.CreateCode();
-//                                            customerService.insert(customer_1);
-//                                            customers.add(customer_1);
-//                                            customer = customer_1;
-//                                        }
-//                                        else if( !customer_1.getName().equals(customer.getName()) || ( StringUtils.hasText(customer_1.getCode()) && !customer.getCode().equals(customer_1.getCode()) ) ) {
-//                                            StringBuffer stringBuffer = new StringBuffer("第");
-//                                            stringBuffer.append(i+1).append(" 行，编码：")
-//                                                    .append(customer_1.getCode()).append("对应的素材名：").append(customer_1.getName()).append(",与数据库中的素材名称：")
-//                                                    .append(customer.getName()).append("编码：").append(customer.getCode()).append("不一致");
-//                                            throw new  RuntimeException(stringBuffer.toString() );
-//                                        }
-//
-//                                        videoCost.setCustomer(customer);
-//                                        break;
-//                                    }
-//                                case 4:
-//                                    synchronized (industries) {
-//                                        Industry industry = checkName(industries, valueStr);
-//                                        if (industry == null) {
-//                                            industry = new Industry(valueStr, null, now, 0);
-//                                            industry.CreateCode();
-//                                            iIndustryService.insert(industry);
-//                                            industries.add(industry);
-//                                        }
-//                                        customer_1.setIndustry(industry);
-////                                            videoCost.setIndustry(industry);
-//                                        break;
-//                                    }
-//                                case 5:
-//                                    synchronized (organizations) {
-//                                        Organization organization = checkSimpleName(organizations, valueStr);
-//                                        if (organization == null) organization = checkName(organizations, valueStr);
-//                                        if (organization == null) {
-//                                            organization = new Organization(valueStr, null, 0, now);
-//                                            organization.CreateCode();
-//                                            iOrganizationService.insert(organization);
-//                                            organizations.add(organization);
-//                                        }
-//
-//                                        videoCost.setDemandSector(organization);
-//                                        break;
-//                                    }
-//                                case 6:
-//                                    synchronized (optimizers) {
-//                                        Optimizer optimizer = checkName(optimizers, valueStr);
-//                                        if (optimizer == null) {
-//                                            optimizer = new Optimizer(valueStr, null, now, 0);
-//                                            optimizer.CreateCode();
-//                                            iOptimizerService.insert(optimizer);
-//                                            optimizers.add(optimizer);
-//                                        }
-//                                        videoCost.setOptimizer(optimizer);
-//                                        break;
-//                                    }
-//                                case 7:
-//                                    synchronized (videoTypes) {
-//                                        valueStr = StringUtils.replace(valueStr, "类", "");
-//                                        VideoType videoType = checkName(videoTypes, valueStr);
-//                                        if (videoType == null) {
-//                                            videoType = new VideoType(valueStr, null, now, 0);
-//                                            videoType.CreateCode();
-//                                            videoTypeService.insert(videoType);
-//                                            videoTypes.add(videoType);
-//                                        }
-//                                        customer_1.setVideoType(videoType);
-////                                         videoCost.setVideoType(videoType);
-//                                        break;
-//                                    }
-//                                case 8:
-//                                    try {
-//                                        if(StringUtils.isNotBlank(valueStr)){
-//                                            Date date = null;
-//                                            try {
-//                                                cell.setCellType(CellType.NUMERIC);
-//                                                date = cell.getDateCellValue();
-//                                                if(date!=null  && date.getTime() > date_2010.getTime() )customer_1.setCompleteDate(date);
-//                                            } catch (Exception e) { e.printStackTrace(); }
-//                                            if(date==null || date.getTime() > date_2010.getTime() )customer_1.setCompleteDate(dateConverter.convert(valueStr));
-//                                        }
-//                                    } catch (IllegalArgumentException e) {
-//                                        throw new RuntimeException("第"+(i+1)+"行无法识别列“成片日期”：\n"+valueStr);
-//                                    }
-//                                    break;
-//                                case 9:
-//                                    synchronized (originalities) {
-//                                        Originality originality = checkName(originalities, valueStr);
-//                                        if (originality == null) {
-//                                            originality = new Originality(valueStr, null, now, 0);
-//                                            originality.CreateCode();
-//                                            iOriginalityService.insert(originality);
-//                                            originalities.add(originality);
-//                                        }
-////                                        videoCost.setOriginality(originality);
-//                                        customer_1.setOriginality(originality);
-//                                        break;
-//                                    }
-//                                case 10:
-//                                    synchronized (photographers) {
-//                                        Photographer photographer = checkName(photographers, valueStr);
-//                                        if (photographer == null) {
-//                                            photographer = new Photographer(valueStr, null, now, 0);
-//                                            photographer.CreateCode();
-//                                            iPhotographerService.insert(photographer);
-//                                            photographers.add(photographer);
-//                                        }
-////                                            videoCost.setPhotographer(photographer);
-//                                        customer_1.setPhotographer(photographer);
-//                                        break;
-//                                    }
-//                                case 11:
-//                                    synchronized (editors) {
-//                                        Editor editor = checkName(editors, valueStr);
-//                                        if (editor == null) {
-//                                            editor = new Editor(valueStr, null, now, 0);
-//                                            editor.CreateCode();
-//                                            editorService.insert(editor);
-//                                            editors.add(editor);
-//                                        }
-////                                            videoCost.setEditor(editor);
-//                                        customer_1.setEditor(editor);
-//                                        break;
-//                                    }
-//                                case 12:
-//                                    synchronized (performers) {
-//                                        Performer performer = checkName(performers, valueStr);
-//                                        if (performer == null) {
-//                                            performer = new Performer(valueStr, null, now, 0);
-//                                            performer.CreateCode();
-//                                            performerService.insert(performer);
-//                                            performers.add(performer);
-//                                        }
-////                                            videoCost.setPerformer1(performer);
-//                                        customer_1.setPerformer1(performer);
-//                                        break;
-//                                    }
-//                                case 13:
-//                                    synchronized (performers) {
-//                                        Performer performer = checkName(performers, valueStr);
-//                                        if (performer == null) {
-//                                            performer = new Performer(valueStr, null, now, 0);
-//                                            performer.CreateCode();
-//                                            performerService.insert(performer);
-//                                            performers.add(performer);
-//                                        }
-////                                            videoCost.setPerformer2(performer);
-//                                        customer_1.setPerformer2(performer);
-//                                        break;
-//                                    }
-//                                case 14:
-//                                    try {
-//                                        if(StringUtils.isNotBlank(valueStr)) videoCost.setConsumption(Double.parseDouble(valueStr));
-//                                    } catch (NumberFormatException e) {
-//                                        e.printStackTrace();
-//                                        throw new RuntimeException("第"+(i+1)+"行无法识别消耗量");
-//                                    }
-//                                    break;
-//                                case 15:
-//                                    Date rec = videoCost.getRecoredDate();
-//                                        if(StringUtils.isNotBlank(valueStr)){
-//                                            Date date = null;
-//                                            try {
-//                                                cell.setCellType(CellType.NUMERIC);
-//                                                date = cell.getDateCellValue();
-//                                                if(date!=null && date.getTime() > date_2010.getTime() )rec = date;
-//                                            } catch (Exception e) { e.printStackTrace(); }
-//                                            try {
-//                                                if(date==null || date.getTime() < date_2010.getTime()) rec = dateConverter.convert(valueStr) ;
-//                                            } catch (IllegalArgumentException e) {
-//                                               throw new RuntimeException("第"+(i+1)+"行无法识别列“消耗日期”：\n"+valueStr);
-//                                            }
-//                                        }
-//                                        videoCost.setRecoredDate(rec);
-//                                    break;
-//                            }
-//                        }
-//                    }
-//                }
-//                if (customer_1.getId() != null) {
-//                    customer_1.setUpdateTime(now);
-//                    if(StringUtils.hasText(customer_1.getCode())){
-//                        List<Customer> customers1 = customerService.selectByCode(customer_1.getCode());
-//                        Customer customer = customers1.get(0);
-//                        if(customer!=null && (!customer.getId().equals(customer_1.getId()) || !customer_1.getName().equals(customer.getName()) ) ){
-//                            StringBuffer stringBuffer = new StringBuffer("第");
-//                            stringBuffer.append(i+1).append(" 行，编码：")
-//                                    .append(customer_1.getCode()).append("对应的素材名：").append(customer_1.getName()).append(",与数据库中的素材名称：")
-//                                    .append(customer.getName()).append("编码：").append(customer.getCode()).append("不一致");
-//                            throw new  RuntimeException(stringBuffer.toString() );
-//                        }
-//                    }
-//                    customerService.updateByPrimaryKeySelective(customer_1);
-//                }
-//                if (videoCost.getCustomer() != null) videoCosts.add(videoCost);
-//            }
-//
-//        }
-//        logger.info("开始保存");
-//        int x = videoCostMapper.insertMany(videoCosts); //insertBatch(videoCosts);
-//
-//        return x;
-//
-//    }
-
     @Override
     @Transactional
     public synchronized int handleExcelFile(List<ArrayList<Object>> excelDatas, Date recoredDate,ShiroUser shiroUser) {
         if(excelDatas==null || excelDatas.size()<1)return 0;
         ArrayList<Object> head = excelDatas.get(0);
         if(head==null || head.size()<Const.videoCostExcelHead.length)return 0;
-        logger.info(head);
         Date now = new Date();
         for(int i=0;i<Const.videoCostExcelHead.length;i++){
             if( StringUtils.isNotBlank(Const.videoCostExcelHead[i])  &&   !Const.videoCostExcelHead[i].equals(head.get(i)))throw new RuntimeException("模板错误第 "+(i+1)+"行 需要："+Const.videoCostExcelHead[i] +"，实际"+head.get(i) );
@@ -444,24 +111,23 @@ public class VideoCostServiceImpl implements IVideoCostService {
         Supplier supplier = shiroUser.getSupplier();
         EntityWrapper un_delete = new EntityWrapper();
         List<Organization> organizations = iOrganizationService.selectList(un_delete);
-//        Set<String> newOrganizations = new HashSet<>();
+
         un_delete.eq("delete_flag", 0);
         List<Customer> customers = customerService.selectUnDeleted(null);
-        Set<Map<String,Set<String>>> newCus = new HashSet<>();
         List<Editor> editors = editorService.selectList(un_delete);
         Set<String> newEditorNames = new HashSet<>();
         List<Industry> industries = iIndustryService.selectList(un_delete);Set<String> newIndustries = new HashSet<>();
         List<Optimizer> optimizers = iOptimizerService.selectList(un_delete);Set<String> newOptimizers = new HashSet<>();
-        List<Originality> originalities = iOriginalityService.selectList(un_delete);Set<String> newOriginalities = new HashSet<>();
+        List<Originality> originalities = iOriginalityService.selectList(un_delete);
         List<Performer> performers = performerService.selectList(un_delete);Set<String> newPerformers = new HashSet<>();
         List<Photographer> photographers = iPhotographerService.selectList(un_delete);Set<String> newPhotographers = new HashSet<>();
         //  List<ProductType> productTypes = iProductTypeService.selectList(un_delete);
         List<VideoType> videoTypes = videoTypeService.selectList(un_delete);Set<String> newVideoTypes = new HashSet<>();
         List<TrueCustomer> trueCustomers = trueCustomerService.selectList(un_delete);Set<String> newTrueCustomers = new HashSet<>();
-        List<VideoVersion> videoVersionList = iVideoVersionService.selectList(un_delete);Set<String> newVideoVersionList = new HashSet<>();
-        List<PriceLevel> priceLevelList = iPriceLevelService.selectList(un_delete);Set<String> newPriceLevelList = new HashSet<>();
-        List<PayLevel> payLevelList = iPayLevelService.selectList(un_delete);Set<String> newPayLevelList = new HashSet<>();
-        List<Supplier> supplierList =  iSupplierService.selectList(un_delete);Set<String> newSupplierList = new HashSet<>();
+        List<VideoVersion> videoVersionList = iVideoVersionService.selectList(un_delete);
+        List<PriceLevel> priceLevelList = iPriceLevelService.selectList(un_delete);
+        List<PayLevel> payLevelList = iPayLevelService.selectList(un_delete);
+        List<Supplier> supplierList =  iSupplierService.selectList(un_delete);
 
         // 检测新增的普通字典类
         for (int i=1; i<excelDatas.size();i++){
@@ -472,51 +138,22 @@ public class VideoCostServiceImpl implements IVideoCostService {
                   Const.VCostEnum vCostEnum = Const.VCostEnum.getByIndex(j);
                   if(vCostEnum==null)continue;;
                   // 组织
-                  if( vCostEnum.getTypee() == Organization.class ){
-//                      Organization organization = checkSimpleName(organizations, (String)column);
-                      Organization organization  = checkName(organizations, (String)column);
-                      if (organization == null) {
-                          throw new RuntimeException("部门不存在："+(String)column);
-//                          newOrganizations.add((String)column);
-                      }
-                  }
-                   else if(vCostEnum.getTypee() == Industry.class)
-                      newIndustries.add(checkNameForNew ( industries,  (String)column));
-                  else if(vCostEnum.getTypee()==TrueCustomer.class)
-                      newTrueCustomers.add(checkNameForNew(trueCustomers,(String)column));
-                  else if(vCostEnum.getTypee() == Optimizer.class)
-                      newOptimizers.add(checkNameForNew(optimizers,(String)column));
-                  else if(vCostEnum.getTypee() == VideoType.class)
-                       newVideoTypes.add(checkNameForNew(videoTypes,(String)column));
-                  else if(vCostEnum.getTypee() == Originality.class)
-                      newOriginalities.add(checkNameForNew(originalities,(String)column));
-                  else if(vCostEnum.getTypee() == Photographer.class)
-                      newPhotographers.add(checkNameForNew(photographers,(String)column));
-                  else if(vCostEnum.getTypee() == Editor.class)
-                      newEditorNames.add(checkNameForNew(editors,(String)column));
-                  else if(vCostEnum.getTypee() == Performer.class)
-                      newPerformers.add(checkNameForNew(performers,(String)column));
-                  else if(vCostEnum.getTypee() == PriceLevel.class)
-                      newPriceLevelList.add(checkNameForNew(priceLevelList,(String)column));
-                  else if(vCostEnum.getTypee() == PayLevel.class)
-                      newPayLevelList.add(checkNameForNew(payLevelList,(String)column));
-                  else if(vCostEnum.getTypee() == VideoVersion.class)
-                      newVideoVersionList.add(checkNameForNew(videoVersionList,(String)column));
-                  else if(vCostEnum.getTypee() == Supplier.class && supplier==null )
-                      newSupplierList.add(checkNameForNew(supplierList,(String)column));
-
-
+                  if( vCostEnum.getTypee() == Organization.class ) checkNameForNew(organizations, (String)column,"需求部门",true);
+                   else if(vCostEnum.getTypee() == Industry.class) newIndustries.add(checkNameForNew ( industries,  (String)column));
+                  else if(vCostEnum.getTypee()==TrueCustomer.class) newTrueCustomers.add(checkNameForNew(trueCustomers,(String)column));
+                  else if(vCostEnum.getTypee() == Optimizer.class) newOptimizers.add(checkNameForNew(optimizers,(String)column));
+                  else if(vCostEnum.getTypee() == VideoType.class) newVideoTypes.add(checkNameForNew(videoTypes,(String)column));
+                  else if(vCostEnum.getTypee() == Originality.class) checkNameForNew(originalities,(String)column,"创意",true);
+                  else if(vCostEnum.getTypee() == Photographer.class) newPhotographers.add(checkNameForNew(photographers,(String)column));
+                  else if(vCostEnum.getTypee() == Editor.class) newEditorNames.add(checkNameForNew(editors,(String)column));
+                  else if(vCostEnum.getTypee() == Performer.class) newPerformers.add(checkNameForNew(performers,(String)column));
+                  else if(vCostEnum.getTypee() == PriceLevel.class) checkNameForNew(priceLevelList,(String)column,"收入价格分级", true );
+                  else if(vCostEnum.getTypee() == PayLevel.class) checkNameForNew(payLevelList,(String)column,"支出价格分级",true);
+                  else if(vCostEnum.getTypee() == VideoVersion.class) checkNameForNew(videoVersionList,(String)column,"视频版本",true);
+                  else if(vCostEnum.getTypee() == Supplier.class && supplier==null ) checkNameForNew(supplierList,(String)column,"供应商",true);
               }
-
-
         }
 
-//        for(String str:newOrganizations){
-//            if(StringUtils.isBlank(str))continue;
-//            Organization organization =Organization.craateForInsert(str);
-//            boolean b =  iOrganizationService.insert(organization);
-//            if(b)organizations.add(organization);
-//        }
         for(String str:newEditorNames){
             if(StringUtils.isBlank(str))continue;
             Editor editor = Editor.craateForInsert(str);
@@ -534,12 +171,6 @@ public class VideoCostServiceImpl implements IVideoCostService {
             Optimizer optimizer = Optimizer.craateForInsert(str);
             boolean b= iOptimizerService.insert(optimizer);
             if(b)optimizers.add(optimizer);
-        }
-        for(String str:newOriginalities){
-            if(StringUtils.isBlank(str))continue;
-            Originality originality = Originality.craateForInsert(str);
-            boolean b= iOriginalityService.insert(originality);
-            if(b)originalities.add(originality);
         }
         for(String str:newPerformers){
             if(StringUtils.isBlank(str))continue;
@@ -565,33 +196,6 @@ public class VideoCostServiceImpl implements IVideoCostService {
             boolean b= trueCustomerService.insert(trueCustomer);
             if(b)trueCustomers.add(trueCustomer);
         }
-        for(String str:newVideoVersionList){
-            if(StringUtils.isBlank(str))continue;
-            VideoVersion videoVersion = VideoVersion.craateForInsert(str);
-            boolean b= iVideoVersionService.insert(videoVersion);
-            if(b)videoVersionList.add(videoVersion);
-        }
-        for(String str:newPriceLevelList){
-            if(StringUtils.isBlank(str))continue;
-            PriceLevel priceLevel = PriceLevel.craateForInsert(str,shiroUser.getId(),shiroUser.getId());
-            boolean b= iPriceLevelService.insert(priceLevel);
-            if(b)priceLevelList.add(priceLevel);
-        }
-        for(String str:newPayLevelList){
-            if(StringUtils.isBlank(str))continue;
-            PayLevel payLevel = PayLevel.craateForInsert(str,shiroUser.getId(),shiroUser.getId());
-            boolean b= iPayLevelService.insert(payLevel);
-            if(b)payLevelList.add(payLevel);
-        }
-        if(supplier==null){
-            for(String str:newSupplierList){
-                if(StringUtils.isBlank(str))continue;
-                Supplier supplierN = Supplier.craateForInsert(str);
-                iSupplierService.insertWithConfig(supplierN,shiroUser.getId());
-                supplierList.add(supplierN);
-            }
-        }
-
 
         // 检测素材
         行:
@@ -604,7 +208,6 @@ public class VideoCostServiceImpl implements IVideoCostService {
                 Object column =  excelDatas.get(i).get(j);
                 Const.VCostEnum vCostEnum = Const.VCostEnum.getByIndex(j);
                 if(vCostEnum==null)continue;
-
                 if(vCostEnum.getTypee() == String.class && Const.code.equals(vCostEnum.getProName()) ) customer.setCode((String) column);
                 else if(vCostEnum.getTypee() == String.class && Const.name.equals(vCostEnum.getProName()) ) customer.setName((String)column);
                 else if(vCostEnum.getTypee() == Industry.class)customer.setIndustry(checkName(industries,(String)column));
@@ -1086,9 +689,16 @@ public class VideoCostServiceImpl implements IVideoCostService {
     private <T extends Model> T checkName(List<T> models, String name) {
         return checkNameWithMethodName(models, name, "getName");
     }
+    private String  checkNameForNew(List models, String name,String colmunName,boolean throwEx) {
+        Object object= checkNameWithMethodName(models, name, "getName");
+        if(object==null && throwEx)
+            throw new RuntimeException( colmunName+ "不存在："+name);
+        else if(object==null)return name;
+        return null;
+    }
     private String  checkNameForNew(List models, String name) {
         Object object= checkNameWithMethodName(models, name, "getName");
-        if(object==null)return name;
+         if(object==null)return name;
         return null;
     }
     private <T extends Model> T checkCode(List<T> models, String name) {
@@ -1186,7 +796,6 @@ public class VideoCostServiceImpl implements IVideoCostService {
 
     @Override
     public Map selectDataForListPage(Map<String, Object> map) {
-
         return videoCostMapper.selectDataForListPage(map);
     }
 

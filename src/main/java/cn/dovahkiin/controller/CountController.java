@@ -90,7 +90,13 @@ public class CountController extends BaseController {
             videoCost.getCustomer().setSupplier(user.getSupplier());
         }
         map.put("videoCost",videoCost);
-        if(supplierIds!=null && supplierIds.length>0) map.put("supplierIds",supplierIds);
+        if(supplierIds!=null && supplierIds.length>0) {
+            List<Long> ids = new ArrayList<>();
+            for(int i =0;i<supplierIds.length;i++){
+                if(StringUtils.isNotBlank(supplierIds[i])&& StringUtils.isInteger(supplierIds[i]))ids.add(Long.parseLong(supplierIds[i]));
+            }
+            if(ids.size()>0) map.put("supplierIds",ids);
+        }
 
         return map;
     }

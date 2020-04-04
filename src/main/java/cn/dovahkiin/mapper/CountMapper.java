@@ -1,9 +1,6 @@
 package cn.dovahkiin.mapper;
 
-import cn.dovahkiin.model.dto.CustomerEffectDto;
-import cn.dovahkiin.model.dto.DayEffectDto;
-import cn.dovahkiin.model.dto.LastDayEffectDto;
-import cn.dovahkiin.model.dto.ModelCountDto;
+import cn.dovahkiin.model.dto.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -24,12 +21,9 @@ public interface CountMapper  {
     List<Map<String,Object>> count1(Map<String,Object> map);
     List<ModelCountDto> countByModel(Map<String,Object> map);
 
-    /* *
-     * 查找出有效期内，消耗大于最大消耗的素材
-     * */
-//    List<Map> effCount1(@Param("effectDays")Integer effectDays ,@Param("maxEffectCon")Double maxEffectCon,@Param("startDate") Date startDate,@Param("endDate") Date endDate);
-
     List<CustomerEffectDto> selectEffectCustomer(Map<String,Object> map);
+
+    List<CusOrgEffDto> selectEffectCustomerByDem(Map<String,Object> map);
 
     LastDayEffectDto selectLastDay(Map<String,Object> map);
 
