@@ -5,6 +5,7 @@
     $(function() {
         payLevelDataGrid = $('#payLevelDataGrid').datagrid({
         url : '${path}/payLevel/dataGrid',
+            fit:true,
         striped : true,
         rownumbers : true,
         pagination : true,
@@ -23,49 +24,16 @@
             $('#payLevelDataGrid').datagrid('clearChecked').datagrid('clearSelections');
         },
         pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500],
-        frozenColumns : [ [ {
-            width : '60',
-            title : '编号',
-            field : 'id',
-            sortable : true,
-            checkbox:true
-        },
-           {
-            width : '200',
-            title : '名称',
-            field : 'name',
-            sortable : true,
-            formatter : function(value, row, index) {
-                return value;
-            }
-        },
-         {
-            width : '200',
-            title : '编码',
-            field : 'code',
-            sortable : true,
-            formatter : function(value, row, index) {
-                return value;
-            }
-        },
+        frozenColumns : [ [
+            {title : '编号', field : 'id', sortable : true, checkbox:true},
+            {title : '名称', field : 'name', sortable : true,},
+            {title : '编码', field : 'code', sortable : true,},
+            {title : '固定支出(￥)', field : 'basePay', sortable : true,align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);}},
+            {title : '收入比率(%)', field : 'ratio', sortable : true,align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);}},
+            {title : '有效消耗封顶', field : 'maxEffectCon', sortable : true,align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);}},
+            {title : '生命周期（天）', field : 'maxEffectRange', sortable : true,},
+            {title : '创建时间', field : 'createTime', sortable : true, formatter: function (value, row, index) {return getCommonDateTime(value);}},
             {
-                width : '200',
-                title : '固定支出(￥)',
-                field : 'basePay',
-                sortable : true,
-                formatter : function(value, row, index) {
-                    return value;
-                }
-            },
-         {
-            width : '140',
-            title : '创建时间',
-            field : 'createTime',
-            sortable : true,
-            formatter: function (value, row, index) {
-                return getCommonDateTime(value);
-            }
-        }, {
             field : 'action',
             title : '操作',
             width : 200,

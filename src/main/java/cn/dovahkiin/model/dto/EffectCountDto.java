@@ -8,7 +8,8 @@ public class EffectCountDto {
     private List<CustomerEffectDto> allPrimaryData;
     /**每日总和*/
     private List<DayEffectDto> totalDailSumCon;
-    private Double totalSumAllEffCon; // 生命周期内总消耗
+    private Double totalSumAllEffConInc; // 生命周期内总消耗
+    private Double totalSumAllEffConPay; // 生命周期内总消耗
     private Double tatalSumAllCon; // 查询期限内总消耗
     /**收入总有效消耗求和*/
     private Double totalSumCon;
@@ -20,10 +21,11 @@ public class EffectCountDto {
     private Double totalSumPay;
     public EffectCountDto() {
     }
-    public EffectCountDto(List<CustomerEffectDto> allPrimaryData, List<DayEffectDto> totalDailSumCon, Double totalSumAllEffCon, Double tatalSumAllCon, Double totalSumCon, Double totalSumPayCon, int totalCus, Double totalSumIncome, Double totalSumPay) {
+    public EffectCountDto(List<CustomerEffectDto> allPrimaryData, List<DayEffectDto> totalDailSumCon, Double totalSumAllEffConInc,Double totalSumAllEffConPay, Double tatalSumAllCon, Double totalSumCon, Double totalSumPayCon, int totalCus, Double totalSumIncome, Double totalSumPay) {
         this.allPrimaryData = allPrimaryData;
         this.totalDailSumCon = totalDailSumCon;
-        this.totalSumAllEffCon = totalSumAllEffCon;
+        this.totalSumAllEffConInc = totalSumAllEffConInc;
+        this.totalSumAllEffConPay = totalSumAllEffConPay;
         this.tatalSumAllCon = tatalSumAllCon;
         this.totalSumCon = totalSumCon;
         this.totalSumPayCon = totalSumPayCon;
@@ -88,12 +90,20 @@ public class EffectCountDto {
         this.totalSumPayCon = totalSumPayCon;
     }
 
-    public Double getTotalSumAllEffCon() {
-        return totalSumAllEffCon;
+    public Double getTotalSumAllEffConInc() {
+        return totalSumAllEffConInc;
     }
 
-    public void setTotalSumAllEffCon(Double totalSumAllEffCon) {
-        this.totalSumAllEffCon = totalSumAllEffCon;
+    public void setTotalSumAllEffConInc(Double totalSumAllEffConInc) {
+        this.totalSumAllEffConInc = totalSumAllEffConInc;
+    }
+
+    public Double getTotalSumAllEffConPay() {
+        return totalSumAllEffConPay;
+    }
+
+    public void setTotalSumAllEffConPay(Double totalSumAllEffConPay) {
+        this.totalSumAllEffConPay = totalSumAllEffConPay;
     }
 
     public Double getTatalSumAllCon() {

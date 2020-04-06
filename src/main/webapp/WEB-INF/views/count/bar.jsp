@@ -46,12 +46,10 @@
                     let value1 = d1[sort];
                     let value2 = d2[sort];
                     let end = 0;
-                    if(value1!=null && value2!=null  && value1!==''&&value2!==''){
-                       if( sort ==='name' || sort ==='code' ) end = value1.localeCompare(value2);
-                        else end = value1 -value2;
-                        if('asc'===order) return end; else return  0-end;
-                    }
-                    else return 0;
+                    if(value1==null)value1='';
+                    if(value2==null)value2='';
+                    if( sort ==='name' || sort ==='code'|| value1===''||value2==='' ) end = value1.localeCompare(value2); else end = value1 -value2;
+                    if('asc'===order) return end; else return  0-end;
                 });
                 setPage( $("#model_con_tb") ,modelListData,1);
             },

@@ -34,17 +34,6 @@ public class PayLevel extends Model<PayLevel> {
 		if(this.code==null)this.code=newCode.toString();
 		return newCode.toString();
 	}
-	public static PayLevel craateForInsert(String name ,Long updateBy,Long createBy){
-		PayLevel payLevel = new PayLevel();
-		payLevel.name = name;
-		payLevel.CreateCode();
-		payLevel.createTime = new Date();
-		payLevel.updateTime = new Date();
-		payLevel.deleteFlag = 0;
-		payLevel.createBy=createBy;
-		payLevel.updateBy=updateBy;
-		return payLevel;
-	}
     /**
      * 主键id
      */
@@ -65,6 +54,12 @@ public class PayLevel extends Model<PayLevel> {
      */
 	@TableField("base_pay")
 	private Double basePay;
+	@TableField("ratio")
+	private Double ratio;
+	@TableField("max_effect_con")
+	private Double maxEffectCon;
+	@TableField("max_effect_range")
+	private Integer maxEffectRange;
     /**
      * 更新时间
      */
@@ -172,6 +167,30 @@ public class PayLevel extends Model<PayLevel> {
 
 	public void setDeleteFlag(Integer deleteFlag) {
 		this.deleteFlag = deleteFlag;
+	}
+
+	public Double getRatio() {
+		return ratio;
+	}
+
+	public void setRatio(Double ratio) {
+		this.ratio = ratio;
+	}
+
+	public Double getMaxEffectCon() {
+		return maxEffectCon;
+	}
+
+	public void setMaxEffectCon(Double maxEffectCon) {
+		this.maxEffectCon = maxEffectCon;
+	}
+
+	public Integer getMaxEffectRange() {
+		return maxEffectRange;
+	}
+
+	public void setMaxEffectRange(Integer maxEffectRange) {
+		this.maxEffectRange = maxEffectRange;
 	}
 
 	@Override

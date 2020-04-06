@@ -25,7 +25,10 @@ public class Const {
     public static final String recoredDate = "recoredDate";
     public static final String RECORED_DATE_START ="recoredDate_start";
     public static final String RECORED_DATE_END ="recoredDate_end";
+    public static final String RECORED_DATE_Config_Inc ="recoredDate_start_config_inc";
+    public static final String RECORED_DATE_Config_Pay ="recoredDate_start_config_pay";
     public static final String RECORED_DATE_Last ="recoredDate_last";
+    public static final String RECORED_DATE_Last_pay ="recoredDate_last_pay";
     public static final String consumption = "consumption"; // 当日消耗
     public static final String code = "code";
     public static final String name = "name";

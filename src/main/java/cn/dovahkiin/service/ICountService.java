@@ -1,6 +1,7 @@
 package cn.dovahkiin.service;
 
 import cn.dovahkiin.model.Editor;
+import cn.dovahkiin.model.dto.CusCheckConfig;
 import cn.dovahkiin.model.dto.CustomerEffectDto;
 import cn.dovahkiin.model.dto.EffectCountDto;
 import cn.dovahkiin.model.dto.ModelCountDto;
@@ -29,7 +30,5 @@ public interface ICountService  {
     Workbook handleEffConTimeToExcel(EffectCountDto effectCountDto,String sort,String order);
 
 
-//    List<Map> effCount1(Map map, Integer effectDays, Double maxEffectCon, Date startDate,Date endDate);
-    /** 第一个统计  */
-
+    List<CusCheckConfig> checkCusConfig();
 }

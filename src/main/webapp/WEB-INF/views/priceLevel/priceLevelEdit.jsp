@@ -45,6 +45,18 @@
                     <td>固定价格(数字):</td>
                     <td><input id="basePrice" name="basePrice" value="${priceLevel.basePrice}" type="text" class="layui-input easyui-numberbox" data-options="width:200,height:40, required:true,missingMessage:'提供固定价格',min:0,precision:2,prefix:'￥'"  /></td>
                 </tr>
+                <tr>
+                    <td>支出比率(%):</td>
+                    <td><input name="ratio" value="${priceLevel.ratio}" type="text" class="layui-input easyui-numberbox" data-options="width:200,height:40, required:false,missingMessage:'收入比率',min:0,precision:2,suffix:'%' "  /></td>
+                </tr>
+                <tr>
+                    <td>支出最大消耗(￥):</td>
+                    <td><input name="maxEffectCon" value="${priceLevel.maxEffectCon}" type="text" class="layui-input easyui-numberbox" data-options="width:200,height:40, required:false,missingMessage:'收入最大消耗',min:0,precision:2,prefix:'￥' "  /></td>
+                </tr>
+                <tr>
+                    <td>生命周期(天):</td>
+                    <td><input name="maxEffectRange" value="${priceLevel.maxEffectRange}" type="text" class="layui-input easyui-numberbox" data-options="width:200,height:40, required:false,missingMessage:'生命周期',min:0,precision:0,suffix:'天' "  /></td>
+                </tr>
             </table>
         </form>
     </div>

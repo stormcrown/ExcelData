@@ -12,9 +12,6 @@ public class DayEffectDto implements Serializable {
     private Double payConsumptionEffect;
     private Double income;
     private Double pay=0d;
-    public void toPay(){
-        if(consumptionEffect!=null)payConsumptionEffect = consumptionEffect;
-    }
     public DayEffectDto() {
     }
 

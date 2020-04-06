@@ -105,3 +105,13 @@ alter table system_config add delete_flag int(1) NOT NULL DEFAULT 0 COMMENT '是
 alter table system_config add column default_pay_max_effect_con double default 100 comment '默认支出最大有效消耗';
 
 alter table customer add column pay_max_effect_con double comment '支出最大有效消耗';
+
+alter table price_level
+    add ratio double   comment '价格比率，百分比',
+    add  max_effect_con double comment '最大有效消耗',
+    add  max_effect_range int  comment '生命周期,天';
+
+alter table pay_level
+    add ratio double comment '价格比率，百分比',
+    add  max_effect_con double comment '最大有效消耗',
+    add  max_effect_range int comment '生命周期,天';

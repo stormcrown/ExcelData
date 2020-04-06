@@ -5,7 +5,6 @@
     var listData = [];
     var sortEffCountAll ='sumAllEffCon' ;
     var orderEffCountAll ='desc' ;
-    var carousel ;
     $(function() {
         //注意：折叠面板 依赖 element 模块，否则无法进行功能性操作
         layui.use(['laydate','slider','layer','table','carousel'], function(){
@@ -14,14 +13,9 @@
                 elem: '#recoredDateRange_count_eff'
                 ,range: '~' //或 range: '~' 来自定义分割字符
             });
-             carousel = layui.carousel
-
-            //常规轮播
-            //改变下时间间隔、动画类型、高度
-
-
         });
-
+        $('#checkConfigIcon').tooltip({position: 'right', content:'配置正常',trackMouse:true});
+        checkConfig();
         $('#effCountAll').datagrid({
             fit: true,
             striped: true,
@@ -47,7 +41,7 @@
                     let hou = 1000 * 60 * 60;
                     if (value1 === null || value1 === '' || value1 === undefined) value1 = '';
                     if (value2 === null || value2 === '' || value2 === undefined) value2 = '';
-                     if (sort === 'name' || sort === 'code' || sort === 'supplierName' || sort === 'supplierCode' || sort === 'basePrice' || sort === 'basePay' ||value2 === '' ||value1 === ''   ) {
+                     if (sort === 'name' || sort === 'code' || sort === 'supplierName' || sort === 'supplierCode'  || (value2 === '' && value1 === '')   ) {
                         end = value1.localeCompare(value2, 'zh-CN');
                     }else  if (sort === 'completeData' || sort === 'endDate' || sort === 'payEndDate' || sort === 'incomeEndDate' ) {
                         value1 = new Date(value1);
@@ -66,22 +60,34 @@
                 {field:'name',  sortable: true, title:'素材名称',  },
                 {field:'supplierName',  sortable: true, title:'供应商名称',  },
                 {field:'supplierCode',  sortable: true, title:'供应商编号',  },
-                {field:'maxEffectOn',width:100,  sortable: true, title:'收入封顶消耗', formatter: function (value, row, index) { return (row.incomeOverflow===true )? redFont(value): value; } },
-                {field:'payMaxEffectOn',width:100,  sortable: true, title:'支出封顶消耗', formatter: function (value, row, index) { return (row.payOverflow===true )? redFont(value): value; } },
-                {field:'sumAllEffCon', width:100, sortable: true, title:'生命周期内总消耗', formatter: function (value, row, index) { return (row.incomeOverflow===true && row.payOverflow===true )? pinkFont(value): value; } },
-                {field:'sumAllCon', width:100, sortable: true, title:'查询区间内总消耗',  },
-                {field:'sumEffCon', width:100, sortable: true, title:'收入有效消耗', formatter: function (value, row, index) { return value; } },
-                {field:'sumEffPayCon', width:100, sortable: true, title:'支出有效消耗', formatter: function (value, row, index) { return value; } },
-                {field:'sumPay', width:100, sortable: true, title:'支出',  },
-                {field:'sumIncome', width:100, sortable: true, title:'收入',  },
-                {field:'basePrice',width:100,  sortable: true, title:'固定收入',  },
-                {field:'basePay', width:100, sortable: true, title:'固定支出',  },
-                {field:'incomeRadio', width:80, sortable: true, title:'收入比率（%）',  },
-                {field:'payRadio', width:80, sortable: true, title:'支出比率（%）',  },
-                {field:'completeData', width:100, sortable: true, title:'成片日期',  },
-                {field:'endDate',width:120,  sortable: true, title:'有效期截至（配置)',  },
-                {field:'incomeEndDate',width:120,  sortable: true, title:'有效期截至（实际）(收入)',  },
-                {field:'payEndDate',width:120,  sortable: true, title:'有效期截至（实际）（支出）',  },
+                {field:'incMaxEffectOn',width:100,  sortable: true, title:'收入封顶消耗',align:'right',halign:'center', formatter: function (value, row, index) { return  value; } },
+                {field:'payMaxEffectOn',width:100,  sortable: true, title:'支出封顶消耗',align:'right',halign:'center', formatter: function (value, row, index) { return value; } },
+                {field:'sumAllEffConInc', width:100, sortable: true, title:'收入生命周期内总消耗',align:'right',halign:'center', formatter: function (value, row, index) { return (row.incomeOverflow===true  )? pinkFont(value): value; } },
+                {field:'sumAllEffConPay', width:100, sortable: true, title:'支出生命周期内总消耗',align:'right',halign:'center', formatter: function (value, row, index) { return ( row.payOverflow===true )? pinkFont(value): value; } },
+                {field:'sumAllCon', width:100, sortable: true, title:'查询区间内总消耗', align:'right',halign:'center',  formatter: function (value, row, index) {return moneyFormter(value);}  },
+                {field:'sumEffCon', width:100, sortable: true, title:'收入有效消耗', align:'right',halign:'center',  formatter: function (value, row, index) {return moneyFormter(value);} },
+                {field:'sumEffPayCon', width:100, sortable: true, title:'支出有效消耗',align:'right',halign:'center',  formatter: function (value, row, index) {return moneyFormter(value);} },
+                {field:'sumPay', width:100, sortable: true, title:'支出', align:'right',halign:'center',  formatter: function (value, row, index) {return moneyFormter(value);}  },
+                {field:'sumIncome', width:100, sortable: true, title:'收入', align:'right',halign:'center',  formatter: function (value, row, index) {return moneyFormter(value);}  },
+                {field:'basePrice',width:100,  sortable: true, title:'固定收入',align:'right',halign:'center',  formatter: function (value, row, index) {
+                        let pNPl = row.priceLevelName+"：￥ "+row.basePrice;
+                        if(row.priceLevelName==null)pNPl ='';
+                        return pNPl;
+                    }
+                },
+                {field:'basePay', width:100, sortable: true, title:'固定支出',align:'right',halign:'center',  formatter: function (value, row, index) {
+                        let payNPl = row.payLevelName+"：￥ "+row.basePay;
+                        if(row.basePay==null)payNPl ='';
+                    return payNPl;
+                    }
+                },
+                {field:'incomeRadio', width:80, sortable: true, title:'收入比率（%）', align:'right',halign:'center',  formatter: function (value, row, index) {return moneyFormter(value);}  },
+                {field:'payRadio', width:80, sortable: true, title:'支出比率（%）', align:'right',halign:'center',  formatter: function (value, row, index) {return moneyFormter(value);}  },
+                {field:'completeDate', width:100, sortable: true, title:'成片日期',align:'right',halign:'center',  formatter: function (value, row, index) {return getCommonDate(value);}   },
+                {field:'incomeConfigEndDate',width:120,  sortable: true, title:'收入有效期截至（配置)', align:'right',halign:'center',  formatter: function (value, row, index) {return getCommonDate(value);}  },
+                {field:'payConfigEndDate',width:120,  sortable: true, title:'支出有效期截至（配置)', align:'right',halign:'center',  formatter: function (value, row, index) {return getCommonDate(value);}  },
+                {field:'incomeEndDate',width:120,  sortable: true, title:'有效期截至（实际）(收入)', align:'right',halign:'center',  formatter: function (value, row, index) {return getCommonDate(value);}  },
+                {field:'payEndDate',width:120,  sortable: true, title:'有效期截至（实际）（支出）', align:'right',halign:'center',  formatter: function (value, row, index) {return getCommonDate(value);}  },
             ]],
             multiSort:false,
             view: detailview,
@@ -94,7 +100,6 @@
                     '<table id="cusOrgDetail'+(row.code).trim()+'" style="border:1px solid #ccc;"></table>' +
                     '    </div>' +
                     '</div>';
-               let backUp= '<div  id="carouseldg'+(row.code).trim()+'" class="layui-carousel"  style="height: 650px; width:AUTO;"><div carousel-item=""><div><table id="ldg'+(row.code).trim()+'" style="border:1px solid #ccc;"></table></div><div><table id="cusOrgDetail'+(row.code).trim()+'" style="border:1px solid #ccc;"></table></div></div></div>';
                 return html;
             },
             onExpandRow: function(index,row){
@@ -109,13 +114,12 @@
                 });
                 let tableId= '#ldg'+row.code;tableId = tableId.trim();
                 let table = $(tableId);
-                let dataZB =row.dailData ;
+                let dataZB =row.data ;
                 try{
                     let d =  table.datagrid('options');
                     if(d != null)return;
                 }catch (e) {}
                 //改变下时间间隔、动画类型、高度
-                carousel.render({elem: '#carouseldg'+(row.code).trim(),interval: 1800,anim: 'fade',width:'100%',height:'600px',indicator:'outside',arrow:'none',autoplay:false });
                 dataZB.sort((d1,d2)=>{
                     let sort = 'recoredDate';
                     let value1 = d1[sort];
@@ -326,7 +330,60 @@
                 setPage( $("#effCountAll") ,listData,pageNumber);
             }
         });
+
     });
+    function checkConfig(){
+        $.ajax({
+            url:basePath+'/count/checkCustomConfigs',
+            type:'get',
+            dataType:'json',
+            success:function (data) {
+                console.log(data);
+                let tipSel = $('#checkConfigIcon') ;
+                let tipTd = $('#checkConfigTd') ;
+                if(data==null || data.length===0){
+                    tipSel.removeClass('layui-icon-face-cry');
+                    tipSel.addClass('layui-icon-face-smile');
+                    tipSel.css("color","green");
+                    tipSel.tooltip('update','配置正常');
+                    tipTd.html('');
+                }else{
+                    let tips = '';
+                    for(let i=0;i<data.length;i++){
+                        tips+=( data[i].code+"、");
+                        if(i>5){
+                            tips+="等等";
+                            break;
+                        }
+                    }
+                    let tipDetail = '';
+                    for(let i=0;i<data.length;i++){
+                        if(data[i].configs==null || data[i].configs.length<2 )continue;
+                        let det =data[i].code+" : ";
+                        let config0 = data[i].configs[0] ;
+                        let config1 = data[i].configs[1] ;
+                        if(config0.maxEffectCon !== config1.maxEffectCon ) det+=" 素材收入封顶、"  ;
+                        if(config0.payMaxEffectCon!==config1.payMaxEffectCon)det+="素材支出封顶、"  ;
+                        if(config0.incomeRatio!==config1.incomeRatio)det+="素材收入比率、"  ;
+                        if(config0.payRatio!==config1.payRatio)det+="素材支出比率、"  ;
+                        if(config0.payLevelId!==config1.payLevelId)det+="支出价格分级、"  ;
+                        if(config0.priceLevelId!==config1.priceLevelId)det+="收入价格分级、"  ;
+                        if(config0.supplierId!==config1.supplierId)det+="供应商、"  ;
+                        det = redFont(det);
+                        det+="不一致<br/>";
+                        tipDetail+=det;
+                    }
+                    tipSel.removeClass('layui-icon-face-smile');
+                    tipSel.addClass('layui-icon-face-cry');
+                    tipSel.css("color","red");
+                    tipSel.tooltip('update',tipDetail);
+                    tipTd.html('存在配置不一致的素材编号：'+tips);
+                }
+            },
+            error:function(){ }
+        });
+
+    }
 
     function checkRecoredDateRangeEff() {
         let recoredDateRange = $('#recoredDateRange_count_eff').val();
@@ -366,15 +423,17 @@
                 $('#totalCus').html(data.totalCus);
                 let dataAll = data.allPrimaryData;
                 handleTimeUnitEffect(getAllDates( dates[0],dates[1] ),dataAll,data.totalDailSumCon);
+                 listData =dataAll;
+                // for(let i=0;i<dataAll.length;i++){
+                //     let con = dataAll[i].sumAllEffCon ; if(con!=null)con=con.toFixed(2);
+                //     let inc = dataAll[i].sumIncome ; if(inc!=null)inc=inc.toFixed(2);
+                //     let pay = dataAll[i].sumPay ; if(pay!=null)pay=pay.toFixed(2);
+                //     let pNPl = dataAll[i].priceLevelName+"：￥ "+dataAll[i].basePrice;
+                //     if(dataAll[i].priceLevelName==null)pNPl ='';
+                //     let payNPl = dataAll[i].payLevelName+"：￥ "+dataAll[i].basePay;
+                //     if(dataAll[i].basePay==null)payNPl ='';
 
-                for(let i=0;i<dataAll.length;i++){
-                    let con = dataAll[i].sumAllEffCon ; if(con!=null)con=con.toFixed(2);
-                    let inc = dataAll[i].sumIncome ; if(inc!=null)inc=inc.toFixed(2);
-                    let pay = dataAll[i].sumPay ; if(pay!=null)pay=pay.toFixed(2);
-                    let pNPl = dataAll[i].priceLevelName+"：￥ "+dataAll[i].basePrice;
-                    if(dataAll[i].priceLevelName==null)pNPl ='';
-                    let payNPl = dataAll[i].payLevelName+"：￥ "+dataAll[i].basePay;
-                    if(dataAll[i].basePay==null)payNPl ='';
+                    /*
                     listData.push({
                         code:dataAll[i].code,
                         name:dataAll[i].name,
@@ -403,7 +462,8 @@
                         lastDayIncomeOver:moneyFormter(dataAll[i].lastDayIncomeOver),
                         lastDayPayOver:moneyFormter(dataAll[i].lastDayPayOver),
                     });
-                }
+                    */
+                // }
                 setPage(   $("#effCountAll") ,listData,1);
             },
             beforeSend:function(){progressLoad();} ,
@@ -546,6 +606,7 @@
                     <td>
                         <button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="chearDrawEff()" >清空</button>
                     </td>
+
                 </tr>
                 <tr style="height: 40px">
                     <td>
@@ -554,15 +615,20 @@
                     <td COLSPAN="1" style="height: 40px" >
                         <select id="customerCode"  name="customer.code" class="easyui-combobox" data-options="valueField:'code',textField:'code',url:basePath+'/customer/comboboxCode',width:600,height:39,formatter:function(row){  return row.code+' -> '+row.name ;    }"></select>
                     </td>
+                    <td>&nbsp;&nbsp;&nbsp;</td>
+                    <td colspan="1"  onclick="checkConfig()" >
+                        <i  id="checkConfigIcon" class="layui-icon layui-icon-face-smile" style="font-size: 30px; color: GREEN;"></i>
+                    </td  >
+                    <td  colspan="4" id="checkConfigTd" ></td>
                 </tr>
                 <tr>
                     <td >供应商</td>
-                    <td>
+                    <td colspan="6">
                         <input name="supplierIds" class="easyui-combobox"  data-options="width:600,height:39,valueField:'id',textField:'name',url:'${path}/supplier/combobox',multiple:true," />
                     </td>
                 </tr>
                 <tr style="height: 40px">
-                    <td COLSPAN="7" >
+                    <td COLSPAN="9" >
                         全素材生命周期内总消耗： <span id="totalSumAllEffCon" style="color:red" >0</span> ；
                         查询期限内内总消耗： <span id="tatalSumAllCon" style="color:red" >0</span> ；
                         收入有效消耗： <span id="totalSumCon" style="color:red" >0</span> ；

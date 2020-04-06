@@ -1,9 +1,11 @@
 package cn.dovahkiin.test.base;
 
+import cn.dovahkiin.mapper.CountMapper;
 import cn.dovahkiin.mapper.SystemConfigMapper;
 import cn.dovahkiin.mapper.VideoCostMapper;
 import cn.dovahkiin.model.SystemConfig;
 import cn.dovahkiin.model.VideoCost;
+import cn.dovahkiin.model.dto.CusCheckConfig;
 import com.alibaba.fastjson.JSON;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,18 @@ public class DaoTest  extends BaseTest{
     protected VideoCostMapper videoCostMapper;
     @Autowired
     private SystemConfigMapper systemConfigMapper;
+    @Autowired
+    private CountMapper countMapper;
+
+    @Test
+    public void selce(){
+        List<CusCheckConfig>  dsd=countMapper.checkCusConfig();
+        dsd.forEach(cusCheckConfig -> logger.info(JSON.toJSONString(cusCheckConfig) ));
+        System.out.println("\n");
+        dsd.parallelStream().filter( cusCheckConfig-> cusCheckConfig.getConfigs().size()>1  ).forEach(cusCheckConfig -> logger.info(JSON.toJSONString(cusCheckConfig) ));
+    }
+
+
     @Test
     public void seleectPage(){
         VideoCost videoCost = new VideoCost();

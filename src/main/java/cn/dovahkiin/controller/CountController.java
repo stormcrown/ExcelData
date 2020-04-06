@@ -135,6 +135,12 @@ public class CountController extends BaseController {
         return renderSuccess();
     }
 
+    @GetMapping("/checkCustomConfigs")
+    @RequiresPermissions("/count/effConCount")
+    @ResponseBody
+    public Object checkCustomConfigs(){
+        return countService.checkCusConfig();
+    }
 
     @PostMapping("/effTimeCount")
     @RequiresPermissions("/count/effConCount")
@@ -160,4 +166,6 @@ public class CountController extends BaseController {
         outputStream.close();
         return renderSuccess();
     }
+
+
 }

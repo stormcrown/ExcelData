@@ -6,6 +6,7 @@
         priceLevelDataGrid = $('#priceLevelDataGrid').datagrid({
         url : '${path}/priceLevel/dataGrid',
         striped : true,
+        fit:true,
         rownumbers : true,
         pagination : true,
         singleSelect : false,
@@ -13,9 +14,7 @@
         sortName : 'createTime',
         sortOrder : 'desc',
         pageSize : 100,
-        queryParams :{
-            deleteFlag:0
-        },
+        queryParams :{deleteFlag:0},
         onBeforeLoad:function(param){
             $('#priceLevelDataGrid').datagrid('clearChecked').datagrid('clearSelections');
         },
@@ -23,52 +22,16 @@
             $('#priceLevelDataGrid').datagrid('clearChecked').datagrid('clearSelections');
         },
         pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500],
-        frozenColumns : [ [ {
-            width : '60',
-            title : '编号',
-            field : 'id',
-            sortable : true,
-            checkbox:true
-        },
-           {
-            width : '200',
-            title : '名称',
-            field : 'name',
-            sortable : true,
-            formatter : function(value, row, index) {
-                return value;
-            }
-        },
-            {
-                width : '200',
-                title : '固定价格(￥)',
-                field : 'basePrice',
-                sortable : true,
-                formatter : function(value, row, index) {
-                    return value;
-                }
-            },
-         {
-            width : '200',
-            title : '编码',
-            field : 'code',
-            sortable : true,
-            formatter : function(value, row, index) {
-                return value;
-            }
-        },
-         {
-            width : '140',
-            title : '创建时间',
-            field : 'createTime',
-            sortable : true,
-            formatter: function (value, row, index) {
-                return getCommonDateTime(value);
-            }
-        }, {
-            field : 'action',
-            title : '操作',
-            width : 200,
+        frozenColumns : [ [
+        {title : '编号', field : 'id', sortable : true, checkbox:true},
+        {title : '名称', field : 'name', sortable : true,},
+        {title : '固定价格(￥)', field : 'basePrice', sortable : true, align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);}},
+        {title : '支出比率(%)', field : 'ratio', sortable : true, align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);}},
+        {title : '有效消耗封顶', field : 'maxEffectCon', sortable : true, align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);}},
+        {title : '生命周期（天）', field : 'maxEffectRange', sortable : true,align:'right',halign:'center'},
+        {title : '编码', field : 'code', sortable : true,align:'left',halign:'center',},
+        {title : '创建时间', field : 'createTime', sortable : true, formatter: function (value, row, index) {return getCommonDateTime(value);}},
+        {field : 'action', title : '操作', width : 200,
             formatter : function(value, row, index) {
                 var str = '';
                 <shiro:hasPermission name="/priceLevel/edit">

@@ -44,4 +44,9 @@ public interface CountMapper  {
 
     List<DayEffectDto> selectEveryDayCon(Map<String,Object> map);
 
+    List<CusCheckConfig> checkCusConfig();
+
+
+
+
 }

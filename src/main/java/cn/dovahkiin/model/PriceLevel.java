@@ -34,17 +34,6 @@ public class PriceLevel extends Model<PriceLevel> {
 		if(this.code==null)this.code=newCode.toString();
 		return newCode.toString();
 	}
-	public static PriceLevel craateForInsert(String name ,Long updateBy,Long createBy){
-		PriceLevel priceLevel = new PriceLevel();
-		priceLevel.name = name;
-		priceLevel.CreateCode();
-		priceLevel.createTime = new Date();
-		priceLevel.updateTime = new Date();
-		priceLevel.deleteFlag = 0;
-		priceLevel.createBy=createBy;
-		priceLevel.updateBy=updateBy;
-		return priceLevel;
-	}
     /**
      * 主键id
      */
@@ -65,6 +54,13 @@ public class PriceLevel extends Model<PriceLevel> {
      */
 	@TableField("base_price")
 	private Double basePrice;
+	@TableField("ratio")
+	private Double ratio;
+	@TableField("max_effect_con")
+	private Double maxEffectCon;
+	@TableField("max_effect_range")
+	private Integer maxEffectRange;
+
     /**
      * 更新时间
      */
@@ -162,6 +158,30 @@ public class PriceLevel extends Model<PriceLevel> {
 
 	public void setDeleteFlag(Integer deleteFlag) {
 		this.deleteFlag = deleteFlag;
+	}
+
+	public Double getRatio() {
+		return ratio;
+	}
+
+	public void setRatio(Double ratio) {
+		this.ratio = ratio;
+	}
+
+	public Double getMaxEffectCon() {
+		return maxEffectCon;
+	}
+
+	public void setMaxEffectCon(Double maxEffectCon) {
+		this.maxEffectCon = maxEffectCon;
+	}
+
+	public Integer getMaxEffectRange() {
+		return maxEffectRange;
+	}
+
+	public void setMaxEffectRange(Integer maxEffectRange) {
+		this.maxEffectRange = maxEffectRange;
 	}
 
 	@Override

@@ -27,21 +27,21 @@ function moneyFormter(money){
     else return money.toFixed(2);
 }
 function redFont(str) {
-    if( str!=undefined && str!=null && str.trim()!=''){
+    if( str != null && str.toString().trim()!==''){
         return "<span style='color:red;'>"+str+"</span>"
     }
     else return'';
 }
 function pinkFont(str) {
-    if( str!=undefined && str!=null && str.trim()!='') return "<span style='color:#e10888;'>"+str+"</span>"
+    if( str != null && str.toString().trim()!=='') return "<span style='color:#e10888;'>"+str+"</span>"
     else return'';
 }
 function orangeFont(str) {
-    if( str!=undefined && str!=null && str.trim()!='') return "<span style='color:#f38709;'>"+str+"</span>"
+    if( str != null && str.toString().trim()!=='') return "<span style='color:#f38709;'>"+str+"</span>"
     else return'';
 }
 function greenFont(str) {
-    if( str!=undefined && str!=null && str.trim()!='') return "<span style='color:green;'>"+str+"</span>"
+    if( str !=null && str.toString().trim()!=='') return "<span style='color:green;'>"+str+"</span>"
     else return'';
 }
 function getCookie(c_name)

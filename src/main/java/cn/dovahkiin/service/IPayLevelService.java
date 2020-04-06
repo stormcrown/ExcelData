@@ -12,5 +12,5 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2020-03-27
  */
 public interface IPayLevelService extends IService<PayLevel> {
-	
+    int updateByPrimaryKey(PayLevel record);
 }

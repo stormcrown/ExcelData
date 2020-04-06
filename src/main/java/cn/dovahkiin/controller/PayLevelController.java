@@ -184,8 +184,8 @@ public Object rollback(String ids) {
     public Object edit(@Valid PayLevel payLevel) {
         payLevel.setUpdateTime(new Date());
         payLevel.setUpdateBy(getUserId());
-        boolean b = payLevelService.updateById(payLevel);
-        if (b) {
+        int b = payLevelService.updateByPrimaryKey(payLevel);
+        if (b==1) {
             return renderSuccess("编辑成功！");
         } else {
             return renderError("编辑失败！");

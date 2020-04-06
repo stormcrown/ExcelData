@@ -170,7 +170,6 @@ public Object rollback(String ids) {
         model.addAttribute("method", "edit");
         return "priceLevel/priceLevelEdit";
     }
-    
     /**
      * 编辑
      * @param 
@@ -184,8 +183,8 @@ public Object rollback(String ids) {
         Long userId = getUserId();
         priceLevel.setUpdateBy(userId);
         priceLevel.setUpdateTime(new Date());
-        boolean b = priceLevelService.updateById(priceLevel);
-        if (b) {
+        int b = priceLevelService.updateByPrimaryKey(priceLevel);
+        if (b==1) {
             return renderSuccess("编辑成功！");
         } else {
             return renderError("编辑失败！");

@@ -20,8 +20,9 @@
                     parent.$.modalDialog.handler.dialog('close');
                 } else {
                     let form = $('#payLevelEditForm');
-                    if(result.obj!=null) eval(result.obj);
                     parent.$.messager.alert('错误', result.msg, 'error');
+                    if(result.obj!=null) eval(result.obj);
+
                 }
             }
         });
@@ -42,7 +43,19 @@
                 </tr>
                 <tr>
                     <td>固定支出(￥):</td>
-                    <td><input id="basePay" name="basePay" value="${payLevel.basePay}" type="text" class="layui-input easyui-numberbox" data-options="width:200,height:40, required:true,missingMessage:'提供固定支出',min:0,precision:2,prefix:'￥' "  /></td>
+                    <td><input name="basePay" value="${payLevel.basePay}" type="text" class="layui-input easyui-numberbox" data-options="width:200,height:40, required:true,missingMessage:'固定支出',min:0,precision:2,prefix:'￥' "  /></td>
+                </tr>
+                <tr>
+                <td>收入比率(%):</td>
+                <td><input name="ratio" value="${payLevel.ratio}" type="text" class="layui-input easyui-numberbox" data-options="width:200,height:40, required:false,missingMessage:'收入比率',min:0,precision:2,suffix:'%' "  /></td>
+            </tr>
+                <tr>
+                    <td>收入最大消耗(￥):</td>
+                    <td><input name="maxEffectCon" value="${payLevel.maxEffectCon}" type="text" class="layui-input easyui-numberbox" data-options="width:200,height:40, required:false,missingMessage:'收入最大消耗',min:0,precision:2,prefix:'￥' "  /></td>
+                </tr>
+                <tr>
+                    <td>生命周期(天):</td>
+                    <td><input name="maxEffectRange" value="${payLevel.maxEffectRange}" type="text" class="layui-input easyui-numberbox" data-options="width:200,height:40, required:false,missingMessage:'生命周期',min:0,precision:0,suffix:'天' "  /></td>
                 </tr>
             </table>
         </form>

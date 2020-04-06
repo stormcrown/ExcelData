@@ -12,5 +12,5 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2020-03-10
  */
 public interface IPriceLevelService extends IService<PriceLevel> {
-	
+    int updateByPrimaryKey(PriceLevel record);
 }

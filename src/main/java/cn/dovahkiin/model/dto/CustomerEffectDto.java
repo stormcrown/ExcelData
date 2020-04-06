@@ -12,17 +12,19 @@ public class CustomerEffectDto {
     private Double basePrice;
     private Double basePay;
     private Date completeDate;
-    private Date endDate;
+    private Date incomeConfigEndDate;
+    private Date payConfigEndDate;
     private Date incomeEndDate;
     private Date payEndDate;
-    private Double maxEffectOn;
+    private Double incMaxEffectOn;
     private Double payMaxEffectOn;
     private Double incomeRadio;
     private Double payRadio;
     private String priceLevelName;
     private String payLevelName;
     /**生命周期内的消耗，如果超了对应的消耗，那么肯定是提前结束了，需要知道哪一天超了   */
-    private Double sumAllEffCon;  // 总生命周期内消耗 ，
+    private Double sumAllEffConInc;  // 收入总生命周期内消耗 ，
+    private Double sumAllEffConPay;  // 支出总生命周期内消耗 ，
     private Double sumAllCon; // 查询区间内消耗
     private boolean incomeOverflow=Boolean.FALSE;
     private Double sumEffCon ; // 总 查询区间内 内收入有效消耗
@@ -44,18 +46,22 @@ public class CustomerEffectDto {
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
-    public Date getEndDate() { return endDate; }
-    public void setEndDate(Date endDate) { this.endDate = endDate; }
+    public Date getIncomeConfigEndDate() { return incomeConfigEndDate; }
+    public void setIncomeConfigEndDate(Date incomeConfigEndDate) { this.incomeConfigEndDate = incomeConfigEndDate; }
+    public Date getPayConfigEndDate() { return payConfigEndDate; }
+    public void setPayConfigEndDate(Date payConfigEndDate) { this.payConfigEndDate = payConfigEndDate; }
     public Date getCompleteDate() { return completeDate; }
     public void setCompleteDate(Date completeDate) { this.completeDate = completeDate; }
     public Date getIncomeEndDate() { return incomeEndDate; }
     public void setIncomeEndDate(Date incomeEndDate) { this.incomeEndDate = incomeEndDate; }
-    public Double getMaxEffectOn() { return maxEffectOn; }
-    public void setMaxEffectOn(Double maxEffectOn) { this.maxEffectOn = maxEffectOn; }
+    public Double getIncMaxEffectOn() { return incMaxEffectOn; }
+    public void setIncMaxEffectOn(Double incMaxEffectOn) { this.incMaxEffectOn = incMaxEffectOn; }
     public Double getIncomeRadio() { return incomeRadio; }
     public void setIncomeRadio(Double incomeRadio) { this.incomeRadio = incomeRadio; }
-    public Double getSumAllEffCon() { return sumAllEffCon; }
-    public void setSumAllEffCon(Double sumAllEffCon) { this.sumAllEffCon = sumAllEffCon; }
+    public Double getSumAllEffConInc() { return sumAllEffConInc; }
+    public void setSumAllEffConInc(Double sumAllEffConInc) { this.sumAllEffConInc = sumAllEffConInc; }
+    public Double getSumAllEffConPay() { return sumAllEffConPay; }
+    public void setSumAllEffConPay(Double sumAllEffConPay) { this.sumAllEffConPay = sumAllEffConPay; }
     public Double getBasePrice() { return basePrice; }
     public void setBasePrice(Double basePrice) { this.basePrice = basePrice; }
     public List<DayEffectDto> getData() { return data; }
