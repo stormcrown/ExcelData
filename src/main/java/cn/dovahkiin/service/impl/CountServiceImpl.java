@@ -459,11 +459,11 @@ public class CountServiceImpl implements ICountService {
                     cell.setCellStyle(ExcelConst.getDateCellStyle(sheetCus));
                     cell.setCellValue(dto.getPayConfigEndDate());
                 }
-                else if(i==21){
+                else if(i==20){
                     cell.setCellStyle(ExcelConst.getDateCellStyle(sheetCus));
                     cell.setCellValue(dto.getIncomeEndDate());
                 }
-                else if(i==22){
+                else if(i==21){
                     cell.setCellStyle(ExcelConst.getDateCellStyle(sheetCus));
                     cell.setCellValue(dto.getPayEndDate());
                 }
