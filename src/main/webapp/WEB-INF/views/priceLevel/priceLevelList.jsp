@@ -26,8 +26,12 @@
         {title : '编号', field : 'id', sortable : true, checkbox:true},
         {title : '名称', field : 'name', sortable : true,},
         {title : '固定价格(￥)', field : 'basePrice', sortable : true, align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);}},
-        {title : '支出比率(%)', field : 'ratio', sortable : true, align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);}},
-        {title : '有效消耗封顶', field : 'maxEffectCon', sortable : true, align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);}},
+        {title : '支出比率(%)', field : 'ratio', sortable : true, align:'right',halign:'center', formatter: function (value, row, index) {
+                if(value==null)return '';
+            return moneyFormter(value);}},
+        {title : '有效消耗封顶', field : 'maxEffectCon', sortable : true, align:'right',halign:'center', formatter: function (value, row, index) {
+                if(value==null)return '';
+            return moneyFormter(value);}},
         {title : '生命周期（天）', field : 'maxEffectRange', sortable : true,align:'right',halign:'center'},
         {title : '编码', field : 'code', sortable : true,align:'left',halign:'center',},
         {title : '创建时间', field : 'createTime', sortable : true, formatter: function (value, row, index) {return getCommonDateTime(value);}},

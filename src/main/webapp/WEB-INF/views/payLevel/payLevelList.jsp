@@ -29,8 +29,13 @@
             {title : '名称', field : 'name', sortable : true,},
             {title : '编码', field : 'code', sortable : true,},
             {title : '固定支出(￥)', field : 'basePay', sortable : true,align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);}},
-            {title : '收入比率(%)', field : 'ratio', sortable : true,align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);}},
-            {title : '有效消耗封顶', field : 'maxEffectCon', sortable : true,align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);}},
+            {title : '收入比率(%)', field : 'ratio', sortable : true,align:'right',halign:'center', formatter: function (value, row, index) {
+                 if(value==null)return '';
+                return moneyFormter(value);
+            }},
+            {title : '有效消耗封顶', field : 'maxEffectCon', sortable : true,align:'right',halign:'center', formatter: function (value, row, index) {
+                    if(value==null)return '';
+                return moneyFormter(value);}},
             {title : '生命周期（天）', field : 'maxEffectRange', sortable : true,},
             {title : '创建时间', field : 'createTime', sortable : true, formatter: function (value, row, index) {return getCommonDateTime(value);}},
             {

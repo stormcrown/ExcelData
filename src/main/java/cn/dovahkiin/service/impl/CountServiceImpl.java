@@ -24,6 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.NumberFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -252,7 +253,7 @@ public class CountServiceImpl implements ICountService {
                     });
                 }else if(lastDayCustomerEffectDtos!=null &&  lastDayCustomerEffectDtos.size()>1){
                     // 刚好结束日期那天，如果有多个部门有消耗，那么就只提示冲突，不修正
-                    List<String> incomeConflicOrgName = new Vector<>();
+                    Set<String> incomeConflicOrgName =  new CopyOnWriteArraySet<>();
                     lastDayCustomerEffectDtos.parallelStream().forEach(lastDto->incomeConflicOrgName.add(lastDto.getOrgName()));
                     for(CusOrgEffDto cusOrgEffDto:customerEffect.getCusOrgEffDtos()){
                         cusOrgEffDto.setIncomeConflictOrgNames(incomeConflicOrgName);
@@ -277,7 +278,7 @@ public class CountServiceImpl implements ICountService {
                         cusOrgEffDto.setSumEffPayCon(lastDayCustomerEffectDtos.get(0).getSumCon() - customerEffect.getLastDayPayOver() );
                     });
                 }else if(lastDayCustomerEffectDtos!=null &&  lastDayCustomerEffectDtos.size()>1){
-                    List<String> payConflicOrgName = new Vector<>();
+                    Set<String> payConflicOrgName = new CopyOnWriteArraySet<>();
                     lastDayCustomerEffectDtos.parallelStream().forEach(lastDto->payConflicOrgName.add(lastDto.getOrgName()));
                     // 刚好结束日期那天，如果有多个部门有消耗，那么就只提示冲突，不修正
                     for(CusOrgEffDto cusOrgEffDto:customerEffect.getCusOrgEffDtos()){

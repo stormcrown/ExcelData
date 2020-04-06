@@ -92,7 +92,7 @@
             multiSort:false,
             view: detailview,
             detailFormatter:function(index,row){
-                let html = '<div  id="tab'+(row.code).trim()+'" class="easyui-tabs lazyTab" style="width:1250px;height:650px;">' +
+                let html = '<div  id="tab'+(row.code).trim()+'" class="easyui-tabs lazyTab" style="width:1550px;height:650px;">' +
                     '    <div title="每日消耗" style="padding:20px;display:none;">' +
                     '<table id="ldg'+(row.code).trim()+'" style="border:1px solid #ccc;"></table>' +
                     '    </div>' +
@@ -205,6 +205,8 @@
                     columns: [[
                         {field:'orgCode', width:120,  sortable: true, title:'部门编号',  },
                         {field:'orgName', width:120,  sortable: true, title:'部门名称',  },
+                        {field:'sumAllEffConInc', width:100, sortable: true, title:'素材收入生命周期内消耗',align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);} },
+                        {field:'sumAllEffConPay', width:100, sortable: true, title:'素材支出生命周期内消耗',align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);} },
                         {field:'sumAllCon', width:100, sortable: true, title:'查询区间内总消耗',align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);} },
                   /*      {field:'incomeConflict', width:100, sortable: true, title:'收入封顶冲突',align:'center',halign:'center',
                             formatter: function (value, row, index) {
@@ -224,7 +226,7 @@
                         },*/
                         {field:'sumEffCon', width:100, sortable: true, title:'收入消耗',align:'right',halign:'center', formatter: function (value, row, index) {
                                 value = moneyFormter(value);
-                                return row.incomeConflict===true?orangeFont(value):value;
+                                return row.incomeConflict===true? '<span  class="conflicTips'+cusCode+'" title="数据未减去溢出"  style="color: orangered;"    >'+orangeFont(value)+'</span>':value;
                             }
                         },
                         /*{field:'payConflict', width:100, sortable: true, title:'支出封顶冲突',align:'center',halign:'center',
@@ -247,7 +249,7 @@
                                 value = moneyFormter(value);
                                 return row.payConflict===true?     '<span  class="conflicTips'+cusCode+'" title="数据未减去溢出"  style="color: orangered;"    >'+orangeFont(value)+'</span>'  :value;
                             } },
-                        {field:'incomeLastDay', sortable: true, title:'收入截止日消耗',align:'right',halign:'center', formatter: function (value, row, index) {
+                        {field:'incomeLastDay', sortable: true, title:'收入截止日消耗(有冲突)',align:'right',halign:'center', formatter: function (value, row, index) {
                               if(value==null)return '';
                               let imgTip = '';
                                 if(row.incomeConflict===true){
@@ -264,7 +266,7 @@
                                 let msg =("日期："+getCommonDate(value.recordDate)+" ；消耗：  " +(value.sumCon==null?0:value.sumCon.toFixed(2)) ) ;
                               return imgTip+msg;
                             } },
-                        {field:'payLastDay', sortable: true, title:'支出截止日消耗',align:'right',halign:'center', formatter: function (value, row, index) {
+                        {field:'payLastDay', sortable: true, title:'支出截止日消耗(有冲突)',align:'right',halign:'center', formatter: function (value, row, index) {
                                 let imgTip = '';
                             if(value==null)return '';
                             let dayStr ='';

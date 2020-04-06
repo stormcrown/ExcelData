@@ -392,6 +392,8 @@
 
 			   sum(IF(vc.recored_date &lt;= #{recoredDate_end} and vc.recored_date >= #{recoredDate_start}, consumption, 0)) sumAllCon,    -- 查询区间内消耗
 
+
+
 			   sum(IF(vc.recored_date &lt;= #{incomeEndDate} and vc.recored_date &lt;= #{recoredDate_end} and					  vc.recored_date >= #{recoredDate_start} and vc.recored_date >= #{completeDate}, consumption,
 					  0))                                                              sumEffCon,    --  总 查询区间内，实际结束日期之前 内收入有效消耗
 			   sum(IF(vc.recored_date &lt;= #{payEndDate} and vc.recored_date >= #{completeDate} and
