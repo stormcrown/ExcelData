@@ -133,24 +133,24 @@ public class VideoCostServiceImpl implements IVideoCostService {
         for (int i=1; i<excelDatas.size();i++){
             if(excelDatas.get(i)==null )continue;
               for(int j=0;j<Const.videoCostExcelHead.length;j++){
-                  if(excelDatas.get(i).size()< j+1|| excelDatas.get(i).get(j)==null || "".equals(excelDatas.get(i).get(j)) )continue;
-                  Object column =  excelDatas.get(i).get(j);
+                  if(excelDatas.get(i).size()< j+1|| excelDatas.get(i).get(j)==null || "".equals(excelDatas.get(i).get(j).toString().replaceAll(" ","")) )continue;
+                  String column =  ((String)excelDatas.get(i).get(j)).replaceAll(" ","");
                   Const.VCostEnum vCostEnum = Const.VCostEnum.getByIndex(j);
                   if(vCostEnum==null)continue;;
                   // 组织
-                  if( vCostEnum.getTypee() == Organization.class ) checkNameForNew(organizations, (String)column,"需求部门",true);
-                   else if(vCostEnum.getTypee() == Industry.class) newIndustries.add(checkNameForNew ( industries,  (String)column));
-                  else if(vCostEnum.getTypee()==TrueCustomer.class) newTrueCustomers.add(checkNameForNew(trueCustomers,(String)column));
-                  else if(vCostEnum.getTypee() == Optimizer.class) newOptimizers.add(checkNameForNew(optimizers,(String)column));
-                  else if(vCostEnum.getTypee() == VideoType.class) newVideoTypes.add(checkNameForNew(videoTypes,(String)column));
-                  else if(vCostEnum.getTypee() == Originality.class) checkNameForNew(originalities,(String)column,"创意",true);
-                  else if(vCostEnum.getTypee() == Photographer.class) newPhotographers.add(checkNameForNew(photographers,(String)column));
-                  else if(vCostEnum.getTypee() == Editor.class) newEditorNames.add(checkNameForNew(editors,(String)column));
-                  else if(vCostEnum.getTypee() == Performer.class) newPerformers.add(checkNameForNew(performers,(String)column));
-                  else if(vCostEnum.getTypee() == PriceLevel.class) checkNameForNew(priceLevelList,(String)column,"收入价格分级", true );
-                  else if(vCostEnum.getTypee() == PayLevel.class) checkNameForNew(payLevelList,(String)column,"支出价格分级",true);
-                  else if(vCostEnum.getTypee() == VideoVersion.class) checkNameForNew(videoVersionList,(String)column,"视频版本",true);
-                  else if(vCostEnum.getTypee() == Supplier.class && supplier==null ) checkNameForNew(supplierList,(String)column,"供应商",true);
+                  if( vCostEnum.getTypee() == Organization.class ) checkNameForNew(organizations, column,"需求部门",true);
+                   else if(vCostEnum.getTypee() == Industry.class) newIndustries.add(checkNameForNew ( industries,  column));
+                  else if(vCostEnum.getTypee()==TrueCustomer.class) newTrueCustomers.add(checkNameForNew(trueCustomers,column));
+                  else if(vCostEnum.getTypee() == Optimizer.class) newOptimizers.add(checkNameForNew(optimizers,column));
+                  else if(vCostEnum.getTypee() == VideoType.class) newVideoTypes.add(checkNameForNew(videoTypes,column));
+                  else if(vCostEnum.getTypee() == Originality.class) checkNameForNew(originalities,column,"创意",true);
+                  else if(vCostEnum.getTypee() == Photographer.class) newPhotographers.add(checkNameForNew(photographers,column));
+                  else if(vCostEnum.getTypee() == Editor.class) newEditorNames.add(checkNameForNew(editors,column));
+                  else if(vCostEnum.getTypee() == Performer.class) newPerformers.add(checkNameForNew(performers,column));
+                  else if(vCostEnum.getTypee() == PriceLevel.class) checkNameForNew(priceLevelList,column,"收入价格分级", true );
+                  else if(vCostEnum.getTypee() == PayLevel.class) checkNameForNew(payLevelList,column,"支出价格分级",true);
+                  else if(vCostEnum.getTypee() == VideoVersion.class) checkNameForNew(videoVersionList,column,"视频版本",true);
+                  else if(vCostEnum.getTypee() == Supplier.class && supplier==null ) checkNameForNew(supplierList,column,"供应商",true);
               }
         }
 
@@ -204,36 +204,34 @@ public class VideoCostServiceImpl implements IVideoCostService {
             Customer customer = new Customer();
             if(supplier!=null) customer.setSupplier(supplier);
             for(int j=0;j<Const.videoCostExcelHead.length;j++){
-                if( excelDatas.get(i).get(j)==null || "".equals(excelDatas.get(i).get(j)) )continue;
-                Object column =  excelDatas.get(i).get(j);
+                if( excelDatas.get(i).get(j)==null || "".equals(excelDatas.get(i).get(j).toString().replaceAll(" ","")) )continue;
+                String column =  ((String)excelDatas.get(i).get(j)).replaceAll(" ","");
                 Const.VCostEnum vCostEnum = Const.VCostEnum.getByIndex(j);
                 if(vCostEnum==null)continue;
-                if(vCostEnum.getTypee() == String.class && Const.code.equals(vCostEnum.getProName()) ) customer.setCode((String) column);
-                else if(vCostEnum.getTypee() == String.class && Const.name.equals(vCostEnum.getProName()) ) customer.setName((String)column);
-                else if(vCostEnum.getTypee() == Industry.class)customer.setIndustry(checkName(industries,(String)column));
-                else if(vCostEnum.getTypee()==TrueCustomer.class)customer.setTrueCustomer(checkName(trueCustomers,(String)column));
-                else if(vCostEnum.getTypee() == VideoType.class)customer.setVideoType(checkName(videoTypes,(String)column));
-                else if(vCostEnum.getTypee() == Originality.class)customer.setOriginality(checkName(originalities,(String)column));
-                else if(vCostEnum.getTypee() == Photographer.class)customer.setPhotographer(checkName(photographers,(String)column));
-                else if(vCostEnum.getTypee() == Editor.class)customer.setEditor(checkName(editors,(String)column));
-                else if(vCostEnum.getTypee() == Performer.class && vCostEnum.getExcelIndex() == 12 )customer.setPerformer1(checkName(performers,(String)column));
-//                else if(vCostEnum.getTypee() == Performer.class && vCostEnum.getExcelIndex() == 13 )customer.setPerformer2(checkName(performers,(String)column));
-//                else if(vCostEnum.getTypee() == Performer.class && vCostEnum.getExcelIndex() == 14 )customer.setPerformer3(checkName(performers,(String)column));
-                else if(vCostEnum.getTypee() == PriceLevel.class)customer.setPriceLevel(checkName(priceLevelList,(String)column));
-                else if(vCostEnum.getTypee() == PayLevel.class)customer.setPayLevel(checkName(payLevelList,(String)column));
-                else if(vCostEnum.getTypee() == VideoVersion.class)customer.setVideoVersion(checkName(videoVersionList,(String)column));
+                if(vCostEnum.getTypee() == String.class && Const.code.equals(vCostEnum.getProName()) ) customer.setCode( column);
+                else if(vCostEnum.getTypee() == String.class && Const.name.equals(vCostEnum.getProName()) ) customer.setName(column);
+                else if(vCostEnum.getTypee() == Industry.class)customer.setIndustry(checkName(industries,column));
+                else if(vCostEnum.getTypee()==TrueCustomer.class)customer.setTrueCustomer(checkName(trueCustomers,column));
+                else if(vCostEnum.getTypee() == VideoType.class)customer.setVideoType(checkName(videoTypes,column));
+                else if(vCostEnum.getTypee() == Originality.class)customer.setOriginality(checkName(originalities,column));
+                else if(vCostEnum.getTypee() == Photographer.class)customer.setPhotographer(checkName(photographers,column));
+                else if(vCostEnum.getTypee() == Editor.class)customer.setEditor(checkName(editors,column));
+                else if(vCostEnum.getTypee() == Performer.class && vCostEnum.getExcelIndex() == 12 )customer.setPerformer1(checkName(performers,column));
+//                else if(vCostEnum.getTypee() == Performer.class && vCostEnum.getExcelIndex() == 13 )customer.setPerformer2(checkName(performers,column));
+//                else if(vCostEnum.getTypee() == Performer.class && vCostEnum.getExcelIndex() == 14 )customer.setPerformer3(checkName(performers,column));
+                else if(vCostEnum.getTypee() == PriceLevel.class)customer.setPriceLevel(checkName(priceLevelList,column));
+                else if(vCostEnum.getTypee() == PayLevel.class)customer.setPayLevel(checkName(payLevelList,column));
+                else if(vCostEnum.getTypee() == VideoVersion.class)customer.setVideoVersion(checkName(videoVersionList,column));
                 else if(vCostEnum.getTypee() == Supplier.class  ){
-                    if(supplier==null) customer.setSupplier(checkName(supplierList,(String)column));
+                    if(supplier==null) customer.setSupplier(checkName(supplierList,column));
                     else customer.setSupplier(supplier);
                 }
                 else if(vCostEnum.getTypee() ==Date.class && Const.completeDate.equals(vCostEnum.getProName())  ){
                     try {
-                        if(column instanceof Date || ( column!=null && column instanceof String && StringUtils.isNotBlank((String)column) )  ){
+                        if( (column instanceof String && StringUtils.isNotBlank(column))  ){
                             Date comple =null;
-                            if(column instanceof Date && ((Date) column).after(Const.date2010) ){
-                                customer.setCompleteDate((Date) column);
-                            }else if( column!=null && column instanceof String && StringUtils.isNotBlank((String)column) ){
-                                comple = dateConverter.convert((String)column);
+                           if(column instanceof String && StringUtils.isNotBlank(column)){
+                                comple = dateConverter.convert(column);
                                 customer.setCompleteDate(comple);
                             }
                         }
@@ -288,19 +286,13 @@ public class VideoCostServiceImpl implements IVideoCostService {
             Customer customer = new Customer();
             格:
             for(int j=0;j<Const.videoCostExcelHead.length;j++){
-                if( excelDatas.get(i).get(j)==null || "".equals(excelDatas.get(i).get(j)) )continue;
-                Object column =  excelDatas.get(i).get(j);
+                if( excelDatas.get(i).get(j)==null || "".equals(excelDatas.get(i).get(j).toString().replaceAll(" ","")) )continue;
+                String column =  ((String)excelDatas.get(i).get(j)).replaceAll(" ","");
                 Const.VCostEnum vCostEnum = Const.VCostEnum.getByIndex(j);
                 if(vCostEnum==null)continue;
                 if(vCostEnum.getTypee() == Date.class && Const.recoredDate.equals(vCostEnum.getProName())){
                     try {
-                        if(column instanceof Date || ( column!=null && column instanceof String && StringUtils.isNotBlank((String)column) )  ){
-                            if(column instanceof Date && ((Date) column).after(Const.date2010) ){
-                               videoCost.setRecoredDate((Date) column);
-                            }else if( column!=null && column instanceof String && StringUtils.isNotBlank((String)column) ){
-                                videoCost.setRecoredDate(dateConverter.convert((String)column));
-                            }
-                        }
+                        if(StringUtils.isNotBlank(column)) videoCost.setRecoredDate(dateConverter.convert(column));
                     } catch (IllegalArgumentException e) {
                         throw new RuntimeException("第"+(i+1)+"行无法识别列“消耗日期”：\n"+column);
                     }
@@ -314,14 +306,14 @@ public class VideoCostServiceImpl implements IVideoCostService {
                         throw new RuntimeException("第"+(i+1)+"行无法识别消耗量");
                     }
                 }
-                else if(vCostEnum.getTypee()==Organization.class) videoCost.setDemandSector(checkName(organizations ,(String)column));
-                else if(vCostEnum.getTypee()== Optimizer.class) videoCost.setOptimizer(checkName(optimizers,(String)column));
-                else if(vCostEnum.getTypee() == String.class && Const.code.equals(vCostEnum.getProName()) ) customer.setCode((String) column);
+                else if(vCostEnum.getTypee()==Organization.class) videoCost.setDemandSector(checkName(organizations ,column));
+                else if(vCostEnum.getTypee()== Optimizer.class) videoCost.setOptimizer(checkName(optimizers,column));
+                else if(vCostEnum.getTypee() == String.class && Const.code.equals(vCostEnum.getProName()) ) customer.setCode( column);
                 else if(vCostEnum.getTypee() == String.class && Const.name.equals(vCostEnum.getProName()) ) {
-                    if(StringUtils.isBlank((String)column))continue 行; // 素材没有名称，整行被放弃
-                    customer.setName((String)column);
+                    if(StringUtils.isBlank(column))continue 行; // 素材没有名称，整行被放弃
+                    customer.setName(column);
                 }
-                else if(vCostEnum.getTypee() == VideoVersion.class)customer.setVideoVersion(checkName(videoVersionList,(String)column));
+                else if(vCostEnum.getTypee() == VideoVersion.class)customer.setVideoVersion(checkName(videoVersionList,column));
             }
             // 素材
             for(Customer customer1:customers){

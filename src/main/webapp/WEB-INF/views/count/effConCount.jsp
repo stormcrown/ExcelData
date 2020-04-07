@@ -3,6 +3,7 @@
 
 <script type="text/javascript">
     var listData = [];
+    var listDataOrg = [];
     var sortEffCountAll ='sumAllEffCon' ;
     var orderEffCountAll ='desc' ;
     $(function() {
@@ -60,10 +61,25 @@
                 {field:'name',  sortable: true, title:'素材名称',  },
                 {field:'supplierName',  sortable: true, title:'供应商名称',  },
                 {field:'supplierCode',  sortable: true, title:'供应商编号',  },
-                {field:'incMaxEffectOn',width:100,  sortable: true, title:'收入封顶消耗',align:'right',halign:'center', formatter: function (value, row, index) { return  value; } },
-                {field:'payMaxEffectOn',width:100,  sortable: true, title:'支出封顶消耗',align:'right',halign:'center', formatter: function (value, row, index) { return value; } },
-                {field:'sumAllEffConInc', width:100, sortable: true, title:'收入生命周期内总消耗',align:'right',halign:'center', formatter: function (value, row, index) { return (row.incomeOverflow===true  )? pinkFont(value): value; } },
-                {field:'sumAllEffConPay', width:100, sortable: true, title:'支出生命周期内总消耗',align:'right',halign:'center', formatter: function (value, row, index) { return ( row.payOverflow===true )? pinkFont(value): value; } },
+                {field:'orgName',  sortable: true, title:'部门名称', formatter: function (value, row, index) {
+                    let html='';
+                    let orgs = row.cusOrgEffDtos;
+                    let incomeConflict = false;
+                    if(orgs!=null){
+                        for(let x=0;x<orgs.length;x++){
+                            let str  =orgs[x].orgName;
+                            if(orgs[x].incomeConflict===true )str =redFont(str);
+                            else if(orgs[x].payConflict===true)str =redFont(str);
+                            html+=( str+"、" );
+                        }
+                    }
+                    return  html;
+                }
+                },
+                {field:'incMaxEffectOn',width:100,  sortable: true, title:'收入封顶消耗',align:'right',halign:'center', formatter: function (value, row, index) { return  moneyFormter(value); } },
+                {field:'payMaxEffectOn',width:100,  sortable: true, title:'支出封顶消耗',align:'right',halign:'center', formatter: function (value, row, index) { return moneyFormter(value); } },
+                {field:'sumAllEffConInc', width:100, sortable: true, title:'收入生命周期内总消耗',align:'right',halign:'center', formatter: function (value, row, index) { return (row.incomeOverflow===true  )? pinkFont(moneyFormter(value)): moneyFormter(value); } },
+                {field:'sumAllEffConPay', width:100, sortable: true, title:'支出生命周期内总消耗',align:'right',halign:'center', formatter: function (value, row, index) { return ( row.payOverflow===true )? pinkFont(moneyFormter(value)): moneyFormter(value); } },
                 {field:'sumAllCon', width:100, sortable: true, title:'查询区间内总消耗', align:'right',halign:'center',  formatter: function (value, row, index) {return moneyFormter(value);}  },
                 {field:'sumEffCon', width:100, sortable: true, title:'收入有效消耗', align:'right',halign:'center',  formatter: function (value, row, index) {return moneyFormter(value);} },
                 {field:'sumEffPayCon', width:100, sortable: true, title:'支出有效消耗',align:'right',halign:'center',  formatter: function (value, row, index) {return moneyFormter(value);} },
@@ -88,6 +104,7 @@
                 {field:'payConfigEndDate',width:120,  sortable: true, title:'支出有效期截至（配置)', align:'right',halign:'center',  formatter: function (value, row, index) {return getCommonDate(value);}  },
                 {field:'incomeEndDate',width:120,  sortable: true, title:'有效期截至（实际）(收入)', align:'right',halign:'center',  formatter: function (value, row, index) {return getCommonDate(value);}  },
                 {field:'payEndDate',width:120,  sortable: true, title:'有效期截至（实际）（支出）', align:'right',halign:'center',  formatter: function (value, row, index) {return getCommonDate(value);}  },
+
             ]],
             multiSort:false,
             view: detailview,
@@ -208,46 +225,14 @@
                         {field:'sumAllEffConInc', width:100, sortable: true, title:'素材收入生命周期内消耗',align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);} },
                         {field:'sumAllEffConPay', width:100, sortable: true, title:'素材支出生命周期内消耗',align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);} },
                         {field:'sumAllCon', width:100, sortable: true, title:'查询区间内总消耗',align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);} },
-                  /*      {field:'incomeConflict', width:100, sortable: true, title:'收入封顶冲突',align:'center',halign:'center',
-                            formatter: function (value, row, index) {
-                            if(value===true){
-                                let conflicTips ='';
-                                let lastDay ='';
-                                if(row.incomeLastDay!=null && row.incomeLastDay.recordDate!=null)lastDay = "于 "+ redFont(getCommonDate(row.incomeLastDay.recordDate)) ;
-                                if(row.incomeConflictOrgNames!=null){
-                                    for(let x=0;x<row.incomeConflictOrgNames.length;x++)conflicTips+=(row.incomeConflictOrgNames[x]+"、");
-                                    conflicTips=redFont(conflicTips);
-                                    conflicTips+=( lastDay+ "共同封顶有效收入，共溢出 "+redFont(lastDayIncomeOver));
-                                }
-                                return '<img  class="conflicTips'+cusCode+'"  title="'+conflicTips+'" src="'+basePath+'/static/images/attention.png"  style="hight:25px;width: 25px;" >'
-                            }
-                            return '';
-                        }
-                        },*/
                         {field:'sumEffCon', width:100, sortable: true, title:'收入消耗',align:'right',halign:'center', formatter: function (value, row, index) {
                                 value = moneyFormter(value);
-                                return row.incomeConflict===true? '<span  class="conflicTips'+cusCode+'" title="数据未减去溢出"  style="color: orangered;"    >'+orangeFont(value)+'</span>':value;
+                                return row.incomeConflict===true? '<span  class="conflicTips'+cusCode+'" title="数据已减去溢出"  style="color: orangered;"    >'+orangeFont(value)+'</span>':value;
                             }
                         },
-                        /*{field:'payConflict', width:100, sortable: true, title:'支出封顶冲突',align:'center',halign:'center',
-                            formatter: function (value, row, index) {
-                                if(value===true){
-                                    let conflicTips ='';
-                                    let lastDay ='';
-                                    if(row.payLastDay!=null && row.payLastDay.recordDate!=null)lastDay = "于 "+ redFont(getCommonDate(row.payLastDay.recordDate)) ;
-                                    if(row.payConflictOrgNames!=null){
-                                        for(let x=0;x<row.payConflictOrgNames.length;x++)conflicTips+=(row.payConflictOrgNames[x]+"、");
-                                        conflicTips=redFont(conflicTips);
-                                        conflicTips+=( lastDay+ "共同封顶支出有效消耗，共溢出 "+redFont(lastDayPayOver));
-                                    }
-                                    return '<img  class="conflicTips'+cusCode+'"  title="'+conflicTips+'" src="'+basePath+'/static/images/attention.png"  style="hight:25px;width: 25px;" >'
-                                }
-                                return '';
-                            }
-                        },*/
                         {field:'sumEffPayCon', width:100, sortable: true, title:'支出消耗',align:'right',halign:'center', formatter: function (value, row, index) {
                                 value = moneyFormter(value);
-                                return row.payConflict===true?     '<span  class="conflicTips'+cusCode+'" title="数据未减去溢出"  style="color: orangered;"    >'+orangeFont(value)+'</span>'  :value;
+                                return row.payConflict===true?     '<span  class="conflicTips'+cusCode+'" title="数据已减去溢出"  style="color: orangered;"    >'+orangeFont(value)+'</span>'  :value;
                             } },
                         {field:'incomeLastDay', sortable: true, title:'收入截止日消耗(有冲突)',align:'right',halign:'center', formatter: function (value, row, index) {
                               if(value==null)return '';
@@ -333,6 +318,100 @@
             }
         });
 
+        $('#effCountAllOrgs').datagrid({
+            fit: true,
+            striped: true,
+            singleSelect: true,
+            pagination: true,
+            rownumbers: true,
+            nowrap:true,
+            remoteSort:true,   //设置为本地排序
+            loadMsg:"数据正在加载......",
+            idField:'code',
+            height:'auto',
+            width:'auto',
+            pageSize:10,
+            pageList: [10,15, 20, 30, 40, 50, 100, 200, 300, 400, 500,1000],
+            onSortColumn: function (sort, order){
+                listDataOrg.sort((d1,d2)=>{
+                    let value1 = d1[sort];
+                    let value2 = d2[sort];
+                    let end = 0;
+                    if(sort==='incomeConflict'  || sort==='payConflict'){
+                        if(value1===true)value1=1;else value1=0;
+                        if(value2===true)value2=1;else value2=0;
+                    }
+
+                    if(sort==='orgCode' || sort==='orgName'  ) end = value1.localeCompare(value2,'zh-CN');
+                    else end = value1 -value2;
+                    if('asc'===order) return end; else return  0-end;
+                });
+
+                setPage( $("#effCountAllOrgs") ,listDataOrg,1);
+            },
+            frozenColumns: [[
+                {field:'orgCode', width:120,  sortable: true, title:'部门编号',  },
+            ]],
+
+            columns: [[
+                {field:'orgName', width:120,  sortable: true, title:'部门名称',  },
+                {field:'totalSumAllEffConInc', width:100, sortable: true, title:'全素材生命周期内，部门收入消耗 ',align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);} },
+                {field:'totalSumAllEffConPay', width:100, sortable: true, title:'全素材生命周期内，部门支出消耗 ',align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);} },
+                {field:'totalSumAllCon', width:100, sortable: true, title:'查询区间内消耗 ',align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);} },
+                {field:'totalSumEffCon', width:100, sortable: true, title:'查询区间内，收入有效消耗 ',align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);} },
+                {field:'totalSumEffPayCon', width:100, sortable: true, title:'查询区间内，支出有效消耗 ',align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);} },
+                {field:'incomeConflict', width:100, sortable: true, title:'收入冲突 ',align:'right',halign:'center', formatter: function (value, row, index) {
+                    if(value===false || value===null)return '';
+                    let conflicTips = '';
+                    if(row.cusOrgEffDtoList!=null && row.cusOrgEffDtoList.length>0){
+                        for(let x=0;x<row.cusOrgEffDtoList.length;x++){
+                            let lastDay= row.cusOrgEffDtoList[x].incomeLastDay;
+                            if(lastDay!=null){
+                                conflicTips+=( lastDay.cusCode+":"+  getCommonDate(lastDay.recordDate) );
+                            }
+                        }
+                    }
+                    let  imgTip = '<img  class="conflicTips"  title="'+conflicTips+'" src="'+basePath+'/static/images/attention.png"  style="hight:25px;width: 25px;" >';
+                    return imgTip;
+                    }
+                },
+                {field:'payConflict', width:100, sortable: true, title:'支出冲突 ',align:'right',halign:'center', formatter: function (value, row, index) {
+                        if(value===false || value===null)return '';
+                        let conflicTips = '';
+                        if(row.cusOrgEffDtoList!=null && row.cusOrgEffDtoList.length>0){
+                            for(let x=0;x<row.cusOrgEffDtoList.length;x++){
+                                let lastDay= row.cusOrgEffDtoList[x].payLastDay;
+                                if(lastDay!=null){
+                                    conflicTips+=( lastDay.cusCode+":"+  getCommonDate(lastDay.recordDate) );
+                                }
+                            }
+                        }
+                        let  imgTip = '<img  class="conflicTips"  title="'+conflicTips+'" src="'+basePath+'/static/images/attention.png"  style="hight:25px;width: 25px;" >';
+                        return imgTip;
+                }
+                },
+            ]],
+            onLoadSuccess: function (data) {
+                $('.conflicTips').tooltip({
+                    position: 'right',
+                    onShow: function(){
+                        $(this).tooltip('tip').css({
+                            backgroundColor: '#ffffff',
+                            borderColor: '#666'
+                        });
+                    }
+                });
+            }
+        });
+
+        $("#effCountAllOrgs").datagrid("getPager").pagination({
+            onSelectPage:function(pageNumber, pageSize){
+                let gridOpts = $('#effCountAllOrgs').datagrid('options');
+                gridOpts.pageNumber = pageNumber;
+                gridOpts.pageSize = pageSize;
+                setPage( $("#effCountAllOrgs") ,listDataOrg,pageNumber);
+            }
+        });
     });
     function checkConfig(){
         $.ajax({
@@ -424,49 +503,11 @@
                 $('#totalSumPay').html(totalSumPay);
                 $('#totalCus').html(data.totalCus);
                 let dataAll = data.allPrimaryData;
+                listDataOrg=data.orgEffDtos;
                 handleTimeUnitEffect(getAllDates( dates[0],dates[1] ),dataAll,data.totalDailSumCon);
                  listData =dataAll;
-                // for(let i=0;i<dataAll.length;i++){
-                //     let con = dataAll[i].sumAllEffCon ; if(con!=null)con=con.toFixed(2);
-                //     let inc = dataAll[i].sumIncome ; if(inc!=null)inc=inc.toFixed(2);
-                //     let pay = dataAll[i].sumPay ; if(pay!=null)pay=pay.toFixed(2);
-                //     let pNPl = dataAll[i].priceLevelName+"：￥ "+dataAll[i].basePrice;
-                //     if(dataAll[i].priceLevelName==null)pNPl ='';
-                //     let payNPl = dataAll[i].payLevelName+"：￥ "+dataAll[i].basePay;
-                //     if(dataAll[i].basePay==null)payNPl ='';
-
-                    /*
-                    listData.push({
-                        code:dataAll[i].code,
-                        name:dataAll[i].name,
-                        supplierName:dataAll[i].supplierName,
-                        supplierCode:dataAll[i].supplierCode,
-                        completeData:getCommonDate(dataAll[i].completeDate),
-                        basePrice:pNPl,
-                        basePay:payNPl,
-                        maxEffectOn:dataAll[i].maxEffectOn==null?"":dataAll[i].maxEffectOn.toFixed(2),
-                        payMaxEffectOn:dataAll[i].payMaxEffectOn==null?"":dataAll[i].payMaxEffectOn.toFixed(2),
-                        sumAllEffCon:dataAll[i].sumAllEffCon==null?"":dataAll[i].sumAllEffCon.toFixed(2),
-                        sumEffCon:dataAll[i].sumEffCon==null?"":dataAll[i].sumEffCon.toFixed(2),
-                        sumEffPayCon:dataAll[i].sumEffPayCon==null?"":dataAll[i].sumEffPayCon.toFixed(2),
-                        sumIncome:dataAll[i].sumIncome==null?"":dataAll[i].sumIncome.toFixed(2),
-                        incomeRadio:dataAll[i].incomeRadio,
-                        sumPay:dataAll[i].sumPay==null?"":dataAll[i].sumPay.toFixed(2),
-                        payRadio:dataAll[i].payRadio,
-                        endDate:getCommonDate(dataAll[i].endDate),
-                        incomeEndDate:getCommonDate(dataAll[i].incomeEndDate),
-                        payEndDate:getCommonDate(dataAll[i].payEndDate),
-                        dailData:dataAll[i].data,
-                        sumAllCon:moneyFormter(dataAll[i].sumAllCon),
-                        cusOrgEffDtos:dataAll[i].cusOrgEffDtos,
-                        incomeOverflow:dataAll[i].incomeOverflow,
-                        payOverflow:dataAll[i].payOverflow,
-                        lastDayIncomeOver:moneyFormter(dataAll[i].lastDayIncomeOver),
-                        lastDayPayOver:moneyFormter(dataAll[i].lastDayPayOver),
-                    });
-                    */
-                // }
                 setPage(   $("#effCountAll") ,listData,1);
+                setPage(   $("#effCountAllOrgs") ,listDataOrg,1);
             },
             beforeSend:function(){progressLoad();} ,
             complete:function(){ progressClose();}
@@ -645,16 +686,19 @@
      </div>
     <div data-options="region:'center',border:false">
         <div  class="easyui-tabs" style="width:100%;height:100%;">
-            <div ID="effCountAllTab" title="表" data-options="iconCls:'glyphicon-list on icon-green',border:false" style="padding:2px;display:none;">
+            <div ID="effCountAllTab" title="素材表" data-options="iconCls:'glyphicon-list on icon-green',border:false" style="padding:2px;display:none;">
                 <table  id="effCountAll" data-options="fit:true,border:false"  ></table>
             </div>
-            <div ID="effAddonTab" title="图" data-options="iconCls:'glyphicon-stats  icon-green',border:false" style="overflow:auto;padding:2px;display:none;">
+            <div ID="effAddonTab" title="日详情图" data-options="iconCls:'glyphicon-stats  icon-green',border:false" style="overflow:auto;padding:2px;display:none;">
                 <table>
                     <tr style="height: 40px">
                         <td>
                         </td>
                     </tr></table>
                 <div id="effAddon"  STYLE="width: 100%;margin: 0 auto;"  ></div>
+            </div>
+            <div ID="effCountAllOrgsTab" title="部门表" data-options="iconCls:'glyphicon-list on icon-green',border:false" style="padding:2px;display:none;">
+                <table  id="effCountAllOrgs" data-options="fit:true,border:false"  ></table>
             </div>
         </div>
     </div>

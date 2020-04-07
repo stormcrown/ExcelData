@@ -8,6 +8,8 @@ public class EffectCountDto {
     private List<CustomerEffectDto> allPrimaryData;
     /**每日总和*/
     private List<DayEffectDto> totalDailSumCon;
+    private List<OrgEffDto> orgEffDtos;
+
     private Double totalSumAllEffConInc; // 生命周期内总消耗
     private Double totalSumAllEffConPay; // 生命周期内总消耗
     private Double tatalSumAllCon; // 查询期限内总消耗
@@ -21,9 +23,10 @@ public class EffectCountDto {
     private Double totalSumPay;
     public EffectCountDto() {
     }
-    public EffectCountDto(List<CustomerEffectDto> allPrimaryData, List<DayEffectDto> totalDailSumCon, Double totalSumAllEffConInc,Double totalSumAllEffConPay, Double tatalSumAllCon, Double totalSumCon, Double totalSumPayCon, int totalCus, Double totalSumIncome, Double totalSumPay) {
+    public EffectCountDto(List<CustomerEffectDto> allPrimaryData, List<DayEffectDto> totalDailSumCon, List<OrgEffDto> orgEffDtos, Double totalSumAllEffConInc,Double totalSumAllEffConPay, Double tatalSumAllCon, Double totalSumCon, Double totalSumPayCon, int totalCus, Double totalSumIncome, Double totalSumPay) {
         this.allPrimaryData = allPrimaryData;
         this.totalDailSumCon = totalDailSumCon;
+        this.orgEffDtos = orgEffDtos;
         this.totalSumAllEffConInc = totalSumAllEffConInc;
         this.totalSumAllEffConPay = totalSumAllEffConPay;
         this.tatalSumAllCon = tatalSumAllCon;
@@ -112,5 +115,13 @@ public class EffectCountDto {
 
     public void setTatalSumAllCon(Double tatalSumAllCon) {
         this.tatalSumAllCon = tatalSumAllCon;
+    }
+
+    public List<OrgEffDto> getOrgEffDtos() {
+        return orgEffDtos;
+    }
+
+    public void setOrgEffDtos(List<OrgEffDto> orgEffDtos) {
+        this.orgEffDtos = orgEffDtos;
     }
 }

@@ -9,7 +9,6 @@ import cn.dovahkiin.model.dto.*;
 import cn.dovahkiin.service.ICountService;
 import cn.dovahkiin.util.Const;
 import cn.dovahkiin.util.excel.ExcelConst;
-import com.alibaba.fastjson.JSON;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -249,17 +248,35 @@ public class CountServiceImpl implements ICountService {
                     customerEffect.getCusOrgEffDtos().parallelStream().forEach(cusOrgEffDto -> {
                         if(StringUtils.isBlank(cusOrgEffDto.getOrgCode()) || StringUtils.isBlank(lastDayCustomerEffectDtos.get(0).getOrgCode())  )return;
                         if( !cusOrgEffDto.getOrgCode().equals(lastDayCustomerEffectDtos.get(0).getOrgCode()  ) ) return;
-                        cusOrgEffDto.setSumEffCon(lastDayCustomerEffectDtos.get(0).getSumCon()  - customerEffect.getLastDayIncomeOver() );
+                        cusOrgEffDto.setSumEffCon( cusOrgEffDto.getSumEffCon() - customerEffect.getLastDayIncomeOver() );
                     });
                 }else if(lastDayCustomerEffectDtos!=null &&  lastDayCustomerEffectDtos.size()>1){
-                    // 刚好结束日期那天，如果有多个部门有消耗，那么就只提示冲突，不修正
+                    // 刚好结束日期那天，如果有多个部门有消耗，
                     Set<String> incomeConflicOrgName =  new CopyOnWriteArraySet<>();
                     lastDayCustomerEffectDtos.parallelStream().forEach(lastDto->incomeConflicOrgName.add(lastDto.getOrgName()));
+                    // 收入超
+                    AtomicReference<Double> incomeOver = new AtomicReference<>(customerEffect.getLastDayIncomeOver() );
+                    AtomicReference<Double> size = new AtomicReference<>(lastDayCustomerEffectDtos.size() + 0d);
+                    lastDayCustomerEffectDtos.sort((lastDay1,lastDay2)-> (int) (lastDay1.getSumCon() - lastDay2.getSumCon()));
+                    customerEffect.getCusOrgEffDtos().sort(( cusOrg1,cusOrg2 )-> (int) (cusOrg1.getSumEffCon()-cusOrg2.getSumEffCon()));
                     for(CusOrgEffDto cusOrgEffDto:customerEffect.getCusOrgEffDtos()){
                         cusOrgEffDto.setIncomeConflictOrgNames(incomeConflicOrgName);
-                        if( StringUtils.isBlank(cusOrgEffDto.getOrgCode()) )continue;
                         lastDayCustomerEffectDtos.forEach(lastDayCustomerEffectDto -> {
-                            if(cusOrgEffDto.getOrgCode().equals(lastDayCustomerEffectDto.getOrgCode()) ){
+                            lastDayCustomerEffectDto.setConflictOrgNames(incomeConflicOrgName);
+                            if( cusOrgEffDto.getOrgCode().equals(lastDayCustomerEffectDto.getOrgCode())     ){
+                                log.info(lastDayCustomerEffectDto.getSumCon()+"\t"+incomeOver.get()+"\t"+size.get());
+                               if(lastDayCustomerEffectDto.getSumCon()>= incomeOver.get()/ size.get()){
+                                   lastDayCustomerEffectDto.setSumCon(lastDayCustomerEffectDto.getSumCon() - incomeOver.get()/ size.get() );
+                                   cusOrgEffDto.setSumEffCon(cusOrgEffDto.getSumEffCon() -  incomeOver.get()/ size.get()) ;
+                                   incomeOver.updateAndGet( v-> v  - v/size.get());
+                                   size.updateAndGet(v -> v - 1d);
+                               }
+                               else{
+                                   incomeOver.updateAndGet(v->v - lastDayCustomerEffectDto.getSumCon() );
+                                   size.updateAndGet(v -> v - 1d);
+                                   cusOrgEffDto.setSumEffCon(cusOrgEffDto.getSumEffCon()  - lastDayCustomerEffectDto.getSumCon() );
+                                   lastDayCustomerEffectDto.setSumCon(0d);
+                               }
                                 cusOrgEffDto.setIncomeConflict(Boolean.TRUE);
                                 cusOrgEffDto.setIncomeLastDay(lastDayCustomerEffectDto);
                             }
@@ -275,17 +292,34 @@ public class CountServiceImpl implements ICountService {
                     customerEffect.getCusOrgEffDtos().parallelStream().forEach(cusOrgEffDto -> {
                         if(StringUtils.isBlank(cusOrgEffDto.getOrgCode()) || StringUtils.isBlank(lastDayCustomerEffectDtos.get(0).getOrgCode())  )return;
                         if( !cusOrgEffDto.getOrgCode().equals(lastDayCustomerEffectDtos.get(0).getOrgCode()  ) ) return;
-                        cusOrgEffDto.setSumEffPayCon(lastDayCustomerEffectDtos.get(0).getSumCon() - customerEffect.getLastDayPayOver() );
+                        cusOrgEffDto.setSumEffPayCon(cusOrgEffDto.getSumEffPayCon() -   customerEffect.getLastDayPayOver() );
                     });
                 }else if(lastDayCustomerEffectDtos!=null &&  lastDayCustomerEffectDtos.size()>1){
                     Set<String> payConflicOrgName = new CopyOnWriteArraySet<>();
                     lastDayCustomerEffectDtos.parallelStream().forEach(lastDto->payConflicOrgName.add(lastDto.getOrgName()));
-                    // 刚好结束日期那天，如果有多个部门有消耗，那么就只提示冲突，不修正
+                    // 刚好结束日期那天，如果有多个部门有消耗，
+                    AtomicReference<Double> payOver = new AtomicReference<>(customerEffect.getLastDayPayOver() );
+                    AtomicReference<Double> size = new AtomicReference<>(lastDayCustomerEffectDtos.size() + 0d);
+                    lastDayCustomerEffectDtos.sort((lastDay1,lastDay2)-> (int) (lastDay1.getSumCon() - lastDay2.getSumCon()));
+                    customerEffect.getCusOrgEffDtos().sort(( cusOrg1,cusOrg2 )-> (int) (cusOrg1.getSumEffPayCon()-cusOrg2.getSumEffPayCon()));
                     for(CusOrgEffDto cusOrgEffDto:customerEffect.getCusOrgEffDtos()){
                         cusOrgEffDto.setPayConflictOrgNames(payConflicOrgName);
-                        if( StringUtils.isBlank(cusOrgEffDto.getOrgCode()) )continue;
                         lastDayCustomerEffectDtos.forEach(lastDayCustomerEffectDto -> {
-                            if(cusOrgEffDto.getOrgCode().equals(lastDayCustomerEffectDto.getOrgCode()) ){
+                            lastDayCustomerEffectDto.setConflictOrgNames(payConflicOrgName);
+                            if( cusOrgEffDto.getOrgCode().equals(lastDayCustomerEffectDto.getOrgCode())  ) {
+                                log.info(lastDayCustomerEffectDto.getSumCon()+"\t"+payOver.get()+"\t"+size.get());
+                                if(lastDayCustomerEffectDto.getSumCon()>= payOver.get()/size.get() ){
+                                    lastDayCustomerEffectDto.setSumCon(lastDayCustomerEffectDto.getSumCon() - payOver.get()/size.get() );
+                                    cusOrgEffDto.setSumEffPayCon(cusOrgEffDto.getSumEffPayCon() -  payOver.get()/size.get() ) ;
+                                    payOver.updateAndGet(v ->v-  v/ size.get());
+                                    size.updateAndGet(v -> v - 1d);
+                                }
+                                else{
+                                    payOver.updateAndGet(v->v- lastDayCustomerEffectDto.getSumCon() );
+                                    size.updateAndGet(v -> v - 1d);
+                                    cusOrgEffDto.setSumEffPayCon(cusOrgEffDto.getSumEffPayCon() - lastDayCustomerEffectDto.getSumCon() );
+                                    lastDayCustomerEffectDto.setSumCon(0d);
+                                }
                                 cusOrgEffDto.setPayConflict(Boolean.TRUE);
                                 cusOrgEffDto.setPayLastDay(lastDayCustomerEffectDto);
                             }
@@ -295,6 +329,24 @@ public class CountServiceImpl implements ICountService {
             }
 
         });
+
+
+        Map<String, OrgEffDto> orgEffDtos = new ConcurrentHashMap<>();
+
+        customerEffectOnes_all.forEach(ones->{
+
+            if(ones==null||ones.getCusOrgEffDtos()==null || ones.getCusOrgEffDtos().size()==0)return;
+            ones.getCusOrgEffDtos().forEach(cusDtos->{
+                OrgEffDto orgEffDto = orgEffDtos.get(cusDtos.getOrgCode());
+                if(orgEffDto==null){
+                    orgEffDto = new OrgEffDto();
+                    orgEffDto.init(cusDtos.getOrgCode(),cusDtos.getOrgName());
+                }
+                orgEffDto.updateData(cusDtos);
+                orgEffDtos.put(orgEffDto.getOrgCode(),orgEffDto);
+            });
+        });
+
 /// ################# 部门
 
         /*并行 处理收入&支出，每个素材可单独并行处理*/
@@ -376,7 +428,7 @@ public class CountServiceImpl implements ICountService {
         });
         List<DayEffectDto> dayEffectDtoList = new ArrayList<>(dayEffectDtoMap.size());
         dayEffectDtoList.addAll(dayEffectDtoMap.values());
-        return new EffectCountDto(customerEffectOnes_all,dayEffectDtoList,totalSumAllEffConInc.get(),totalSumAllEffConPay.get(),totalSumCon.get(),totalSumCon.get(),totalSumPayCon.get(),totalCus.get(),totalSumIncome.get(),totalSumPay.get());
+        return new EffectCountDto(customerEffectOnes_all,dayEffectDtoList,new ArrayList<>(orgEffDtos.values())  ,totalSumAllEffConInc.get(),totalSumAllEffConPay.get(),totalSumCon.get(),totalSumCon.get(),totalSumPayCon.get(),totalCus.get(),totalSumIncome.get(),totalSumPay.get());
     }
 
     @Override
@@ -386,7 +438,7 @@ public class CountServiceImpl implements ICountService {
         NumberFormat nf = NumberFormat.getNumberInstance();
         nf.setMaximumFractionDigits(2);
         Sheet sheetCus = workbook.createSheet("素材");
-        String [] headCus = new String[]{ "编号","名称","部门编号","部门名称","收入封顶消耗", "支出封顶消耗", "收入生命周期内总消耗", "支出生命周期内总消耗", "查询区间内总消耗" ,"收入有效消耗", "支出有效消耗", "收入","支出", "固定收入","固定支出","收入比率(%)","支出比率(%)","成片日期","收入生命周期至（配置）","支出生命周期至（配置）","收入有效期至（实际）","支出有效期至（实际）" };
+        String [] headCus = new String[]{ "编号","名称","部门名称","供应商名称","收入封顶消耗", "支出封顶消耗", "收入生命周期内总消耗", "支出生命周期内总消耗", "查询区间内总消耗" ,"收入有效消耗", "支出有效消耗", "收入","支出", "固定收入","固定支出","收入比率(%)","支出比率(%)","成片日期","收入生命周期至（配置）","支出生命周期至（配置）","收入有效期至（实际）","支出有效期至（实际）" };
         Row headRowCus = sheetCus.createRow(0);
         for(int i=0;i<headCus.length;i++){
             Cell cell = headRowCus.createCell(i);
@@ -420,7 +472,7 @@ public class CountServiceImpl implements ICountService {
             if("desc".equals(order))end = -end;
             return end;
         });
-
+        // 不用用流
         for(int m=0;m<customerEffectDtos.size();m++){
             CustomerEffectDto dto = customerEffectDtos.get(m);
             if(dto==null)continue;
@@ -429,7 +481,13 @@ public class CountServiceImpl implements ICountService {
                 Cell cell = row.createCell(i);
                 if(i==0) cell.setCellValue(dto.getCode());
                 else if(i==1) cell.setCellValue(dto.getName());
-                if(i==2) cell.setCellValue(dto.getSupplierCode());
+                if(i==2) {
+                    StringBuffer orgNames = new StringBuffer();
+                    if(dto.getCusOrgEffDtos()!=null && dto.getCusOrgEffDtos().size()>0){
+                        dto.getCusOrgEffDtos().forEach(cusOrgEffDto ->orgNames.append( cusOrgEffDto.getOrgName()) );
+                    }
+                    cell.setCellValue(orgNames.toString());
+                }
                 else if(i==3) cell.setCellValue(dto.getSupplierName());
                 else if(i==4) cell.setCellValue(dto.getIncMaxEffectOn());
                 else if(i==5) cell.setCellValue(dto.getPayMaxEffectOn());
@@ -470,6 +528,52 @@ public class CountServiceImpl implements ICountService {
                 }
         }
         }
+        Sheet sheetOrg = workbook.createSheet("部门");
+        String [] headOrgs = new String[]{ "部门名称","部门编号","全素材生命周期内收入消耗","全素材生命周期内支出消耗","查询区间内总消耗"," 查询区间内收入有效消耗","查询区间内支出有效消耗","收入冲突素材","支出冲突素材"  };
+        Row headRowOrg = sheetOrg.createRow(0);
+        for(int i=0;i<headOrgs.length;i++){
+            Cell cell = headRowOrg.createCell(i);
+            cell.setCellValue(headOrgs[i]);
+            sheetOrg.setColumnWidth(i, 4000);
+        }
+        sheetOrg.setColumnWidth(7, 6000);
+        List<OrgEffDto> cusOrgEffDtoList = effectCountDto.getOrgEffDtos();
+
+        for(int m=0; m<cusOrgEffDtoList.size();m++ ){
+            OrgEffDto orgEffDto = cusOrgEffDtoList.get(m);
+            if(orgEffDto==null)continue;
+            Row row= sheetOrg.createRow(m+1);
+            for(int i=0;i<headOrgs.length;i++){
+                Cell cell = row.createCell(i);
+                if(i==0) cell.setCellValue(orgEffDto.getOrgName());
+                else if(i==1) cell.setCellValue(orgEffDto.getOrgCode());
+                else if(i==2)cell.setCellValue( nf.format(orgEffDto.getTotalSumAllEffConInc()) );
+                else if(i==3)cell.setCellValue(nf.format(orgEffDto.getTotalSumAllEffConPay()));
+                else if(i==4)cell.setCellValue(nf.format(orgEffDto.getTotalSumAllCon()));
+                else if(i==5)cell.setCellValue(nf.format(orgEffDto.getTotalSumAllEffConInc()));
+                else if(i==6)cell.setCellValue(nf.format(orgEffDto.getTotalSumAllEffConPay()));
+                else if(i==7){
+                    StringBuffer cusCode = new StringBuffer();
+                    if(orgEffDto.getCusOrgEffDtoList()!=null && orgEffDto.getCusOrgEffDtoList().size()>0 ){
+                        orgEffDto.getCusOrgEffDtoList().forEach(  cusOrgEffDto -> {
+                            if(cusOrgEffDto.isIncomeConflict()  && cusOrgEffDto.getIncomeLastDay()!=null) cusCode.append("素材编号：") .append(  cusOrgEffDto.getIncomeLastDay().getCusCode()  ).append("日期 ").append(Const.simDF.format(cusOrgEffDto.getIncomeLastDay().getRecordDate())).append("；\r\n");
+                        } );
+                    }
+                    cell.setCellValue(cusCode.toString());
+                }
+                else if(i==8){
+                    StringBuffer cusCode = new StringBuffer();
+                    if(orgEffDto.getCusOrgEffDtoList()!=null && orgEffDto.getCusOrgEffDtoList().size()>0 ){
+                        orgEffDto.getCusOrgEffDtoList().forEach(  cusOrgEffDto -> {
+                            if(cusOrgEffDto.isPayConflict()  && cusOrgEffDto.getPayLastDay()!=null) cusCode.append("素材编号：") .append(  cusOrgEffDto.getPayLastDay().getCusCode()  ).append("日期：").append(Const.simDF.format(cusOrgEffDto.getPayLastDay().getRecordDate())).append("；\r\n");
+                        } );
+                    }
+                    cell.setCellValue(cusCode.toString());
+                }
+            }
+        }
+
+
         return workbook;
     }
 

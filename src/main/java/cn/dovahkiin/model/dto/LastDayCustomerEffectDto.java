@@ -1,6 +1,7 @@
 package cn.dovahkiin.model.dto;
 
 import java.util.Date;
+import java.util.Set;
 
 public class LastDayCustomerEffectDto {
     private String orgName;
@@ -9,6 +10,7 @@ public class LastDayCustomerEffectDto {
     private String cusCode;
     private Double sumCon; // 查询区间内消耗
     private Date recordDate;
+    private Set<String> conflictOrgNames;
 
 
     public String getOrgName() {
@@ -57,5 +59,13 @@ public class LastDayCustomerEffectDto {
 
     public void setRecordDate(Date recordDate) {
         this.recordDate = recordDate;
+    }
+
+    public Set<String> getConflictOrgNames() {
+        return conflictOrgNames;
+    }
+
+    public void setConflictOrgNames(Set<String> conflictOrgNames) {
+        this.conflictOrgNames = conflictOrgNames;
     }
 }

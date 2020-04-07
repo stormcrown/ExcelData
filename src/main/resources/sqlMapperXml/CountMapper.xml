@@ -549,6 +549,6 @@
 				 LEFT JOIN pay_level pal ON pal.id = cus.pay_level_id and pal.delete_flag = 0
 				 LEFT JOIN supplier sup on sup.id = cus.supplier_id and sup.delete_flag = 0
 				 LEFT JOIN system_config sc on sc.supplier_id = sup.id and sc.delete_flag = 0
+			where cus.delete_flag = 0
 	</select>
-
 </mapper>

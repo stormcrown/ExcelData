@@ -25,13 +25,8 @@ public class CusOrgEffDto {
     private boolean payConflict=Boolean.FALSE;
     /**有冲突就存，没冲突就直接修正*/
     private LastDayCustomerEffectDto payLastDay;
+
     private Set<String> payConflictOrgNames;
-
-
-
-
-
-
 
     public String getOrgName() {
         return orgName;

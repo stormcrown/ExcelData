@@ -44,6 +44,8 @@ public class CustomerEffectDto {
 
     private List<CusOrgEffDto> cusOrgEffDtos;
 
+
+
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
     public Date getIncomeConfigEndDate() { return incomeConfigEndDate; }
@@ -175,4 +177,6 @@ public class CustomerEffectDto {
     public void setLastDayPayOver(Double lastDayPayOver) {
         this.lastDayPayOver = lastDayPayOver;
     }
+
+
 }

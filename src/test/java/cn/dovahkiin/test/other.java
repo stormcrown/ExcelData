@@ -10,6 +10,7 @@ import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class other {
     @Test
@@ -21,5 +22,14 @@ public class other {
             System.out.println(Const.simDF.format(dateList.get(i)) );
         }
     }
+    @Test
+    public void teshj(){
+        AtomicReference<Double> incomeOver = new AtomicReference(100d );
+
+        incomeOver.updateAndGet(v-> v+ 18d);
+        System.out.println(incomeOver.toString());
+
+    }
+
 
 }
