@@ -64,7 +64,6 @@
                 {field:'orgName',  sortable: true, title:'部门名称', formatter: function (value, row, index) {
                     let html='';
                     let orgs = row.cusOrgEffDtos;
-                    let incomeConflict = false;
                     if(orgs!=null){
                         for(let x=0;x<orgs.length;x++){
                             let str  =orgs[x].orgName;
@@ -97,8 +96,10 @@
                     return payNPl;
                     }
                 },
-                {field:'incomeRadio', width:80, sortable: true, title:'收入比率（%）', align:'right',halign:'center',  formatter: function (value, row, index) {return moneyFormter(value);}  },
-                {field:'payRadio', width:80, sortable: true, title:'支出比率（%）', align:'right',halign:'center',  formatter: function (value, row, index) {return moneyFormter(value);}  },
+                {field:'incomeRadio', width:80, sortable: true, title:'收入比率（%）', align:'right',halign:'center',  formatter: function (value, row, index) {
+                        if(value==null  )return '';
+                        return moneyFormter(value);}  },
+                {field:'payRadio', width:80, sortable: true, title:'支出比率（%）', align:'right',halign:'center',  formatter: function (value, row, index) {if(value==null  )return ''; return moneyFormter(value);}  },
                 {field:'completeDate', width:100, sortable: true, title:'成片日期',align:'right',halign:'center',  formatter: function (value, row, index) {return getCommonDate(value);}   },
                 {field:'incomeConfigEndDate',width:120,  sortable: true, title:'收入有效期截至（配置)', align:'right',halign:'center',  formatter: function (value, row, index) {return getCommonDate(value);}  },
                 {field:'payConfigEndDate',width:120,  sortable: true, title:'支出有效期截至（配置)', align:'right',halign:'center',  formatter: function (value, row, index) {return getCommonDate(value);}  },
@@ -327,7 +328,7 @@
             nowrap:true,
             remoteSort:true,   //设置为本地排序
             loadMsg:"数据正在加载......",
-            idField:'code',
+            idField:'orgCode',
             height:'auto',
             width:'auto',
             pageSize:10,
@@ -341,7 +342,6 @@
                         if(value1===true)value1=1;else value1=0;
                         if(value2===true)value2=1;else value2=0;
                     }
-
                     if(sort==='orgCode' || sort==='orgName'  ) end = value1.localeCompare(value2,'zh-CN');
                     else end = value1 -value2;
                     if('asc'===order) return end; else return  0-end;
@@ -352,7 +352,6 @@
             frozenColumns: [[
                 {field:'orgCode', width:120,  sortable: true, title:'部门编号',  },
             ]],
-
             columns: [[
                 {field:'orgName', width:120,  sortable: true, title:'部门名称',  },
                 {field:'totalSumAllEffConInc', width:100, sortable: true, title:'全素材生命周期内，部门收入消耗 ',align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);} },
@@ -366,9 +365,7 @@
                     if(row.cusOrgEffDtoList!=null && row.cusOrgEffDtoList.length>0){
                         for(let x=0;x<row.cusOrgEffDtoList.length;x++){
                             let lastDay= row.cusOrgEffDtoList[x].incomeLastDay;
-                            if(lastDay!=null){
-                                conflicTips+=( lastDay.cusCode+":"+  getCommonDate(lastDay.recordDate) );
-                            }
+                            if(lastDay!=null) conflicTips+=( lastDay.cusCode+":"+  getCommonDate(lastDay.recordDate) +";<BR/>");
                         }
                     }
                     let  imgTip = '<img  class="conflicTips"  title="'+conflicTips+'" src="'+basePath+'/static/images/attention.png"  style="hight:25px;width: 25px;" >';
@@ -381,9 +378,7 @@
                         if(row.cusOrgEffDtoList!=null && row.cusOrgEffDtoList.length>0){
                             for(let x=0;x<row.cusOrgEffDtoList.length;x++){
                                 let lastDay= row.cusOrgEffDtoList[x].payLastDay;
-                                if(lastDay!=null){
-                                    conflicTips+=( lastDay.cusCode+":"+  getCommonDate(lastDay.recordDate) );
-                                }
+                                if(lastDay!=null) conflicTips+=( lastDay.cusCode+":"+  getCommonDate(lastDay.recordDate)+";<BR/>" );
                             }
                         }
                         let  imgTip = '<img  class="conflicTips"  title="'+conflicTips+'" src="'+basePath+'/static/images/attention.png"  style="hight:25px;width: 25px;" >';
@@ -391,6 +386,91 @@
                 }
                 },
             ]],
+
+            view: detailview,
+            detailFormatter:function(index,row){
+                let html = '<div  id="tabOrg'+(row.orgCode).trim()+'" class="easyui-tabs lazyTab" style="width:1550px;height:650px;">' +
+                    '    <div title="素材明细" data-options="closable:false" style="overflow:auto;padding:20px;display:none;">\n' +
+                    '<table id="orgCusDetail'+(row.orgCode).trim()+'" style="border:1px solid #ccc;"></table>' +
+                    '    </div>' +
+                    '</div>';
+                return html;
+            },
+            onExpandRow: function(index,row){
+                if(row.orgCode==null)return;
+                let orgCode =(row.orgCode).trim();
+                $('#tabOrg'+(row.orgCode).trim()).tabs({
+                    border:true,
+                    onSelect:function(title){
+                    }
+                });
+                let tableId= '#orgCusDetail'+row.orgCode;tableId = tableId.trim();
+                let table = $(tableId);
+                let dataList =row.cusOrgEffDtoList ;
+                table.datagrid({
+                        fit: true,
+                        striped: true,
+                        singleSelect: true,
+                        pagination: true,
+                        rownumbers: true,
+                        nowrap:true,
+                        remoteSort:true,
+                        loadMsg:"数据正在加载......",
+                        title:'每日消耗表',
+                        idField:'cusCode',
+                        height:'auto',
+                        width:'auto',
+                        pageSize:10,
+                        pageList: [10,20, 30, 50,  100,200,500,1000],
+                        columns: [[
+                            {field:'cusCode',  sortable: true, title:'素材编号',  },
+                            {field:'cusName', sortable: true, title:'素材名称',  },
+                            {field:'orgCode', width:120,  sortable: true, title:'部门编号',  },
+                            {field:'orgName', width:120,  sortable: true, title:'部门名称',  },
+                            {field:'sumAllCon', width:100, sortable: true, title:'查询区间内总消耗',align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);} },
+                            {field:'sumEffCon', width:100, sortable: true, title:'收入消耗',align:'right',halign:'center', formatter: function (value, row, index) {
+                                    value = moneyFormter(value);
+                                    return row.incomeConflict===true?'<span  class="conflicTips'+orgCode+'" title="数据已减去溢出"  style="color: orangered;"    >'+orangeFont(value)+'</span>':value;
+                                }
+                            },
+                            {field:'sumEffPayCon', width:100, sortable: true, title:'支出消耗',align:'right',halign:'center', formatter: function (value, row, index) {
+                                    value = moneyFormter(value);
+                                    return row.payConflict===true?'<span  class="conflicTips'+orgCode+'" title="数据已减去溢出"  style="color: orangered;"    >'+orangeFont(value)+'</span>'  :value;
+                                } },
+                        ]],
+                    onSortColumn: function (sort, order){
+                        dataList.sort((d1,d2)=>{
+                            let value1 = d1[sort];
+                            let value2 = d2[sort];
+                            let end = 0;
+                            if(sort==='orgCode' || sort==='orgName' || sort==='cusCode' || sort==='cusName' ) end = value1.localeCompare(value2,'zh-CN');
+                            else end = value1 -value2;
+                            if('asc'===order) return end; else return  0-end;
+                        });
+                        setPage( table ,dataList,1);
+                    },
+                    onLoadSuccess: function (data) {
+                        $('.conflicTips'+orgCode).tooltip({
+                            position: 'right',
+                            onShow: function(){
+                                $(this).tooltip('tip').css({
+                                    backgroundColor: '#ffffff',
+                                    borderColor: '#666'
+                                });
+                            }
+                        });
+                    }
+                });
+                table.datagrid("getPager").pagination({
+                    onSelectPage:function(pageNumber, pageSize){
+                        let gridOpts = table.datagrid('options');
+                        gridOpts.pageNumber = pageNumber;
+                        gridOpts.pageSize = pageSize;
+                        setPage( table ,dataList,pageNumber);
+                    }
+                });
+                setPage( table ,dataList,1);
+            },
             onLoadSuccess: function (data) {
                 $('.conflicTips').tooltip({
                     position: 'right',
@@ -412,14 +492,15 @@
                 setPage( $("#effCountAllOrgs") ,listDataOrg,pageNumber);
             }
         });
+
     });
+
     function checkConfig(){
         $.ajax({
             url:basePath+'/count/checkCustomConfigs',
             type:'get',
             dataType:'json',
             success:function (data) {
-                console.log(data);
                 let tipSel = $('#checkConfigIcon') ;
                 let tipTd = $('#checkConfigTd') ;
                 if(data==null || data.length===0){

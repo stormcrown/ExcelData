@@ -1,6 +1,7 @@
 package cn.dovahkiin.model.dto;
 
 import java.io.*;
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class DayEffectDto implements Serializable {
@@ -8,30 +9,30 @@ public class DayEffectDto implements Serializable {
 
     private String code;
     private Date recoredDate;
-    private Double consumptionEffect;
-    private Double payConsumptionEffect;
-    private Double income;
-    private Double pay=0d;
+    private BigDecimal consumptionEffect=new BigDecimal(0);
+    private BigDecimal payConsumptionEffect=new BigDecimal(0);
+    private BigDecimal income=new BigDecimal(0);
+    private BigDecimal pay=new BigDecimal(0);
     public DayEffectDto() {
     }
 
     public DayEffectDto(Date recoredDate) {
         this.recoredDate = recoredDate;
-        this.consumptionEffect=0d;
-        this.payConsumptionEffect=0d;
-        this.income=0d;
-        this.pay=0d;
+        this.consumptionEffect=new BigDecimal(0);
+        this.payConsumptionEffect=new BigDecimal(0);
+        this.income=new BigDecimal(0);
+        this.pay=new BigDecimal(0);
     }
 
-    public DayEffectDto(String code, Date recoredDate, Double income,Double pay) {
+    public DayEffectDto(String code, Date recoredDate, BigDecimal income,BigDecimal pay) {
         this.code = code;
         this.recoredDate = recoredDate;
         this.income = income;
         this.pay=pay;
-        if(this.income==null)this.income=0d;
-        if(this.pay==null)this.pay=0d;
-        this.consumptionEffect=0d;
-        this.payConsumptionEffect=0d;
+        if(this.income==null)this.income=new BigDecimal(0);
+        if(this.pay==null)this.pay=new BigDecimal(0);
+        this.consumptionEffect=new BigDecimal(0);
+        this.payConsumptionEffect=new BigDecimal(0);
     }
 
     public String getCode() {
@@ -50,35 +51,35 @@ public class DayEffectDto implements Serializable {
         this.recoredDate = recoredDate;
     }
 
-    public Double getConsumptionEffect() {
+    public BigDecimal getConsumptionEffect() {
         return consumptionEffect;
     }
 
-    public void setConsumptionEffect(Double consumptionEffect) {
+    public void setConsumptionEffect(BigDecimal consumptionEffect) {
         this.consumptionEffect = consumptionEffect;
     }
 
-    public Double getPayConsumptionEffect() {
+    public BigDecimal getPayConsumptionEffect() {
         return payConsumptionEffect;
     }
 
-    public void setPayConsumptionEffect(Double payConsumptionEffect) {
+    public void setPayConsumptionEffect(BigDecimal payConsumptionEffect) {
         this.payConsumptionEffect = payConsumptionEffect;
     }
 
-    public Double getIncome() {
+    public BigDecimal getIncome() {
         return income;
     }
 
-    public void setIncome(Double income) {
+    public void setIncome(BigDecimal income) {
         this.income = income;
     }
 
-    public Double getPay() {
+    public BigDecimal getPay() {
         return pay;
     }
 
-    public void setPay(Double pay) {
+    public void setPay(BigDecimal pay) {
         this.pay = pay;
     }
 }

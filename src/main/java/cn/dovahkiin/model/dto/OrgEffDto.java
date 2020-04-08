@@ -1,16 +1,17 @@
 package cn.dovahkiin.model.dto;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 public class OrgEffDto {
     private String orgCode;
     private String orgName;
-    private Double totalSumAllEffConInc; // 素材生命周期内，部门收入消耗 ，
-    private Double totalSumAllEffConPay; // 素材生命周期内，部门支出消耗 ，
-    private Double totalSumAllCon; // 查询区间内消耗
-    private Double totalSumEffCon ; // 总 查询区间内 内收入有效消耗
-    private Double totalSumEffPayCon ; // 总 查询区间内 内支出有效消耗
+    private BigDecimal totalSumAllEffConInc; // 素材生命周期内，部门收入消耗 ，
+    private BigDecimal totalSumAllEffConPay; // 素材生命周期内，部门支出消耗 ，
+    private BigDecimal totalSumAllCon; // 查询区间内消耗
+    private BigDecimal totalSumEffCon ; // 总 查询区间内 内收入有效消耗
+    private BigDecimal totalSumEffPayCon ; // 总 查询区间内 内支出有效消耗
     private boolean incomeConflict=Boolean.FALSE;
     private boolean payConflict=Boolean.FALSE;
     private List<CusOrgEffDto> cusOrgEffDtoList;
@@ -18,19 +19,19 @@ public class OrgEffDto {
     public void init(String orgCode,String orgName){
         this.orgCode =orgCode;
         this.orgName=orgName;
-         totalSumAllEffConInc=0d; // 素材生命周期内，部门收入消耗 ，
-        totalSumAllEffConPay=0d; // 素材生命周期内，部门支出消耗 ，
-        totalSumAllCon=0d; // 查询区间内消耗
-        totalSumEffCon =0d; // 总 查询区间内 内收入有效消耗
-        totalSumEffPayCon =0d; // 总 查询区间内 内支出有效消耗
+         totalSumAllEffConInc=new BigDecimal(0); // 素材生命周期内，部门收入消耗 ，
+        totalSumAllEffConPay=new BigDecimal(0); // 素材生命周期内，部门支出消耗 ，
+        totalSumAllCon=new BigDecimal(0); // 查询区间内消耗
+        totalSumEffCon =new BigDecimal(0);// 总 查询区间内 内收入有效消耗
+        totalSumEffPayCon =new BigDecimal(0); // 总 查询区间内 内支出有效消耗
     }
     public void updateData(CusOrgEffDto cusOrgEffDto){
         if(cusOrgEffDto==null)return;
-        totalSumAllEffConInc+=cusOrgEffDto.getSumAllEffConInc(); // 素材生命周期内，部门收入消耗 ，
-        totalSumAllEffConPay+=cusOrgEffDto.getSumAllEffConPay(); // 素材生命周期内，部门支出消耗 ，
-        totalSumAllCon+=cusOrgEffDto.getSumAllCon(); // 查询区间内消耗
-        totalSumEffCon +=cusOrgEffDto.getSumEffCon(); // 总 查询区间内 内收入有效消耗
-        totalSumEffPayCon +=cusOrgEffDto.getSumEffPayCon(); // 总 查询区间内 内支出有效消耗
+        totalSumAllEffConInc=totalSumAllEffConInc.add(cusOrgEffDto.getSumAllEffConInc())  ; // 素材生命周期内，部门收入消耗 ，
+        totalSumAllEffConPay=totalSumAllEffConPay.add(cusOrgEffDto.getSumAllEffConPay()); // 素材生命周期内，部门支出消耗 ，
+        totalSumAllCon=totalSumAllCon.add(cusOrgEffDto.getSumAllCon()); // 查询区间内消耗
+        totalSumEffCon=totalSumEffCon.add(cusOrgEffDto.getSumEffCon()); // 总 查询区间内 内收入有效消耗
+        totalSumEffPayCon=totalSumEffPayCon.add(cusOrgEffDto.getSumEffPayCon()); // 总 查询区间内 内支出有效消耗
         if(cusOrgEffDtoList==null)cusOrgEffDtoList = new ArrayList<>();
         cusOrgEffDtoList.add(cusOrgEffDto);
         if(cusOrgEffDto.isIncomeConflict())incomeConflict=Boolean.TRUE;
@@ -55,43 +56,43 @@ public class OrgEffDto {
         this.orgName = orgName;
     }
 
-    public Double getTotalSumAllEffConInc() {
+    public BigDecimal getTotalSumAllEffConInc() {
         return totalSumAllEffConInc;
     }
 
-    public void setTotalSumAllEffConInc(Double totalSumAllEffConInc) {
+    public void setTotalSumAllEffConInc(BigDecimal totalSumAllEffConInc) {
         this.totalSumAllEffConInc = totalSumAllEffConInc;
     }
 
-    public Double getTotalSumAllEffConPay() {
+    public BigDecimal getTotalSumAllEffConPay() {
         return totalSumAllEffConPay;
     }
 
-    public void setTotalSumAllEffConPay(Double totalSumAllEffConPay) {
+    public void setTotalSumAllEffConPay(BigDecimal totalSumAllEffConPay) {
         this.totalSumAllEffConPay = totalSumAllEffConPay;
     }
 
-    public Double getTotalSumAllCon() {
+    public BigDecimal getTotalSumAllCon() {
         return totalSumAllCon;
     }
 
-    public void setTotalSumAllCon(Double totalSumAllCon) {
+    public void setTotalSumAllCon(BigDecimal totalSumAllCon) {
         this.totalSumAllCon = totalSumAllCon;
     }
 
-    public Double getTotalSumEffCon() {
+    public BigDecimal getTotalSumEffCon() {
         return totalSumEffCon;
     }
 
-    public void setTotalSumEffCon(Double totalSumEffCon) {
+    public void setTotalSumEffCon(BigDecimal totalSumEffCon) {
         this.totalSumEffCon = totalSumEffCon;
     }
 
-    public Double getTotalSumEffPayCon() {
+    public BigDecimal getTotalSumEffPayCon() {
         return totalSumEffPayCon;
     }
 
-    public void setTotalSumEffPayCon(Double totalSumEffPayCon) {
+    public void setTotalSumEffPayCon(BigDecimal totalSumEffPayCon) {
         this.totalSumEffPayCon = totalSumEffPayCon;
     }
 

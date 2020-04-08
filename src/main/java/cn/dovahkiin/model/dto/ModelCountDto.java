@@ -1,10 +1,12 @@
 package cn.dovahkiin.model.dto;
 
+import java.math.BigDecimal;
+
 public class ModelCountDto {
     private Long id;
     private String code;
     private String name;
-    private Double consumption;
+    private BigDecimal consumption;
     private int total;
 
 
@@ -32,11 +34,11 @@ public class ModelCountDto {
         this.name = name;
     }
 
-    public Double getConsumption() {
+    public BigDecimal getConsumption() {
         return consumption;
     }
 
-    public void setConsumption(Double consumption) {
+    public void setConsumption(BigDecimal consumption) {
         this.consumption = consumption;
     }
 

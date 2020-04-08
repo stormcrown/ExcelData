@@ -1,17 +1,52 @@
 package cn.dovahkiin.model.dto;
 
+import java.math.BigDecimal;
+
 public class CusRepeatConfig {
     private String cusCode;
-    private Double maxEffectCon;
-    private Double payMaxEffectCon;
-    private Double incomeRatio;
-    private Double payRatio;
+    private BigDecimal maxEffectCon;
+    private BigDecimal payMaxEffectCon;
+    private BigDecimal incomeRatio;
+    private BigDecimal payRatio;
     private Long payLevelId;
     private String payName;
     private Long priceLevelId;
     private String priceName;
     private Long supplierId;
     private String supplierName;
+
+
+    public BigDecimal getMaxEffectCon() {
+        return maxEffectCon;
+    }
+
+    public void setMaxEffectCon(BigDecimal maxEffectCon) {
+        this.maxEffectCon = maxEffectCon;
+    }
+
+    public BigDecimal getPayMaxEffectCon() {
+        return payMaxEffectCon;
+    }
+
+    public void setPayMaxEffectCon(BigDecimal payMaxEffectCon) {
+        this.payMaxEffectCon = payMaxEffectCon;
+    }
+
+    public BigDecimal getIncomeRatio() {
+        return incomeRatio;
+    }
+
+    public void setIncomeRatio(BigDecimal incomeRatio) {
+        this.incomeRatio = incomeRatio;
+    }
+
+    public BigDecimal getPayRatio() {
+        return payRatio;
+    }
+
+    public void setPayRatio(BigDecimal payRatio) {
+        this.payRatio = payRatio;
+    }
 
     public String getCusCode() {
         return cusCode;
@@ -20,39 +55,6 @@ public class CusRepeatConfig {
     public void setCusCode(String cusCode) {
         this.cusCode = cusCode;
     }
-
-    public Double getMaxEffectCon() {
-        return maxEffectCon;
-    }
-
-    public void setMaxEffectCon(Double maxEffectCon) {
-        this.maxEffectCon = maxEffectCon;
-    }
-
-    public Double getPayMaxEffectCon() {
-        return payMaxEffectCon;
-    }
-
-    public void setPayMaxEffectCon(Double payMaxEffectCon) {
-        this.payMaxEffectCon = payMaxEffectCon;
-    }
-
-    public Double getIncomeRatio() {
-        return incomeRatio;
-    }
-
-    public void setIncomeRatio(Double incomeRatio) {
-        this.incomeRatio = incomeRatio;
-    }
-
-    public Double getPayRatio() {
-        return payRatio;
-    }
-
-    public void setPayRatio(Double payRatio) {
-        this.payRatio = payRatio;
-    }
-
     public Long getPayLevelId() {
         return payLevelId;
     }

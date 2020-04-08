@@ -115,3 +115,25 @@ alter table pay_level
     add ratio double comment '价格比率，百分比',
     add  max_effect_con double comment '最大有效消耗',
     add  max_effect_range int comment '生命周期,天';
+
+
+ALTER TABLE `video_cost`
+    MODIFY COLUMN `consumption` decimal(29, 8) NULL COMMENT '当日消耗' AFTER `optimizer_id`;
+ALTER TABLE `system_config`
+    MODIFY COLUMN `default_income_ratio` decimal(29, 8) NULL DEFAULT 100 COMMENT '收入比率，百分比。' AFTER `supplier_id`,
+    MODIFY COLUMN `default_max_effect_con` decimal(29, 8) NULL DEFAULT 100 COMMENT '默认最大有效消耗' AFTER `default_income_ratio`,
+    MODIFY COLUMN `default_pay_ratio` decimal(29, 8) NULL DEFAULT 10 COMMENT '支出比率，百分比' AFTER `update_by`,
+    MODIFY COLUMN `default_pay_max_effect_con` decimal(29, 8) NULL DEFAULT 100 COMMENT '默认支出最大有效消耗' AFTER `delete_flag`;
+ALTER TABLE `pay_level`
+    MODIFY COLUMN `base_pay` decimal(29, 8) NULL COMMENT '固定支出' AFTER `code`,
+    MODIFY COLUMN `ratio` decimal(29, 8) NULL DEFAULT 100 COMMENT '价格比率，百分比' AFTER `delete_flag`,
+    MODIFY COLUMN `max_effect_con` decimal(29, 8) NULL DEFAULT 100 COMMENT '最大有效消耗' AFTER `ratio`;
+ALTER TABLE `price_level`
+    MODIFY COLUMN `base_price` decimal(29, 8) NULL COMMENT '固定价格' AFTER `code`,
+    MODIFY COLUMN `ratio` decimal(29, 8) NULL DEFAULT 100 COMMENT '价格比率，百分比' AFTER `delete_flag`,
+    MODIFY COLUMN `max_effect_con` decimal(29, 8) NULL DEFAULT 100 COMMENT '最大有效消耗' AFTER `ratio`;
+ALTER TABLE `customer`
+    MODIFY COLUMN `max_effect_con` decimal(29, 8) NULL DEFAULT NULL COMMENT '素材最大有效消耗，-1 表示使用默认系统配置值' AFTER `delete_flag`,
+    MODIFY COLUMN `income_ratio` decimal(29, 8) NULL DEFAULT NULL COMMENT '收入比率，表示使用默认系统配置值' AFTER `max_effect_con`,
+    MODIFY COLUMN `pay_ratio` decimal(29, 8) NULL DEFAULT NULL COMMENT '支出比率，表示使用默认系统配置值' AFTER `price_level_id`,
+    MODIFY COLUMN `pay_max_effect_con` decimal(29, 8) NULL DEFAULT NULL COMMENT '支出最大有效消耗' AFTER `pay_level_id`;

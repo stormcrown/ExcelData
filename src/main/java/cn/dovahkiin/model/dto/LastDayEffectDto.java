@@ -1,11 +1,12 @@
 package cn.dovahkiin.model.dto;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class LastDayEffectDto {
     private String  code;
     private Date recoredDate;
-    private Double sumCon;
+    private BigDecimal sumCon;
 
     public String getCode() {
         return code;
@@ -23,11 +24,11 @@ public class LastDayEffectDto {
         this.recoredDate = recoredDate;
     }
 
-    public Double getSumCon() {
+    public BigDecimal getSumCon() {
         return sumCon;
     }
 
-    public void setSumCon(Double sumCon) {
+    public void setSumCon(BigDecimal sumCon) {
         this.sumCon = sumCon;
     }
 }

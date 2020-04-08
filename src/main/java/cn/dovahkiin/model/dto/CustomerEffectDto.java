@@ -1,5 +1,6 @@
 package cn.dovahkiin.model.dto;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -9,31 +10,31 @@ public class CustomerEffectDto {
     private String code;
     private String supplierName;
     private String supplierCode;
-    private Double basePrice;
-    private Double basePay;
+    private BigDecimal basePrice;
+    private BigDecimal basePay;
     private Date completeDate;
     private Date incomeConfigEndDate;
     private Date payConfigEndDate;
     private Date incomeEndDate;
     private Date payEndDate;
-    private Double incMaxEffectOn;
-    private Double payMaxEffectOn;
-    private Double incomeRadio;
-    private Double payRadio;
+    private BigDecimal incMaxEffectOn;
+    private BigDecimal payMaxEffectOn;
+    private BigDecimal incomeRadio;
+    private BigDecimal payRadio;
     private String priceLevelName;
     private String payLevelName;
     /**生命周期内的消耗，如果超了对应的消耗，那么肯定是提前结束了，需要知道哪一天超了   */
-    private Double sumAllEffConInc;  // 收入总生命周期内消耗 ，
-    private Double sumAllEffConPay;  // 支出总生命周期内消耗 ，
-    private Double sumAllCon; // 查询区间内消耗
+    private BigDecimal sumAllEffConInc;  // 收入总生命周期内消耗 ，
+    private BigDecimal sumAllEffConPay;  // 支出总生命周期内消耗 ，
+    private BigDecimal sumAllCon; // 查询区间内消耗
     private boolean incomeOverflow=Boolean.FALSE;
-    private Double sumEffCon ; // 总 查询区间内 内收入有效消耗
-    private Double lastDayIncomeOver =0d ; // 最后一天收入消耗溢出
+    private BigDecimal sumEffCon ; // 总 查询区间内 内收入有效消耗
+    private BigDecimal lastDayIncomeOver =new BigDecimal(0) ; // 最后一天收入消耗溢出
     private boolean payOverflow=Boolean.FALSE;
-    private Double sumEffPayCon ; // 总 查询区间内 内支出有效消耗
-    private Double lastDayPayOver =0d ; // 最后一天支出消耗溢出
-    private Double sumIncome;
-    private Double sumPay;
+    private BigDecimal sumEffPayCon ; // 总 查询区间内 内支出有效消耗
+    private BigDecimal lastDayPayOver =new BigDecimal(0) ; // 最后一天支出消耗溢出
+    private BigDecimal sumIncome;
+    private BigDecimal sumPay;
 
     private List<DayEffectDto> data; // 素材的每日消耗
 
@@ -56,32 +57,32 @@ public class CustomerEffectDto {
     public void setCompleteDate(Date completeDate) { this.completeDate = completeDate; }
     public Date getIncomeEndDate() { return incomeEndDate; }
     public void setIncomeEndDate(Date incomeEndDate) { this.incomeEndDate = incomeEndDate; }
-    public Double getIncMaxEffectOn() { return incMaxEffectOn; }
-    public void setIncMaxEffectOn(Double incMaxEffectOn) { this.incMaxEffectOn = incMaxEffectOn; }
-    public Double getIncomeRadio() { return incomeRadio; }
-    public void setIncomeRadio(Double incomeRadio) { this.incomeRadio = incomeRadio; }
-    public Double getSumAllEffConInc() { return sumAllEffConInc; }
-    public void setSumAllEffConInc(Double sumAllEffConInc) { this.sumAllEffConInc = sumAllEffConInc; }
-    public Double getSumAllEffConPay() { return sumAllEffConPay; }
-    public void setSumAllEffConPay(Double sumAllEffConPay) { this.sumAllEffConPay = sumAllEffConPay; }
-    public Double getBasePrice() { return basePrice; }
-    public void setBasePrice(Double basePrice) { this.basePrice = basePrice; }
+    public BigDecimal getIncMaxEffectOn() { return incMaxEffectOn; }
+    public void setIncMaxEffectOn(BigDecimal incMaxEffectOn) { this.incMaxEffectOn = incMaxEffectOn; }
+    public BigDecimal getIncomeRadio() { return incomeRadio; }
+    public void setIncomeRadio(BigDecimal incomeRadio) { this.incomeRadio = incomeRadio; }
+    public BigDecimal getSumAllEffConInc() { return sumAllEffConInc; }
+    public void setSumAllEffConInc(BigDecimal sumAllEffConInc) { this.sumAllEffConInc = sumAllEffConInc; }
+    public BigDecimal getSumAllEffConPay() { return sumAllEffConPay; }
+    public void setSumAllEffConPay(BigDecimal sumAllEffConPay) { this.sumAllEffConPay = sumAllEffConPay; }
+    public BigDecimal getBasePrice() { return basePrice; }
+    public void setBasePrice(BigDecimal basePrice) { this.basePrice = basePrice; }
     public List<DayEffectDto> getData() { return data; }
     public void setData(List<DayEffectDto> data) { this.data = data; }
-    public Double getSumIncome() { return sumIncome; }
-    public void setSumIncome(Double sumIncome) { this.sumIncome = sumIncome; }
-    public Double getPayRadio() { return payRadio; }
-    public void setPayRadio(Double payRadio) { this.payRadio = payRadio; }
+    public BigDecimal getSumIncome() { return sumIncome; }
+    public void setSumIncome(BigDecimal sumIncome) { this.sumIncome = sumIncome; }
+    public BigDecimal getPayRadio() { return payRadio; }
+    public void setPayRadio(BigDecimal payRadio) { this.payRadio = payRadio; }
     public String getPriceLevelName() { return priceLevelName; }
     public void setPriceLevelName(String priceLevelName) { this.priceLevelName = priceLevelName; }
-    public Double getSumEffCon() { return sumEffCon; }
-    public void setSumEffCon(Double sumEffCon) { this.sumEffCon = sumEffCon; }
-    public Double getSumEffPayCon() { return sumEffPayCon; }
-    public void setSumEffPayCon(Double sumEffPayCon) { this.sumEffPayCon = sumEffPayCon; }
-    public Double getSumPay() { return sumPay; }
-    public void setSumPay(Double sumPay) { this.sumPay = sumPay; }
-    public Double getBasePay() { return basePay; }
-    public void setBasePay(Double basePay) { this.basePay = basePay; }
+    public BigDecimal getSumEffCon() { return sumEffCon; }
+    public void setSumEffCon(BigDecimal sumEffCon) { this.sumEffCon = sumEffCon; }
+    public BigDecimal getSumEffPayCon() { return sumEffPayCon; }
+    public void setSumEffPayCon(BigDecimal sumEffPayCon) { this.sumEffPayCon = sumEffPayCon; }
+    public BigDecimal getSumPay() { return sumPay; }
+    public void setSumPay(BigDecimal sumPay) { this.sumPay = sumPay; }
+    public BigDecimal getBasePay() { return basePay; }
+    public void setBasePay(BigDecimal basePay) { this.basePay = basePay; }
     public String getPayLevelName() {
         return payLevelName;
     }
@@ -98,19 +99,19 @@ public class CustomerEffectDto {
         this.code = code;
     }
 
-    public Double getPayMaxEffectOn() {
+    public BigDecimal getPayMaxEffectOn() {
         return payMaxEffectOn;
     }
 
-    public void setPayMaxEffectOn(Double payMaxEffectOn) {
+    public void setPayMaxEffectOn(BigDecimal payMaxEffectOn) {
         this.payMaxEffectOn = payMaxEffectOn;
     }
 
-    public Double getSumAllCon() {
+    public BigDecimal getSumAllCon() {
         return sumAllCon;
     }
 
-    public void setSumAllCon(Double sumAllCon) {
+    public void setSumAllCon(BigDecimal sumAllCon) {
         this.sumAllCon = sumAllCon;
     }
 
@@ -162,19 +163,19 @@ public class CustomerEffectDto {
         this.payOverflow = payOverflow;
     }
 
-    public Double getLastDayIncomeOver() {
+    public BigDecimal getLastDayIncomeOver() {
         return lastDayIncomeOver;
     }
 
-    public void setLastDayIncomeOver(Double lastDayIncomeOver) {
+    public void setLastDayIncomeOver(BigDecimal lastDayIncomeOver) {
         this.lastDayIncomeOver = lastDayIncomeOver;
     }
 
-    public Double getLastDayPayOver() {
+    public BigDecimal getLastDayPayOver() {
         return lastDayPayOver;
     }
 
-    public void setLastDayPayOver(Double lastDayPayOver) {
+    public void setLastDayPayOver(BigDecimal lastDayPayOver) {
         this.lastDayPayOver = lastDayPayOver;
     }
 

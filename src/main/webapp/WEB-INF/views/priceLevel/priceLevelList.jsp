@@ -25,8 +25,8 @@
         frozenColumns : [ [
         {title : '编号', field : 'id', sortable : true, checkbox:true},
         {title : '名称', field : 'name', sortable : true,},
-        {title : '固定价格(￥)', field : 'basePrice', sortable : true, align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);}},
-        {title : '支出比率(%)', field : 'ratio', sortable : true, align:'right',halign:'center', formatter: function (value, row, index) {
+        {title : '固定收入(￥)', field : 'basePrice', sortable : true, align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);}},
+        {title : '收入比率(%)', field : 'ratio', sortable : true, align:'right',halign:'center', formatter: function (value, row, index) {
                 if(value==null)return '';
             return moneyFormter(value);}},
         {title : '有效消耗封顶', field : 'maxEffectCon', sortable : true, align:'right',halign:'center', formatter: function (value, row, index) {

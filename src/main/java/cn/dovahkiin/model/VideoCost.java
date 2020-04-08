@@ -1,6 +1,7 @@
 package cn.dovahkiin.model;
 
 //import com.baomidou.mybatisplus.enums.IdType;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 //import com.baomidou.mybatisplus.annotations.TableId;
@@ -92,44 +93,16 @@ public class VideoCost  extends Model<VideoCost> {
      * 优化师
      */
 	private Optimizer optimizer;
-    /**
-     * 视频类型
-     */
-//	private VideoType videoType;
-    /**
-     * 成片日期
-     */
-//	@TableField("complete_date")
-//	private Date completeDate;
-//	private String completeDateStr;
-    /**
-     * 创意
-     */
-//	private Originality originality;
-    /**
-     * 摄像
-     */
-//	private Photographer photographer;
-    /**
-     * 剪辑
-     */
-//	private Editor editor;
-    /**
-     * 演员1
-     */
-//    private Performer performer1;
-//	private Performer performer2;
-//	private Performer performer3;
 
     /**
      * 当日消耗
      */
-	private Double consumption;
+	private BigDecimal consumption;
     /**
      * 累计消耗
      */
 //	@TableField("cumulative_consumption")
-	private Double cumulativeConsumption;
+	private BigDecimal cumulativeConsumption;
     /**
      * 消耗累积排名
      */
@@ -137,13 +110,10 @@ public class VideoCost  extends Model<VideoCost> {
 	private Integer cumulativeConsumptionRanking;
 
 	@TableField(exist = false)
-	private Double cumulativeConsumptionByPro;
+	private BigDecimal cumulativeConsumptionByPro;
 	@TableField(exist = false)
 	private Integer cumulativeConsumptionRankingByProglam;
 
-	public Double getCumulativeConsumptionByPro() {
-		return cumulativeConsumptionByPro;
-	}
 
 	public Integer getCumulativeConsumptionRankingByProglam() {
 		return cumulativeConsumptionRankingByProglam;
@@ -165,9 +135,6 @@ public class VideoCost  extends Model<VideoCost> {
 		this.createdBy = createdBy;
 	}
 
-	public void setCumulativeConsumptionByPro(Double cumulativeConsumptionByPro) {
-		this.cumulativeConsumptionByPro = cumulativeConsumptionByPro;
-	}
 
 	public void setCumulativeConsumptionRankingByProglam(Integer cumulativeConsumptionRankingByProglam) {
 		this.cumulativeConsumptionRankingByProglam = cumulativeConsumptionRankingByProglam;
@@ -273,100 +240,11 @@ public class VideoCost  extends Model<VideoCost> {
 		this.optimizer = optimizer;
 	}
 
-//	public VideoType getVideoType() {
-//		return videoType;
-//	}
-//
-//	public void setVideoType(VideoType videoType) {
-//		this.videoType = videoType;
-//	}
-//
-//	public Date getCompleteDate() {
-//		return completeDate;
-//	}
-//
-//	public void setCompleteDate(Date completeDate) {
-//		this.completeDate = completeDate;
-//	}
-//
-//	public Originality getOriginality() {
-//		return originality;
-//	}
-//
-//	public void setOriginality(Originality originality) {
-//		this.originality = originality;
-//	}
-//
-//	public Photographer getPhotographer() {
-//		return photographer;
-//	}
-//
-//	public void setPhotographer(Photographer photographer) {
-//		this.photographer = photographer;
-//	}
-//
-//	public Editor getEditor() {
-//		return editor;
-//	}
-//
-//	public void setEditor(Editor editor) {
-//		this.editor = editor;
-//	}
-//
-//	public Performer getPerformer1() {
-//		return performer1;
-//	}
-//
-//	public void setPerformer1(Performer performer1) {
-//		this.performer1 = performer1;
-//	}
-//
-//	public Performer getPerformer2() {
-//		return performer2;
-//	}
-//
-//	public void setPerformer2(Performer performer2) {
-//		this.performer2 = performer2;
-//	}
-//
-//	public Performer getPerformer3() {
-//		return performer3;
-//	}
-//
-//	public void setPerformer3(Performer performer3) {
-//		this.performer3 = performer3;
-//	}
 
-	public Double getConsumption() {
-		return consumption;
-	}
-
-	public void setConsumption(Double consumption) {
-		this.consumption = consumption;
-	}
-
-	public Double getCumulativeConsumption() {
-		return cumulativeConsumption;
-	}
-
-	public void setCumulativeConsumption(Double cumulativeConsumption) {
-		this.cumulativeConsumption = cumulativeConsumption;
-	}
 
 	public Integer getCumulativeConsumptionRanking() {
 		return cumulativeConsumptionRanking;
 	}
-
-//	public String getCompleteDateStr() {
-//		if(completeDate!=null){
-//			return StringUtils.dateToStr2(completeDate);
-//		}
-//		return completeDateStr;
-//	}
-
-//	public void setCompleteDateStr(String completeDateStr) {
-//		this.completeDateStr = completeDateStr;
-//	}
 
 	public String getRecoredDateStr() {
 		if(recoredDate!=null){
@@ -382,6 +260,31 @@ public class VideoCost  extends Model<VideoCost> {
 	public void setCumulativeConsumptionRanking(Integer cumulativeConsumptionRanking) {
 		this.cumulativeConsumptionRanking = cumulativeConsumptionRanking;
 	}
+
+	public BigDecimal getConsumption() {
+		return consumption;
+	}
+
+	public void setConsumption(BigDecimal consumption) {
+		this.consumption = consumption;
+	}
+
+	public BigDecimal getCumulativeConsumption() {
+		return cumulativeConsumption;
+	}
+
+	public void setCumulativeConsumption(BigDecimal cumulativeConsumption) {
+		this.cumulativeConsumption = cumulativeConsumption;
+	}
+
+	public BigDecimal getCumulativeConsumptionByPro() {
+		return cumulativeConsumptionByPro;
+	}
+
+	public void setCumulativeConsumptionByPro(BigDecimal cumulativeConsumptionByPro) {
+		this.cumulativeConsumptionByPro = cumulativeConsumptionByPro;
+	}
+
 	@Override
 	public String toString() {
 		return JsonUtils.toJson(this);

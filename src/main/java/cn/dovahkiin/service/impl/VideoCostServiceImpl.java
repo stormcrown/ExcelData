@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.util.*;
 
 import static org.apache.poi.ss.usermodel.FillPatternType.SOLID_FOREGROUND;
@@ -300,7 +301,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
                 }
                 else if(vCostEnum.getTypee()==Double.class && Const.consumption.equals(vCostEnum.getProName())){
                     try {
-                        if(StringUtils.isNotBlank(column.toString())) videoCost.setConsumption(Double.parseDouble(column.toString()));
+                        if(StringUtils.isNotBlank(column.toString())) videoCost.setConsumption(BigDecimal.valueOf(Double.parseDouble(column)) );
                     } catch (NumberFormatException e) {
                         e.printStackTrace();
                         throw new RuntimeException("第"+(i+1)+"行无法识别消耗量");
@@ -573,8 +574,13 @@ public class VideoCostServiceImpl implements IVideoCostService {
                 if (videoCost.getCustomer() != null && videoCost.getCustomer().getVideoVersion()!= null) cell_i_vve.setCellValue(videoCost.getCustomer().getVideoVersion().getName());
                 if (videoCost.getCustomer() != null && videoCost.getCustomer().getSupplier() != null) cell_i_sup.setCellValue(videoCost.getCustomer().getSupplier().getName());
 //                if (videoCost.getCustomer() != null && videoCost.getCustomer().getPerformer3() != null) cell_i_14.setCellValue(videoCost.getCustomer().getPerformer3().getName());
-                if (videoCost.getConsumption() != null) cell_i_14.setCellValue(videoCost.getConsumption());
-                if (videoCost.getCumulativeConsumptionByPro() != null) cell_i_15.setCellValue(videoCost.getCumulativeConsumptionByPro());
+                if (videoCost.getConsumption() != null){
+
+                    cell_i_14.setCellValue(videoCost.getConsumption()==null?"":videoCost.getConsumption().toString());
+                }
+                if (videoCost.getCumulativeConsumptionByPro() != null){
+                    cell_i_15.setCellValue(videoCost.getCumulativeConsumptionByPro()==null?"":videoCost.getCumulativeConsumptionByPro().toString());
+                }
 //                if (videoCost.getCumulativeConsumptionRankingByProglam() != null) cell_i_17.setCellValue(videoCost.getCumulativeConsumptionRankingByProglam());
                 if (videoCost.getRecoredDate() != null) cell_i_16.setCellValue(videoCost.getRecoredDate());
 

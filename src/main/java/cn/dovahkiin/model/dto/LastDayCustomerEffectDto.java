@@ -1,5 +1,6 @@
 package cn.dovahkiin.model.dto;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Set;
 
@@ -8,7 +9,7 @@ public class LastDayCustomerEffectDto {
     private String orgCode;
     private String cusName;
     private String cusCode;
-    private Double sumCon; // 查询区间内消耗
+    private BigDecimal sumCon; // 查询区间内消耗
     private Date recordDate;
     private Set<String> conflictOrgNames;
 
@@ -45,11 +46,11 @@ public class LastDayCustomerEffectDto {
         this.cusCode = cusCode;
     }
 
-    public Double getSumCon() {
+    public BigDecimal getSumCon() {
         return sumCon;
     }
 
-    public void setSumCon(Double sumCon) {
+    public void setSumCon(BigDecimal sumCon) {
         this.sumCon = sumCon;
     }
 

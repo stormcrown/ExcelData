@@ -29,7 +29,7 @@
             {title : '名称', field : 'name', sortable : true,},
             {title : '编码', field : 'code', sortable : true,},
             {title : '固定支出(￥)', field : 'basePay', sortable : true,align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);}},
-            {title : '收入比率(%)', field : 'ratio', sortable : true,align:'right',halign:'center', formatter: function (value, row, index) {
+            {title : '支出比率(%)', field : 'ratio', sortable : true,align:'right',halign:'center', formatter: function (value, row, index) {
                  if(value==null)return '';
                 return moneyFormter(value);
             }},

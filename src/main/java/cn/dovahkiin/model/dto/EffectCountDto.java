@@ -1,5 +1,6 @@
 package cn.dovahkiin.model.dto;
 
+import java.math.BigDecimal;
 import java.util.List;
 /**通过整理数据取得所有的数据并返回
  * */
@@ -10,20 +11,20 @@ public class EffectCountDto {
     private List<DayEffectDto> totalDailSumCon;
     private List<OrgEffDto> orgEffDtos;
 
-    private Double totalSumAllEffConInc; // 生命周期内总消耗
-    private Double totalSumAllEffConPay; // 生命周期内总消耗
-    private Double tatalSumAllCon; // 查询期限内总消耗
+    private BigDecimal totalSumAllEffConInc; // 生命周期内总消耗
+    private BigDecimal totalSumAllEffConPay; // 生命周期内总消耗
+    private BigDecimal tatalSumAllCon; // 查询期限内总消耗
     /**收入总有效消耗求和*/
-    private Double totalSumCon;
-    private Double totalSumPayCon;
+    private BigDecimal totalSumCon;
+    private BigDecimal totalSumPayCon;
     /**总素材数量*/
     private int totalCus;
     /**总收入求和*/
-    private Double totalSumIncome;
-    private Double totalSumPay;
+    private BigDecimal totalSumIncome;
+    private BigDecimal totalSumPay;
     public EffectCountDto() {
     }
-    public EffectCountDto(List<CustomerEffectDto> allPrimaryData, List<DayEffectDto> totalDailSumCon, List<OrgEffDto> orgEffDtos, Double totalSumAllEffConInc,Double totalSumAllEffConPay, Double tatalSumAllCon, Double totalSumCon, Double totalSumPayCon, int totalCus, Double totalSumIncome, Double totalSumPay) {
+    public EffectCountDto(List<CustomerEffectDto> allPrimaryData, List<DayEffectDto> totalDailSumCon, List<OrgEffDto> orgEffDtos, BigDecimal totalSumAllEffConInc,BigDecimal totalSumAllEffConPay, BigDecimal tatalSumAllCon, BigDecimal totalSumCon, BigDecimal totalSumPayCon, int totalCus, BigDecimal totalSumIncome, BigDecimal totalSumPay) {
         this.allPrimaryData = allPrimaryData;
         this.totalDailSumCon = totalDailSumCon;
         this.orgEffDtos = orgEffDtos;
@@ -53,11 +54,11 @@ public class EffectCountDto {
         this.totalDailSumCon = totalDailSumCon;
     }
 
-    public Double getTotalSumCon() {
+    public BigDecimal getTotalSumCon() {
         return totalSumCon;
     }
 
-    public void setTotalSumCon(Double totalSumCon) {
+    public void setTotalSumCon(BigDecimal totalSumCon) {
         this.totalSumCon = totalSumCon;
     }
 
@@ -69,51 +70,51 @@ public class EffectCountDto {
         this.totalCus = totalCus;
     }
 
-    public Double getTotalSumIncome() {
+    public BigDecimal getTotalSumIncome() {
         return totalSumIncome;
     }
 
-    public void setTotalSumIncome(Double totalSumIncome) {
+    public void setTotalSumIncome(BigDecimal totalSumIncome) {
         this.totalSumIncome = totalSumIncome;
     }
 
-    public Double getTotalSumPay() {
+    public BigDecimal getTotalSumPay() {
         return totalSumPay;
     }
 
-    public void setTotalSumPay(Double totalSumPay) {
+    public void setTotalSumPay(BigDecimal totalSumPay) {
         this.totalSumPay = totalSumPay;
     }
 
-    public Double getTotalSumPayCon() {
+    public BigDecimal getTotalSumPayCon() {
         return totalSumPayCon;
     }
 
-    public void setTotalSumPayCon(Double totalSumPayCon) {
+    public void setTotalSumPayCon(BigDecimal totalSumPayCon) {
         this.totalSumPayCon = totalSumPayCon;
     }
 
-    public Double getTotalSumAllEffConInc() {
+    public BigDecimal getTotalSumAllEffConInc() {
         return totalSumAllEffConInc;
     }
 
-    public void setTotalSumAllEffConInc(Double totalSumAllEffConInc) {
+    public void setTotalSumAllEffConInc(BigDecimal totalSumAllEffConInc) {
         this.totalSumAllEffConInc = totalSumAllEffConInc;
     }
 
-    public Double getTotalSumAllEffConPay() {
+    public BigDecimal getTotalSumAllEffConPay() {
         return totalSumAllEffConPay;
     }
 
-    public void setTotalSumAllEffConPay(Double totalSumAllEffConPay) {
+    public void setTotalSumAllEffConPay(BigDecimal totalSumAllEffConPay) {
         this.totalSumAllEffConPay = totalSumAllEffConPay;
     }
 
-    public Double getTatalSumAllCon() {
+    public BigDecimal getTatalSumAllCon() {
         return tatalSumAllCon;
     }
 
-    public void setTatalSumAllCon(Double tatalSumAllCon) {
+    public void setTatalSumAllCon(BigDecimal tatalSumAllCon) {
         this.tatalSumAllCon = tatalSumAllCon;
     }
 

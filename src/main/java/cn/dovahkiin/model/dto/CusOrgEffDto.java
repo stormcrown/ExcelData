@@ -1,5 +1,6 @@
 package cn.dovahkiin.model.dto;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
@@ -8,14 +9,14 @@ public class CusOrgEffDto {
     private String orgCode;
     private String cusName;
     private String cusCode;
-    private Double sumAllEffConInc; // 素材生命周期内，部门收入消耗 ，
-    private Double sumAllEffConPay; // 素材生命周期内，部门支出消耗 ，
-    private Double sumAllCon; // 查询区间内消耗
-    private Double sumEffCon ; // 总 查询区间内 内收入有效消耗
-    private Double sumEffPayCon ; // 总 查询区间内 内支出有效消耗
+    private BigDecimal sumAllEffConInc; // 素材生命周期内，部门收入消耗 ，
+    private BigDecimal sumAllEffConPay; // 素材生命周期内，部门支出消耗 ，
+    private BigDecimal sumAllCon; // 查询区间内消耗
+    private BigDecimal sumEffCon ; // 总 查询区间内 内收入有效消耗
+    private BigDecimal sumEffPayCon ; // 总 查询区间内 内支出有效消耗
 
-    private double income =0d ;
-    private double pay =0d ;
+    private BigDecimal income = new BigDecimal(0) ;
+    private BigDecimal pay =new BigDecimal(0) ;
 
     private boolean incomeConflict=Boolean.FALSE;
     private Set<String> incomeConflictOrgNames;
@@ -60,27 +61,27 @@ public class CusOrgEffDto {
         this.cusCode = cusCode;
     }
 
-    public Double getSumAllCon() {
+    public BigDecimal getSumAllCon() {
         return sumAllCon;
     }
 
-    public void setSumAllCon(Double sumAllCon) {
+    public void setSumAllCon(BigDecimal sumAllCon) {
         this.sumAllCon = sumAllCon;
     }
 
-    public Double getSumEffCon() {
+    public BigDecimal getSumEffCon() {
         return sumEffCon;
     }
 
-    public void setSumEffCon(Double sumEffCon) {
+    public void setSumEffCon(BigDecimal sumEffCon) {
         this.sumEffCon = sumEffCon;
     }
 
-    public Double getSumEffPayCon() {
+    public BigDecimal getSumEffPayCon() {
         return sumEffPayCon;
     }
 
-    public void setSumEffPayCon(Double sumEffPayCon) {
+    public void setSumEffPayCon(BigDecimal sumEffPayCon) {
         this.sumEffPayCon = sumEffPayCon;
     }
 
@@ -116,19 +117,19 @@ public class CusOrgEffDto {
         this.payLastDay = payLastDay;
     }
 
-    public double getIncome() {
+    public BigDecimal getIncome() {
         return income;
     }
 
-    public void setIncome(double income) {
+    public void setIncome(BigDecimal income) {
         this.income = income;
     }
 
-    public double getPay() {
+    public BigDecimal getPay() {
         return pay;
     }
 
-    public void setPay(double pay) {
+    public void setPay(BigDecimal pay) {
         this.pay = pay;
     }
 
@@ -148,19 +149,19 @@ public class CusOrgEffDto {
         this.payConflictOrgNames = payConflictOrgNames;
     }
 
-    public Double getSumAllEffConInc() {
+    public BigDecimal getSumAllEffConInc() {
         return sumAllEffConInc;
     }
 
-    public void setSumAllEffConInc(Double sumAllEffConInc) {
+    public void setSumAllEffConInc(BigDecimal sumAllEffConInc) {
         this.sumAllEffConInc = sumAllEffConInc;
     }
 
-    public Double getSumAllEffConPay() {
+    public BigDecimal getSumAllEffConPay() {
         return sumAllEffConPay;
     }
 
-    public void setSumAllEffConPay(Double sumAllEffConPay) {
+    public void setSumAllEffConPay(BigDecimal sumAllEffConPay) {
         this.sumAllEffConPay = sumAllEffConPay;
     }
 }
