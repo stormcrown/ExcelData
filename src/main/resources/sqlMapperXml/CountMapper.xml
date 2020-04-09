@@ -369,9 +369,7 @@
 		</where>
 		GROUP BY cus.code  -- ,cus.name,cus.complete_date,sc.default_max_effect_con,sc.default_income_ratio,sc.default_pay_ratio,ple.base_price -- 避免因数据异常出现错误
 		having
-		completeDate &lt;= #{recoredDate_end  }
-		and ( incomeConfigEndDate  &gt;=  #{recoredDate_start }	OR	payConfigEndDate  &gt;=  #{recoredDate_start } )
-		and sumAllCon >0
+		sumAllCon >0
 	</select>
 
 	<select id="selectEffectCustomerByDem" resultType="cn.dovahkiin.model.dto.CusOrgEffDto" >

@@ -267,8 +267,8 @@ public class CountServiceImpl implements ICountService {
                     Set<String> incomeConflicOrgName =  new CopyOnWriteArraySet<>();
                     lastDayCustomerEffectDtos.parallelStream().forEach(lastDto->incomeConflicOrgName.add(lastDto.getOrgName()));
                     // 收入超
-                    final BigDecimal[] incomeOver = {new BigDecimal(0).add(customerEffect.getLastDayIncomeOver())};
-                    final BigDecimal[] size = {new BigDecimal(lastDayCustomerEffectDtos.size())};
+                    AtomicReference<BigDecimal> incomeOver =  new AtomicReference<BigDecimal>(BigDecimal.ZERO.add( customerEffect.getLastDayIncomeOver()) ) ;
+                    AtomicReference<BigDecimal> size = new AtomicReference<BigDecimal>(  new BigDecimal( lastDayCustomerEffectDtos.size() )  )  ;
                     lastDayCustomerEffectDtos.sort((lastDay1,lastDay2)-> (int) (lastDay1.getSumCon() .compareTo(lastDay2.getSumCon()) ));
                     customerEffect.getCusOrgEffDtos().sort(( cusOrg1,cusOrg2 )-> (int) (cusOrg1.getSumEffCon().compareTo(cusOrg2.getSumEffCon())));
                     for(CusOrgEffDto cusOrgEffDto:customerEffect.getCusOrgEffDtos()){
@@ -276,16 +276,15 @@ public class CountServiceImpl implements ICountService {
                         lastDayCustomerEffectDtos.forEach(lastDayCustomerEffectDto -> {
                             lastDayCustomerEffectDto.setConflictOrgNames(incomeConflicOrgName);
                             if( cusOrgEffDto.getOrgCode().equals(lastDayCustomerEffectDto.getOrgCode())     ){
-                                log.info(lastDayCustomerEffectDto.getSumCon()+"\t"+ incomeOver[0].toString()+"\t"+ size[0].toString());
-                               if(lastDayCustomerEffectDto.getSumCon().compareTo(incomeOver[0].divide(size[0]))   >=0 ){
-                                   lastDayCustomerEffectDto.setSumCon(lastDayCustomerEffectDto.getSumCon().subtract(incomeOver[0].divide(size[0])) );
-                                   cusOrgEffDto.setSumEffCon(cusOrgEffDto.getSumEffCon().subtract(incomeOver[0].divide(size[0])) ) ;
-                                   incomeOver[0] = incomeOver[0].subtract( incomeOver[0].divide(size[0]))  ;
-                                   size[0] = size[0].subtract(BigDecimal.ONE);
+                                log.info(lastDayCustomerEffectDto.getSumCon()+"\t"+ incomeOver.get(). toString()+"\t"+ size.get().toString());
+                               if(lastDayCustomerEffectDto.getSumCon().compareTo(incomeOver.get() .divide(size.get()))   >=0 ){
+                                   lastDayCustomerEffectDto.setSumCon(lastDayCustomerEffectDto.getSumCon().subtract(incomeOver.get().divide(size.get())) );
+                                   cusOrgEffDto.setSumEffCon(cusOrgEffDto.getSumEffCon().subtract(incomeOver.get().divide(size.get())) ) ;
+                                   incomeOver.updateAndGet(v-> v.subtract( v.divide(size.get())) ) ;
                                }
                                else{
-                                   incomeOver[0]=incomeOver[0].subtract( lastDayCustomerEffectDto.getSumCon()) ;
-                                   size[0] = size[0].subtract(BigDecimal.ONE);
+                                   incomeOver.updateAndGet(v-> v.subtract( lastDayCustomerEffectDto.getSumCon() ) ) ;
+                                   size.updateAndGet( v-> v.subtract(BigDecimal.ONE) );
                                    cusOrgEffDto.setSumEffCon(cusOrgEffDto.getSumEffCon().subtract(lastDayCustomerEffectDto.getSumCon()));
                                    lastDayCustomerEffectDto.setSumCon(new BigDecimal(0));
                                }
@@ -441,7 +440,7 @@ public class CountServiceImpl implements ICountService {
         });
         List<DayEffectDto> dayEffectDtoList = new ArrayList<>(dayEffectDtoMap.size());
         dayEffectDtoList.addAll(dayEffectDtoMap.values());
-        return new EffectCountDto(customerEffectOnes_all,dayEffectDtoList,new ArrayList<>(orgEffDtos.values())  ,totalSumAllEffConInc.get(),totalSumAllEffConPay.get(),totalSumCon.get(),totalSumCon.get(),totalSumPayCon.get(),totalCus.get(),totalSumIncome.get(),totalSumPay.get());
+        return new EffectCountDto(customerEffectOnes_all,dayEffectDtoList,new ArrayList<>(orgEffDtos.values())  ,totalSumAllEffConInc.get(),totalSumAllEffConPay.get(),tatalSumAllCon.get(),totalSumCon.get(),totalSumPayCon.get(),totalCus.get(),totalSumIncome.get(),totalSumPay.get());
     }
 
     @Override

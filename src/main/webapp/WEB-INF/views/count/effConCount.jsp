@@ -316,6 +316,10 @@
                 gridOpts.pageNumber = pageNumber;
                 gridOpts.pageSize = pageSize;
                 setPage( $("#effCountAll") ,listData,pageNumber);
+
+                let tatalSumAllCon=0;
+                for(let b=0;b<listData.length;b++) tatalSumAllCon+=listData[b].sumAllCon;
+                console.log(tatalSumAllCon);
             }
         });
 
@@ -577,7 +581,8 @@
                 if(totalSumPay!=null)totalSumPay=totalSumPay.toFixed(2);
 
                 $('#totalSumCon').html(totalSumCon);
-                $('#totalSumAllEffCon').html(data.totalSumAllEffCon==null?0:data.totalSumAllEffCon.toFixed(2));
+                $('#totalSumAllEffConInc').html(data.totalSumAllEffConInc==null?0:data.totalSumAllEffConInc.toFixed(2));
+                $('#totalSumAllEffConPay').html(data.totalSumAllEffConPay==null?0:data.totalSumAllEffConPay.toFixed(2));
                 $('#tatalSumAllCon').html(data.tatalSumAllCon==null?0:data.tatalSumAllCon.toFixed(2));
                 $('#totalSumPayCon').html(data.totalSumPayCon==null?0:data.totalSumPayCon.toFixed(2));
                 $('#totalSumIncome').html(totalSumIncome);
@@ -753,13 +758,14 @@
                 </tr>
                 <tr style="height: 40px">
                     <td COLSPAN="9" >
-                        全素材生命周期内总消耗： <span id="totalSumAllEffCon" style="color:red" >0</span> ；
+                        全素材生命周期内收入总消耗： <span id="totalSumAllEffConInc" style="color:red" >0</span> ；
+                        全素材生命周期内支出总消耗： <span id="totalSumAllEffConPay" style="color:red" >0</span> ；
                         查询期限内内总消耗： <span id="tatalSumAllCon" style="color:red" >0</span> ；
                         收入有效消耗： <span id="totalSumCon" style="color:red" >0</span> ；
                         支出有效消耗： <span id="totalSumPayCon" style="color:red" >0</span> ；
                         收入：<span id="totalSumIncome" style="color:red"></span>；
                         支出：<span id="totalSumPay" style="color: red" ></span>；
-                        素材数量：<span id="totalCus" style="color: red" ></span>；
+                        素材编号数量：<span id="totalCus" style="color: red" ></span>；
                     </td>
                 </tr>
             </table>
