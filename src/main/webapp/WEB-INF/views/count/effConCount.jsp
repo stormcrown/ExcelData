@@ -317,9 +317,12 @@
                 gridOpts.pageSize = pageSize;
                 setPage( $("#effCountAll") ,listData,pageNumber);
 
-                let tatalSumAllCon=0;
-                for(let b=0;b<listData.length;b++) tatalSumAllCon+=listData[b].sumAllCon;
-                console.log(tatalSumAllCon);
+                let tatalSumAllCon=0,tatalSumAllPayCon=0;
+                for(let b=0;b<listData.length;b++){
+                    tatalSumAllCon+=listData[b].sumEffCon;
+                    tatalSumAllPayCon+=listData[b].sumEffPayCon;
+                }
+                console.log(tatalSumAllCon+"\t"+tatalSumAllPayCon);
             }
         });
 
@@ -471,6 +474,13 @@
                         gridOpts.pageNumber = pageNumber;
                         gridOpts.pageSize = pageSize;
                         setPage( table ,dataList,pageNumber);
+
+                        let tatalSumAllCon=0,tatalSumAllPayCon=0;
+                        for(let b=0;b<dataList.length;b++){
+                            tatalSumAllCon+=dataList[b].sumEffCon;
+                            tatalSumAllPayCon+=dataList[b].sumEffPayCon;
+                        }
+                        console.log(tatalSumAllCon+"\t"+tatalSumAllPayCon);
                     }
                 });
                 setPage( table ,dataList,1);
@@ -494,6 +504,14 @@
                 gridOpts.pageNumber = pageNumber;
                 gridOpts.pageSize = pageSize;
                 setPage( $("#effCountAllOrgs") ,listDataOrg,pageNumber);
+
+                let tatalSumAllCon=0,tatalSumAllPayCon=0;
+                for(let b=0;b<listDataOrg.length;b++){
+                    tatalSumAllCon+=listDataOrg[b].totalSumEffCon;
+                    tatalSumAllPayCon+=listDataOrg[b].totalSumEffPayCon;
+                }
+                console.log(tatalSumAllCon+"\t"+tatalSumAllPayCon);
+
             }
         });
 

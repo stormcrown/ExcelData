@@ -15,7 +15,6 @@ public class ExcelConst {
     }
     public static CellStyle getMoneyCellStyle(Sheet sheet){
         CellStyle cellStyle_money = sheet.getWorkbook().createCellStyle();
-          DataFormat money_format= sheet.getWorkbook().createDataFormat();
         cellStyle_money.setDataFormat(getDataFormat(sheet).getFormat("￥###0.00"));
         return cellStyle_money;
     }

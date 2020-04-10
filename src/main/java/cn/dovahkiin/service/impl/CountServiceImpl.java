@@ -49,9 +49,7 @@ public class CountServiceImpl implements ICountService {
     @Autowired
     public void setCustomerMapper(CustomerMapper customerMapper) { this.customerMapper = customerMapper; }
     @Autowired
-    public void setSystemConfigMapper(SystemConfigMapper systemConfigMapper) {
-        this.systemConfigMapper = systemConfigMapper;
-    }
+    public void setSystemConfigMapper(SystemConfigMapper systemConfigMapper) { this.systemConfigMapper = systemConfigMapper; }
 
     @Override
     public List<Map> count1(Map map) {
@@ -230,8 +228,11 @@ public class CountServiceImpl implements ICountService {
         /* 每个素材的部门有效消耗数据，在有效消耗计算完成了之后再算   */
         customerEffectOnes_all.parallelStream().forEach(customerEffect->{
             customerEffect.setCusOrgEffDtos(countMapper.selectEffectCustomerByDem(defaultConfig, start, end, customerEffect.getCompleteDate(), customerEffect.getIncomeEndDate(), customerEffect.getPayEndDate(), customerEffect.getCode()));
-            //
+            // 查询区间 不在 生命周期内 ，可以确定没有数据
             if((start.after(customerEffect.getIncomeEndDate())  && start.after(customerEffect.getPayEndDate())) || (end.before(customerEffect.getCompleteDate())))return;
+            // 查询日期不包含结束日期,不用修正
+            if(  end.before(customerEffect.getIncomeEndDate()) && end.before(customerEffect.getPayEndDate())   )return;
+
 
             if(customerEffect.getCusOrgEffDtos()==null || customerEffect.getCusOrgEffDtos().size()==0)return;
             // 如果都没有溢出，直接结束
@@ -239,11 +240,15 @@ public class CountServiceImpl implements ICountService {
 
             // 如果只有一个部门，减去总溢出值
             if(customerEffect.getCusOrgEffDtos().size()==1){
-                if( customerEffect.getLastDayIncomeOver() !=null && customerEffect.getLastDayIncomeOver().compareTo(BigDecimal.ZERO) >0  ){
-                    if(customerEffect.getLastDayIncomeOver().compareTo(customerEffect.getCusOrgEffDtos().get(0).getSumEffCon())  <= 0     ) customerEffect.getCusOrgEffDtos().get(0).setSumEffCon(customerEffect.getCusOrgEffDtos().get(0).getSumEffCon().subtract(customerEffect.getLastDayIncomeOver()) );
+                if( customerEffect.getLastDayIncomeOver() !=null && customerEffect.getLastDayIncomeOver().compareTo(BigDecimal.ZERO) >0
+                        && (  end.after(customerEffect.getIncomeEndDate()   ) || end.equals(customerEffect.getIncomeEndDate()   ) )   ){
+                    if(customerEffect.getLastDayIncomeOver().compareTo(customerEffect.getCusOrgEffDtos().get(0).getSumEffCon())  <= 0     )
+                        customerEffect.getCusOrgEffDtos().get(0).setSumEffCon(customerEffect.getCusOrgEffDtos().get(0).getSumEffCon().subtract(customerEffect.getLastDayIncomeOver()) );
                     else customerEffect.getCusOrgEffDtos().get(0).setSumEffCon(BigDecimal.ZERO);
                 }
-                if(  customerEffect.getLastDayPayOver() !=null && customerEffect.getLastDayPayOver().compareTo(BigDecimal.ZERO) > 0 ){
+                if(  customerEffect.getLastDayPayOver() !=null && customerEffect.getLastDayPayOver().compareTo(BigDecimal.ZERO) > 0
+                        && (  end.after(customerEffect.getPayEndDate()   ) || end.equals(customerEffect.getPayEndDate()   ) )
+                ){
                     if(customerEffect.getLastDayPayOver() .compareTo(customerEffect.getCusOrgEffDtos().get(0).getSumEffPayCon()) <=0)
                         customerEffect.getCusOrgEffDtos().get(0).setSumEffPayCon(customerEffect.getCusOrgEffDtos().get(0).getSumEffPayCon().subtract(customerEffect.getLastDayPayOver()));
                     else customerEffect.getCusOrgEffDtos().get(0).setSumEffPayCon(BigDecimal.ZERO);
@@ -252,7 +257,9 @@ public class CountServiceImpl implements ICountService {
             }
             // 查询对应的最后一天的各部门消耗
             // 收入消耗溢出
-            if( customerEffect.getLastDayIncomeOver() !=null && customerEffect.getLastDayIncomeOver().compareTo(BigDecimal.ZERO)  >0 ){
+            if( customerEffect.getLastDayIncomeOver() !=null && customerEffect.getLastDayIncomeOver().compareTo(BigDecimal.ZERO)  >0
+                    && (  end.after(customerEffect.getIncomeEndDate()   ) || end.equals(customerEffect.getIncomeEndDate()   ) )
+            ){
                 List<LastDayCustomerEffectDto> lastDayCustomerEffectDtos = countMapper.selectallConByCusDemInSpecialDay(customerEffect.getIncomeEndDate(),customerEffect.getCode());
                 // 刚好结束日期那天，如果只有一个部门有消耗，那么就修正数据为最大值
                 if(lastDayCustomerEffectDtos!=null &&  lastDayCustomerEffectDtos.size()==1){
@@ -296,7 +303,9 @@ public class CountServiceImpl implements ICountService {
                 }
             }
             // 支出消耗溢出
-            if( customerEffect.getLastDayPayOver() !=null && customerEffect.getLastDayPayOver().compareTo(BigDecimal.ZERO) > 0 ){
+            if( customerEffect.getLastDayPayOver() !=null && customerEffect.getLastDayPayOver().compareTo(BigDecimal.ZERO) > 0
+                    && (  end.after(customerEffect.getPayEndDate()   ) || end.equals(customerEffect.getPayEndDate()   ) )
+            ){
                 List<LastDayCustomerEffectDto> lastDayCustomerEffectDtos = countMapper.selectallConByCusDemInSpecialDay(customerEffect.getPayEndDate(),customerEffect.getCode());
                 // 刚好结束日期那天，如果只有一个部门有消耗，那么就修正数据
                 if(lastDayCustomerEffectDtos!=null &&  lastDayCustomerEffectDtos.size()==1){
@@ -310,8 +319,8 @@ public class CountServiceImpl implements ICountService {
                     Set<String> payConflicOrgName = new CopyOnWriteArraySet<>();
                     lastDayCustomerEffectDtos.parallelStream().forEach(lastDto->payConflicOrgName.add(lastDto.getOrgName()));
                     // 刚好结束日期那天，如果有多个部门有消耗，
-                    final BigDecimal[] payOver = {new BigDecimal(0).add(customerEffect.getLastDayPayOver())};
-                    final BigDecimal[] size = { new BigDecimal(lastDayCustomerEffectDtos.size()) };
+                    AtomicReference<BigDecimal> payOver = new AtomicReference<BigDecimal>(new BigDecimal(0).add(customerEffect.getLastDayPayOver()));
+                    AtomicReference<BigDecimal> size =  new AtomicReference<BigDecimal>(new BigDecimal(lastDayCustomerEffectDtos.size()));
                     lastDayCustomerEffectDtos.sort((lastDay1,lastDay2)->  lastDay1.getSumCon() .compareTo(lastDay2.getSumCon()));
                     customerEffect.getCusOrgEffDtos().sort(( cusOrg1,cusOrg2 )->  cusOrg1.getSumEffPayCon().compareTo(cusOrg2.getSumEffPayCon()));
                     for(CusOrgEffDto cusOrgEffDto:customerEffect.getCusOrgEffDtos()){
@@ -319,16 +328,16 @@ public class CountServiceImpl implements ICountService {
                         lastDayCustomerEffectDtos.forEach(lastDayCustomerEffectDto -> {
                             lastDayCustomerEffectDto.setConflictOrgNames(payConflicOrgName);
                             if( cusOrgEffDto.getOrgCode().equals(lastDayCustomerEffectDto.getOrgCode())  ) {
-                                log.info(lastDayCustomerEffectDto.getSumCon()+"\t"+ payOver[0].toPlainString()+"\t"+size[0].toPlainString());
-                                if(lastDayCustomerEffectDto.getSumCon() .compareTo(payOver[0].divide(size[0])) >=0){
-                                    lastDayCustomerEffectDto.setSumCon(lastDayCustomerEffectDto.getSumCon().subtract(payOver[0].divide(size[0])));
-                                    cusOrgEffDto.setSumEffPayCon(cusOrgEffDto.getSumEffPayCon().subtract(payOver[0].divide(size[0]))) ;
-                                    payOver[0] = payOver[0].subtract( payOver[0].divide(size[0]));
-                                    size[0] = size[0].subtract(BigDecimal.ONE);
+                                log.info(lastDayCustomerEffectDto.getSumCon()+"\t"+ payOver.get().toPlainString()+"\t"+size.get().toPlainString());
+                                if(lastDayCustomerEffectDto.getSumCon() .compareTo(payOver.get().divide(size.get())) >=0){
+                                    lastDayCustomerEffectDto.setSumCon(lastDayCustomerEffectDto.getSumCon().subtract(payOver.get().divide(size.get())));
+                                    cusOrgEffDto.setSumEffPayCon(cusOrgEffDto.getSumEffPayCon().subtract(payOver.get().divide(size.get()))) ;
+                                    payOver.updateAndGet( v->v.subtract(v.divide(size.get())));
+                                    size.updateAndGet(v->v.subtract(BigDecimal.ONE) );
                                 }
                                 else{
-                                    payOver[0] = payOver[0].subtract( lastDayCustomerEffectDto.getSumCon() );
-                                    size[0] = size[0].subtract(BigDecimal.ONE);
+                                    payOver.updateAndGet(v->v.subtract(lastDayCustomerEffectDto.getSumCon()) );
+                                    size.updateAndGet(v->v.subtract(BigDecimal.ONE) );
                                     cusOrgEffDto.setSumEffPayCon(cusOrgEffDto.getSumEffPayCon().subtract(lastDayCustomerEffectDto.getSumCon()));
                                     lastDayCustomerEffectDto.setSumCon(BigDecimal.ZERO);
                                 }
@@ -562,8 +571,8 @@ public class CountServiceImpl implements ICountService {
                 else if(i==2)cell.setCellValue( nf.format(orgEffDto.getTotalSumAllEffConInc()) );
                 else if(i==3)cell.setCellValue(nf.format(orgEffDto.getTotalSumAllEffConPay()));
                 else if(i==4)cell.setCellValue(nf.format(orgEffDto.getTotalSumAllCon()));
-                else if(i==5)cell.setCellValue(nf.format(orgEffDto.getTotalSumAllEffConInc()));
-                else if(i==6)cell.setCellValue(nf.format(orgEffDto.getTotalSumAllEffConPay()));
+                else if(i==5)cell.setCellValue(nf.format(orgEffDto.getTotalSumEffCon()));
+                else if(i==6)cell.setCellValue(nf.format(orgEffDto.getTotalSumEffPayCon()));
                 else if(i==7){
                     StringBuffer cusCode = new StringBuffer();
                     if(orgEffDto.getCusOrgEffDtoList()!=null && orgEffDto.getCusOrgEffDtoList().size()>0 ){
@@ -584,8 +593,6 @@ public class CountServiceImpl implements ICountService {
                 }
             }
         }
-
-
         return workbook;
     }
 

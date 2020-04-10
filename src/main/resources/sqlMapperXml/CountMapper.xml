@@ -404,7 +404,7 @@
 				 LEFT JOIN supplier sup on sup.id = cus.supplier_id and sup.delete_flag = 0
 				 LEFT JOIN system_config sc on sc.supplier_id = sup.id and sc.delete_flag = 0
 				 left join organization dem on dem.id = vc.demand_sector_id
-		where cus.code = #{customerCode}
+		where cus.code = #{customerCode} and vc.delete_flag = 0
 		GROUP BY cus.code, dem.code
 		having sumAllCon > 0
 		order by cus.code, dem.code

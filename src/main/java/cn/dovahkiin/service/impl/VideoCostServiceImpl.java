@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.*;
 
 import static org.apache.poi.ss.usermodel.FillPatternType.SOLID_FOREGROUND;
@@ -340,7 +341,8 @@ public class VideoCostServiceImpl implements IVideoCostService {
     @Override
     @Transactional(readOnly = true)
     public Workbook exportData(Map map, Workbook workbook) {
-
+        NumberFormat nf = NumberFormat.getNumberInstance();
+        nf.setMaximumFractionDigits(2);
         Sheet sheet = workbook.createSheet();
         sheet.addMergedRegion(new CellRangeAddress(1, 1, 0, 19));
         Row title = sheet.createRow(1);
@@ -576,10 +578,10 @@ public class VideoCostServiceImpl implements IVideoCostService {
 //                if (videoCost.getCustomer() != null && videoCost.getCustomer().getPerformer3() != null) cell_i_14.setCellValue(videoCost.getCustomer().getPerformer3().getName());
                 if (videoCost.getConsumption() != null){
 
-                    cell_i_14.setCellValue(videoCost.getConsumption()==null?"":videoCost.getConsumption().toString());
+                    cell_i_14.setCellValue(videoCost.getConsumption()==null?"": nf.format(videoCost.getConsumption()) );
                 }
                 if (videoCost.getCumulativeConsumptionByPro() != null){
-                    cell_i_15.setCellValue(videoCost.getCumulativeConsumptionByPro()==null?"":videoCost.getCumulativeConsumptionByPro().toString());
+                    cell_i_15.setCellValue(videoCost.getCumulativeConsumptionByPro()==null?"": nf.format(videoCost.getCumulativeConsumptionByPro()));
                 }
 //                if (videoCost.getCumulativeConsumptionRankingByProglam() != null) cell_i_17.setCellValue(videoCost.getCumulativeConsumptionRankingByProglam());
                 if (videoCost.getRecoredDate() != null) cell_i_16.setCellValue(videoCost.getRecoredDate());
