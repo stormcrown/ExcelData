@@ -22,4 +22,5 @@ public interface ISystemConfigService extends IService<SystemConfig> {
 
     int updateByPrimaryKey(SystemConfig systemConfig);
     int toggleBySupplierIds(List<Long> supplierIds,int deleteFlag ,Long userId);
+    boolean deleteBySupplierIds(List<Long> supplierIds);
 }

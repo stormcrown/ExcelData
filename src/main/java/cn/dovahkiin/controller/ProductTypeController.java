@@ -1,13 +1,10 @@
 package cn.dovahkiin.controller;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Date;
-import cn.dovahkiin.commons.utils.StringUtils;
-import com.alibaba.fastjson.JSON;
+import cn.dovahkiin.util.Const;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,8 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.plugins.Page;
 import cn.dovahkiin.commons.result.PageInfo;
 import cn.dovahkiin.model.ProductType;
 import cn.dovahkiin.service.IProductTypeService;
@@ -28,14 +23,17 @@ import cn.dovahkiin.commons.base.BaseController;
  * </p>
  *
  * @author lzt
- * @since 2018-11-19
+ * @since 2020-04-10
  */
 @Controller
 @RequestMapping("/productType")
 public class ProductTypeController extends BaseController {
 
-    @Autowired private IProductTypeService productTypeService;
-    
+    private IProductTypeService productTypeService;
+    @Autowired
+    public void setIProductTypeService(IProductTypeService productTypeService) {
+        this.productTypeService = productTypeService;
+    }
     @GetMapping("/manager")
     @RequiresPermissions("/productType/manager")
     public String manager() {
@@ -46,25 +44,14 @@ public class ProductTypeController extends BaseController {
     @RequiresPermissions("/productType/dataGrid")
     @ResponseBody
     public PageInfo dataGrid(ProductType productType, Integer page, Integer rows, String sort,String order) {
-        PageInfo pageInfo = new PageInfo(page, rows, sort, order);
-        EntityWrapper<ProductType> ew = new EntityWrapper<ProductType>();
-        if(productType!=null && StringUtils.hasText(productType.getCode()))ew.like("code","%"+productType.getCode().trim()+"%");
-        if(productType!=null && StringUtils.hasText(productType.getName()) )ew.like("name","%"+productType.getName().trim()+"%");
-        if(productType!=null && productType.getDeleteFlag()!=null  ) ew.eq("delete_flag", productType.getDeleteFlag() );
-        Page<ProductType> pages = getPage(page, rows, sort, order);
-        pages = productTypeService.selectPage(pages, ew);
-        pageInfo.setRows(pages.getRecords());
-        pageInfo.setTotal(pages.getTotal());
-        return pageInfo;
+        return super.dataGrid(productType,productTypeService,page,rows,sort,order);
     }
     @PostMapping("/combobox")
     @ResponseBody
     @RequiresPermissions(value = {"/videoCost/dataGrid","/customer/*","/count/bar" },logical = Logical.OR)
-    public Object dataGrid() {
-        EntityWrapper ew = new EntityWrapper();
-        ew.eq("delete_flag", 0 );
-        return JSON.toJSON(productTypeService.selectList(ew));
-    }
+    public Object combobox() {
+        return super.combobox(productTypeService);
+        }
     /**
      * 添加页面
      * @return
@@ -72,16 +59,7 @@ public class ProductTypeController extends BaseController {
     @GetMapping("/addPage")
     @RequiresPermissions("/productType/add")
     public String addPage(Model model,Long id) {
-        model.addAttribute("method", "add");
-        if(id!=null){
-            ProductType productType = productTypeService.selectById(id);
-            if(productType!=null){
-                productType.setId(null);
-                model.addAttribute("productType", productType);
-            }
-
-        }
-        return "productType/productTypeEdit";
+        return super.addPage(model,id,productTypeService,ProductType.class);
     }
     
     /**
@@ -94,7 +72,6 @@ public class ProductTypeController extends BaseController {
     @ResponseBody
     public Object add(@Valid ProductType productType) {
         return super.add(productType,productTypeService);
-
     }
     
     /**
@@ -106,26 +83,20 @@ public class ProductTypeController extends BaseController {
     @RequiresPermissions("/productType/delete")
     @ResponseBody
     public Object delete(String ids) {
-        if(ids!=null){
-            String[] idss = ids.split(",");
-            List<ProductType> list = new ArrayList<ProductType>();
-            for(String str:idss){
-                if(StringUtils.hasText(str) && StringUtils.isInteger(str) ){
-                    ProductType productType = new ProductType();
-                    productType.setId(Long.valueOf(str));
-                    productType.setDeleteFlag(1);
-                    list.add(productType);
-                }
-            }
-            if(list.size()>0){
-                boolean suc = productTypeService.updateBatchById(list);
-                if(suc)return renderSuccess("删除成功！");
-            }
-        }
-
-        return renderError("删除失败！");
-
+        return super.delete(ids,ProductType.class,productTypeService);
     }
+/**
+*永久删除
+* @param ids
+* @return
+*/
+@RequiresPermissions("/productType/delete")
+@PostMapping("/deleteForever")
+@RequiresRoles(Const.Administor_Role_Name)
+@ResponseBody
+public Object deleteForever(String ids) {
+        return super.deleteForever(ids,productTypeService);
+        }
 /**
  * 恢复
  * @param ids
@@ -135,24 +106,8 @@ public class ProductTypeController extends BaseController {
 @RequiresPermissions("/productType/add")
 @ResponseBody
 public Object rollback(String ids) {
-        if(ids!=null){
-            String[] idss = ids.split(",");
-            List<ProductType> list = new ArrayList<ProductType>();
-            for(String str:idss){
-                if(StringUtils.hasText(str) && StringUtils.isInteger(str) ){
-                    ProductType productType = new ProductType();
-                    productType.setId(Long.valueOf(str));
-                    productType.setDeleteFlag(0);
-                    list.add(productType);
-                }
-            }
-            if(list.size()>0){
-                boolean suc = productTypeService.updateBatchById(list);
-                if(suc)return renderSuccess("恢复成功！");
-            }
-        }
-            return renderError("恢复失败！");
-        }
+        return super.rollback(ids,ProductType.class,productTypeService);
+}
     /**
      * 编辑
      * @param model
@@ -162,10 +117,7 @@ public Object rollback(String ids) {
     @GetMapping("/editPage")
     @RequiresPermissions("/productType/edit")
     public String editPage(Model model, Long id) {
-        ProductType productType = productTypeService.selectById(id);
-        model.addAttribute("productType", productType);
-        model.addAttribute("method", "edit");
-        return "productType/productTypeEdit";
+        return super.editPage(model,id,ProductType.class,productTypeService);
     }
     
     /**
@@ -177,12 +129,6 @@ public Object rollback(String ids) {
     @RequiresPermissions("/productType/edit")
     @ResponseBody
     public Object edit(@Valid ProductType productType) {
-        productType.setUpdateTime(new Date());
-        boolean b = productTypeService.updateById(productType);
-        if (b) {
-            return renderSuccess("编辑成功！");
-        } else {
-            return renderError("编辑失败！");
-        }
+        return super.edit(productType,productTypeService);
     }
 }

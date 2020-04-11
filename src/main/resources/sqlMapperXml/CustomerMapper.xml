@@ -780,6 +780,14 @@
         </foreach>
         )
     </update>
+    <delete id="deleteManyForever" >
+        delete from `customer`
+        where id in (
+        <foreach collection="array" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </delete>
     <delete id="deleteFlagIsOne" >
         delete from customer where delete_flag = 1
     </delete>

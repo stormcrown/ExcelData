@@ -96,9 +96,7 @@ public class VideoCostServiceImpl implements IVideoCostService {
 
     @Override
     public int deleteManyForever(String[] ids) {
-        int unDeleted = videoCostMapper.countUndeleted(ids);
-        if(unDeleted==0) return videoCostMapper.deleteManyForever(ids);
-        else throw new RuntimeException("请先删除数据，再执行永久删除");
+        return videoCostMapper.deleteManyForever(ids);
     }
     @Override
     @Transactional

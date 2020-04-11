@@ -61,7 +61,7 @@
             title : '操作',
             width : 200,
             formatter : function(value, row, index) {
-                var str = '';
+                let str = '';
                 <shiro:hasPermission name="/originality/edit">
                     str += $.formatString('<a href="javascript:void(0)" class="originality-easyui-linkbutton-edit" data-options="plain:true,iconCls:\'glyphicon-pencil icon-blue\'" onclick="originalityEditFun(\'{0}\');" >编辑</a>', row.id);
                 </shiro:hasPermission>
@@ -85,8 +85,8 @@
  * @param url
  */
 function originalityAddFun() {
-        var id = "";
-        var checks = $('#originalityDataGrid').datagrid('getChecked');
+        let id = "";
+        let checks = $('#originalityDataGrid').datagrid('getChecked');
         if( checks != null && checks.length==1){
             id = checks[0].id;
         }else{
@@ -101,7 +101,7 @@ function originalityAddFun() {
             text : '确定',
             handler : function() {
                 parent.$.modalDialog.openner_dataGrid = originalityDataGrid;//因为添加成功之后，需要刷新这个treeGrid，所以先预定义好
-                var f = parent.$.modalDialog.handler.find('#originalityEditForm');
+                let f = parent.$.modalDialog.handler.find('#originalityEditForm');
                 f.submit();
             }
         } ]
@@ -114,7 +114,7 @@ function originalityAddFun() {
  */
 function originalityEditFun(id) {
      if (id == undefined) {
-            var rows = originalityDataGrid.datagrid('getSelections');
+            let rows = originalityDataGrid.datagrid('getSelections');
             if(rows!=null && rows.length==1) id = rows[0].id;
             else {
                 $('#originalityDataGrid').datagrid('clearChecked').datagrid('clearSelections');
@@ -134,7 +134,7 @@ function originalityEditFun(id) {
                 text : '确定',
                 handler : function() {
                     parent.$.modalDialog.openner_dataGrid = originalityDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
-                    var f = parent.$.modalDialog.handler.find('#originalityEditForm');
+                    let f = parent.$.modalDialog.handler.find('#originalityEditForm');
                     f.submit();
                 }
             } ]
@@ -147,20 +147,46 @@ function originalityEditFun(id) {
  * 删除
  */
  function originalityDeleteFun(id) {
-     var tip="";
+     let tip="";
         if (id == undefined) {
             id="";
-            var rows = originalityDataGrid.datagrid('getSelections');
-            for(var i=0;i<rows.length;i++){
+            let rows = originalityDataGrid.datagrid('getSelections');
+            for(let i=0;i<rows.length;i++){
                 id+=(rows[i].id+",");
                 tip+=( "<br/>名称："+ redFont(rows[i].name) +" 编码："+ redFont(rows[i].code)+" ；");
             }
         }
      if(id!=undefined && id!=null && id!='' ){
-        parent.$.messager.confirm('询问', '您是否要删除当前角色？'+tip, function(b) {
+     progressLoad();
+     $.post('${path}/originality/delete', {
+                    ids : id
+                }, function(result) {
+                    if (result.success) {
+                        parent.$.messager.alert('提示', result.msg, 'info');
+                        originalityDataGrid.datagrid('reload');
+                    }
+                    progressClose();
+                }, 'JSON');
+     }
+}
+/**
+ * 永久删除
+ */
+ function originalityDeleteForever(id) {
+     let tip="";
+        if (id == undefined) {
+            id="";
+            let rows = originalityDataGrid.datagrid('getSelections');
+            for(let i=0;i<rows.length;i++){
+                id+=(rows[i].id+",");
+                tip+=( "<br/>名称："+ redFont(rows[i].name) +" 编码："+ redFont(rows[i].code)+" ；");
+            }
+        }
+     if(id!=undefined && id!=null && id!='' ){
+        parent.$.messager.confirm('询问', '您是否要永久删除当前数据？'+tip, function(b) {
             if (b) {
                 progressLoad();
-                $.post('${path}/originality/delete', {
+                $.post('${path}/originality/deleteForever', {
                     ids : id
                 }, function(result) {
                     if (result.success) {
@@ -172,17 +198,16 @@ function originalityEditFun(id) {
             }
         });
      }
-
 }
 /**
  * 恢复
  */
  function originalityRollbackFun(id) {
-     var tip="";
+     let tip="";
         if (id == undefined) {
             id="";
-            var rows = originalityDataGrid.datagrid('getSelections');
-            for(var i=0;i<rows.length;i++){
+            let rows = originalityDataGrid.datagrid('getSelections');
+            for(let i=0;i<rows.length;i++){
                 id+=(rows[i].id+",");
                 tip+=( "<br/>名称："+ redFont(rows[i].name) +" 编码："+ redFont(rows[i].code)+" ；");
             }
@@ -260,7 +285,10 @@ function originalitySearchFun() {
         <a onclick="originalityEditFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-edit  icon-blue'">修改</a>
     </shiro:hasPermission>
     <shiro:hasPermission name="/originality/delete">
-        <a onclick="originalityDeleteFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-remove  icon-red'">删除</a>
+        <a onclick="originalityDeleteFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-remove  icon-yellow'">隐藏</a>
+        <shiro:hasRole name="超级管理员">
+            <a onclick="originalityDeleteForever()" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-remove  icon-red'">永久删除</a>
+        </shiro:hasRole>
     </shiro:hasPermission>
     <shiro:hasPermission name="/originality/add">
         <a onclick="originalityRollbackFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-share-alt icon-green'">恢复</a>

@@ -239,6 +239,8 @@ public class VideoCostController extends BaseController {
     @ResponseBody
     @RequiresPermissions("/videoCost/importExcel")
     public Object importExcel(Date recoredDate, @RequestParam(name="excels") MultipartFile excels) {
+        ShiroUser shiroUser = getShiroUser();
+        if(!importOnce(shiroUser) )throw new RuntimeException("你今天已经导入过一次了！");
         int m=0;
         boolean b = true;
         try {
@@ -248,11 +250,16 @@ public class VideoCostController extends BaseController {
             reader.read();
             List<ArrayList<Object>> list = listenter.data;
             m = videoCostService.handleExcelFile(list,recoredDate, getShiroUser());
+            if(m==0)reduceOnce(shiroUser);
         }catch (IOException e){
             e.printStackTrace();
             b= false;
+            reduceOnce(shiroUser);
+        }catch (RuntimeException e){
+            reduceOnce(shiroUser);
+            throw e;
         }
-        if (b) {
+        if (b ) {
             return renderSuccess("添加成功！"+m+"行数据被导入");
         } else {
             return renderError("添加失败！");
@@ -319,6 +326,7 @@ public class VideoCostController extends BaseController {
                 if(StringUtils.hasText(str) &&StringUtils.isInteger(str) )idss.add(str);
             }
             int suc= videoCostService.deleteManyForever(idss.toArray(new String[idss.size()]));
+
             if(suc>0)return renderSuccess("删除成功！");
         }
         return renderError("删除失败！");

@@ -9,7 +9,9 @@ import cn.dovahkiin.commons.shiro.ShiroUser;
 import cn.dovahkiin.commons.utils.StringUtils;
 import cn.dovahkiin.model.Supplier;
 import cn.dovahkiin.service.ISupplierService;
+import cn.dovahkiin.util.Const;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -107,6 +109,33 @@ public class SystemConfigController extends BaseController {
 
         return renderError("删除失败！");
 
+    }
+    @RequiresPermissions("/systemConfig/delete")
+    @PostMapping("/deleteForever")
+    @RequiresRoles(Const.Administor_Role_Name)
+    @ResponseBody
+    public Object deleteForever(String ids) {
+        if(ids!=null){
+            String[] idss = ids.split(",");
+            List<Long> list = new ArrayList<Long>();
+            List<Long> scIds = new ArrayList<>();
+            for(String str:idss){
+                if(StringUtils.hasText(str) && StringUtils.isInteger(str) ){
+                    Long id = Long.valueOf(str);
+                    if(id.equals(SystemConfig.ID))return renderError("全局配置不能删除");
+                    list.add(id);
+                    scIds.add(id);
+                }
+            }
+            if(list.size()>0){
+                boolean suc = systemConfigService .deleteBatchIds(list);
+                if(suc){
+                    iSupplierService.deleteBySystemConfigIds(scIds);
+                    return renderSuccess("删除成功！");
+                }
+            }
+        }
+        return renderError("删除失败！");
     }
     /**
      * 恢复

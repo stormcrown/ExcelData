@@ -29,6 +29,7 @@ public interface CustomerMapper  {
     int updateByPrimaryKeySelective(Customer record);
     int updateByPrimaryKey(Customer record);
     int deleteMany(String[] ids);
+    int deleteManyForever(Long[] ids);
     int rollBack(String[] ids);
     int deleteFlagIsOne();
 }

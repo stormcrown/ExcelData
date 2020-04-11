@@ -61,7 +61,7 @@
             title : '操作',
             width : 200,
             formatter : function(value, row, index) {
-                var str = '';
+                let str = '';
                 <shiro:hasPermission name="/videoType/edit">
                     str += $.formatString('<a href="javascript:void(0)" class="videoType-easyui-linkbutton-edit" data-options="plain:true,iconCls:\'glyphicon-pencil icon-blue\'" onclick="videoTypeEditFun(\'{0}\');" >编辑</a>', row.id);
                 </shiro:hasPermission>
@@ -85,8 +85,8 @@
  * @param url
  */
 function videoTypeAddFun() {
-        var id = "";
-        var checks = $('#videoTypeDataGrid').datagrid('getChecked');
+        let id = "";
+        let checks = $('#videoTypeDataGrid').datagrid('getChecked');
         if( checks != null && checks.length==1){
             id = checks[0].id;
         }else{
@@ -101,7 +101,7 @@ function videoTypeAddFun() {
             text : '确定',
             handler : function() {
                 parent.$.modalDialog.openner_dataGrid = videoTypeDataGrid;//因为添加成功之后，需要刷新这个treeGrid，所以先预定义好
-                var f = parent.$.modalDialog.handler.find('#videoTypeEditForm');
+                let f = parent.$.modalDialog.handler.find('#videoTypeEditForm');
                 f.submit();
             }
         } ]
@@ -114,7 +114,7 @@ function videoTypeAddFun() {
  */
 function videoTypeEditFun(id) {
      if (id == undefined) {
-            var rows = videoTypeDataGrid.datagrid('getSelections');
+            let rows = videoTypeDataGrid.datagrid('getSelections');
             if(rows!=null && rows.length==1) id = rows[0].id;
             else {
                 $('#videoTypeDataGrid').datagrid('clearChecked').datagrid('clearSelections');
@@ -134,7 +134,7 @@ function videoTypeEditFun(id) {
                 text : '确定',
                 handler : function() {
                     parent.$.modalDialog.openner_dataGrid = videoTypeDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
-                    var f = parent.$.modalDialog.handler.find('#videoTypeEditForm');
+                    let f = parent.$.modalDialog.handler.find('#videoTypeEditForm');
                     f.submit();
                 }
             } ]
@@ -147,20 +147,46 @@ function videoTypeEditFun(id) {
  * 删除
  */
  function videoTypeDeleteFun(id) {
-     var tip="";
+     let tip="";
         if (id == undefined) {
             id="";
-            var rows = videoTypeDataGrid.datagrid('getSelections');
-            for(var i=0;i<rows.length;i++){
+            let rows = videoTypeDataGrid.datagrid('getSelections');
+            for(let i=0;i<rows.length;i++){
                 id+=(rows[i].id+",");
                 tip+=( "<br/>名称："+ redFont(rows[i].name) +" 编码："+ redFont(rows[i].code)+" ；");
             }
         }
      if(id!=undefined && id!=null && id!='' ){
-        parent.$.messager.confirm('询问', '您是否要删除当前角色？'+tip, function(b) {
+     progressLoad();
+     $.post('${path}/videoType/delete', {
+                    ids : id
+                }, function(result) {
+                    if (result.success) {
+                        parent.$.messager.alert('提示', result.msg, 'info');
+                        videoTypeDataGrid.datagrid('reload');
+                    }
+                    progressClose();
+                }, 'JSON');
+     }
+}
+/**
+ * 永久删除
+ */
+ function videoTypeDeleteForever(id) {
+     let tip="";
+        if (id == undefined) {
+            id="";
+            let rows = videoTypeDataGrid.datagrid('getSelections');
+            for(let i=0;i<rows.length;i++){
+                id+=(rows[i].id+",");
+                tip+=( "<br/>名称："+ redFont(rows[i].name) +" 编码："+ redFont(rows[i].code)+" ；");
+            }
+        }
+     if(id!=undefined && id!=null && id!='' ){
+        parent.$.messager.confirm('询问', '您是否要永久删除当前数据？'+tip, function(b) {
             if (b) {
                 progressLoad();
-                $.post('${path}/videoType/delete', {
+                $.post('${path}/videoType/deleteForever', {
                     ids : id
                 }, function(result) {
                     if (result.success) {
@@ -172,17 +198,16 @@ function videoTypeEditFun(id) {
             }
         });
      }
-
 }
 /**
  * 恢复
  */
  function videoTypeRollbackFun(id) {
-     var tip="";
+     let tip="";
         if (id == undefined) {
             id="";
-            var rows = videoTypeDataGrid.datagrid('getSelections');
-            for(var i=0;i<rows.length;i++){
+            let rows = videoTypeDataGrid.datagrid('getSelections');
+            for(let i=0;i<rows.length;i++){
                 id+=(rows[i].id+",");
                 tip+=( "<br/>名称："+ redFont(rows[i].name) +" 编码："+ redFont(rows[i].code)+" ；");
             }
@@ -260,7 +285,10 @@ function videoTypeSearchFun() {
         <a onclick="videoTypeEditFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-edit  icon-blue'">修改</a>
     </shiro:hasPermission>
     <shiro:hasPermission name="/videoType/delete">
-        <a onclick="videoTypeDeleteFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-remove  icon-red'">删除</a>
+        <a onclick="videoTypeDeleteFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-remove  icon-yellow'">隐藏</a>
+        <shiro:hasRole name="超级管理员">
+            <a onclick="videoTypeDeleteForever()" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-remove  icon-red'">永久删除</a>
+        </shiro:hasRole>
     </shiro:hasPermission>
     <shiro:hasPermission name="/videoType/add">
         <a onclick="videoTypeRollbackFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-share-alt icon-green'">恢复</a>

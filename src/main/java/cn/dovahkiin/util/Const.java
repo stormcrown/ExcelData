@@ -9,7 +9,7 @@ import java.util.Date;
 public class Const {
 
 
-    public static final String Administor_Role_Name = "admin";
+    public static final String Administor_Role_Name = "超级管理员";
     public static final String optimizerCN = "优化师";
     public static final String optimizerAdministorCN = "优化师管理员";
     public static final String optimizerStr = "optimizer";
@@ -33,9 +33,11 @@ public class Const {
     public static final String code = "code";
     public static final String name = "name";
     public static final String defaultConfig = "defaultConfig";
-
-
-    public static final SimpleDateFormat simDF = new SimpleDateFormat("yyyy-MM-dd") ;
+    public static final String yyyy_MM_dd = "yyyy-MM-dd";
+    /**
+     *  yyyy-MM-dd
+     * */
+    public static final SimpleDateFormat simDF = new SimpleDateFormat(yyyy_MM_dd) ;
     public static  Date date2010 = null;
     static {
         try {

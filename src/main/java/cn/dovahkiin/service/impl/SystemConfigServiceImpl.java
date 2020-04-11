@@ -1,8 +1,10 @@
 package cn.dovahkiin.service.impl;
 
+import cn.dovahkiin.model.Supplier;
 import cn.dovahkiin.model.SystemConfig;
 import cn.dovahkiin.mapper.SystemConfigMapper;
 import cn.dovahkiin.service.ISystemConfigService;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,5 +60,12 @@ public class SystemConfigServiceImpl extends ServiceImpl<SystemConfigMapper, Sys
     @Override
     public int toggleBySupplierIds(List<Long> supplierIds, int deleteFlag, Long userId) {
         return systemConfigMapper.toggleBySupplierIds(supplierIds,deleteFlag,userId);
+    }
+
+    @Override
+    public boolean deleteBySupplierIds(List<Long> supplierIds) {
+        EntityWrapper<SystemConfig> ew = new EntityWrapper<SystemConfig>();
+        ew.in("supplier_id", supplierIds);
+        return delete(ew);
     }
 }

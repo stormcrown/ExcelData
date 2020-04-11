@@ -197,23 +197,49 @@ function systemConfigEditFun(id) {
             }
         }
      if(id!==undefined && id!=null && id!=='' ){
-        parent.$.messager.confirm('询问', '您是否要删除当前配置及对应供应商？'+tip, function(b) {
-            if (b) {
-                progressLoad();
-                $.post('${path}/systemConfig/delete', {
-                    ids : id
-                }, function(result) {
-                    if (result.success) {
-                        parent.$.messager.alert('提示', result.msg, 'info');
-                        systemConfigDataGrid.datagrid('reload');
-                    }
-                    progressClose();
-                }, 'JSON');
-            }
-        });
+         progressLoad();
+         $.post('${path}/systemConfig/delete', {
+             ids : id
+         }, function(result) {
+             if (result.success) {
+                 parent.$.messager.alert('提示', result.msg, 'info');
+                 systemConfigDataGrid.datagrid('reload');
+             }
+             progressClose();
+         }, 'JSON');
      }
 
 }
+    /**
+     * 永久删除
+     */
+    function systemConfigDeleteForever(id) {
+        var tip="";
+        if (id == undefined) {
+            id="";
+            var rows = systemConfigDataGrid.datagrid('getSelections');
+            for(var i=0;i<rows.length;i++){
+                id+=(rows[i].id+",");
+                tip+=( "<br/>名称："+ redFont(rows[i].name) +" 编码："+ redFont(rows[i].code)+" ；");
+            }
+        }
+        if(id!=undefined && id!=null && id!='' ){
+            parent.$.messager.confirm('询问', '您是否要永久删除当前数据？'+tip, function(b) {
+                if (b) {
+                    progressLoad();
+                    $.post('${path}/systemConfig/deleteForever', {
+                        ids : id
+                    }, function(result) {
+                        if (result.success) {
+                            parent.$.messager.alert('提示', result.msg, 'info');
+                            systemConfigDataGrid.datagrid('reload');
+                        }
+                        progressClose();
+                    }, 'JSON');
+                }
+            });
+        }
+    }
 /**
  * 恢复
  */
@@ -304,6 +330,9 @@ function systemConfigSearchFun() {
     </shiro:hasPermission>
     <shiro:hasPermission name="/systemConfig/delete">
         <a onclick="systemConfigDeleteFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-remove  icon-red'">删除</a>
+        <shiro:hasRole name="超级管理员">
+            <a onclick="systemConfigDeleteForever()" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-remove  icon-red'">永久删除</a>
+        </shiro:hasRole>
     </shiro:hasPermission>
     <shiro:hasPermission name="/systemConfig/rollback">
         <a onclick="systemConfigRollbackFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-share-alt icon-green'">恢复</a>

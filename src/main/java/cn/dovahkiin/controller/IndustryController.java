@@ -1,13 +1,10 @@
 package cn.dovahkiin.controller;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Date;
-import cn.dovahkiin.commons.utils.StringUtils;
-import com.alibaba.fastjson.JSON;
+import cn.dovahkiin.util.Const;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,8 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.plugins.Page;
 import cn.dovahkiin.commons.result.PageInfo;
 import cn.dovahkiin.model.Industry;
 import cn.dovahkiin.service.IIndustryService;
@@ -28,14 +23,17 @@ import cn.dovahkiin.commons.base.BaseController;
  * </p>
  *
  * @author lzt
- * @since 2018-11-19
+ * @since 2020-04-10
  */
 @Controller
 @RequestMapping("/industry")
 public class IndustryController extends BaseController {
 
-    @Autowired private IIndustryService industryService;
-    
+    private IIndustryService industryService;
+    @Autowired
+    public void setIIndustryService(IIndustryService industryService) {
+        this.industryService = industryService;
+    }
     @GetMapping("/manager")
     @RequiresPermissions("/industry/manager")
     public String manager() {
@@ -46,25 +44,14 @@ public class IndustryController extends BaseController {
     @RequiresPermissions("/industry/dataGrid")
     @ResponseBody
     public PageInfo dataGrid(Industry industry, Integer page, Integer rows, String sort,String order) {
-        PageInfo pageInfo = new PageInfo(page, rows, sort, order);
-        EntityWrapper<Industry> ew = new EntityWrapper<Industry>();
-        if(industry!=null && StringUtils.hasText(industry.getCode()))ew.like("code","%"+industry.getCode().trim()+"%");
-        if(industry!=null && StringUtils.hasText(industry.getName()) )ew.like("name","%"+industry.getName().trim()+"%");
-        if(industry!=null && industry.getDeleteFlag()!=null  ) ew.eq("delete_flag", industry.getDeleteFlag() );
-        Page<Industry> pages = getPage(page, rows, sort, order);
-        pages = industryService.selectPage(pages, ew);
-        pageInfo.setRows(pages.getRecords());
-        pageInfo.setTotal(pages.getTotal());
-        return pageInfo;
+        return super.dataGrid(industry,industryService,page,rows,sort,order);
     }
     @PostMapping("/combobox")
     @ResponseBody
     @RequiresPermissions(value = {"/videoCost/dataGrid","/customer/*","/count/bar" },logical = Logical.OR)
-    public Object dataGrid() {
-        EntityWrapper ew = new EntityWrapper();
-        ew.eq("delete_flag", 0 );
-        return JSON.toJSON(industryService.selectList(ew));
-    }
+    public Object combobox() {
+        return super.combobox(industryService);
+        }
     /**
      * 添加页面
      * @return
@@ -72,16 +59,7 @@ public class IndustryController extends BaseController {
     @GetMapping("/addPage")
     @RequiresPermissions("/industry/add")
     public String addPage(Model model,Long id) {
-        model.addAttribute("method", "add");
-        if(id!=null){
-            Industry industry = industryService.selectById(id);
-            if(industry!=null){
-                industry.setId(null);
-                model.addAttribute("industry", industry);
-            }
-
-        }
-        return "industry/industryEdit";
+        return super.addPage(model,id,industryService,Industry.class);
     }
     
     /**
@@ -94,7 +72,6 @@ public class IndustryController extends BaseController {
     @ResponseBody
     public Object add(@Valid Industry industry) {
         return super.add(industry,industryService);
-
     }
     
     /**
@@ -106,26 +83,20 @@ public class IndustryController extends BaseController {
     @RequiresPermissions("/industry/delete")
     @ResponseBody
     public Object delete(String ids) {
-        if(ids!=null){
-            String[] idss = ids.split(",");
-            List<Industry> list = new ArrayList<Industry>();
-            for(String str:idss){
-                if(StringUtils.hasText(str) && StringUtils.isInteger(str) ){
-                    Industry industry = new Industry();
-                    industry.setId(Long.valueOf(str));
-                    industry.setDeleteFlag(1);
-                    list.add(industry);
-                }
-            }
-            if(list.size()>0){
-                boolean suc = industryService.updateBatchById(list);
-                if(suc)return renderSuccess("删除成功！");
-            }
-        }
-
-        return renderError("删除失败！");
-
+        return super.delete(ids,Industry.class,industryService);
     }
+/**
+*永久删除
+* @param ids
+* @return
+*/
+@RequiresPermissions("/industry/delete")
+@PostMapping("/deleteForever")
+@RequiresRoles(Const.Administor_Role_Name)
+@ResponseBody
+public Object deleteForever(String ids) {
+        return super.deleteForever(ids,industryService);
+        }
 /**
  * 恢复
  * @param ids
@@ -135,24 +106,8 @@ public class IndustryController extends BaseController {
 @RequiresPermissions("/industry/add")
 @ResponseBody
 public Object rollback(String ids) {
-        if(ids!=null){
-            String[] idss = ids.split(",");
-            List<Industry> list = new ArrayList<Industry>();
-            for(String str:idss){
-                if(StringUtils.hasText(str) && StringUtils.isInteger(str) ){
-                    Industry industry = new Industry();
-                    industry.setId(Long.valueOf(str));
-                    industry.setDeleteFlag(0);
-                    list.add(industry);
-                }
-            }
-            if(list.size()>0){
-                boolean suc = industryService.updateBatchById(list);
-                if(suc)return renderSuccess("恢复成功！");
-            }
-        }
-            return renderError("恢复失败！");
-        }
+        return super.rollback(ids,Industry.class,industryService);
+}
     /**
      * 编辑
      * @param model
@@ -162,10 +117,7 @@ public Object rollback(String ids) {
     @GetMapping("/editPage")
     @RequiresPermissions("/industry/edit")
     public String editPage(Model model, Long id) {
-        Industry industry = industryService.selectById(id);
-        model.addAttribute("industry", industry);
-        model.addAttribute("method", "edit");
-        return "industry/industryEdit";
+        return super.editPage(model,id,Industry.class,industryService);
     }
     
     /**
@@ -177,12 +129,6 @@ public Object rollback(String ids) {
     @RequiresPermissions("/industry/edit")
     @ResponseBody
     public Object edit(@Valid Industry industry) {
-        industry.setUpdateTime(new Date());
-        boolean b = industryService.updateById(industry);
-        if (b) {
-            return renderSuccess("编辑成功！");
-        } else {
-            return renderError("编辑失败！");
-        }
+        return super.edit(industry,industryService);
     }
 }

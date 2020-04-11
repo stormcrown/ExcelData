@@ -17,4 +17,5 @@ import java.util.List;
 public interface ISupplierService extends IService<Supplier> {
     int insertWithConfig(Supplier supplier,Long userId);
     int toggleBySystemConfigIds( List<Long> systemConfigIds, int deleteFlag);
+    boolean deleteBySystemConfigIds( List<Long> systemConfigIds);
 }

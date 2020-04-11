@@ -1,11 +1,10 @@
 package ${package.Controller};
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Date;
-import cn.dovahkiin.commons.utils.StringUtils;
+import cn.dovahkiin.util.Const;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,8 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.plugins.Page;
 import cn.dovahkiin.commons.result.PageInfo;
 import ${package.Entity}.${entity};
 import ${package.Service}.${table.serviceName};
@@ -38,8 +35,11 @@ public class ${table.controllerName} extends ${superControllerClass} {
 public class ${table.controllerName} {
 #end
 
-    @Autowired private ${table.serviceName} ${table.entityPath}Service;
-    
+    private ${table.serviceName} ${table.entityPath}Service;
+    @Autowired
+    public void set${table.serviceName}(${table.serviceName} ${table.entityPath}Service) {
+        this.${table.entityPath}Service = ${table.entityPath}Service;
+    }
     @GetMapping("/manager")
     @RequiresPermissions("/${table.entityPath}/manager")
     public String manager() {
@@ -50,24 +50,13 @@ public class ${table.controllerName} {
     @RequiresPermissions("/${table.entityPath}/dataGrid")
     @ResponseBody
     public PageInfo dataGrid(${entity} ${table.entityPath}, Integer page, Integer rows, String sort,String order) {
-        PageInfo pageInfo = new PageInfo(page, rows, sort, order);
-        EntityWrapper<${entity}> ew = new EntityWrapper<${entity}>();
-        if(${table.entityPath}!=null && StringUtils.hasText(${table.entityPath}.getCode()))ew.like("code","%"+${table.entityPath}.getCode().trim()+"%");
-        if(${table.entityPath}!=null && StringUtils.hasText(${table.entityPath}.getName()) )ew.like("name","%"+${table.entityPath}.getName().trim()+"%");
-        if(${table.entityPath}!=null && ${table.entityPath}.getDeleteFlag()!=null  ) ew.eq("delete_flag", ${table.entityPath}.getDeleteFlag() );
-        Page<${entity}> pages = getPage(page, rows, sort, order);
-        pages = ${table.entityPath}Service.selectPage(pages, ew);
-        pageInfo.setRows(pages.getRecords());
-        pageInfo.setTotal(pages.getTotal());
-        return pageInfo;
+        return super.dataGrid(${table.entityPath},${table.entityPath}Service,page,rows,sort,order);
     }
     @PostMapping("/combobox")
     @ResponseBody
     @RequiresPermissions(value = {"/videoCost/dataGrid","/customer/*","/count/bar" },logical = Logical.OR)
-    public Object dataGrid() {
-        EntityWrapper ew = new EntityWrapper();
-        ew.eq("delete_flag", 0 );
-        return JSON.toJSON(${table.entityPath}Service.selectList(ew));
+    public Object combobox() {
+        return super.combobox(${table.entityPath}Service);
         }
     /**
      * 添加页面
@@ -76,16 +65,7 @@ public class ${table.controllerName} {
     @GetMapping("/addPage")
     @RequiresPermissions("/${table.entityPath}/add")
     public String addPage(Model model,Long id) {
-        model.addAttribute("method", "add");
-        if(id!=null){
-            ${entity} ${table.entityPath} = ${table.entityPath}Service.selectById(id);
-            if(${table.entityPath}!=null){
-                ${table.entityPath}.setId(null);
-                model.addAttribute("${table.entityPath}", ${table.entityPath});
-            }
-
-        }
-        return "${table.entityPath}/${table.entityPath}Edit";
+        return super.addPage(model,id,${table.entityPath}Service,${entity}.class);
     }
     
     /**
@@ -98,16 +78,6 @@ public class ${table.controllerName} {
     @ResponseBody
     public Object add(@Valid ${entity} ${table.entityPath}) {
         return super.add(${table.entityPath},${table.entityPath}Service);
-
-##        ${table.entityPath}.setCreateTime(new Date());
-##        ${table.entityPath}.setUpdateTime(new Date());
-##        ${table.entityPath}.setDeleteFlag(0);
-##        boolean b = ${table.entityPath}Service.insert(${table.entityPath});
-##        if (b) {
-##            return renderSuccess("添加成功！");
-##        } else {
-##            return renderError("添加失败！");
-##        }
     }
     
     /**
@@ -119,36 +89,20 @@ public class ${table.controllerName} {
     @RequiresPermissions("/${table.entityPath}/delete")
     @ResponseBody
     public Object delete(String ids) {
-        if(ids!=null){
-            String[] idss = ids.split(",");
-            List<${entity}> list = new ArrayList<${entity}>();
-            for(String str:idss){
-                if(StringUtils.hasText(str) && StringUtils.isInteger(str) ){
-                    ${entity} ${table.entityPath} = new ${entity}();
-                    ${table.entityPath}.setId(Long.valueOf(str));
-                    ${table.entityPath}.setDeleteFlag(1);
-                    list.add(${table.entityPath});
-                }
-            }
-            if(list.size()>0){
-                boolean suc = ${table.entityPath}Service.updateBatchById(list);
-                if(suc)return renderSuccess("删除成功！");
-            }
-        }
-
-        return renderError("删除失败！");
-
-##        ${entity} ${table.entityPath} = new ${entity}();
-##        ${table.entityPath}.setId(id);
-##        ${table.entityPath}.setUpdateTime(new Date());
-##        ${table.entityPath}.setDeleteFlag(1);
-##        boolean b = ${table.entityPath}Service.updateById(${table.entityPath});
-##        if (b) {
-##            return renderSuccess("删除成功！");
-##        } else {
-##            return renderError("删除失败！");
-##        }
+        return super.delete(ids,${entity}.class,${table.entityPath}Service);
     }
+/**
+*永久删除
+* @param ids
+* @return
+*/
+@RequiresPermissions("/${table.entityPath}/delete")
+@PostMapping("/deleteForever")
+@RequiresRoles(Const.Administor_Role_Name)
+@ResponseBody
+public Object deleteForever(String ids) {
+        return super.deleteForever(ids,${table.entityPath}Service);
+        }
 /**
  * 恢复
  * @param ids
@@ -158,24 +112,8 @@ public class ${table.controllerName} {
 @RequiresPermissions("/${table.entityPath}/add")
 @ResponseBody
 public Object rollback(String ids) {
-        if(ids!=null){
-            String[] idss = ids.split(",");
-            List<${entity}> list = new ArrayList<${entity}>();
-            for(String str:idss){
-                if(StringUtils.hasText(str) && StringUtils.isInteger(str) ){
-                    ${entity} ${table.entityPath} = new ${entity}();
-                    ${table.entityPath}.setId(Long.valueOf(str));
-                    ${table.entityPath}.setDeleteFlag(0);
-                    list.add(${table.entityPath});
-                }
-            }
-            if(list.size()>0){
-                boolean suc = ${table.entityPath}Service.updateBatchById(list);
-                if(suc)return renderSuccess("恢复成功！");
-            }
-        }
-            return renderError("恢复失败！");
-        }
+        return super.rollback(ids,${entity}.class,${table.entityPath}Service);
+}
     /**
      * 编辑
      * @param model
@@ -185,10 +123,7 @@ public Object rollback(String ids) {
     @GetMapping("/editPage")
     @RequiresPermissions("/${table.entityPath}/edit")
     public String editPage(Model model, Long id) {
-        ${entity} ${table.entityPath} = ${table.entityPath}Service.selectById(id);
-        model.addAttribute("${table.entityPath}", ${table.entityPath});
-        model.addAttribute("method", "edit");
-        return "${table.entityPath}/${table.entityPath}Edit";
+        return super.editPage(model,id,${entity}.class,${table.entityPath}Service);
     }
     
     /**
@@ -200,12 +135,6 @@ public Object rollback(String ids) {
     @RequiresPermissions("/${table.entityPath}/edit")
     @ResponseBody
     public Object edit(@Valid ${entity} ${table.entityPath}) {
-        ${table.entityPath}.setUpdateTime(new Date());
-        boolean b = ${table.entityPath}Service.updateById(${table.entityPath});
-        if (b) {
-            return renderSuccess("编辑成功！");
-        } else {
-            return renderError("编辑失败！");
-        }
+        return super.edit(${table.entityPath},${table.entityPath}Service);
     }
 }

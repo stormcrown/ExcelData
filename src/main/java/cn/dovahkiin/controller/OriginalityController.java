@@ -1,14 +1,10 @@
 package cn.dovahkiin.controller;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Date;
-import cn.dovahkiin.commons.utils.StringUtils;
-import cn.dovahkiin.model.TrueCustomer;
-import com.alibaba.fastjson.JSON;
+import cn.dovahkiin.util.Const;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,8 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.plugins.Page;
 import cn.dovahkiin.commons.result.PageInfo;
 import cn.dovahkiin.model.Originality;
 import cn.dovahkiin.service.IOriginalityService;
@@ -29,14 +23,17 @@ import cn.dovahkiin.commons.base.BaseController;
  * </p>
  *
  * @author lzt
- * @since 2018-11-19
+ * @since 2020-04-10
  */
 @Controller
 @RequestMapping("/originality")
 public class OriginalityController extends BaseController {
 
-    @Autowired private IOriginalityService originalityService;
-    
+    private IOriginalityService originalityService;
+    @Autowired
+    public void setIOriginalityService(IOriginalityService originalityService) {
+        this.originalityService = originalityService;
+    }
     @GetMapping("/manager")
     @RequiresPermissions("/originality/manager")
     public String manager() {
@@ -47,25 +44,14 @@ public class OriginalityController extends BaseController {
     @RequiresPermissions("/originality/dataGrid")
     @ResponseBody
     public PageInfo dataGrid(Originality originality, Integer page, Integer rows, String sort,String order) {
-        PageInfo pageInfo = new PageInfo(page, rows, sort, order);
-        EntityWrapper<Originality> ew = new EntityWrapper<Originality>();
-        if(originality!=null && StringUtils.hasText(originality.getCode()))ew.like("code","%"+originality.getCode().trim()+"%");
-        if(originality!=null && StringUtils.hasText(originality.getName()) )ew.like("name","%"+originality.getName().trim()+"%");
-        if(originality!=null && originality.getDeleteFlag()!=null  ) ew.eq("delete_flag", originality.getDeleteFlag() );
-        Page<Originality> pages = getPage(page, rows, sort, order);
-        pages = originalityService.selectPage(pages, ew);
-        pageInfo.setRows(pages.getRecords());
-        pageInfo.setTotal(pages.getTotal());
-        return pageInfo;
+        return super.dataGrid(originality,originalityService,page,rows,sort,order);
     }
     @PostMapping("/combobox")
     @ResponseBody
     @RequiresPermissions(value = {"/videoCost/dataGrid","/customer/*","/count/bar" },logical = Logical.OR)
-    public Object dataGrid() {
-        EntityWrapper ew = new EntityWrapper();
-        ew.eq("delete_flag", 0 );
-        return JSON.toJSON(originalityService.selectList(ew));
-    }
+    public Object combobox() {
+        return super.combobox(originalityService);
+        }
     /**
      * 添加页面
      * @return
@@ -73,16 +59,7 @@ public class OriginalityController extends BaseController {
     @GetMapping("/addPage")
     @RequiresPermissions("/originality/add")
     public String addPage(Model model,Long id) {
-        model.addAttribute("method", "add");
-        if(id!=null){
-            Originality originality = originalityService.selectById(id);
-            if(originality!=null){
-                originality.setId(null);
-                model.addAttribute("originality", originality);
-            }
-
-        }
-        return "originality/originalityEdit";
+        return super.addPage(model,id,originalityService,Originality.class);
     }
     
     /**
@@ -95,7 +72,6 @@ public class OriginalityController extends BaseController {
     @ResponseBody
     public Object add(@Valid Originality originality) {
         return super.add(originality,originalityService);
-
     }
     
     /**
@@ -107,26 +83,20 @@ public class OriginalityController extends BaseController {
     @RequiresPermissions("/originality/delete")
     @ResponseBody
     public Object delete(String ids) {
-        if(ids!=null){
-            String[] idss = ids.split(",");
-            List<Originality> list = new ArrayList<Originality>();
-            for(String str:idss){
-                if(StringUtils.hasText(str) && StringUtils.isInteger(str) ){
-                    Originality originality = new Originality();
-                    originality.setId(Long.valueOf(str));
-                    originality.setDeleteFlag(1);
-                    list.add(originality);
-                }
-            }
-            if(list.size()>0){
-                boolean suc = originalityService.updateBatchById(list);
-                if(suc)return renderSuccess("删除成功！");
-            }
-        }
-
-        return renderError("删除失败！");
-
+        return super.delete(ids,Originality.class,originalityService);
     }
+/**
+*永久删除
+* @param ids
+* @return
+*/
+@RequiresPermissions("/originality/delete")
+@PostMapping("/deleteForever")
+@RequiresRoles(Const.Administor_Role_Name)
+@ResponseBody
+public Object deleteForever(String ids) {
+        return super.deleteForever(ids,originalityService);
+        }
 /**
  * 恢复
  * @param ids
@@ -136,24 +106,8 @@ public class OriginalityController extends BaseController {
 @RequiresPermissions("/originality/add")
 @ResponseBody
 public Object rollback(String ids) {
-        if(ids!=null){
-            String[] idss = ids.split(",");
-            List<Originality> list = new ArrayList<Originality>();
-            for(String str:idss){
-                if(StringUtils.hasText(str) && StringUtils.isInteger(str) ){
-                    Originality originality = new Originality();
-                    originality.setId(Long.valueOf(str));
-                    originality.setDeleteFlag(0);
-                    list.add(originality);
-                }
-            }
-            if(list.size()>0){
-                boolean suc = originalityService.updateBatchById(list);
-                if(suc)return renderSuccess("恢复成功！");
-            }
-        }
-            return renderError("恢复失败！");
-        }
+        return super.rollback(ids,Originality.class,originalityService);
+}
     /**
      * 编辑
      * @param model
@@ -163,10 +117,7 @@ public Object rollback(String ids) {
     @GetMapping("/editPage")
     @RequiresPermissions("/originality/edit")
     public String editPage(Model model, Long id) {
-        Originality originality = originalityService.selectById(id);
-        model.addAttribute("originality", originality);
-        model.addAttribute("method", "edit");
-        return "originality/originalityEdit";
+        return super.editPage(model,id,Originality.class,originalityService);
     }
     
     /**
@@ -178,12 +129,6 @@ public Object rollback(String ids) {
     @RequiresPermissions("/originality/edit")
     @ResponseBody
     public Object edit(@Valid Originality originality) {
-        originality.setUpdateTime(new Date());
-        boolean b = originalityService.updateById(originality);
-        if (b) {
-            return renderSuccess("编辑成功！");
-        } else {
-            return renderError("编辑失败！");
-        }
+        return super.edit(originality,originalityService);
     }
 }

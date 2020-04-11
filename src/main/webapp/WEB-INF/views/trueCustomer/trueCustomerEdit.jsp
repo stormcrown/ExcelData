@@ -6,7 +6,7 @@
             url : '${path}/trueCustomer/${method}',
             onSubmit : function() {
                 progressLoad();
-                var isValid = $(this).form('validate');
+                let isValid = $(this).form('validate');
                 if (!isValid) {
                     progressClose();
                 }
@@ -19,8 +19,9 @@
                     parent.$.modalDialog.openner_dataGrid.datagrid('reload');//之所以能在这里调用到parent.$.modalDialog.openner_dataGrid这个对象，是因为user.jsp页面预定义好了
                     parent.$.modalDialog.handler.dialog('close');
                 } else {
-                    var form = $('#trueCustomerEditForm');
-                    parent.$.messager.alert('错误', eval(result.msg), 'error');
+                    let form = $('#trueCustomerEditForm');
+                    parent.$.messager.alert('错误', result.msg, 'error');
+                    if(result.obj!=null) eval(result.obj);
                 }
             }
         });

@@ -1,11 +1,13 @@
 package cn.dovahkiin.service.impl;
 
 import cn.dovahkiin.commons.utils.StringUtils;
+import cn.dovahkiin.mapper.EditorMapper;
 import cn.dovahkiin.model.*;
 import cn.dovahkiin.mapper.CustomerMapper;
 import cn.dovahkiin.service.*;
 import cn.dovahkiin.util.Const;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -22,7 +24,7 @@ import java.util.*;
  * @since 2018-11-03
  */
 @Service
-public class CustomerServiceImpl implements ICustomerService {
+public class CustomerServiceImpl  implements ICustomerService {
 	@Autowired
     private CustomerMapper customerMapper;
 
@@ -38,6 +40,8 @@ public class CustomerServiceImpl implements ICustomerService {
     @Autowired private IProductTypeService iProductTypeService;
     @Autowired private IVideoTypeService videoTypeService;
     @Autowired private ITrueCustomerService trueCustomerService;
+
+
 
     @Override
     public int deleteByPrimaryKey(Long id) {
@@ -147,6 +151,13 @@ public class CustomerServiceImpl implements ICustomerService {
     public int deleteFlagIsOne() {
 
         return customerMapper.deleteFlagIsOne();
+    }
+
+    @Override
+    public int deleteManyForever(Long[] ids) {
+        if(ids!=null && ids.length>0)
+        return customerMapper.deleteManyForever(ids);
+        return 0;
     }
     //    @Override
 //    public Model modelForEdit(Model model) {

@@ -1,15 +1,18 @@
 package cn.dovahkiin.service.impl;
 
+import cn.dovahkiin.commons.utils.StringUtils;
 import cn.dovahkiin.mapper.SystemConfigMapper;
 import cn.dovahkiin.model.Supplier;
 import cn.dovahkiin.mapper.SupplierMapper;
 import cn.dovahkiin.model.SystemConfig;
 import cn.dovahkiin.service.ISupplierService;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -41,6 +44,14 @@ public class SupplierServiceImpl extends ServiceImpl<SupplierMapper, Supplier> i
     public int toggleBySystemConfigIds(List<Long> systemConfigIds, int deleteFlag) {
         List<Long> supplierIds = systemConfigMapper.selectSupplierIds(systemConfigIds);
         return supplierMapper.toggleByIds(supplierIds,deleteFlag);
+    }
+
+    @Override @Transactional
+    public boolean deleteBySystemConfigIds(List<Long> systemConfigIds) {
+        List<Long> supplierIds = systemConfigMapper.selectSupplierIds(systemConfigIds);
+        EntityWrapper<Supplier> ew = new EntityWrapper<Supplier>();
+        ew.in("id", supplierIds);
+        return delete(ew);
     }
 
     @Autowired public void setSupplierMapper(SupplierMapper supplierMapper) { this.supplierMapper = supplierMapper; }

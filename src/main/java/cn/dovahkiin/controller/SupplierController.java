@@ -8,9 +8,11 @@ import java.util.Date;
 import cn.dovahkiin.commons.shiro.ShiroUser;
 import cn.dovahkiin.commons.utils.StringUtils;
 import cn.dovahkiin.service.ISystemConfigService;
+import cn.dovahkiin.util.Const;
 import com.alibaba.fastjson.JSON;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -79,15 +81,7 @@ public class SupplierController extends BaseController {
     @GetMapping("/addPage")
     @RequiresPermissions("/supplier/add")
     public String addPage(Model model,Long id) {
-        model.addAttribute("method", "add");
-        if(id!=null){
-            Supplier supplier = supplierService.selectById(id);
-            if(supplier!=null){
-                supplier.setId(null);
-                model.addAttribute("supplier", supplier);
-            }
-        }
-        return "supplier/supplierEdit";
+        return super.addPage(model,id,supplierService,Supplier.class);
     }
     
     /**
@@ -136,9 +130,33 @@ public class SupplierController extends BaseController {
                 }
             }
         }
-
         return renderError("删除失败！");
+    }
 
+    @RequiresPermissions("/supplier/delete")
+    @PostMapping("/deleteForever")
+    @RequiresRoles(Const.Administor_Role_Name)
+    @ResponseBody
+    public Object deleteForever(String ids) {
+        if(ids!=null){
+            String[] idss = ids.split(",");
+            List<Long> list = new ArrayList<Long>();
+            List<Long> supperIds = new ArrayList<>();
+            for(String str:idss){
+                if(StringUtils.hasText(str) && StringUtils.isInteger(str) ){
+                    list.add(Long.valueOf(str));
+                    supperIds.add(Long.valueOf(str));
+                }
+            }
+            if(list.size()>0){
+                boolean suc = supplierService.deleteBatchIds(list);
+                if(suc){
+                    iSystemConfigService.deleteBySupplierIds(supperIds);
+                    return renderSuccess("删除成功！");
+                }
+            }
+        }
+        return renderError("删除失败！");
     }
 /**
  * 恢复

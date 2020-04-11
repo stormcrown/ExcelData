@@ -170,7 +170,6 @@
             #{id}
         </foreach>
         )
-        and delete_flag = 1
     </delete>
     <select id="countUndeleted" resultType="int" >
         select count(*) from `video_cost`

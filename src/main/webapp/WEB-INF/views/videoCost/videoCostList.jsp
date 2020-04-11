@@ -708,10 +708,11 @@
            data-options="plain:true,iconCls:'glyphicon-cloud-download icon-purple'">导出Excel</a>
     </shiro:hasPermission>
     <shiro:hasPermission name="/videoCost/delete">
-        <a onclick="videoCostDeleteFun()" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-remove  icon-red'">删除</a>
+        <a onclick="videoCostDeleteFun()" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-remove  icon-yellow'">删除</a>
+        <shiro:hasRole name="超级管理员">
+            <a onclick="videoCostDeleteForever()" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-remove  icon-red'">永久删除</a>
+        </shiro:hasRole>
     </shiro:hasPermission>
-    <shiro:hasRole name="admin">
-        <a onclick="videoCostDeleteForever()" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-remove  icon-red'">永久删除</a>
-    </shiro:hasRole>
+
     总消耗：￥ <span id="sum" style="color: red" >0.00</span>&nbsp;&nbsp;||&nbsp;&nbsp;素材数量：<span id="cus" style="color: red" >0</span>&nbsp;&nbsp;||&nbsp;&nbsp;客户数量：<span id="tcus" style="color: red" >0</span>
 </div>

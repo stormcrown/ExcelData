@@ -3,8 +3,8 @@ package cn.dovahkiin.commons.base;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletRegistration;
@@ -17,17 +17,16 @@ import cn.dovahkiin.commons.converter.DateConverter;
 import cn.dovahkiin.commons.result.PageInfo;
 import cn.dovahkiin.commons.result.Result;
 import cn.dovahkiin.commons.shiro.ShiroUser;
-import cn.dovahkiin.commons.utils.Charsets;
-import cn.dovahkiin.commons.utils.StringEscapeEditor;
-import cn.dovahkiin.commons.utils.URLUtils;
-import cn.dovahkiin.model.VideoCost;
+import cn.dovahkiin.commons.utils.*;
+import cn.dovahkiin.util.Const;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.IService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.beans.propertyeditors.FileEditor;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -41,9 +40,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.baomidou.mybatisplus.plugins.Page;
-import cn.dovahkiin.commons.result.PageInfo;
-import cn.dovahkiin.commons.result.Result;
-import cn.dovahkiin.commons.shiro.ShiroUser;
 import cn.dovahkiin.commons.utils.Charsets;
 import cn.dovahkiin.commons.utils.StringEscapeEditor;
 import cn.dovahkiin.commons.utils.URLUtils;
@@ -57,6 +53,34 @@ import cn.dovahkiin.commons.utils.URLUtils;
 public abstract class BaseController {
     // 控制器本来就是单例，这样似乎更加合理
     protected Logger logger = LogManager.getLogger(getClass());
+    private Map<String, Set<Long>> importUsers = new ConcurrentHashMap<>();
+
+    protected synchronized boolean  importOnce(ShiroUser user){
+        Set<String> roles = user.getRoles();
+        if(roles.contains(Const.Administor_Role_Name)  || roles.contains(Const.optimizerAdministorCN)  ) return Boolean.TRUE;
+        String key = Const.simDF.format(new Date());
+        Set<Long> values = importUsers.get(key);
+        if(values==null)values = new HashSet<>(50);
+        if(values.contains(user.getId()))return Boolean.FALSE;
+        values.add(user.getId());
+        importUsers.put(key,values);
+        Set<String> keys = importUsers.keySet();
+        keys.forEach(k->{
+            if(!key.equals(k))importUsers.remove(k);
+        });
+        return Boolean.TRUE;
+    }
+    protected synchronized void  reduceOnce(ShiroUser user){
+        Set<String> roles = user.getRoles();
+        if(roles.contains(Const.Administor_Role_Name)  || roles.contains(Const.optimizerAdministorCN)  ) return;
+        String key = Const.simDF.format(new Date());
+        Set<Long> values = importUsers.get(key);
+        if(values==null)return ;
+        values.remove(user.getId());
+        importUsers.put(key,values);
+        return ;
+    }
+
     @Autowired
     protected DateConverter dateConverter;
     public void setDateConverter(DateConverter dateConverter) {
@@ -222,6 +246,73 @@ public abstract class BaseController {
 		headers.setContentDispositionFormData("attachment", fileName);
 		return new ResponseEntity<Resource>(resource, headers, status);
 	}
+
+
+
+    public  <T extends Model>PageInfo dataGrid(T model ,IService<T> iService, Integer page, Integer rows, String sort,String order)  {
+        PageInfo pageInfo = new PageInfo(page, rows, sort, order);
+        EntityWrapper<T> ew = new EntityWrapper<T>();
+        if(model!=null){
+            try {
+                Method getCode = model.getClass().getMethod("getCode") ;
+                Method getName = model.getClass().getMethod("getName") ;
+                Method getDeleteFlag = model.getClass().getMethod("getDeleteFlag") ;
+                Object code =  getCode.invoke(model);
+                Object name =getName.invoke(model);
+                Object deleteFlag =getDeleteFlag.invoke(model);
+                if(StringUtils.hasText((String) code))ew.like("code","%"+((String) code).trim().replaceAll(" ","")+"%");
+                if(StringUtils.hasText((String) name))ew.like("name","%"+((String) name).trim().replaceAll(" ","")+"%");
+                if(deleteFlag != null) ew.eq("delete_flag", deleteFlag );
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+
+        }
+        Page<T> pages = getPage(page, rows, sort, order);
+        pages = iService.selectPage(pages, ew);
+        pageInfo.setRows(pages.getRecords());
+        pageInfo.setTotal(pages.getTotal());
+        return pageInfo;
+    }
+
+    public <T extends Model>Object combobox(IService<T> iService) {
+        EntityWrapper ew = new EntityWrapper();
+        ew.eq("delete_flag", 0 );
+        return JSON.toJSON(iService.selectList(ew));
+    }
+    public static String toLowerCaseFirstOne(String s){
+        if(Character.isLowerCase(s.charAt(0)))
+            return s;
+        else
+            return (new StringBuilder()).append(Character.toLowerCase(s.charAt(0))).append(s.substring(1)).toString();
+    }
+    public <T extends Model>String addPage(org.springframework.ui.Model model, Long id,IService<T> iService,Class<T> clazz) {
+        model.addAttribute("method", "add");
+        String className = toLowerCaseFirstOne(clazz.getSimpleName()) ;
+
+        if(id!=null){
+            try {
+                Method setId = clazz.getMethod("setId", Long.class);
+                T mm = iService.selectById(id);
+                if(mm!=null){
+                    setId.invoke(mm, new Object[]{null});
+                    model.addAttribute(className, mm);
+                }
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
+        return  className+"/"+className+"Edit";
+    }
+
     /**
      * 默认新增方法
      * @param model 待新增对象
@@ -246,6 +337,84 @@ public abstract class BaseController {
             e.printStackTrace();
         }
         return renderError("添加失败！");
+    }
+
+    public <T extends Model> Object delete(String ids, Class<T> clazz, IService<T> iService) {
+        return updateDeleteFlag(ids,clazz,iService,1);
+    }
+
+    public  <T extends Model> Object rollback(String ids, Class<T> clazz, IService<T> iService) {
+        return updateDeleteFlag(ids,clazz,iService,0);
+    }
+    public  <T extends Model> Object updateDeleteFlag(String ids, Class<T> clazz, IService<T> iService,int deleteFlag) {
+        if (ids == null) return renderError("失败！");
+        try {
+            String[] idss = ids.split(",");
+            List<T> list = new ArrayList<T>();
+            for (String str : idss) {
+                if (StringUtils.hasText(str) && StringUtils.isInteger(str)) {
+                    T instance = clazz.newInstance();
+                    Method setId = clazz.getMethod("setId", Long.class);
+                    Method setDeleteFlag = clazz.getMethod("setDeleteFlag", Integer.class);
+                    setId.invoke(instance, Long.valueOf(str));
+                    setDeleteFlag.invoke(instance, deleteFlag);
+                    list.add(instance);
+                }
+            }
+            if (list.size() > 0) {
+                boolean suc = iService.updateBatchById(list);
+                if (suc) return renderSuccess("成功！");
+            }
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return renderError("失败！");
+    }
+
+    public <T extends Model> Object deleteForever(String ids,IService<T> iService) {
+        if(ids!=null){
+            String[] idss = ids.split(",");
+            List<Long> list = new ArrayList<Long>();
+            EntityWrapper<T> ew = new EntityWrapper<T>();
+            for(String str:idss){
+                if(StringUtils.hasText(str) && StringUtils.isInteger(str) ) list.add(Long.parseLong(str));
+            }
+            ew.in("id", list);
+            if(list.size()>0){
+                boolean suc = iService.delete(ew);
+                if(suc)return renderSuccess("删除成功！");
+            }
+        }
+        return renderError("删除失败！");
+    }
+
+    public <T extends Model>String editPage(org.springframework.ui.Model model, Long id,Class<T> clazz, IService<T> iService) {
+        T object = iService.selectById(id);
+        String className =toLowerCaseFirstOne(clazz.getSimpleName()) ;
+        model.addAttribute(className, object);
+        model.addAttribute("method", "edit");
+        return className+"/"+className+"Edit";
+    }
+    public  <T extends Model>Object edit(@Valid T object,IService<T> iService) {
+        try {
+            Method setUpdateTime = object.getClass().getMethod("setUpdateTime",Date.class) ;
+            setUpdateTime.invoke(object,new Date());
+            boolean b = iService.updateById(object);
+            if (b) return renderSuccess("编辑成功！");
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return renderError("编辑失败！");
     }
 
     protected void addCookie(HttpServletResponse response,Cookie cookie){

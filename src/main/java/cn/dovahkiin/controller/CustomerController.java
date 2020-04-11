@@ -9,6 +9,7 @@ import cn.dovahkiin.util.Const;
 import com.alibaba.fastjson.JSON;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -186,6 +187,32 @@ public class CustomerController extends BaseController {
         }
         return renderError("删除失败！");
     }
+    /**
+     *永久删除
+     * @param ids
+     * @return
+     */
+    @RequiresPermissions("/customer/delete")
+    @PostMapping("/deleteForever")
+    @RequiresRoles(Const.Administor_Role_Name)
+    @ResponseBody
+    public Object deleteForever(String ids) {
+        if(ids!=null){
+            String[] idss = ids.split(",");
+            List<Long> list = new ArrayList<Long>();
+            for(String str:idss){
+                if(StringUtils.hasText(str) && StringUtils.isInteger(str) ){
+                    list.add(Long.valueOf(str) );
+                }
+            }
+            if(list.size()>0){
+                int suc = customerService.deleteManyForever(list.toArray(new Long[0]));
+                if(suc>0)return renderSuccess("删除成功！");
+            }
+        }
+        return renderError("删除失败！");
+    }
+
 /**
  * 恢复
  * @param ids

@@ -133,23 +133,49 @@ function priceLevelEditFun(id) {
             }
         }
      if(id!=undefined && id!=null && id!='' ){
-        parent.$.messager.confirm('询问', '您是否要删除当前角色？'+tip, function(b) {
-            if (b) {
-                progressLoad();
-                $.post('${path}/priceLevel/delete', {
-                    ids : id
-                }, function(result) {
-                    if (result.success) {
-                        parent.$.messager.alert('提示', result.msg, 'info');
-                        priceLevelDataGrid.datagrid('reload');
-                    }
-                    progressClose();
-                }, 'JSON');
-            }
-        });
+         progressLoad();
+         $.post('${path}/priceLevel/delete', {
+             ids : id
+         }, function(result) {
+             if (result.success) {
+                 parent.$.messager.alert('提示', result.msg, 'info');
+                 priceLevelDataGrid.datagrid('reload');
+             }
+             progressClose();
+         }, 'JSON');
      }
 
 }
+    /**
+     * 永久删除
+     */
+    function priceLevelDeleteForever(id) {
+        var tip="";
+        if (id == undefined) {
+            id="";
+            var rows = priceLevelDataGrid.datagrid('getSelections');
+            for(var i=0;i<rows.length;i++){
+                id+=(rows[i].id+",");
+                tip+=( "<br/>名称："+ redFont(rows[i].name) +" 编码："+ redFont(rows[i].code)+" ；");
+            }
+        }
+        if(id!=undefined && id!=null && id!='' ){
+            parent.$.messager.confirm('询问', '您是否要永久删除当前数据？'+tip, function(b) {
+                if (b) {
+                    progressLoad();
+                    $.post('${path}/priceLevel/deleteForever', {
+                        ids : id
+                    }, function(result) {
+                        if (result.success) {
+                            parent.$.messager.alert('提示', result.msg, 'info');
+                            priceLevelDataGrid.datagrid('reload');
+                        }
+                        progressClose();
+                    }, 'JSON');
+                }
+            });
+        }
+    }
 /**
  * 恢复
  */
@@ -236,7 +262,10 @@ function priceLevelSearchFun() {
         <a onclick="priceLevelEditFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-edit  icon-blue'">修改</a>
     </shiro:hasPermission>
     <shiro:hasPermission name="/priceLevel/delete">
-        <a onclick="priceLevelDeleteFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-remove  icon-red'">删除</a>
+        <a onclick="priceLevelDeleteFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-remove  icon-yellow'">隐藏</a>
+        <shiro:hasRole name="超级管理员">
+            <a onclick="priceLevelDeleteForever()" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-remove  icon-red'">永久删除</a>
+        </shiro:hasRole>
     </shiro:hasPermission>
     <shiro:hasPermission name="/priceLevel/add">
         <a onclick="priceLevelRollbackFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'glyphicon-share-alt icon-green'">恢复</a>
