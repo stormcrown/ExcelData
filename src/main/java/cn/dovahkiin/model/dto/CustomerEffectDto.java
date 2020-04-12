@@ -10,6 +10,8 @@ public class CustomerEffectDto {
     private String code;
     private String supplierName;
     private String supplierCode;
+    private String videoTypeName;
+    private String videoTypeCode;
     private BigDecimal basePrice;
     private BigDecimal basePay;
     private Date completeDate;
@@ -179,5 +181,19 @@ public class CustomerEffectDto {
         this.lastDayPayOver = lastDayPayOver;
     }
 
+    public String getVideoTypeName() {
+        return videoTypeName;
+    }
 
+    public void setVideoTypeName(String videoTypeName) {
+        this.videoTypeName = videoTypeName;
+    }
+
+    public String getVideoTypeCode() {
+        return videoTypeCode;
+    }
+
+    public void setVideoTypeCode(String videoTypeCode) {
+        this.videoTypeCode = videoTypeCode;
+    }
 }

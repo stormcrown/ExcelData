@@ -42,7 +42,7 @@
                     let hou = 1000 * 60 * 60;
                     if (value1 === null || value1 === '' || value1 === undefined) value1 = '';
                     if (value2 === null || value2 === '' || value2 === undefined) value2 = '';
-                     if (sort === 'name' || sort === 'code' || sort === 'supplierName' || sort === 'supplierCode'  || (value2 === '' && value1 === '')   ) {
+                     if (sort === 'name' || sort === 'code' || sort === 'supplierName' || sort === 'supplierCode'  || sort==='videoTypeName'  || (value2 === '' && value1 === '')   ) {
                         end = value1.localeCompare(value2, 'zh-CN');
                     }else  if (sort === 'completeData' || sort === 'endDate' || sort === 'payEndDate' || sort === 'incomeEndDate' ) {
                         value1 = new Date(value1);
@@ -75,6 +75,7 @@
                     return  html;
                 }
                 },
+                {field:'videoTypeName',width:100,  sortable: true, title:'视频类别名称',  },
                 {field:'incMaxEffectOn',width:100,  sortable: true, title:'收入封顶消耗',align:'right',halign:'center', formatter: function (value, row, index) { return  moneyFormter(value); } },
                 {field:'payMaxEffectOn',width:100,  sortable: true, title:'支出封顶消耗',align:'right',halign:'center', formatter: function (value, row, index) { return moneyFormter(value); } },
                 {field:'sumAllEffConInc', width:100, sortable: true, title:'收入生命周期内总消耗',align:'right',halign:'center', formatter: function (value, row, index) { return (row.incomeOverflow===true  )? pinkFont(moneyFormter(value)): moneyFormter(value); } },
@@ -223,6 +224,7 @@
                     columns: [[
                         {field:'orgCode', width:120,  sortable: true, title:'部门编号',  },
                         {field:'orgName', width:120,  sortable: true, title:'部门名称',  },
+                        {field:'videoTypeName',width:100,  sortable: true, title:'视频类别名称',  },
                         {field:'sumAllEffConInc', width:100, sortable: true, title:'素材收入生命周期内消耗',align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);} },
                         {field:'sumAllEffConPay', width:100, sortable: true, title:'素材支出生命周期内消耗',align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);} },
                         {field:'sumAllCon', width:100, sortable: true, title:'查询区间内总消耗',align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);} },
@@ -279,7 +281,9 @@
                             let value1 = d1[sort];
                             let value2 = d2[sort];
                             let end = 0;
-                            if(sort==='orgCode' || sort==='orgName' ) end = value1.localeCompare(value2,'zh-CN');
+                            if (value1 === null || value1 === '' || value1 === undefined) value1 = '';
+                            if (value2 === null || value2 === '' || value2 === undefined) value2 = '';
+                            if(sort==='orgCode' || sort==='orgName' || sort==='videoTypeName' ) end = value1.localeCompare(value2,'zh-CN');
                             else end = value1 -value2;
                             if('asc'===order) return end; else return  0-end;
                         });
@@ -349,6 +353,8 @@
                         if(value1===true)value1=1;else value1=0;
                         if(value2===true)value2=1;else value2=0;
                     }
+                    if (value1 === null || value1 === '' || value1 === undefined) value1 = '';
+                    if (value2 === null || value2 === '' || value2 === undefined) value2 = '';
                     if(sort==='orgCode' || sort==='orgName'  ) end = value1.localeCompare(value2,'zh-CN');
                     else end = value1 -value2;
                     if('asc'===order) return end; else return  0-end;
@@ -434,6 +440,7 @@
                             {field:'cusName', sortable: true, title:'素材名称',  },
                             {field:'orgCode', width:120,  sortable: true, title:'部门编号',  },
                             {field:'orgName', width:120,  sortable: true, title:'部门名称',  },
+                            {field:'videoTypeName',width:100,  sortable: true, title:'视频类别名称',  },
                             {field:'sumAllCon', width:100, sortable: true, title:'查询区间内总消耗',align:'right',halign:'center', formatter: function (value, row, index) {return moneyFormter(value);} },
                             {field:'sumEffCon', width:100, sortable: true, title:'收入消耗',align:'right',halign:'center', formatter: function (value, row, index) {
                                     value = moneyFormter(value);
@@ -450,7 +457,9 @@
                             let value1 = d1[sort];
                             let value2 = d2[sort];
                             let end = 0;
-                            if(sort==='orgCode' || sort==='orgName' || sort==='cusCode' || sort==='cusName' ) end = value1.localeCompare(value2,'zh-CN');
+                            if (value1 === null || value1 === '' || value1 === undefined) value1 = '';
+                            if (value2 === null || value2 === '' || value2 === undefined) value2 = '';
+                            if(sort==='orgCode' || sort==='orgName' || sort==='cusCode' || sort==='cusName' || sort==='videoTypeName') end = value1.localeCompare(value2,'zh-CN');
                             else end = value1 -value2;
                             if('asc'===order) return end; else return  0-end;
                         });

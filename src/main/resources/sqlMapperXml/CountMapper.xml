@@ -289,6 +289,7 @@
 		ple.base_price as basePrice,ple.name as priceLevelName,
 		pal.base_pay as basePay,pal.name as payLevelName,
 		sup.name as supplierName, sup.code as supplierCode ,
+		vdt.name as videoTypeName, vdt.code as videoTypeCode ,
 		min( cus.complete_date) as completeDate,
 		COALESCE(
 		    cus.max_effect_con ,ple.max_effect_con,
@@ -377,6 +378,7 @@
 			   dem.name orgName,
 			   cus.code cusCode,
 			   cus.name cusName,
+			   vdt.name as videoTypeName, vdt.code as videoTypeCode ,
 			   sum( IF(vc.recored_date &lt;= COALESCE(
 					   DATE_ADD( cus.complete_date, INTERVAL ple.max_effect_range day),
 					   DATE_ADD( cus.complete_date, INTERVAL sc.default_max_effect_range day),
@@ -387,11 +389,7 @@
 					   DATE_ADD( cus.complete_date, INTERVAL sc.default_max_effect_range day),
 					   DATE_ADD( cus.complete_date, INTERVAL #{defaultConfig.defaultMaxEffectRange} day)
 				   ) and vc.recored_date >= cus.complete_date, consumption, 0) ) sumAllEffConPay,
-
 			   sum(IF(vc.recored_date &lt;= #{recoredDate_end} and vc.recored_date >= #{recoredDate_start}, consumption, 0)) sumAllCon,    -- 查询区间内消耗
-
-
-
 			   sum(IF(vc.recored_date &lt;= #{incomeEndDate} and vc.recored_date &lt;= #{recoredDate_end} and					  vc.recored_date >= #{recoredDate_start} and vc.recored_date >= #{completeDate}, consumption,
 					  0))                                                              sumEffCon,    --  总 查询区间内，实际结束日期之前 内收入有效消耗
 			   sum(IF(vc.recored_date &lt;= #{payEndDate} and vc.recored_date >= #{completeDate} and
@@ -404,6 +402,7 @@
 				 LEFT JOIN supplier sup on sup.id = cus.supplier_id and sup.delete_flag = 0
 				 LEFT JOIN system_config sc on sc.supplier_id = sup.id and sc.delete_flag = 0
 				 left join organization dem on dem.id = vc.demand_sector_id
+				 left join video_type vdt on vdt.id = cus.video_type_id and vdt.delete_flag =0
 		where cus.code = #{customerCode} and vc.delete_flag = 0
 		GROUP BY cus.code, dem.code
 		having sumAllCon > 0

@@ -9,6 +9,8 @@ public class CusOrgEffDto {
     private String orgCode;
     private String cusName;
     private String cusCode;
+    private String videoTypeName;
+    private String videoTypeCode;
     private BigDecimal sumAllEffConInc; // 素材生命周期内，部门收入消耗 ，
     private BigDecimal sumAllEffConPay; // 素材生命周期内，部门支出消耗 ，
     private BigDecimal sumAllCon; // 查询区间内消耗
@@ -163,5 +165,21 @@ public class CusOrgEffDto {
 
     public void setSumAllEffConPay(BigDecimal sumAllEffConPay) {
         this.sumAllEffConPay = sumAllEffConPay;
+    }
+
+    public String getVideoTypeName() {
+        return videoTypeName;
+    }
+
+    public void setVideoTypeName(String videoTypeName) {
+        this.videoTypeName = videoTypeName;
+    }
+
+    public String getVideoTypeCode() {
+        return videoTypeCode;
+    }
+
+    public void setVideoTypeCode(String videoTypeCode) {
+        this.videoTypeCode = videoTypeCode;
     }
 }

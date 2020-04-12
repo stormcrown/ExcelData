@@ -459,7 +459,7 @@ public class CountServiceImpl implements ICountService {
         NumberFormat nf = NumberFormat.getNumberInstance();
         nf.setMaximumFractionDigits(2);
         Sheet sheetCus = workbook.createSheet("素材");
-        String [] headCus = new String[]{ "编号","名称","部门名称","供应商名称","收入封顶消耗", "支出封顶消耗", "收入生命周期内总消耗", "支出生命周期内总消耗", "查询区间内总消耗" ,"收入有效消耗", "支出有效消耗", "收入","支出", "固定收入","固定支出","收入比率(%)","支出比率(%)","成片日期","收入生命周期至（配置）","支出生命周期至（配置）","收入有效期至（实际）","支出有效期至（实际）" };
+        String [] headCus = new String[]{ "编号","名称","部门","供应商","视频类别","收入封顶消耗", "支出封顶消耗", "收入生命周期内总消耗", "支出生命周期内总消耗", "查询区间内总消耗" ,"收入有效消耗", "支出有效消耗", "收入","支出", "固定收入","固定支出","收入比率(%)","支出比率(%)","成片日期","收入生命周期至（配置）","支出生命周期至（配置）","收入有效期至（实际）","支出有效期至（实际）" };
         Row headRowCus = sheetCus.createRow(0);
         for(int i=0;i<headCus.length;i++){
             Cell cell = headRowCus.createCell(i);
@@ -510,40 +510,41 @@ public class CountServiceImpl implements ICountService {
                     cell.setCellValue(orgNames.toString());
                 }
                 else if(i==3) cell.setCellValue(dto.getSupplierName());
-                else if(i==4) cell.setCellValue(dto.getIncMaxEffectOn().toPlainString());
-                else if(i==5) cell.setCellValue(dto.getPayMaxEffectOn().toPlainString());
-                else if(i==6) cell.setCellValue(nf.format(dto.getSumAllEffConInc()) );
-                else if(i==7) cell.setCellValue(nf.format(dto.getSumAllEffConPay()) );
-                else if(i==8) cell.setCellValue(nf.format(dto.getSumAllCon()) );
-                else if(i==9) cell.setCellValue(nf.format(dto.getSumEffCon()) );
-                else if(i==10) cell.setCellValue(nf.format(dto.getSumEffPayCon()) );
-                else if(i==11) cell.setCellValue(nf.format(dto.getSumIncome()) );
-                else if(i==12) cell.setCellValue(nf.format(dto.getSumPay()));
-                else if(i==13){
+                else if(i==4) cell.setCellValue(dto.getVideoTypeName());
+                else if(i==5) cell.setCellValue(nf.format(dto.getIncMaxEffectOn()));
+                else if(i==7) cell.setCellValue(nf.format(dto.getPayMaxEffectOn()));
+                else if(i==8) cell.setCellValue(nf.format(dto.getSumAllEffConInc()) );
+                else if(i==9) cell.setCellValue(nf.format(dto.getSumAllEffConPay()) );
+                else if(i==10) cell.setCellValue(nf.format(dto.getSumAllCon()) );
+                else if(i==11) cell.setCellValue(nf.format(dto.getSumEffCon()) );
+                else if(i==12) cell.setCellValue(nf.format(dto.getSumEffPayCon()) );
+                else if(i==13) cell.setCellValue(nf.format(dto.getSumIncome()) );
+                else if(i==14) cell.setCellValue(nf.format(dto.getSumPay()));
+                else if(i==15){
                     if(dto.getPriceLevelName()!=null) cell.setCellValue( dto.getPriceLevelName()+" ￥ "+  dto.getBasePrice());
                 }
-                else if(i==14){
+                else if(i==16){
                     if(dto.getPayLevelName()!=null) cell.setCellValue( dto.getPayLevelName()+" ￥ "+  dto.getBasePay());
                 }
-                else if(i==15) cell.setCellValue(dto.getIncomeRadio().toPlainString());
-                else if(i==16) cell.setCellValue(dto.getPayRadio().toPlainString());
-                else if(i==17){
+                else if(i==17) cell.setCellValue(dto.getIncomeRadio().toPlainString());
+                else if(i==18) cell.setCellValue(dto.getPayRadio().toPlainString());
+                else if(i==19){
                     cell.setCellStyle(ExcelConst.getDateCellStyle(sheetCus));
                     cell.setCellValue(dto.getCompleteDate());
                 }
-                else if(i==18){
+                else if(i==20){
                     cell.setCellStyle(ExcelConst.getDateCellStyle(sheetCus));
                     cell.setCellValue(dto.getIncomeConfigEndDate());
                 }
-                else if(i==19){
+                else if(i==21){
                     cell.setCellStyle(ExcelConst.getDateCellStyle(sheetCus));
                     cell.setCellValue(dto.getPayConfigEndDate());
                 }
-                else if(i==20){
+                else if(i==22){
                     cell.setCellStyle(ExcelConst.getDateCellStyle(sheetCus));
                     cell.setCellValue(dto.getIncomeEndDate());
                 }
-                else if(i==21){
+                else if(i==23){
                     cell.setCellStyle(ExcelConst.getDateCellStyle(sheetCus));
                     cell.setCellValue(dto.getPayEndDate());
                 }
